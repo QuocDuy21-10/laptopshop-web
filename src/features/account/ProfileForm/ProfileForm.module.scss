@@ -1,0 +1,63 @@
+@use "mixins" as *;
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-four);
+  max-width: 560px;
+  padding: var(--space-six);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.avatarRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-four);
+}
+
+.avatar {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  background: var(--color-surface-muted);
+  border-radius: var(--radius-full);
+  color: var(--color-foreground-muted);
+  overflow: hidden;
+}
+
+.avatarImg {
+  object-fit: cover;
+}
+
+.avatarField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-one);
+}
+
+.label {
+  @include text(label-md);
+}
+
+.hint {
+  color: var(--color-foreground-muted);
+
+  @include text(body-sm);
+}
+
+.error {
+  color: var(--color-error);
+
+  @include text(body-sm);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}

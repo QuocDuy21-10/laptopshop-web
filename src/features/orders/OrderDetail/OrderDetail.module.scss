@@ -1,0 +1,89 @@
+@use "mixins" as *;
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-six);
+  max-width: 880px;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-four);
+}
+
+.title {
+  @include text(headline-md);
+}
+
+.meta {
+  color: var(--color-foreground-muted);
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-two);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-two);
+  padding: var(--space-six);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.cardTitle {
+  margin-bottom: var(--space-two);
+
+  @include text(title-lg);
+}
+
+.items {
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-three);
+  padding-block: var(--space-three);
+  border-bottom: 1px solid var(--color-border);
+
+  a {
+    color: var(--color-foreground);
+  }
+}
+
+.qty {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-one);
+}
+
+.total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-top: var(--space-three);
+
+  @include text(label-md);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.skeleton {
+  height: 480px;
+  border-radius: var(--radius-lg);
+}
