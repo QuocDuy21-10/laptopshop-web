@@ -10,7 +10,13 @@ const config = {
     "value-no-vendor-prefix": [true, { ignoreValues: ["box"] }],
     "property-no-vendor-prefix": [true, { ignoreProperties: ["box-orient", "line-clamp"] }],
   },
-  overrides: [{ files: ["src/styles/_tokens.scss"], rules: { "color-no-hex": null } }],
+  overrides: [
+    {
+      files: ["src/styles/_tokens.scss"],
+      // tokens are grouped like the YAML in DESIGN.md
+      rules: { "color-no-hex": null, "custom-property-empty-line-before": null },
+    },
+  ],
 };
 
 export default config;

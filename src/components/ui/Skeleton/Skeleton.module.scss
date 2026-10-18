@@ -1,0 +1,18 @@
+@use "mixins" as *;
+
+.skeleton {
+  min-height: 1em;
+  background: var(--color-surface-muted);
+  border-radius: var(--radius-sm);
+  animation: pulse 1.4s ease-in-out infinite;
+
+  @include reduced-motion {
+    animation: none !important;
+  }
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.55;
+  }
+}

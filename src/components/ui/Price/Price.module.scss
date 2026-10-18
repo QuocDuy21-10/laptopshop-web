@@ -1,0 +1,18 @@
+@use "mixins" as *;
+
+.price {
+  color: var(--color-foreground);
+  font-variant-numeric: tabular-nums;
+}
+
+.sm {
+  @include text(label-md);
+}
+
+.md {
+  @include text(title-lg);
+}
+
+.lg {
+  @include text(price);
+}

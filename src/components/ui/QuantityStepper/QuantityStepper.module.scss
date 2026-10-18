@@ -1,0 +1,45 @@
+@use "mixins" as *;
+
+.stepper {
+  display: inline-flex;
+  align-items: stretch;
+  height: var(--control-md);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--color-surface);
+}
+
+.step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-md);
+  background: transparent;
+  border: 0;
+  color: var(--color-primary);
+
+  &:disabled {
+    color: var(--color-on-disabled);
+    cursor: not-allowed;
+  }
+
+  &:hover:not(:disabled) {
+    background: var(--color-primary-soft);
+  }
+}
+
+.input {
+  width: 52px;
+  text-align: center;
+  border: 0;
+  border-inline: 1px solid var(--color-border);
+  background: transparent;
+  font-variant-numeric: tabular-nums;
+  appearance: textfield;
+
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    appearance: none;
+  }
+}

@@ -1,0 +1,122 @@
+@use "mixins" as *;
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-overlay);
+  z-index: var(--z-overlay);
+
+  &[data-state="open"] {
+    animation: fade-in var(--duration-dialog) var(--ease-out);
+  }
+
+  &[data-state="closed"] {
+    animation: fade-out var(--duration-menu) var(--ease-in);
+  }
+}
+
+.content {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-four);
+  padding: var(--space-six);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-3);
+  z-index: var(--z-modal);
+  overflow-y: auto;
+}
+
+.center {
+  top: 50%;
+  left: 50%;
+  width: min(480px, calc(100vw - 2 * var(--space-gutter-mobile)));
+  max-height: calc(100vh - 2 * var(--space-gutter-mobile));
+  border-radius: var(--radius-xl);
+  transform: translate(-50%, -50%);
+
+  &[data-state="open"] {
+    animation: pop-in var(--duration-dialog) var(--ease-out);
+  }
+
+  &[data-state="closed"] {
+    animation: fade-out var(--duration-menu) var(--ease-in);
+  }
+}
+
+.sheet {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: min(360px, 88vw);
+  border-radius: 0 var(--radius-xl) var(--radius-xl) 0;
+
+  &[data-state="open"] {
+    animation: slide-in var(--duration-dialog) var(--ease-out);
+  }
+
+  &[data-state="closed"] {
+    animation: slide-out var(--duration-menu) var(--ease-in);
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-four);
+}
+
+.title {
+  @include text(title-lg);
+}
+
+.description {
+  color: var(--color-foreground-muted);
+}
+
+.close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-md);
+  height: var(--control-md);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-md);
+
+  &:hover {
+    background: var(--color-surface-muted);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 4px));
+  }
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes slide-out {
+  to {
+    transform: translateX(-100%);
+  }
+}

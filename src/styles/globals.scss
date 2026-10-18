@@ -1,0 +1,52 @@
+@use "tokens";
+@use "reset";
+@use "mixins" as *;
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-background);
+  color: var(--color-foreground);
+
+  @include text(body-md);
+}
+
+a {
+  color: var(--color-link);
+}
+
+:focus-visible {
+  @include focus-ring;
+}
+
+h1,
+h2,
+h3 {
+  color: var(--color-foreground);
+}
+
+.skip-link {
+  @include visually-hidden;
+
+  &:focus {
+    position: fixed;
+    top: var(--space-two);
+    left: var(--space-two);
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: var(--space-two) var(--space-four);
+    clip-path: none;
+    background: var(--color-surface);
+    border-radius: var(--radius-sm);
+    z-index: var(--z-toast);
+  }
+}
+
+@include reduced-motion {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+}

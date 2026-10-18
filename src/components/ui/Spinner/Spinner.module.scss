@@ -1,0 +1,22 @@
+@use "mixins" as *;
+
+.spinner {
+  animation: spin 800ms linear infinite;
+
+  circle {
+    stroke: currentcolor;
+    stroke-dasharray: 42;
+    stroke-dashoffset: 14;
+    stroke-linecap: round;
+  }
+
+  @include reduced-motion {
+    animation-duration: 2400ms !important;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

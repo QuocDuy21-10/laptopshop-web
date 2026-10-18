@@ -1,0 +1,50 @@
+@use "sass:map";
+
+$breakpoints: (
+  sm: 640px,
+  md: 768px,
+  lg: 1024px,
+  xl: 1280px,
+);
+
+@mixin up($bp) {
+  @media (width >= #{map.get($breakpoints, $bp)}) {
+    @content;
+  }
+}
+
+@mixin down($bp) {
+  @media (width < #{map.get($breakpoints, $bp)}) {
+    @content;
+  }
+}
+
+@mixin focus-ring {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@mixin text($role) {
+  font-size: var(--text-#{$role}-size);
+  font-weight: var(--text-#{$role}-weight);
+  line-height: var(--text-#{$role}-line);
+  letter-spacing: var(--text-#{$role}-tracking, normal);
+}
+
+@mixin reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}
