@@ -334,6 +334,7 @@ export interface paths {
           target?: string;
           price?: string;
           sort?: "price_asc" | "price_desc";
+          q?: string;
         };
         header?: never;
         path?: never;
@@ -976,6 +977,7 @@ export interface paths {
           target?: string;
           price?: string;
           sort?: "price_asc" | "price_desc";
+          q?: string;
         };
         header?: never;
         path?: never;
