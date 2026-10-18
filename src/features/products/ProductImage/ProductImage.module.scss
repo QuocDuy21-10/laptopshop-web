@@ -1,0 +1,19 @@
+.frame {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 3;
+  background: var(--color-surface-muted);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.image {
+  object-fit: contain;
+  padding: var(--space-two);
+}
+
+.placeholder {
+  color: var(--color-foreground-muted);
+}

@@ -1,0 +1,73 @@
+@use "mixins" as *;
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-one);
+  height: 100%;
+  padding: var(--space-four);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition:
+    box-shadow var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+
+  &:hover {
+    box-shadow: var(--shadow-1);
+    transform: translateY(-2px);
+  }
+
+  > :first-child {
+    margin-bottom: var(--space-two);
+  }
+}
+
+.maker {
+  color: var(--color-foreground-muted);
+  text-transform: uppercase;
+
+  @include text(label-sm);
+}
+
+.title {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+
+  @include text(title-md);
+}
+
+.link {
+  color: inherit;
+  text-decoration: none;
+
+  // whole card is clickable; the add button sits above this layer
+  &::after {
+    position: absolute;
+    inset: 0;
+    content: "";
+    border-radius: var(--radius-lg);
+  }
+}
+
+.spec {
+  margin-bottom: var(--space-two);
+  color: var(--color-foreground-muted);
+
+  @include text(body-sm);
+}
+
+.footer {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-two);
+  margin-top: auto;
+  padding-top: var(--space-three);
+  z-index: 1;
+}

@@ -1,0 +1,29 @@
+@use "mixins" as *;
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-two);
+  margin-bottom: var(--space-four);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-one);
+  min-height: 32px;
+  padding: 0 var(--space-three);
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-full);
+  color: var(--color-primary);
+  text-decoration: none;
+
+  @include text(label-sm);
+}
+
+.clear {
+  color: var(--color-foreground-muted);
+
+  @include text(label-sm);
+}

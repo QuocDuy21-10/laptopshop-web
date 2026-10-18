@@ -1,0 +1,7 @@
+@use "mixins" as *;
+
+.wrap {
+  @include up(lg) {
+    display: none;
+  }
+}

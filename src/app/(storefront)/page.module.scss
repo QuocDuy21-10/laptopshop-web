@@ -1,0 +1,117 @@
+@use "mixins" as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-ten);
+  padding-top: var(--space-six);
+
+  @include up(lg) {
+    gap: var(--space-twelve);
+    padding-top: var(--space-eight);
+  }
+}
+
+.hero {
+  display: grid;
+  gap: var(--space-six);
+  align-items: center;
+  padding: var(--space-six);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+
+  @include up(md) {
+    grid-template-columns: 1.3fr 1fr;
+    padding: var(--space-ten);
+  }
+}
+
+.eyebrow {
+  display: inline-block;
+  margin-bottom: var(--space-three);
+  padding: var(--space-one) var(--space-three);
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-full);
+  color: var(--color-primary);
+
+  @include text(label-sm);
+}
+
+.heroTitle {
+  font-size: clamp(28px, 5vw, var(--text-display-size));
+  font-weight: var(--text-display-weight);
+  line-height: var(--text-display-line);
+  letter-spacing: var(--text-display-tracking);
+}
+
+.lead {
+  max-width: 50ch;
+  margin-top: var(--space-three);
+  color: var(--color-foreground-muted);
+
+  @include text(body-lg);
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-three);
+  margin-top: var(--space-six);
+}
+
+.heroArt {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 3;
+  background: var(--color-surface-muted);
+  border-radius: var(--radius-md);
+  color: var(--color-primary);
+
+  @include up(md) {
+    display: flex;
+  }
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-four);
+}
+
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-four);
+}
+
+.sectionTitle {
+  @include text(headline-sm);
+}
+
+.needs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--space-three);
+}
+
+.need {
+  display: flex;
+  align-items: center;
+  min-height: 64px;
+  padding: var(--space-four);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  color: var(--color-foreground);
+  text-decoration: none;
+
+  @include text(label-md);
+
+  &:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+}

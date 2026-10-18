@@ -1,0 +1,5 @@
+@use "mixins" as *;
+
+.status {
+  padding-block: var(--space-twelve);
+}

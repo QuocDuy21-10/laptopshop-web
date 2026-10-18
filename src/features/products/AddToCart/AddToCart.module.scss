@@ -1,0 +1,13 @@
+@use "mixins" as *;
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-three);
+}
+
+.soldOut {
+  color: var(--color-error);
+
+  @include text(label-md);
+}

@@ -1,0 +1,32 @@
+"use client";
+
+import { usePathname, useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { errorMessage, isApiError } from "@/lib/api/errors";
+import { loginHref } from "@/lib/safe-next";
+import { useAddToCart } from "./hooks";
+
+export function useAddToCartAction() {
+  const addToCart = useAddToCart();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const add = async (productId: number, quantity: number, opts: { goToCart?: boolean } = {}) => {
+    try {
+      await addToCart.mutateAsync({ productId, quantity });
+      if (opts.goToCart) {
+        router.push("/cart");
+        return;
+      }
+      toast.success("Đã thêm vào giỏ hàng", {
+        action: { label: "Xem giỏ", onClick: () => router.push("/cart") },
+      });
+    } catch (e) {
+      // the API has no guest cart: anonymous users must log in first
+      if (isApiError(e) && e.status === 401) router.push(loginHref(pathname));
+      else toast.error(errorMessage(e));
+    }
+  };
+
+  return { add, isPending: addToCart.isPending };
+}
