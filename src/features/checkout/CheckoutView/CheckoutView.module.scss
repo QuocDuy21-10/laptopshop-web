@@ -1,0 +1,31 @@
+@use "mixins" as *;
+
+.layout {
+  display: grid;
+  gap: var(--space-six);
+  align-items: start;
+
+  @include up(lg) {
+    grid-template-columns: 1fr 380px;
+  }
+}
+
+.items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-two);
+  padding-top: var(--space-three);
+  border-top: 1px solid var(--color-border);
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-four);
+  color: var(--color-foreground-muted);
+}
+
+.skeleton {
+  height: 420px;
+  border-radius: var(--radius-lg);
+}
