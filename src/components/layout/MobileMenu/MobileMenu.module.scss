@@ -1,0 +1,32 @@
+@use "mixins" as *;
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-md);
+  height: var(--control-md);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-md);
+
+  @include up(lg) {
+    display: none;
+  }
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+
+  a {
+    display: flex;
+    align-items: center;
+    min-height: var(--control-md);
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-foreground);
+    text-decoration: none;
+
+    @include text(label-md);
+  }
+}

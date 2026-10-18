@@ -1,0 +1,70 @@
+@use "mixins" as *;
+
+.skeleton {
+  width: 110px;
+  height: var(--control-sm);
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-two);
+  min-height: var(--control-md);
+  padding: 0 var(--space-two);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-md);
+  color: var(--color-foreground);
+  text-decoration: none;
+
+  @include text(label-md);
+
+  &:hover {
+    background: var(--color-surface-muted);
+  }
+}
+
+.name {
+  max-width: 16ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  @include down(md) {
+    @include visually-hidden;
+  }
+}
+
+.content {
+  min-width: 200px;
+  padding: var(--space-two);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-2);
+  z-index: var(--z-dropdown);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-two);
+  min-height: 40px;
+  padding: 0 var(--space-three);
+  border-radius: var(--radius-sm);
+  color: var(--color-foreground);
+  text-decoration: none;
+  cursor: pointer;
+  outline: none;
+
+  &[data-highlighted] {
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+  }
+}
+
+.separator {
+  height: 1px;
+  margin: var(--space-one) 0;
+  background: var(--color-border);
+}

@@ -1,0 +1,36 @@
+@use "mixins" as *;
+
+.wrap {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-ten) var(--space-gutter-mobile);
+
+  @include up(md) {
+    padding-block: var(--space-sixteen);
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-six);
+  width: 100%;
+  max-width: 440px;
+  padding: var(--space-six);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+
+  @include up(md) {
+    padding: var(--space-eight);
+  }
+}
+
+.title {
+  @include text(headline-sm);
+}
+
+.footer {
+  color: var(--color-foreground-muted);
+  text-align: center;
+}

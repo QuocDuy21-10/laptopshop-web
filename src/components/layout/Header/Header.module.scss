@@ -1,0 +1,65 @@
+@use "mixins" as *;
+
+.header {
+  position: sticky;
+  top: 0;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  z-index: var(--z-sticky);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-four);
+  min-height: 64px;
+}
+
+.brand {
+  color: var(--color-primary);
+  text-decoration: none;
+  white-space: nowrap;
+
+  @include text(title-lg);
+}
+
+.nav {
+  display: none;
+  gap: var(--space-five);
+
+  a {
+    color: var(--color-foreground-muted);
+    text-decoration: none;
+    white-space: nowrap;
+
+    @include text(label-md);
+
+    &:hover {
+      color: var(--color-primary);
+    }
+  }
+
+  @include up(xl) {
+    display: flex;
+  }
+}
+
+.search {
+  display: none;
+  flex: 1;
+
+  @include up(lg) {
+    display: flex;
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-two);
+  margin-left: auto;
+
+  @include up(lg) {
+    margin-left: 0;
+  }
+}
