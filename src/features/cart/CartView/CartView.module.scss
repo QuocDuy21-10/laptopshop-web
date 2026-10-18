@@ -1,0 +1,23 @@
+@use "mixins" as *;
+
+.layout {
+  display: grid;
+  gap: var(--space-six);
+  align-items: start;
+
+  @include up(lg) {
+    grid-template-columns: 1fr 360px;
+  }
+}
+
+.lines {
+  padding: 0 var(--space-four);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.skeleton {
+  height: 320px;
+  border-radius: var(--radius-lg);
+}

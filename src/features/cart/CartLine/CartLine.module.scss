@@ -1,0 +1,72 @@
+@use "mixins" as *;
+
+.line {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  gap: var(--space-four);
+  padding-block: var(--space-four);
+  border-bottom: 1px solid var(--color-border);
+
+  &[aria-busy="true"] {
+    opacity: 0.7;
+  }
+
+  @include up(md) {
+    grid-template-columns: 120px 1fr auto;
+    align-items: center;
+  }
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-one);
+}
+
+.name {
+  color: var(--color-foreground);
+  text-decoration: none;
+
+  @include text(title-md);
+
+  &:hover {
+    color: var(--color-primary);
+  }
+}
+
+.error {
+  color: var(--color-error);
+
+  @include text(body-sm);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  grid-column: 1 / -1;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-four);
+
+  @include up(md) {
+    grid-column: auto;
+    justify-content: flex-end;
+  }
+}
+
+.remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-md);
+  height: var(--control-md);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-md);
+  color: var(--color-foreground-muted);
+
+  &:hover:not(:disabled) {
+    background: var(--color-error-soft);
+    color: var(--color-error);
+  }
+}
