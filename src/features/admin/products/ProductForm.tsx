@@ -2,11 +2,14 @@
 
 import { App, Button, Form, Input, InputNumber, Select, Space, Upload, type UploadFile } from "antd";
 import { ImageUp } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { errorMessage } from "@/lib/api/errors";
 import { toFormData } from "@/lib/api/multipart";
 import type { Product } from "@/lib/api/types";
 import styles from "../admin.module.scss";
+import { StockAdjustModal } from "../inventory/StockAdjustModal";
 import { setServerErrors } from "../form-errors";
 import { Thumb } from "../Thumb/Thumb";
 import { useProductFilterOptions, useSaveProduct } from "./hooks";
@@ -15,7 +18,7 @@ import { toOptions } from "./options";
 export type ProductFormValues = {
   name: string;
   price: number;
-  quantity: number;
+  quantity?: number;
   factory: string;
   target: string;
   shortDesc: string;
@@ -32,6 +35,7 @@ export function ProductForm({ product }: { product?: Product }) {
   const [form] = Form.useForm<ProductFormValues>();
   const { data: options } = useProductFilterOptions();
   const save = useSaveProduct(product?.id);
+  const [adjusting, setAdjusting] = useState(false);
 
   const onFinish = (values: ProductFormValues) =>
     save.mutate(toProductFormData(values), {
@@ -60,7 +64,6 @@ export function ProductForm({ product }: { product?: Product }) {
           product && {
             name: product.name,
             price: product.price,
-            quantity: product.quantity,
             factory: product.factory ?? undefined,
             target: product.target ?? undefined,
             shortDesc: product.shortDesc ?? "",
@@ -83,13 +86,23 @@ export function ProductForm({ product }: { product?: Product }) {
           >
             <InputNumber min={1} precision={0} className={styles.full} />
           </Form.Item>
-          <Form.Item
-            name="quantity"
-            label="Số lượng"
-            rules={[{ required: true, message: "Nhập số lượng" }, { type: "integer", min: 0, message: "Số lượng phải là số nguyên từ 0" }]}
-          >
-            <InputNumber min={0} precision={0} className={styles.full} />
-          </Form.Item>
+          {product ? (
+            <Form.Item label="Số lượng" extra="Thay đổi tồn kho qua điều chỉnh để có nhật ký.">
+              <Space wrap>
+                <strong>{product.quantity}</strong>
+                <Button onClick={() => setAdjusting(true)}>Điều chỉnh kho</Button>
+                <Link href={`/admin/inventory?productId=${product.id}`}>Xem nhật ký kho</Link>
+              </Space>
+            </Form.Item>
+          ) : (
+            <Form.Item
+              name="quantity"
+              label="Số lượng"
+              rules={[{ required: true, message: "Nhập số lượng" }, { type: "integer", min: 0, message: "Số lượng phải là số nguyên từ 0" }]}
+            >
+              <InputNumber min={0} precision={0} className={styles.full} />
+            </Form.Item>
+          )}
           <Form.Item name="factory" label="Hãng" rules={[{ required: true, message: "Chọn hãng" }]}>
             <Select options={toOptions(options?.factoryOptions)} />
           </Form.Item>
@@ -134,6 +147,7 @@ export function ProductForm({ product }: { product?: Product }) {
           <Button onClick={() => router.push("/admin/products")}>Huỷ</Button>
         </Space>
       </Form>
+      {adjusting && product && <StockAdjustModal product={product} onClose={() => setAdjusting(false)} />}
     </>
   );
 }

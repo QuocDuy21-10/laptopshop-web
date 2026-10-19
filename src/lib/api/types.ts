@@ -9,6 +9,7 @@ export type Cart = Schemas["Cart"];
 export type CartItem = Cart["items"][number];
 export type Order = Schemas["Order"];
 export type OrderStatus = Order["status"];
+export type StockMovement = Schemas["StockMovement"];
 export type AdminOrder = Schemas["AdminOrder"];
 export type AdminOrderDetail = Schemas["AdminOrderDetail"];
 export type Role = Schemas["Role"];

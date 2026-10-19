@@ -7,6 +7,7 @@ export const queryKeys = {
   productFilters: ["product-filters"] as const,
   // admin mutations invalidate adminAll: every admin list, detail and the dashboard
   adminAll: ["admin"] as const,
+  adminMovements: (query: object) => ["admin", "movements", query] as const,
   adminDashboard: ["admin", "dashboard"] as const,
   adminProducts: (query: object) => ["admin", "products", query] as const,
   adminProduct: (id: number) => ["admin", "product", id] as const,
