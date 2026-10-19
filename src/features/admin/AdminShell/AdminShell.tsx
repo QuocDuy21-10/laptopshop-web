@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Drawer, Grid, Layout, Menu } from "antd";
-import { LayoutDashboard, LogOut, Menu as MenuIcon, Package, ShoppingBag, Store, Users, Warehouse } from "lucide-react";
+import { Banknote, LayoutDashboard, LogOut, Menu as MenuIcon, Package, ShoppingBag, Store, Users, Warehouse } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
@@ -14,6 +14,7 @@ const NAV = [
   { href: "/admin/products", label: "Sản phẩm", icon: Package },
   { href: "/admin/orders", label: "Đơn hàng", icon: ShoppingBag },
   { href: "/admin/inventory", label: "Kho hàng", icon: Warehouse },
+  { href: "/admin/payments", label: "Đối soát thanh toán", icon: Banknote },
   { href: "/admin/users", label: "Người dùng", icon: Users },
 ];
 

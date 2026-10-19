@@ -12,6 +12,7 @@ export type OrderStatus = Order["status"];
 export type StockMovement = Schemas["StockMovement"];
 export type AdminOrder = Schemas["AdminOrder"];
 export type AdminOrderDetail = Schemas["AdminOrderDetail"];
+export type PaymentEvent = Schemas["PaymentEvent"];
 export type Role = Schemas["Role"];
 export type FilterOptions =
   paths["/api/v1/products/filters"]["get"]["responses"][200]["content"]["application/json"]["data"];

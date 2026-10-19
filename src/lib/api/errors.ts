@@ -38,6 +38,11 @@ const MESSAGES: Record<string, string> = {
   USER_HAS_ORDERS: "Người dùng đã có đơn hàng nên không thể xoá.",
   CANNOT_CHANGE_OWN_ROLE: "Bạn không thể đổi vai trò của chính mình.",
   CANNOT_DELETE_SELF: "Bạn không thể xoá tài khoản của chính mình.",
+  PAYMENT_METHOD_UNAVAILABLE: "Thanh toán chuyển khoản hiện chưa khả dụng.",
+  PAYMENT_NOT_FOUND: "Không tìm thấy thông tin thanh toán.",
+  PAYMENT_NOT_PAYABLE: "Phiên thanh toán này không còn hiệu lực.",
+  PAID_ORDER_CANNOT_CANCEL: "Đơn đã thanh toán cần được cửa hàng xử lý hoàn tiền.",
+  PAYMENT_REQUIRED: "Cần xác nhận thanh toán trước khi xử lý giao hàng.",
   FORBIDDEN: "Bạn không có quyền thực hiện thao tác này.",
 };
 

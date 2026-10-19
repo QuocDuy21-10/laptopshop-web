@@ -77,7 +77,10 @@ export function OrderDetail({ id, placed }: { id: number; placed: boolean }) {
         <p>{o.receiverName}</p>
         <p>{o.receiverPhone}</p>
         <p>{o.receiverAddress}</p>
-        <p className={styles.meta}>Thanh toán khi nhận hàng (COD)</p>
+        <p className={styles.meta}>{o.paymentMethod === "BANK_TRANSFER" ? "Thanh toán bằng chuyển khoản ngân hàng" : "Thanh toán khi nhận hàng (COD)"}</p>
+        {o.paymentMethod === "BANK_TRANSFER" && o.paymentStatus !== "PAYMENT_SUCCESS" && o.status !== "CANCELLED" && (
+          <Link href={`/account/orders/${o.id}/payment`}>Xem hướng dẫn thanh toán</Link>
+        )}
       </section>
 
       {o.status === "PENDING" && (
