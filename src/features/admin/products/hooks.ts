@@ -3,7 +3,7 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api/client";
 import { unwrap } from "@/lib/api/errors";
-import { sendMultipart } from "@/lib/api/multipart";
+import { sendMultipart, toFormData } from "@/lib/api/multipart";
 import { queryKeys } from "@/lib/api/query-keys";
 import type { paths } from "@/lib/api/schema";
 
@@ -47,6 +47,15 @@ export function useSaveProduct(id?: number) {
       id
         ? sendMultipart(`/api/v1/admin/products/${id}`, "PATCH", form)
         : sendMultipart("/api/v1/admin/products", "POST", form),
+    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.adminAll }),
+  });
+}
+
+export function useSetProductActive() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, isActive }: { id: number; isActive: boolean }) =>
+      sendMultipart(`/api/v1/admin/products/${id}`, "PATCH", toFormData({ isActive: String(isActive) })),
     onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.adminAll }),
   });
 }
