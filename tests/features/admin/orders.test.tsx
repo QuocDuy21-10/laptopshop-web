@@ -8,7 +8,7 @@ import { json, lastRequest, mockFetch, renderAdmin } from "../../utils";
 
 const order = (status: AdminOrder["status"]): AdminOrder => ({
   id: 9, status, totalPrice: 100, paymentMethod: "COD", paymentStatus: "PAYMENT_UNPAID", receiverName: "B",
-  receiverAddress: "HN", receiverPhone: "0900000000", createdAt: "2026-10-01T00:00:00Z", items: [],
+  receiverAddress: "HN", receiverPhone: "0900000000", createdAt: "2026-10-01T00:00:00Z", completedAt: null, items: [],
   user: { id: 2, username: "b@test.local", fullName: "B" },
 });
 
