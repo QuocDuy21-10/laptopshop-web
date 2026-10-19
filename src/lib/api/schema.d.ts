@@ -576,7 +576,7 @@ export interface paths {
             "application/json": components["schemas"]["Error"];
           };
         };
-        /** @description Out of stock */
+        /** @description Out of stock or no longer sold */
         409: {
           headers: {
             [name: string]: unknown;
@@ -691,7 +691,7 @@ export interface paths {
             "application/json": components["schemas"]["Error"];
           };
         };
-        /** @description Out of stock */
+        /** @description Out of stock or no longer sold */
         409: {
           headers: {
             [name: string]: unknown;
@@ -762,7 +762,7 @@ export interface paths {
             "application/json": components["schemas"]["Error"];
           };
         };
-        /** @description Cart empty or out of stock */
+        /** @description Cart empty, out of stock or product no longer sold */
         409: {
           headers: {
             [name: string]: unknown;
@@ -978,6 +978,8 @@ export interface paths {
           price?: string;
           sort?: "price_asc" | "price_desc";
           q?: string;
+          isActive?: boolean | ("true" | "false");
+          stock?: "low";
         };
         header?: never;
         path?: never;
@@ -1200,7 +1202,7 @@ export interface paths {
             "application/json": components["schemas"]["Error"];
           };
         };
-        /** @description Product is in orders */
+        /** @description Product is in orders; hide it instead */
         409: {
           headers: {
             [name: string]: unknown;
@@ -1233,6 +1235,7 @@ export interface paths {
             detailDesc?: string;
             factory?: string;
             target?: string;
+            isActive?: boolean | ("true" | "false");
             /** Format: binary */
             image?: string;
           };
@@ -1992,6 +1995,7 @@ export interface components {
       sold: number | null;
       factory: string | null;
       target: string | null;
+      isActive: boolean;
     };
     Cart: {
       items: {

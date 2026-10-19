@@ -44,6 +44,16 @@ describe("CheckoutForm", () => {
     expect(third).not.toBe(first);
   });
 
+  it("links back to the cart when a product is no longer sold", async () => {
+    fetchMock.mockResolvedValue(
+      json(409, { error: { code: "PRODUCT_UNAVAILABLE", message: "x", details: { productId: 3 } } }),
+    );
+    renderWithQuery(<CheckoutForm defaults={defaults} />);
+    await submit();
+    expect(await screen.findByRole("alert")).toHaveTextContent("Sản phẩm đã ngừng kinh doanh.");
+    expect(screen.getByRole("link", { name: "Quay lại giỏ hàng" })).toHaveAttribute("href", "/cart");
+  });
+
   it("keeps entered values and links back to the cart when stock runs out", async () => {
     fetchMock.mockResolvedValue(json(409, { error: { code: "OUT_OF_STOCK", message: "x", details: { productId: 3 } } }));
     renderWithQuery(<CheckoutForm defaults={defaults} />);

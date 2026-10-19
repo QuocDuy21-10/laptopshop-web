@@ -20,6 +20,7 @@ const line: CartItem = {
     sold: 0,
     factory: "DELL",
     target: "GAMING",
+    isActive: true,
   },
 };
 const cart = { items: [line], itemCount: 2, subtotal: 200 };
@@ -46,6 +47,13 @@ describe("CartLine", () => {
     renderWithQuery(<CartLine line={line} />);
     await userEvent.click(screen.getByRole("button", { name: "Tăng" }));
     expect(await screen.findByText("Sản phẩm không đủ số lượng trong kho.")).toBeInTheDocument();
+  });
+
+  it("marks a product that is no longer sold and locks its quantity", () => {
+    renderWithQuery(<CartLine line={{ ...line, product: { ...line.product, isActive: false } }} />);
+    expect(screen.getByText("Ngừng kinh doanh")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Tăng" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Xoá Dell Inspiron 15 khỏi giỏ" })).toBeEnabled();
   });
 
   it("removes the line", async () => {
