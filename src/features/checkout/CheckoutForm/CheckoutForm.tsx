@@ -3,12 +3,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Alert } from "@/components/ui/Alert/Alert";
 import { Button } from "@/components/ui/Button/Button";
 import { TextField } from "@/components/ui/TextField/TextField";
-import { errorMessage, isApiError } from "@/lib/api/errors";
+import { api } from "@/lib/api/client";
+import { errorMessage, isApiError, unwrap } from "@/lib/api/errors";
 import { applyFieldErrors } from "@/lib/forms";
 import { receiverSchema, type PaymentMethod, type ReceiverInput } from "../schema";
 import { usePlaceOrder } from "../usePlaceOrder";
@@ -21,6 +22,9 @@ const IDEMPOTENCY_STORAGE_KEY = "laptopshop.checkout.idempotency-key";
 export function CheckoutForm({ defaults, availableMethods = ["COD", "BANK_TRANSFER"] }: { defaults: Omit<ReceiverInput, "paymentMethod"> & Partial<Pick<ReceiverInput, "paymentMethod">>; availableMethods?: PaymentMethod[] }) {
   const router = useRouter();
   const placeOrder = usePlaceOrder();
+  const storedAttempt = useRef<string | null>(
+    typeof window !== "undefined" ? window.sessionStorage.getItem(IDEMPOTENCY_STORAGE_KEY) : null,
+  );
   // one key per checkout attempt, kept across retries so a timed-out request is never placed twice
   const [idempotencyKey, setIdempotencyKey] = useState(() => {
     if (typeof window !== "undefined") return window.sessionStorage.getItem(IDEMPOTENCY_STORAGE_KEY) ?? crypto.randomUUID();
@@ -36,6 +40,18 @@ export function CheckoutForm({ defaults, availableMethods = ["COD", "BANK_TRANSF
     window.sessionStorage.setItem(IDEMPOTENCY_STORAGE_KEY, idempotencyKey);
   }, [idempotencyKey]);
 
+  useEffect(() => {
+    const key = storedAttempt.current;
+    if (!key) return;
+    void unwrap(api.GET("/api/v1/orders/checkout-attempt", { params: { header: { "Idempotency-Key": key } } }))
+      .then(({ data }) => {
+        if (!data?.id) return;
+        window.sessionStorage.removeItem(IDEMPOTENCY_STORAGE_KEY);
+        router.replace(data.paymentMethod === "BANK_TRANSFER" ? `/account/orders/${data.id}/payment` : `/account/orders/${data.id}?placed=1`);
+      })
+      .catch(() => undefined);
+  }, [router]);
+
 
   const onSubmit = handleSubmit(async (receiver) => {
     setProblem(null);
@@ -43,7 +59,7 @@ export function CheckoutForm({ defaults, availableMethods = ["COD", "BANK_TRANSF
       const body = await placeOrder.mutateAsync({ key: idempotencyKey, receiver });
       window.sessionStorage.removeItem(IDEMPOTENCY_STORAGE_KEY);
       setIdempotencyKey(crypto.randomUUID());
-      router.replace(receiver.paymentMethod === "BANK_TRANSFER" ? `/account/orders/${body.data.id}/payment` : `/account/orders/${body.data.id}?placed=1`);
+      router.replace(body.data.paymentMethod === "BANK_TRANSFER" ? `/account/orders/${body.data.id}/payment` : `/account/orders/${body.data.id}?placed=1`);
     } catch (e) {
       if (isApiError(e, "CART_EMPTY")) router.replace("/cart");
       else if (isApiError(e, "OUT_OF_STOCK") || isApiError(e, "PRODUCT_UNAVAILABLE"))

@@ -70,7 +70,7 @@ export function PaymentScreen({ orderId }: { orderId: number }) {
 
   return <main className={styles.screen}>
     <header><h1>Thanh toán chuyển khoản</h1><p>Đơn hàng #{orderId} · Đang chờ xác nhận</p></header>
-    {instructions && <section className={styles.card} aria-label="Thông tin thanh toán">
+    {instructions && seconds > 0 && <section className={styles.card} aria-label="Thông tin thanh toán">
       <p>Quét mã QR bằng ứng dụng ngân hàng.</p>
       <Image className={styles.qr} src={instructions.qrImageUrl} alt={`Mã QR thanh toán đơn hàng ${orderId}`} width={280} height={280} unoptimized />
       <div className={styles.amount}><span>Số tiền cần chuyển</span><Price value={payment.amount} size="lg" /></div>
@@ -83,6 +83,7 @@ export function PaymentScreen({ orderId }: { orderId: number }) {
       <p className={styles.deadline}>{inGrace ? "Đang kiểm tra giao dịch cuối cùng" : `Thời gian còn lại: ${formatRemaining(seconds)}`}</p>
     </section>}
     <section className={styles.waiting} aria-live="polite">
+      {inGrace && <Alert tone="warning" title="Đã hết thời hạn quét QR; hệ thống đang kiểm tra giao dịch đã gửi." />}
       <p>{paymentQuery.isError ? "Tạm thời chưa cập nhật được trạng thái." : "Đang chờ hệ thống xác nhận thanh toán…"}</p>
       {paymentQuery.isError && <Alert tone="warning" title="Bạn vẫn có thể giữ nguyên trang này; hệ thống sẽ thử lại." />}
     </section>
