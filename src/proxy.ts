@@ -9,4 +9,4 @@ export function proxy(request: NextRequest) {
 }
 
 // literal list required by Next; mirrors GUARDED_PREFIXES in src/lib/guarded-routes.ts
-export const config = { matcher: ["/cart", "/checkout", "/account/:path*"] };
+export const config = { matcher: ["/cart", "/checkout", "/account/:path*", "/admin/:path*"] };
