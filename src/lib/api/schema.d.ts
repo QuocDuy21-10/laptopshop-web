@@ -1622,6 +1622,15 @@ export interface paths {
             "application/json": components["schemas"]["Error"];
           };
         };
+        /** @description Cannot change own role */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
       };
     };
     trace?: never;
