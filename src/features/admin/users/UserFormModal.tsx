@@ -2,6 +2,7 @@
 
 import { App, Button, Form, Input, Modal, Select, Spin, Upload, type UploadFile } from "antd";
 import { ImageUp } from "lucide-react";
+import { useMe } from "@/features/account/useMe";
 import { errorMessage, isApiError } from "@/lib/api/errors";
 import { toFormData } from "@/lib/api/multipart";
 import type { User } from "@/lib/api/types";
@@ -27,6 +28,9 @@ export function UserFormModal({ user, onClose }: { user?: User; onClose: () => v
   const [form] = Form.useForm<UserFormValues>();
   const { data: roles } = useRoles();
   const save = useSaveUser(user?.id);
+  const { data: me } = useMe();
+  // the API refuses this too; locking the field explains it before the admin tries
+  const isSelf = !!user && user.id === me?.id;
 
   const onFinish = (values: UserFormValues) =>
     save.mutate(toUserFormData(values), {
@@ -100,8 +104,13 @@ export function UserFormModal({ user, onClose }: { user?: User; onClose: () => v
           <Form.Item name="address" label="Địa chỉ" rules={[{ max: 255, message: "Tối đa 255 ký tự" }]}>
             <Input />
           </Form.Item>
-          <Form.Item name="roleId" label="Vai trò" rules={[{ required: true, message: "Chọn vai trò" }]}>
-            <Select options={roles.map((r) => ({ value: r.id, label: r.description ?? r.name }))} />
+          <Form.Item
+            name="roleId"
+            label="Vai trò"
+            rules={[{ required: true, message: "Chọn vai trò" }]}
+            extra={isSelf ? "Bạn không thể đổi vai trò của chính mình." : undefined}
+          >
+            <Select disabled={isSelf} options={roles.map((r) => ({ value: r.id, label: r.description ?? r.name }))} />
           </Form.Item>
           <Form.Item
             name="avatar"
