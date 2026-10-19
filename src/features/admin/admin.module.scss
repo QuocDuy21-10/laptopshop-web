@@ -93,3 +93,13 @@
 .actions {
   margin-block-end: var(--space-four);
 }
+
+.chart {
+  height: 280px;
+  margin-block: var(--space-four);
+}
+
+.note {
+  margin: 0;
+  color: var(--color-foreground-muted);
+}

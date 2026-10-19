@@ -1967,6 +1967,74 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/admin/dashboard/sales": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Revenue per Vietnam day and top products for completed orders */
+    get: {
+      parameters: {
+        query: {
+          from: string;
+          to: string;
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["SalesReport"];
+            };
+          };
+        };
+        /** @description Invalid range */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2120,6 +2188,23 @@ export interface components {
         [key: string]: number;
       };
       lowStockCount: number;
+    };
+    SalesReport: {
+      daily: {
+        date: string;
+        revenue: number;
+        orders: number;
+      }[];
+      topProducts: {
+        productId: number;
+        name: string;
+        quantity: number;
+        revenue: number;
+      }[];
+      totals: {
+        revenue: number;
+        orders: number;
+      };
     };
   };
   responses: never;
