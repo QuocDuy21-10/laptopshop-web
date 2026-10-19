@@ -1,0 +1,95 @@
+@use "mixins" as *;
+
+.center {
+  display: grid;
+  place-items: center;
+  min-height: 60dvh;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-three);
+  align-items: center;
+  justify-content: space-between;
+  margin-block-end: var(--space-four);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--text-headline-md-size);
+  font-weight: 700;
+}
+
+.filters {
+  margin-block-end: var(--space-four);
+}
+
+.select {
+  min-width: 160px;
+}
+
+.panel {
+  margin-block-start: var(--space-four);
+}
+
+.stats {
+  display: grid;
+  gap: var(--space-four);
+  grid-template-columns: 1fr;
+
+  @include up(sm) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include up(lg) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.statusList {
+  display: grid;
+  gap: var(--space-two);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.statusRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-two) var(--space-three);
+  color: var(--color-foreground);
+  border-radius: var(--radius-sm);
+  font-variant-numeric: tabular-nums;
+
+  &:hover {
+    background: var(--color-surface-muted);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.form {
+  max-width: 760px;
+}
+
+.row {
+  display: grid;
+  gap: 0 var(--space-four);
+
+  @include up(sm) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.full {
+  width: 100%;
+}
+
+.actions {
+  margin-block-end: var(--space-four);
+}

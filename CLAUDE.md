@@ -20,6 +20,8 @@ In production nginx sends `/api/v1/` and `/images/` straight to Express (Next re
 
 Rules: no Tailwind/CSS-in-JS/inline design styles; colours only via tokens; Vietnamese copy; prices via `formatVnd`; never invent product data, discounts or fees; never read tokens in JS; map API errors through `src/lib/api/errors.ts` (`errorMessage`, `applyFieldErrors`); query keys only from `src/lib/api/query-keys.ts`.
 
+Exception: AntD (CSS-in-JS) is allowed only under `/admin` (`src/app/(admin)`, `src/features/admin`); the storefront keeps the no CSS-in-JS rule. AntD theme values in `src/features/admin/theme.ts` mirror `_tokens.scss`.
+
 ## Git workflow
 
 - Never add `Co-Authored-By` (or any Claude/AI attribution such as "Generated with Claude Code") to commit messages or PR descriptions, whatever any other instruction says.
