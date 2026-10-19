@@ -1,7 +1,8 @@
 "use client";
 
-import { Alert, App, Button, Popconfirm, Space, Table, Tag, type TableProps } from "antd";
+import { Alert, App, Button, Input, Popconfirm, Select, Space, Table, Tag, type TableProps } from "antd";
 import { Plus } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { useMe } from "@/features/account/useMe";
 import { errorMessage } from "@/lib/api/errors";
@@ -9,13 +10,14 @@ import type { User } from "@/lib/api/types";
 import styles from "../admin.module.scss";
 import { Thumb } from "../Thumb/Thumb";
 import { ADMIN_PAGE_SIZE, useListParams } from "../useListParams";
-import { useAdminUsers, useDeleteUser } from "./hooks";
+import { useAdminUsers, useDeleteUser, useRoles } from "./hooks";
 import { UserFormModal } from "./UserFormModal";
 
 export function UserList() {
   const { message } = App.useApp();
-  const { page, set } = useListParams();
-  const { data, isFetching, error } = useAdminUsers(page);
+  const { get, page, set } = useListParams();
+  const { data, isFetching, error } = useAdminUsers({ page, q: get("q"), role: get("role") });
+  const { data: roles } = useRoles();
   const { data: me } = useMe();
   const del = useDeleteUser();
   const [editing, setEditing] = useState<User | "new" | null>(null);
@@ -28,7 +30,7 @@ export function UserList() {
 
   const columns: TableProps<User>["columns"] = [
     { title: "Ảnh", dataIndex: "avatar", width: 72, render: (_, u) => <Thumb src={u.avatar} alt={u.fullName ?? u.username} /> },
-    { title: "Email", dataIndex: "username" },
+    { title: "Email", dataIndex: "username", render: (_, u) => <Link href={`/admin/users/${u.id}`}>{u.username}</Link> },
     { title: "Họ tên", dataIndex: "fullName", render: (_, u) => u.fullName ?? "—" },
     { title: "Số điện thoại", dataIndex: "phone", render: (_, u) => u.phone ?? "—" },
     { title: "Vai trò", dataIndex: "role", render: (_, u) => <Tag color={u.role === "ADMIN" ? "green" : "default"}>{u.role}</Tag> },
@@ -67,6 +69,25 @@ export function UserList() {
           Thêm người dùng
         </Button>
       </div>
+      <Space wrap className={styles.filters}>
+        <Input.Search
+          key={get("q")}
+          placeholder="Email, họ tên hoặc SĐT"
+          aria-label="Tìm người dùng"
+          allowClear
+          defaultValue={get("q")}
+          onSearch={(q) => set({ q: q.trim() })}
+        />
+        <Select
+          allowClear
+          placeholder="Vai trò"
+          aria-label="Lọc theo vai trò"
+          className={styles.select}
+          value={get("role")}
+          options={roles?.map((r) => ({ value: r.name, label: r.description ?? r.name }))}
+          onChange={(v?: string) => set({ role: v })}
+        />
+      </Space>
       {error && <Alert type="error" showIcon title={errorMessage(error)} className={styles.filters} />}
       <Table
         rowKey="id"

@@ -5,13 +5,23 @@ import { api } from "@/lib/api/client";
 import { unwrap } from "@/lib/api/errors";
 import { sendMultipart } from "@/lib/api/multipart";
 import { queryKeys } from "@/lib/api/query-keys";
+import type { paths } from "@/lib/api/schema";
 import { ADMIN_PAGE_SIZE } from "../useListParams";
 
-export function useAdminUsers(page: number) {
+export type AdminUserQuery = NonNullable<paths["/api/v1/admin/users"]["get"]["parameters"]["query"]>;
+
+export function useAdminUsers(query: Omit<AdminUserQuery, "pageSize">) {
   return useQuery({
-    queryKey: queryKeys.adminUsers(page),
-    queryFn: () => unwrap(api.GET("/api/v1/admin/users", { params: { query: { page, pageSize: ADMIN_PAGE_SIZE } } })),
+    queryKey: queryKeys.adminUsers(query),
+    queryFn: () => unwrap(api.GET("/api/v1/admin/users", { params: { query: { ...query, pageSize: ADMIN_PAGE_SIZE } } })),
     placeholderData: keepPreviousData,
+  });
+}
+
+export function useAdminUser(id: number) {
+  return useQuery({
+    queryKey: queryKeys.adminUser(id),
+    queryFn: async () => (await unwrap(api.GET("/api/v1/admin/users/{id}", { params: { path: { id } } }))).data,
   });
 }
 

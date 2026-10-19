@@ -1306,6 +1306,8 @@ export interface paths {
         query?: {
           page?: number;
           pageSize?: number;
+          q?: string;
+          role?: string;
         };
         header?: never;
         path?: never;
@@ -1694,6 +1696,10 @@ export interface paths {
           page?: number;
           pageSize?: number;
           status?: "PENDING" | "SHIPPING" | "COMPLETED" | "CANCELLED";
+          q?: string;
+          from?: string;
+          to?: string;
+          userId?: number;
         };
         header?: never;
         path?: never;
