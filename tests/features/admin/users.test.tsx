@@ -2,8 +2,9 @@ import { screen } from "@testing-library/react";
 import type { UploadFile } from "antd";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { roleIdOf } from "@/features/admin/users/roles";
-import { toUserFormData } from "@/features/admin/users/UserFormModal";
+import { toUserFormData, UserFormModal } from "@/features/admin/users/UserFormModal";
 import { UserList } from "@/features/admin/users/UserList";
+import { ApiError, errorMessage } from "@/lib/api/errors";
 import { json, mockFetch, renderAdmin } from "../../utils";
 
 vi.mock("next/navigation", () => ({
@@ -61,5 +62,26 @@ describe("UserList", () => {
     expect(screen.getByText("admin@gmail.com")).toBeInTheDocument();
     expect(await screen.findByRole("button", { name: "Xoá" })).toBeInTheDocument();
     expect(screen.getAllByRole("button", { name: "Xoá" })).toHaveLength(1);
+  });
+});
+
+describe("UserFormModal", () => {
+  it("locks the role when the admin edits their own account", async () => {
+    renderAdmin(<UserFormModal user={user(1, "admin@gmail.com", "ADMIN")} onClose={() => {}} />);
+    expect(await screen.findByText("Bạn không thể đổi vai trò của chính mình.")).toBeInTheDocument();
+    expect(screen.getByRole("combobox")).toBeDisabled();
+  });
+
+  it("leaves the role editable for other users", async () => {
+    renderAdmin(<UserFormModal user={user(2, "b@test.local", "USER")} onClose={() => {}} />);
+    expect(await screen.findByRole("combobox")).toBeEnabled();
+  });
+});
+
+describe("errorMessage", () => {
+  it("explains a refused self role change", () => {
+    expect(errorMessage(new ApiError(409, "CANNOT_CHANGE_OWN_ROLE", "x"))).toBe(
+      "Bạn không thể đổi vai trò của chính mình.",
+    );
   });
 });
