@@ -1,0 +1,97 @@
+@use "mixins" as *;
+
+// keeps the last page content reachable above the fixed bar
+.spacer {
+  height: 72px;
+}
+
+.bar {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  padding-block: var(--space-three);
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  box-shadow: var(--shadow-2);
+  z-index: var(--z-sticky);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-four);
+}
+
+.items {
+  display: none;
+  gap: var(--space-three);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @include up(md) {
+    display: flex;
+  }
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-two);
+  min-width: 0;
+  max-width: 220px;
+}
+
+.thumb {
+  flex: none;
+  width: 48px;
+}
+
+.name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  @include text(body-sm);
+}
+
+.remove {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-sm);
+  height: var(--control-sm);
+  padding: 0;
+  color: var(--color-foreground-muted);
+  background: none;
+  border: 0;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--color-foreground);
+    background: var(--color-surface-muted);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-two);
+  margin-inline-start: auto;
+}
+
+.hint {
+  color: var(--color-foreground-muted);
+
+  @include text(body-sm);
+}
