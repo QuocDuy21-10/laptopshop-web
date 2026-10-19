@@ -15,6 +15,7 @@ export const orderStatusTone = (status: string): BadgeTone =>
 export const PAYMENT_STATUS_LABEL: Record<string, string> = {
   PAYMENT_UNPAID: "Chưa thanh toán",
   PAYMENT_SUCCESS: "Đã thanh toán",
+  PAYMENT_FAILED: "Thanh toán chưa hoàn tất",
 };
 
 export const paymentStatusTone = (status: string): BadgeTone => (status === "PAYMENT_SUCCESS" ? "success" : "neutral");

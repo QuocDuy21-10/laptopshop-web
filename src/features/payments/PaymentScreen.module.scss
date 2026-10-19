@@ -1,0 +1,89 @@
+@use "mixins" as *;
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-four);
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.card,
+.waiting,
+.state {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-three);
+  padding: var(--space-six);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.qr {
+  align-self: center;
+  width: min(280px, 100%);
+  height: auto;
+  border-radius: var(--radius-md);
+}
+
+.amount {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-four);
+}
+
+.details {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.7fr) 1fr;
+  gap: var(--space-three);
+  margin: 0;
+}
+
+.details dt {
+  color: var(--color-foreground-muted);
+}
+
+.details dd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-two);
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.deadline {
+  font-weight: 600;
+}
+
+.help {
+  color: var(--color-foreground-muted);
+}
+
+.state {
+  align-items: flex-start;
+}
+
+.skeleton {
+  min-height: 620px;
+  border-radius: var(--radius-lg);
+}
+
+@media (width < 640px) {
+  .card,
+  .waiting,
+  .state {
+    padding: var(--space-four);
+  }
+
+  .details {
+    grid-template-columns: 1fr;
+    gap: var(--space-one);
+  }
+
+  .details dd {
+    margin-bottom: var(--space-two);
+  }
+}

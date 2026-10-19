@@ -15,6 +15,7 @@ let fetchMock: ReturnType<typeof mockFetch>;
 beforeEach(() => {
   fetchMock = mockFetch();
   vi.clearAllMocks();
+  window.sessionStorage.clear();
 });
 
 const orderCalls = () => fetchMock.mock.calls.map(([i]) => i as Request).filter((r) => urlOf(r).endsWith("/api/v1/orders"));
@@ -42,6 +43,17 @@ describe("CheckoutForm", () => {
     expect(first).toBeTruthy();
     expect(second).toBe(first);
     expect(third).not.toBe(first);
+  });
+
+  it("recovers a persisted checkout attempt before submitting a new order", async () => {
+    window.sessionStorage.setItem("laptopshop.checkout.idempotency-key", "recover-key");
+    fetchMock.mockImplementation(async (input) => {
+      if (urlOf(input).endsWith("/checkout-attempt")) return json(200, { data: { ...order, paymentMethod: "BANK_TRANSFER" } });
+      return json(201, { data: order });
+    });
+    renderWithQuery(<CheckoutForm defaults={defaults} />);
+    await waitFor(() => expect(router.replace).toHaveBeenCalledWith("/account/orders/50/payment"));
+    expect(orderCalls()).toHaveLength(0);
   });
 
   it("links back to the cart when a product is no longer sold", async () => {

@@ -7,6 +7,7 @@ const apiOrigin = process.env.API_ORIGIN ?? "http://localhost:8080";
 const nextConfig: NextConfig = {
   output: "standalone",
   poweredByHeader: false,
+  images: { remotePatterns: [{ protocol: "https", hostname: "vietqr.app", pathname: "/img" }] },
   sassOptions: { loadPaths: [path.join(process.cwd(), "src/styles")] },
   async rewrites() {
     return [
