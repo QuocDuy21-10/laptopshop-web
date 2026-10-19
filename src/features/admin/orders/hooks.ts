@@ -4,10 +4,13 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tansta
 import { api } from "@/lib/api/client";
 import { unwrap } from "@/lib/api/errors";
 import { queryKeys } from "@/lib/api/query-keys";
+import type { paths } from "@/lib/api/schema";
 import type { OrderStatus } from "@/lib/api/types";
 import { ADMIN_PAGE_SIZE } from "../useListParams";
 
-export function useAdminOrders(query: { page: number; status?: OrderStatus }) {
+export type AdminOrderQuery = NonNullable<paths["/api/v1/admin/orders"]["get"]["parameters"]["query"]>;
+
+export function useAdminOrders(query: Omit<AdminOrderQuery, "pageSize">) {
   return useQuery({
     queryKey: queryKeys.adminOrders(query),
     queryFn: () => unwrap(api.GET("/api/v1/admin/orders", { params: { query: { ...query, pageSize: ADMIN_PAGE_SIZE } } })),
