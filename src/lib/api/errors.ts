@@ -32,6 +32,10 @@ const MESSAGES: Record<string, string> = {
   NOT_FOUND: "Không tìm thấy dữ liệu yêu cầu.",
   FORBIDDEN_ORIGIN: "Yêu cầu bị từ chối.",
   INVALID_FILE: "Chỉ chấp nhận ảnh JPEG hoặc PNG.",
+  PRODUCT_IN_USE: "Sản phẩm đã có trong đơn hàng, hãy đặt số lượng về 0 thay vì xoá.",
+  USER_HAS_ORDERS: "Người dùng đã có đơn hàng nên không thể xoá.",
+  CANNOT_DELETE_SELF: "Bạn không thể xoá tài khoản của chính mình.",
+  FORBIDDEN: "Bạn không có quyền thực hiện thao tác này.",
 };
 
 export function errorMessage(e: unknown): string {

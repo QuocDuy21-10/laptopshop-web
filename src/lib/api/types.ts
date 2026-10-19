@@ -9,6 +9,8 @@ export type Cart = Schemas["Cart"];
 export type CartItem = Cart["items"][number];
 export type Order = Schemas["Order"];
 export type OrderStatus = Order["status"];
+export type AdminOrder = Schemas["AdminOrder"];
+export type Role = Schemas["Role"];
 export type FilterOptions =
   paths["/api/v1/products/filters"]["get"]["responses"][200]["content"]["application/json"]["data"];
 export type FilterOption = FilterOptions["factoryOptions"][number];

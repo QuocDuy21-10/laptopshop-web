@@ -18,6 +18,8 @@ Scripts: `npm run lint`, `npm run lint:css`, `npm run typecheck`, `npm test`, `n
 
 Needs the API on :8080 with seeded data (`npx prisma migrate deploy && npm run seed` in the API repo). Then `npx playwright install chromium` once and `npm run e2e`. The API limits auth calls to 10 per 15 minutes per IP; after many reruns, flush it with `docker compose exec redis redis-cli FLUSHALL` in the API repo.
 
+The admin spec logs in as the seeded `admin@gmail.com`. If the API was seeded with a non-default `ADMIN_PASSWORD`, run `E2E_ADMIN_PASSWORD=<password> npm run e2e`.
+
 ## Deployment
 
 `docker compose -f docker-compose.example.yml up -d --build` runs the API stack (included from `../nodejs-pro`), this app and nginx on port 80.
