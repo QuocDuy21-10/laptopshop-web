@@ -9,6 +9,7 @@ import { errorMessage } from "@/lib/api/errors";
 import type { Product } from "@/lib/api/types";
 import { formatVnd } from "@/lib/format";
 import styles from "../admin.module.scss";
+import { ExportCsvButton } from "../ExportCsvButton";
 import { StockAdjustModal } from "../inventory/StockAdjustModal";
 import { Thumb } from "../Thumb/Thumb";
 import { ADMIN_PAGE_SIZE, useListParams } from "../useListParams";
@@ -114,9 +115,15 @@ export function ProductList() {
     <>
       <div className={styles.head}>
         <h1 className={styles.title}>Sản phẩm</h1>
-        <Button type="primary" icon={<Plus size={16} aria-hidden="true" />} onClick={() => router.push("/admin/products/new")}>
-          Thêm sản phẩm
-        </Button>
+        <Space>
+          <ExportCsvButton
+            path="/api/v1/admin/products/export.csv"
+            query={{ q: query.q, factory: query.factory, target: query.target, isActive: query.isActive === undefined ? undefined : String(query.isActive), stock: query.stock }}
+          />
+          <Button type="primary" icon={<Plus size={16} aria-hidden="true" />} onClick={() => router.push("/admin/products/new")}>
+            Thêm sản phẩm
+          </Button>
+        </Space>
       </div>
       <Space wrap className={styles.filters}>
         <Segmented options={VISIBILITY_OPTIONS} value={active === "true" || active === "false" ? active : ""} onChange={(v) => set({ isActive: String(v) })} />

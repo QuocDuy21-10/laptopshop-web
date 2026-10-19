@@ -1910,6 +1910,214 @@ export interface paths {
     };
     trace?: never;
   };
+  "/api/v1/admin/orders/export.csv": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Export orders (same filters as the list) as CSV */
+    get: {
+      parameters: {
+        query?: {
+          status?: "PENDING" | "SHIPPING" | "COMPLETED" | "CANCELLED";
+          q?: string;
+          from?: string;
+          to?: string;
+          userId?: number;
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description CSV file */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "text/csv": string;
+          };
+        };
+        /** @description Invalid filter or too many rows */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/products/export.csv": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Export products (same filters as the list) as CSV */
+    get: {
+      parameters: {
+        query?: {
+          factory?: string;
+          target?: string;
+          price?: string;
+          sort?: "price_asc" | "price_desc";
+          q?: string;
+          isActive?: boolean | ("true" | "false");
+          stock?: "low";
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description CSV file */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "text/csv": string;
+          };
+        };
+        /** @description Invalid filter or too many rows */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/inventory/movements/export.csv": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Export the stock ledger as CSV */
+    get: {
+      parameters: {
+        query?: {
+          productId?: number;
+          reason?: "OPENING" | "INITIAL" | "ORDER" | "ORDER_CANCEL" | "RESTOCK" | "CORRECTION";
+          from?: string;
+          to?: string;
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description CSV file */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "text/csv": string;
+          };
+        };
+        /** @description Invalid filter or too many rows */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/admin/dashboard": {
     parameters: {
       query?: never;
