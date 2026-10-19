@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { Container } from "@/components/layout/Container/Container";
 import { Badge } from "@/components/ui/Badge/Badge";
 import { Price } from "@/components/ui/Price/Price";
+import { CompareToggle } from "@/features/compare/CompareToggle/CompareToggle";
+import { SpecTable } from "@/features/compare/SpecTable/SpecTable";
 import { AddToCart } from "@/features/products/AddToCart/AddToCart";
 import { optionName } from "@/features/products/labels";
 import { ProductImage } from "@/features/products/ProductImage/ProductImage";
@@ -50,9 +52,11 @@ export default async function ProductPage({ params }: Props) {
           <Price value={product.price} size="lg" />
           <Badge tone={inStock ? "success" : "error"}>{inStock ? "Còn hàng" : "Hết hàng"}</Badge>
           <AddToCart productId={product.id} stock={product.quantity} />
+          <CompareToggle product={product} />
           <p className={styles.note}>Thanh toán khi nhận hàng (COD).</p>
         </div>
       </div>
+      <SpecTable product={product} />
       {paragraphs.length > 0 && (
         <section aria-labelledby="desc-title" className={styles.description}>
           <h2 id="desc-title" className={styles.sectionTitle}>

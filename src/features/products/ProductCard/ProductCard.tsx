@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/Badge/Badge";
 import { Price } from "@/components/ui/Price/Price";
+import { CompareToggle } from "@/features/compare/CompareToggle/CompareToggle";
 import type { Product } from "@/lib/api/types";
 import { AddToCartButton } from "../AddToCart/AddToCartButton";
 import { ProductImage } from "../ProductImage/ProductImage";
@@ -22,6 +23,7 @@ export function ProductCard({ product, factoryName }: { product: Product; factor
       <div className={styles.footer}>
         <Badge tone={inStock ? "success" : "error"}>{inStock ? "Còn hàng" : "Hết hàng"}</Badge>
         <AddToCartButton productId={product.id} productName={product.name} disabled={!inStock} />
+        <CompareToggle product={product} />
       </div>
     </article>
   );

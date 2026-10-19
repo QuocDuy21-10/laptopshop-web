@@ -1,0 +1,16 @@
+@use "mixins" as *;
+
+.view {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-six);
+}
+
+.title {
+  @include text(headline-md);
+}
+
+.skeleton {
+  height: 480px;
+  border-radius: var(--radius-lg);
+}

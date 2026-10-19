@@ -1,0 +1,85 @@
+@use "mixins" as *;
+
+// the table scrolls inside its own box so the page never overflows at 320px
+.scroller {
+  overflow-x: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+
+  @include text(body-md);
+}
+
+.caption {
+  @include visually-hidden;
+}
+
+.corner,
+.label {
+  position: sticky;
+  left: 0;
+  min-width: 120px;
+  background: var(--color-surface-muted);
+  z-index: 1;
+}
+
+.label {
+  padding: var(--space-three) var(--space-four);
+  color: var(--color-foreground-muted);
+  font-weight: var(--text-label-md-weight);
+  text-align: start;
+  vertical-align: top;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.product {
+  min-width: 160px;
+  padding: var(--space-four);
+  text-align: start;
+  vertical-align: top;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.name {
+  display: block;
+  margin-block: var(--space-two);
+  color: var(--color-foreground);
+  text-decoration: none;
+
+  @include text(title-md);
+
+  &:hover {
+    color: var(--color-link);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-two);
+}
+
+.cell {
+  padding: var(--space-three) var(--space-four);
+  vertical-align: top;
+  border-bottom: 1px solid var(--color-border);
+
+  > span:last-child:not(:first-child) {
+    margin-inline-start: var(--space-two);
+  }
+}
+
+.best {
+  color: var(--color-foreground);
+  font-weight: var(--text-label-md-weight);
+}
