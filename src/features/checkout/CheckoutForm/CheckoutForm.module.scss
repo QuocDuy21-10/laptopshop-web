@@ -17,3 +17,42 @@
 .payment {
   color: var(--color-foreground-muted);
 }
+
+.paymentMethods {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-three);
+  padding: 0;
+  border: 0;
+}
+
+.paymentLegend {
+  @include text(label);
+
+  margin-bottom: var(--space-one);
+}
+
+.paymentOption {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-three);
+  min-height: 44px;
+  padding: var(--space-three);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+
+  input {
+    margin-top: 3px;
+  }
+
+  span {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-one);
+  }
+
+  small {
+    color: var(--color-foreground-muted);
+  }
+}

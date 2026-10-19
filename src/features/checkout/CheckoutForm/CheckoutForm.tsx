@@ -3,36 +3,46 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Alert } from "@/components/ui/Alert/Alert";
 import { Button } from "@/components/ui/Button/Button";
 import { TextField } from "@/components/ui/TextField/TextField";
 import { errorMessage, isApiError } from "@/lib/api/errors";
 import { applyFieldErrors } from "@/lib/forms";
-import { receiverSchema, type ReceiverInput } from "../schema";
+import { receiverSchema, type PaymentMethod, type ReceiverInput } from "../schema";
 import { usePlaceOrder } from "../usePlaceOrder";
 import styles from "./CheckoutForm.module.scss";
 
 type Problem = { message: string; backToCart: boolean } | null;
 
-export function CheckoutForm({ defaults }: { defaults: ReceiverInput }) {
+const IDEMPOTENCY_STORAGE_KEY = "laptopshop.checkout.idempotency-key";
+
+export function CheckoutForm({ defaults, availableMethods = ["COD", "BANK_TRANSFER"] }: { defaults: Omit<ReceiverInput, "paymentMethod"> & Partial<Pick<ReceiverInput, "paymentMethod">>; availableMethods?: PaymentMethod[] }) {
   const router = useRouter();
   const placeOrder = usePlaceOrder();
   // one key per checkout attempt, kept across retries so a timed-out request is never placed twice
-  const [idempotencyKey, setIdempotencyKey] = useState(() => crypto.randomUUID());
+  const [idempotencyKey, setIdempotencyKey] = useState(() => {
+    if (typeof window !== "undefined") return window.sessionStorage.getItem(IDEMPOTENCY_STORAGE_KEY) ?? crypto.randomUUID();
+    return crypto.randomUUID();
+  });
   const [problem, setProblem] = useState<Problem>(null);
   const { register, handleSubmit, setError, formState } = useForm<ReceiverInput>({
     resolver: zodResolver(receiverSchema),
-    defaultValues: defaults,
+    defaultValues: { paymentMethod: "COD", ...defaults },
   });
+
+  useEffect(() => {
+    window.sessionStorage.setItem(IDEMPOTENCY_STORAGE_KEY, idempotencyKey);
+  }, [idempotencyKey]);
 
   const onSubmit = handleSubmit(async (receiver) => {
     setProblem(null);
     try {
       const body = await placeOrder.mutateAsync({ key: idempotencyKey, receiver });
+      window.sessionStorage.removeItem(IDEMPOTENCY_STORAGE_KEY);
       setIdempotencyKey(crypto.randomUUID());
-      router.replace(`/account/orders/${body.data.id}?placed=1`);
+      router.replace(receiver.paymentMethod === "BANK_TRANSFER" ? `/account/orders/${body.data.id}/payment` : `/account/orders/${body.data.id}?placed=1`);
     } catch (e) {
       if (isApiError(e, "CART_EMPTY")) router.replace("/cart");
       else if (isApiError(e, "OUT_OF_STOCK") || isApiError(e, "PRODUCT_UNAVAILABLE"))
@@ -71,7 +81,21 @@ export function CheckoutForm({ defaults }: { defaults: ReceiverInput }) {
         error={formState.errors.receiverAddress?.message}
         {...register("receiverAddress")}
       />
-      <p className={styles.payment}>Phương thức thanh toán: Thanh toán khi nhận hàng (COD).</p>
+      <fieldset className={styles.paymentMethods}>
+        <legend className={styles.paymentLegend}>Phương thức thanh toán</legend>
+        {availableMethods.includes("COD") && (
+          <label className={styles.paymentOption}>
+            <input type="radio" value="COD" {...register("paymentMethod")} />
+            <span><strong>Thanh toán khi nhận hàng (COD)</strong><small>Thanh toán khi nhận laptop.</small></span>
+          </label>
+        )}
+        {availableMethods.includes("BANK_TRANSFER") && (
+          <label className={styles.paymentOption}>
+            <input type="radio" value="BANK_TRANSFER" {...register("paymentMethod")} />
+            <span><strong>Chuyển khoản bằng mã QR</strong><small>Quét mã bằng ứng dụng ngân hàng; hệ thống tự xác nhận giao dịch.</small></span>
+          </label>
+        )}
+      </fieldset>
       <Button type="submit" size="lg" fullWidth loading={placeOrder.isPending}>
         Xác nhận đặt hàng
       </Button>
