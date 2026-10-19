@@ -23,3 +23,12 @@ if (typeof window !== "undefined" && !window.matchMedia) {
     }),
   });
 }
+
+// antd tables and selects observe their size (assigned directly: afterEach unstubs vi.stubGlobal)
+if (typeof window !== "undefined" && !("ResizeObserver" in window)) {
+  window.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  };
+}
