@@ -54,4 +54,13 @@ describe("ProductForm", () => {
     expect(form.get("factory")).toBe("DELL");
     expect(form.has("image")).toBe(false);
   });
+
+  it("shows stock read-only when editing and does not send it", async () => {
+    renderAdmin(<ProductForm product={PRODUCT} />);
+    expect(screen.getByRole("button", { name: "Điều chỉnh kho" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Xem nhật ký kho" })).toHaveAttribute("href", "/admin/inventory?productId=7");
+    await userEvent.click(screen.getByRole("button", { name: "Lưu thay đổi" }));
+    await waitFor(() => expect(mocks.mutate).toHaveBeenCalled());
+    expect((mocks.mutate.mock.calls[0][0] as FormData).has("quantity")).toBe(false);
+  });
 });

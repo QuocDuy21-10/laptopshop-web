@@ -4,10 +4,12 @@ import { Alert, App, Button, Checkbox, Input, Popconfirm, Segmented, Select, Spa
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { errorMessage } from "@/lib/api/errors";
 import type { Product } from "@/lib/api/types";
 import { formatVnd } from "@/lib/format";
 import styles from "../admin.module.scss";
+import { StockAdjustModal } from "../inventory/StockAdjustModal";
 import { Thumb } from "../Thumb/Thumb";
 import { ADMIN_PAGE_SIZE, useListParams } from "../useListParams";
 import { type AdminProductQuery, useAdminProducts, useDeleteProduct, useProductFilterOptions, useSetProductActive } from "./hooks";
@@ -27,6 +29,7 @@ const VISIBILITY_OPTIONS = [
 export function ProductList() {
   const { message } = App.useApp();
   const router = useRouter();
+  const [adjusting, setAdjusting] = useState<Product | null>(null);
   const { get, page, set } = useListParams();
   const sort = get("sort");
   const active = get("isActive");
@@ -88,6 +91,9 @@ export function ProductList() {
       render: (_, p) => (
         <Space>
           <Link href={`/admin/products/${p.id}`}>Sửa</Link>
+          <Button size="small" onClick={() => setAdjusting(p)}>
+            Kho
+          </Button>
           <Popconfirm
             title={`Xoá "${p.name}"?`}
             okText="Xác nhận xoá"
@@ -169,6 +175,7 @@ export function ProductList() {
           onChange: (p) => set({ page: p }),
         }}
       />
+      {adjusting && <StockAdjustModal product={adjusting} onClose={() => setAdjusting(null)} />}
     </>
   );
 }
