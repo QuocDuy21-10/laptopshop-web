@@ -52,7 +52,7 @@ describe("ProductList", () => {
     await userEvent.click(screen.getAllByRole("button", { name: "Xoá" })[0]);
     await userEvent.click(await screen.findByRole("button", { name: "Xác nhận xoá" }));
     expect(
-      await screen.findByText("Sản phẩm đã có trong đơn hàng, hãy đặt số lượng về 0 thay vì xoá."),
+      await screen.findByText("Sản phẩm đã có trong đơn hàng nên không thể xoá. Hãy ẩn sản phẩm."),
     ).toBeInTheDocument();
   });
 });

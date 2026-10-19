@@ -2,6 +2,7 @@
 
 import { Trash2 } from "lucide-react";
 import Link from "next/link";
+import { Badge } from "@/components/ui/Badge/Badge";
 import { Price } from "@/components/ui/Price/Price";
 import { QuantityStepper } from "@/components/ui/QuantityStepper/QuantityStepper";
 import { ProductImage } from "@/features/products/ProductImage/ProductImage";
@@ -15,6 +16,7 @@ export function CartLine({ line }: { line: CartItem }) {
   const remove = useRemoveCartItem();
   const error = update.error ?? remove.error;
   const busy = update.isPending || remove.isPending;
+  const unavailable = !line.product.isActive;
 
   return (
     <li className={styles.line} aria-busy={busy || undefined}>
@@ -26,6 +28,7 @@ export function CartLine({ line }: { line: CartItem }) {
           {line.product.name}
         </Link>
         <Price value={line.product.price} size="sm" />
+        {unavailable && <Badge tone="neutral">Ngừng kinh doanh</Badge>}
         {error && (
           <p className={styles.error} role="alert">
             {errorMessage(error)}
@@ -36,7 +39,7 @@ export function CartLine({ line }: { line: CartItem }) {
         <QuantityStepper
           value={line.quantity}
           max={Math.max(1, Math.min(line.product.quantity, 100))}
-          disabled={busy}
+          disabled={busy || unavailable}
           onChange={(quantity) => update.mutate({ id: line.id, quantity })}
         />
         <Price value={line.lineTotal} />

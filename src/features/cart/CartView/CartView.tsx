@@ -41,6 +41,8 @@ export function CartView() {
     );
   }
 
+  const blocked = cart.data.items.some((i) => !i.product.isActive);
+
   return (
     <div className={styles.layout}>
       <ul role="list" className={styles.lines}>
@@ -51,9 +53,20 @@ export function CartView() {
       <CartSummary
         cart={cart.data}
         action={
-          <Link href="/checkout" className={buttonClassName({ size: "lg", fullWidth: true })}>
-            Tiến hành đặt hàng
-          </Link>
+          blocked ? (
+            <>
+              <p className={styles.notice} role="status">
+                Xoá sản phẩm ngừng kinh doanh khỏi giỏ để tiếp tục đặt hàng.
+              </p>
+              <Button size="lg" fullWidth disabled>
+                Tiến hành đặt hàng
+              </Button>
+            </>
+          ) : (
+            <Link href="/checkout" className={buttonClassName({ size: "lg", fullWidth: true })}>
+              Tiến hành đặt hàng
+            </Link>
+          )
         }
       />
     </div>

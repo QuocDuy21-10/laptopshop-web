@@ -17,6 +17,7 @@ const product: Product = {
   sold: 0,
   factory: "ASUS",
   target: "GAMING",
+  isActive: true,
 };
 
 describe("ProductCard", () => {

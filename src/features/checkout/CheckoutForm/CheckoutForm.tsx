@@ -35,7 +35,8 @@ export function CheckoutForm({ defaults }: { defaults: ReceiverInput }) {
       router.replace(`/account/orders/${body.data.id}?placed=1`);
     } catch (e) {
       if (isApiError(e, "CART_EMPTY")) router.replace("/cart");
-      else if (isApiError(e, "OUT_OF_STOCK")) setProblem({ message: errorMessage(e), backToCart: true });
+      else if (isApiError(e, "OUT_OF_STOCK") || isApiError(e, "PRODUCT_UNAVAILABLE"))
+        setProblem({ message: errorMessage(e), backToCart: true });
       else if (!applyFieldErrors(e, setError)) setProblem({ message: errorMessage(e), backToCart: false });
     }
   });
