@@ -19,8 +19,8 @@ export async function registerViaApi(request: APIRequestContext, tag: string) {
   return username;
 }
 
-export async function loginViaUi(page: Page, username: string) {
+export async function loginViaUi(page: Page, username: string, password = PASSWORD) {
   await page.getByLabel("Email").fill(username);
-  await page.getByLabel("Mật khẩu").fill(PASSWORD);
+  await page.getByLabel("Mật khẩu").fill(password);
   await page.getByRole("button", { name: "Đăng nhập" }).click();
 }
