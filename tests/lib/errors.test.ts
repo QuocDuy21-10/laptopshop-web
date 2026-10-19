@@ -48,3 +48,14 @@ describe("unwrap", () => {
     });
   });
 });
+
+describe("errorMessage (admin)", () => {
+  it("translates admin conflict and permission codes", () => {
+    expect(errorMessage(new ApiError(409, "PRODUCT_IN_USE", "x"))).toBe(
+      "Sản phẩm đã có trong đơn hàng, hãy đặt số lượng về 0 thay vì xoá.",
+    );
+    expect(errorMessage(new ApiError(409, "USER_HAS_ORDERS", "x"))).toBe("Người dùng đã có đơn hàng nên không thể xoá.");
+    expect(errorMessage(new ApiError(409, "CANNOT_DELETE_SELF", "x"))).toBe("Bạn không thể xoá tài khoản của chính mình.");
+    expect(errorMessage(new ApiError(403, "FORBIDDEN", "x"))).toBe("Bạn không có quyền thực hiện thao tác này.");
+  });
+});

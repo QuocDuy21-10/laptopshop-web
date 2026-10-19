@@ -4,4 +4,14 @@ export const queryKeys = {
   ordersAll: ["orders"] as const,
   orders: (page: number) => ["orders", page] as const,
   order: (id: number) => ["order", id] as const,
+  productFilters: ["product-filters"] as const,
+  // admin mutations invalidate adminAll: every admin list, detail and the dashboard
+  adminAll: ["admin"] as const,
+  adminDashboard: ["admin", "dashboard"] as const,
+  adminProducts: (query: object) => ["admin", "products", query] as const,
+  adminProduct: (id: number) => ["admin", "product", id] as const,
+  adminOrders: (query: object) => ["admin", "orders", query] as const,
+  adminOrder: (id: number) => ["admin", "order", id] as const,
+  adminUsers: (page: number) => ["admin", "users", page] as const,
+  adminRoles: ["admin", "roles"] as const,
 };
