@@ -36,6 +36,7 @@ export function CheckoutForm({ defaults, availableMethods = ["COD", "BANK_TRANSF
     window.sessionStorage.setItem(IDEMPOTENCY_STORAGE_KEY, idempotencyKey);
   }, [idempotencyKey]);
 
+
   const onSubmit = handleSubmit(async (receiver) => {
     setProblem(null);
     try {
