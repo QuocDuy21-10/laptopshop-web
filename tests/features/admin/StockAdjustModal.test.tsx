@@ -6,7 +6,7 @@ import { json, lastRequest, mockFetch, renderAdmin } from "../../utils";
 
 const product = {
   id: 1, name: "Dell XPS", price: 100, image: null, detailDesc: "d", shortDesc: "s",
-  quantity: 3, sold: 0, factory: "DELL", target: "GAMING", isActive: true,
+  quantity: 3, sold: 0, factory: "DELL", target: "GAMING", isActive: true, cpu: null, gpu: null, ramGb: null, storageGb: null, screenSizeInch: null, screenResolution: null, refreshRateHz: null, batteryWh: null, weightGrams: null, warrantyMonths: null,
 };
 
 let fetchMock: ReturnType<typeof mockFetch>;

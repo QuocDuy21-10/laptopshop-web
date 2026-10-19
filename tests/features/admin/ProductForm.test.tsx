@@ -16,7 +16,7 @@ vi.mock("@/features/admin/products/hooks", () => ({
 
 const PRODUCT = {
   id: 7, name: "Dell XPS", price: 30000000, image: "/images/product/xps.png", detailDesc: "Chi tiết", shortDesc: "Ngắn",
-  quantity: 3, sold: 1, factory: "DELL", target: "DOANH-NHAN", isActive: true,
+  quantity: 3, sold: 1, factory: "DELL", target: "DOANH-NHAN", isActive: true, cpu: null, gpu: null, ramGb: null, storageGb: null, screenSizeInch: null, screenResolution: null, refreshRateHz: null, batteryWh: null, weightGrams: null, warrantyMonths: null,
 };
 
 beforeEach(() => vi.clearAllMocks());

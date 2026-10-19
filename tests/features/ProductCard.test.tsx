@@ -17,7 +17,7 @@ const product: Product = {
   sold: 0,
   factory: "ASUS",
   target: "GAMING",
-  isActive: true,
+  isActive: true, cpu: null, gpu: null, ramGb: null, storageGb: null, screenSizeInch: null, screenResolution: null, refreshRateHz: null, batteryWh: null, weightGrams: null, warrantyMonths: null,
 };
 
 describe("ProductCard", () => {
