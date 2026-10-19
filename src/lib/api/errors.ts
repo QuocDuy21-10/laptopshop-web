@@ -33,6 +33,7 @@ const MESSAGES: Record<string, string> = {
   FORBIDDEN_ORIGIN: "Yêu cầu bị từ chối.",
   INVALID_FILE: "Chỉ chấp nhận ảnh JPEG hoặc PNG.",
   PRODUCT_IN_USE: "Sản phẩm đã có trong đơn hàng nên không thể xoá. Hãy ẩn sản phẩm.",
+  EXPORT_TOO_LARGE: "Quá nhiều dòng để xuất. Hãy thu hẹp bộ lọc.",
   PRODUCT_UNAVAILABLE: "Sản phẩm đã ngừng kinh doanh.",
   USER_HAS_ORDERS: "Người dùng đã có đơn hàng nên không thể xoá.",
   CANNOT_CHANGE_OWN_ROLE: "Bạn không thể đổi vai trò của chính mình.",

@@ -4,6 +4,7 @@ import { DatePicker, Input, Segmented, Space } from "antd";
 import dayjs from "dayjs";
 import { ORDER_STATUS_LABEL } from "@/features/orders/labels";
 import styles from "../admin.module.scss";
+import { ExportCsvButton } from "../ExportCsvButton";
 import { useListParams } from "../useListParams";
 import { OrdersTable } from "./OrdersTable";
 import { ORDER_STATUSES } from "./transitions";
@@ -23,6 +24,7 @@ export function OrderList() {
     <>
       <div className={styles.head}>
         <h1 className={styles.title}>Đơn hàng</h1>
+        <ExportCsvButton path="/api/v1/admin/orders/export.csv" query={{ status, q: get("q"), from, to }} />
       </div>
       <Space wrap className={styles.filters}>
         <Segmented options={FILTER_OPTIONS} value={status ?? ""} onChange={(v) => set({ status: String(v) })} />

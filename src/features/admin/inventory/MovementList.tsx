@@ -7,6 +7,7 @@ import { errorMessage } from "@/lib/api/errors";
 import type { StockMovement } from "@/lib/api/types";
 import { formatDate } from "@/lib/format";
 import styles from "../admin.module.scss";
+import { ExportCsvButton } from "../ExportCsvButton";
 import { useListParams } from "../useListParams";
 import { type MovementQuery, useStockMovements } from "./hooks";
 import { REASON_LABEL } from "./labels";
@@ -42,6 +43,7 @@ export function MovementList() {
     <>
       <div className={styles.head}>
         <h1 className={styles.title}>Nhật ký kho</h1>
+        <ExportCsvButton path="/api/v1/admin/inventory/movements/export.csv" query={{ productId, reason, from, to }} />
       </div>
       <Space wrap className={styles.filters}>
         {productId && (

@@ -85,3 +85,46 @@ test("admin hides a product and the storefront stops selling it", async ({ page 
   await expect(page.getByText("Đã mở bán lại")).toBeVisible();
   expect((await page.request.get(`${API}/api/v1/products/${product.id}`)).ok()).toBeTruthy();
 });
+
+test("admin restocks a product and the ledger records it", async ({ page }) => {
+  await page.goto("/login?next=/admin");
+  await loginViaUi(page, ADMIN.username, ADMIN.password);
+  await expect(page.getByRole("heading", { name: "Tổng quan" })).toBeVisible();
+
+  const name = `E2E Stock ${Date.now()}`;
+  const created = await page.request.post(`${API}/api/v1/admin/products`, {
+    multipart: { name, price: "15000000", quantity: "3", shortDesc: "s", detailDesc: "d", factory: "ASUS", target: "GAMING" },
+  });
+  const { data: product } = await created.json();
+
+  await page.goto(`/admin/products/${product.id}`);
+  await page.getByRole("button", { name: "Điều chỉnh kho" }).click();
+  await page.getByLabel("Số lượng thay đổi").fill("5");
+  await page.getByRole("button", { name: "Xác nhận" }).click();
+  await expect(page.getByText("Đã cập nhật tồn kho")).toBeVisible();
+
+  await page.goto(`/admin/inventory?productId=${product.id}`);
+  await expect(page.getByText("Nhập hàng").first()).toBeVisible();
+  await expect(page.getByText("+5")).toBeVisible();
+  await expect(page.getByText("Tồn ban đầu").first()).toBeVisible();
+});
+
+test("completing an order adds its total to today's revenue", async ({ page, request }) => {
+  const orderId = await placeOrderViaApi(request);
+  await page.goto("/login?next=/admin");
+  await loginViaUi(page, ADMIN.username, ADMIN.password);
+  await expect(page.getByRole("heading", { name: "Tổng quan" })).toBeVisible();
+
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Ho_Chi_Minh" }).format(new Date());
+  const sales = async () =>
+    (await (await page.request.get(`${API}/api/v1/admin/dashboard/sales?from=${today}&to=${today}`)).json()).data.totals.revenue as number;
+  const before = await sales();
+
+  for (const status of ["SHIPPING", "COMPLETED"]) {
+    const res = await page.request.patch(`${API}/api/v1/admin/orders/${orderId}/status`, { data: { status } });
+    expect(res.ok()).toBeTruthy();
+  }
+  const order = (await (await page.request.get(`${API}/api/v1/admin/orders/${orderId}`)).json()).data;
+  expect(await sales()).toBe(before + order.totalPrice);
+  expect(order.history.map((h: { toStatus: string }) => h.toStatus)).toEqual(["PENDING", "SHIPPING", "COMPLETED"]);
+});
