@@ -12,6 +12,7 @@ export const queryKeys = {
   adminProduct: (id: number) => ["admin", "product", id] as const,
   adminOrders: (query: object) => ["admin", "orders", query] as const,
   adminOrder: (id: number) => ["admin", "order", id] as const,
-  adminUsers: (page: number) => ["admin", "users", page] as const,
+  adminUsers: (query: object) => ["admin", "users", query] as const,
+  adminUser: (id: number) => ["admin", "user", id] as const,
   adminRoles: ["admin", "roles"] as const,
 };
