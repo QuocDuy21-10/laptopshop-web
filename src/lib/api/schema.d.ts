@@ -1787,7 +1787,7 @@ export interface paths {
           };
           content: {
             "application/json": {
-              data: components["schemas"]["AdminOrder"];
+              data: components["schemas"]["AdminOrderDetail"];
             };
           };
         };
@@ -2061,11 +2061,50 @@ export interface components {
         price: number;
         quantity: number;
       }[];
+      /** Format: date-time */
+      completedAt: string | null;
       user: {
         id: number;
         username: string;
         fullName: string | null;
       };
+    };
+    AdminOrderDetail: {
+      id: number;
+      /** @enum {string} */
+      status: "PENDING" | "SHIPPING" | "COMPLETED" | "CANCELLED";
+      totalPrice: number;
+      paymentMethod: string;
+      paymentStatus: string;
+      receiverName: string;
+      receiverAddress: string;
+      receiverPhone: string;
+      /** Format: date-time */
+      createdAt: string;
+      items: {
+        productId: number;
+        name: string;
+        image: string | null;
+        price: number;
+        quantity: number;
+      }[];
+      /** Format: date-time */
+      completedAt: string | null;
+      user: {
+        id: number;
+        username: string;
+        fullName: string | null;
+      };
+      history: {
+        fromStatus: string | null;
+        toStatus: string;
+        actor: {
+          id: number;
+          name: string;
+        } | null;
+        /** Format: date-time */
+        createdAt: string;
+      }[];
     };
     Role: {
       id: number;

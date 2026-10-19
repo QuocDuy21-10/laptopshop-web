@@ -1,7 +1,8 @@
 "use client";
 
-import { Alert, Card, Descriptions, Result, Skeleton, Space, Table, type TableProps } from "antd";
+import { Alert, Card, Descriptions, Result, Skeleton, Space, Table, Timeline, type TableProps } from "antd";
 import Link from "next/link";
+import { ORDER_STATUS_LABEL } from "@/features/orders/labels";
 import { errorMessage, isApiError } from "@/lib/api/errors";
 import type { AdminOrder } from "@/lib/api/types";
 import { formatDate, formatVnd } from "@/lib/format";
@@ -58,6 +59,19 @@ export function OrderDetail({ id }: { id: number }) {
       </Card>
       <Card title="Sản phẩm" className={styles.panel}>
         <Table rowKey="productId" columns={itemColumns} dataSource={order.items} pagination={false} scroll={{ x: "max-content" }} />
+      </Card>
+      <Card title="Lịch sử trạng thái" className={styles.panel}>
+        {order.history.length === 0 ? (
+          <p>Đơn tạo trước khi bật lịch sử trạng thái.</p>
+        ) : (
+          <Timeline
+            items={order.history.map((h, i) => ({
+              key: i,
+              title: formatDate(h.createdAt),
+              content: `${h.fromStatus ? `${ORDER_STATUS_LABEL[h.fromStatus] ?? h.fromStatus} → ` : "Đặt hàng: "}${ORDER_STATUS_LABEL[h.toStatus] ?? h.toStatus}${h.actor ? ` · ${h.actor.name}` : ""}`,
+            }))}
+          />
+        )}
       </Card>
     </>
   );
