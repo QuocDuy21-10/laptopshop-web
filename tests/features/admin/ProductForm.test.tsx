@@ -28,11 +28,25 @@ describe("toProductFormData", () => {
       name: "A", price: 100, quantity: 0, factory: "DELL", target: "DOANH-NHAN", shortDesc: "s", detailDesc: "d",
       image: [{ uid: "1", name: "a.png", originFileObj: file as UploadFile["originFileObj"] }],
     });
-    expect([...form.keys()].sort()).toEqual(
-      ["detailDesc", "factory", "image", "name", "price", "quantity", "shortDesc", "target"],
-    );
+    expect([...form.keys()].sort()).toEqual([
+      "batteryWh", "cpu", "detailDesc", "factory", "gpu", "image", "name", "price", "quantity",
+      "ramGb", "refreshRateHz", "screenResolution", "screenSizeInch", "shortDesc", "storageGb",
+      "target", "warrantyMonths", "weightGrams",
+    ]);
     expect(form.get("quantity")).toBe("0");
     expect((form.get("image") as File).name).toBe("a.png");
+  });
+
+  it("sends specs, trimming text and blanking empty ones so the API clears them", () => {
+    const form = toProductFormData({
+      name: "A", price: 100, factory: "DELL", target: "DOANH-NHAN", shortDesc: "s", detailDesc: "d",
+      cpu: " Intel Core i5 ", ramGb: 16, screenSizeInch: 15.6, gpu: null, batteryWh: undefined,
+    });
+    expect(form.get("cpu")).toBe("Intel Core i5");
+    expect(form.get("ramGb")).toBe("16");
+    expect(form.get("screenSizeInch")).toBe("15.6");
+    expect(form.get("gpu")).toBe("");
+    expect(form.get("batteryWh")).toBe("");
   });
 });
 
@@ -53,6 +67,17 @@ describe("ProductForm", () => {
     expect(form.get("price")).toBe("30000000");
     expect(form.get("factory")).toBe("DELL");
     expect(form.has("image")).toBe(false);
+  });
+
+  it("loads stored specs and sends a cleared one as empty", async () => {
+    renderAdmin(<ProductForm product={{ ...PRODUCT, cpu: "Intel Core i7", ramGb: 16 }} />);
+    expect(screen.getByLabelText("CPU")).toHaveValue("Intel Core i7");
+    await userEvent.clear(screen.getByLabelText("RAM (GB)"));
+    await userEvent.click(screen.getByRole("button", { name: "Lưu thay đổi" }));
+    await waitFor(() => expect(mocks.mutate).toHaveBeenCalled());
+    const form = mocks.mutate.mock.calls[0][0] as FormData;
+    expect(form.get("cpu")).toBe("Intel Core i7");
+    expect(form.get("ramGb")).toBe("");
   });
 
   it("shows stock read-only when editing and does not send it", async () => {

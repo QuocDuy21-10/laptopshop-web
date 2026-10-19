@@ -1,10 +1,11 @@
 "use client";
 
-import { App, Button, Form, Input, InputNumber, Select, Space, Upload, type UploadFile } from "antd";
+import { App, Button, Divider, Form, Input, InputNumber, Select, Space, Upload, type UploadFile } from "antd";
 import { ImageUp } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { SPEC_ROWS } from "@/features/compare/specs";
 import { errorMessage } from "@/lib/api/errors";
 import { toFormData } from "@/lib/api/multipart";
 import type { Product } from "@/lib/api/types";
@@ -24,10 +25,30 @@ export type ProductFormValues = {
   shortDesc: string;
   detailDesc: string;
   image?: UploadFile[];
+  cpu?: string | null;
+  gpu?: string | null;
+  ramGb?: number | null;
+  storageGb?: number | null;
+  screenSizeInch?: number | null;
+  screenResolution?: string | null;
+  refreshRateHz?: number | null;
+  batteryWh?: number | null;
+  weightGrams?: number | null;
+  warrantyMonths?: number | null;
 };
 
-export const toProductFormData = ({ image, ...fields }: ProductFormValues) =>
-  toFormData(fields, { image: image?.[0]?.originFileObj });
+const SPEC_KEYS = SPEC_ROWS.map((r) => r.key);
+
+// toFormData drops null, which would leave a stored spec untouched; "" makes the API clear it
+export const toProductFormData = ({ image, ...fields }: ProductFormValues) => {
+  const specs = Object.fromEntries(
+    SPEC_KEYS.map((key) => {
+      const value = fields[key];
+      return [key, typeof value === "string" ? value.trim() : (value ?? "")];
+    }),
+  );
+  return toFormData({ ...fields, ...specs }, { image: image?.[0]?.originFileObj });
+};
 
 export function ProductForm({ product }: { product?: Product }) {
   const { message } = App.useApp();
@@ -68,6 +89,16 @@ export function ProductForm({ product }: { product?: Product }) {
             target: product.target ?? undefined,
             shortDesc: product.shortDesc ?? "",
             detailDesc: product.detailDesc ?? "",
+            cpu: product.cpu ?? undefined,
+            gpu: product.gpu ?? undefined,
+            ramGb: product.ramGb ?? undefined,
+            storageGb: product.storageGb ?? undefined,
+            screenSizeInch: product.screenSizeInch ?? undefined,
+            screenResolution: product.screenResolution ?? undefined,
+            refreshRateHz: product.refreshRateHz ?? undefined,
+            batteryWh: product.batteryWh ?? undefined,
+            weightGrams: product.weightGrams ?? undefined,
+            warrantyMonths: product.warrantyMonths ?? undefined,
           }
         }
       >
@@ -124,6 +155,43 @@ export function ProductForm({ product }: { product?: Product }) {
         >
           <Input.TextArea rows={6} />
         </Form.Item>
+        <Divider>Thông số kỹ thuật</Divider>
+        <div className={styles.row}>
+          <Form.Item name="cpu" label="CPU" rules={[{ max: 255, message: "Tối đa 255 ký tự" }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item name="gpu" label="Card đồ hoạ" rules={[{ max: 255, message: "Tối đa 255 ký tự" }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item name="ramGb" label="RAM (GB)">
+            <InputNumber min={1} max={256} precision={0} className={styles.full} />
+          </Form.Item>
+          <Form.Item name="storageGb" label="Ổ cứng (GB)">
+            <InputNumber min={1} max={16384} precision={0} className={styles.full} />
+          </Form.Item>
+          <Form.Item name="screenSizeInch" label="Màn hình (inch)">
+            <InputNumber min={10} max={20} precision={1} step={0.1} className={styles.full} />
+          </Form.Item>
+          <Form.Item
+            name="screenResolution"
+            label="Độ phân giải"
+            rules={[{ max: 50, message: "Tối đa 50 ký tự" }]}
+          >
+            <Input placeholder="1920x1080" />
+          </Form.Item>
+          <Form.Item name="refreshRateHz" label="Tần số quét (Hz)">
+            <InputNumber min={30} max={500} precision={0} className={styles.full} />
+          </Form.Item>
+          <Form.Item name="batteryWh" label="Pin (Wh)">
+            <InputNumber min={1} max={200} precision={0} className={styles.full} />
+          </Form.Item>
+          <Form.Item name="weightGrams" label="Trọng lượng (gram)">
+            <InputNumber min={300} max={10000} precision={0} className={styles.full} />
+          </Form.Item>
+          <Form.Item name="warrantyMonths" label="Bảo hành (tháng)">
+            <InputNumber min={0} max={120} precision={0} className={styles.full} />
+          </Form.Item>
+        </div>
         {product?.image && (
           <Form.Item label="Ảnh hiện tại">
             <Thumb src={product.image} alt={product.name} />
