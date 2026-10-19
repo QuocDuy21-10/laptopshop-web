@@ -2071,6 +2071,7 @@ export interface components {
       ordersByStatus: {
         [key: string]: number;
       };
+      lowStockCount: number;
     };
   };
   responses: never;

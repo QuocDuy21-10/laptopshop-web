@@ -61,3 +61,27 @@ test("admin creates a product and ships an order", async ({ page, request }) => 
   await expect(page.getByText('Đã chuyển sang "Đang giao"')).toBeVisible();
   await expect(page.getByRole("button", { name: "Hoàn thành" })).toBeVisible();
 });
+
+test("admin hides a product and the storefront stops selling it", async ({ page }) => {
+  await page.goto("/login?next=/admin");
+  await loginViaUi(page, ADMIN.username, ADMIN.password);
+  await expect(page.getByRole("heading", { name: "Tổng quan" })).toBeVisible();
+
+  // page.request shares the browser's cookies, so this call is made as the signed-in admin
+  const name = `E2E Hidden ${Date.now()}`;
+  const created = await page.request.post(`${API}/api/v1/admin/products`, {
+    multipart: { name, price: "15000000", quantity: "3", shortDesc: "s", detailDesc: "d", factory: "ASUS", target: "GAMING" },
+  });
+  expect(created.status()).toBe(201);
+  const { data: product } = await created.json();
+
+  await page.goto(`/admin/products?q=${encodeURIComponent(name)}`);
+  const toggle = page.getByRole("switch", { name: `Đang bán: ${name}` });
+  await toggle.click();
+  await expect(page.getByText("Đã ẩn sản phẩm")).toBeVisible();
+  expect((await page.request.get(`${API}/api/v1/products/${product.id}`)).status()).toBe(404);
+
+  await toggle.click();
+  await expect(page.getByText("Đã mở bán lại")).toBeVisible();
+  expect((await page.request.get(`${API}/api/v1/products/${product.id}`)).ok()).toBeTruthy();
+});

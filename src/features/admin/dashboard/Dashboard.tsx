@@ -31,6 +31,10 @@ export function Dashboard() {
         <Card>
           <Statistic title="Doanh thu" value={data.revenue} formatter={(v) => formatVnd(Number(v))} />
         </Card>
+        <Card>
+          <Statistic title="Sắp hết hàng" value={data.lowStockCount} />
+          <Link href="/admin/products?stock=low">Xem sản phẩm sắp hết</Link>
+        </Card>
       </div>
       <Card title="Đơn theo trạng thái" className={styles.panel}>
         <ul className={styles.statusList}>
