@@ -23,6 +23,26 @@ test("browse, filter, search and open a product", async ({ page }) => {
   await expect(page.getByRole("button", { name: "Mua ngay" })).toBeVisible();
 });
 
+test("compare two laptops", async ({ page }) => {
+  await page.goto("/products");
+  const cards = page.getByRole("article");
+  await cards
+    .nth(0)
+    .getByRole("button", { name: /^So sánh / })
+    .click();
+  await cards
+    .nth(1)
+    .getByRole("button", { name: /^So sánh / })
+    .click();
+
+  const bar = page.getByRole("complementary", { name: "So sánh sản phẩm" });
+  await bar.getByRole("link", { name: "So sánh (2)" }).click();
+
+  await expect(page).toHaveURL(/\/compare\?ids=\d+,\d+$/);
+  await expect(page.getByRole("columnheader")).toHaveCount(2);
+  await expect(page.getByRole("rowheader", { name: "RAM" })).toBeVisible();
+});
+
 test("register, add to cart, checkout, then cancel the order", async ({ page }) => {
   await page.goto("/register");
   await page.getByLabel("Họ tên").fill("E2E Buyer");
