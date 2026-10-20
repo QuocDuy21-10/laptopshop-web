@@ -130,6 +130,7 @@ test("admin restocks a product and the ledger records it", async ({ page }) => {
   await page.goto(`/admin/products/${product.id}`);
   await page.getByRole("button", { name: "Điều chỉnh kho" }).click();
   await page.getByLabel("Số lượng thay đổi").fill("5");
+  await page.getByLabel("Ghi chú").fill("Nhập hàng E2E");
   await page.getByRole("button", { name: "Xác nhận" }).click();
   await expect(page.getByText("Đã cập nhật tồn kho")).toBeVisible();
 
