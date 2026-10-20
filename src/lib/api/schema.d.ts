@@ -2859,8 +2859,8 @@ export interface paths {
     post: {
       parameters: {
         query?: never;
-        header?: {
-          "Idempotency-Key"?: string;
+        header: {
+          "Idempotency-Key": string;
         };
         path?: never;
         cookie?: never;

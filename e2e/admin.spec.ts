@@ -6,14 +6,28 @@ const ADMIN = { username: "admin@gmail.com", password: process.env.E2E_ADMIN_PAS
 
 async function placeOrderViaApi(request: APIRequestContext) {
   const username = await registerViaApi(request, "admin-buyer");
-  expect((await request.post(`${API}/api/v1/auth/login`, { data: { username, password: PASSWORD } })).ok()).toBeTruthy();
+  expect(
+    (
+      await request.post(`${API}/api/v1/auth/login`, { data: { username, password: PASSWORD } })
+    ).ok(),
+  ).toBeTruthy();
   const { data: products } = await (await request.get(`${API}/api/v1/products`)).json();
   const product = products.find((p: { quantity: number }) => p.quantity > 0);
   expect(product, "need one in-stock product").toBeTruthy();
-  expect((await request.post(`${API}/api/v1/cart/items`, { data: { productId: product.id, quantity: 1 } })).ok()).toBeTruthy();
+  expect(
+    (
+      await request.post(`${API}/api/v1/cart/items`, {
+        data: { productId: product.id, quantity: 1 },
+      })
+    ).ok(),
+  ).toBeTruthy();
   const res = await request.post(`${API}/api/v1/orders`, {
     headers: { "Idempotency-Key": crypto.randomUUID() },
-    data: { receiverName: "E2E Buyer", receiverPhone: "0900000000", receiverAddress: "1 Lê Lợi, Quận 1" },
+    data: {
+      receiverName: "E2E Buyer",
+      receiverPhone: "0900000000",
+      receiverAddress: "1 Lê Lợi, Quận 1",
+    },
   });
   expect(res.ok()).toBeTruthy();
   return (await res.json()).data.id as number;
@@ -70,7 +84,15 @@ test("admin hides a product and the storefront stops selling it", async ({ page 
   // page.request shares the browser's cookies, so this call is made as the signed-in admin
   const name = `E2E Hidden ${Date.now()}`;
   const created = await page.request.post(`${API}/api/v1/admin/products`, {
-    multipart: { name, price: "15000000", quantity: "3", shortDesc: "s", detailDesc: "d", factory: "ASUS", target: "GAMING" },
+    multipart: {
+      name,
+      price: "15000000",
+      quantity: "3",
+      shortDesc: "s",
+      detailDesc: "d",
+      factory: "ASUS",
+      target: "GAMING",
+    },
   });
   expect(created.status()).toBe(201);
   const { data: product } = await created.json();
@@ -93,7 +115,15 @@ test("admin restocks a product and the ledger records it", async ({ page }) => {
 
   const name = `E2E Stock ${Date.now()}`;
   const created = await page.request.post(`${API}/api/v1/admin/products`, {
-    multipart: { name, price: "15000000", quantity: "3", shortDesc: "s", detailDesc: "d", factory: "ASUS", target: "GAMING" },
+    multipart: {
+      name,
+      price: "15000000",
+      quantity: "3",
+      shortDesc: "s",
+      detailDesc: "d",
+      factory: "ASUS",
+      target: "GAMING",
+    },
   });
   const { data: product } = await created.json();
 
@@ -109,22 +139,87 @@ test("admin restocks a product and the ledger records it", async ({ page }) => {
   await expect(page.getByText("Tồn ban đầu").first()).toBeVisible();
 });
 
+test("admin creates and posts a stock receipt exactly once", async ({ page }) => {
+  await page.goto("/login?next=/admin");
+  await loginViaUi(page, ADMIN.username, ADMIN.password);
+  await expect(page.getByRole("heading", { name: "Tổng quan" })).toBeVisible();
+
+  const name = `E2E Receipt ${Date.now()}`;
+  const created = await page.request.post(`${API}/api/v1/admin/products`, {
+    multipart: {
+      name,
+      price: "15000000",
+      quantity: "0",
+      shortDesc: "s",
+      detailDesc: "d",
+      factory: "ASUS",
+      target: "GAMING",
+    },
+  });
+  expect(created.status()).toBe(201);
+  const { data: product } = await created.json();
+
+  await page.goto("/admin/inventory/receipts/new");
+  await page.getByLabel("Nhà cung cấp").fill("Nhà cung cấp E2E");
+  await page.getByLabel("Ghi chú").fill("Kiểm thử phiếu nhập");
+  await page.getByLabel("Sản phẩm 1").click();
+  await page.getByText(name, { exact: true }).click();
+  await page.getByLabel("Số lượng 1").fill("2");
+  await page.getByLabel("Giá nhập 1").fill("12000000");
+  await page.getByRole("button", { name: "Lưu bản nháp" }).click();
+  await expect(page.getByText("Đã lưu phiếu nhập")).toBeVisible();
+  await expect(page).toHaveURL(/\/admin\/inventory\/receipts\/[0-9a-f-]+$/);
+
+  await page.getByRole("button", { name: "Xác nhận nhập kho" }).click();
+  await expect(page.getByText(/2 sản phẩm sẽ được cộng/)).toBeVisible();
+  await page.getByRole("button", { name: "Xác nhận nhập kho" }).last().click();
+  await expect(page.getByText("Đã xác nhận nhập kho")).toBeVisible();
+  await expect(page.getByText("Đã nhập kho")).toBeVisible();
+
+  const productAfter = (
+    await (await page.request.get(`${API}/api/v1/admin/products/${product.id}`)).json()
+  ).data;
+  expect(productAfter.quantity).toBe(2);
+  const movements = (
+    await (
+      await page.request.get(`${API}/api/v1/admin/inventory/movements?productId=${product.id}`)
+    ).json()
+  ).data;
+  expect(movements.filter((movement: { delta: number }) => movement.delta === 2)).toHaveLength(1);
+  expect(movements.find((movement: { delta: number }) => movement.delta === 2).receiptCode).toMatch(
+    /^PN-/,
+  );
+});
+
 test("completing an order adds its total to today's revenue", async ({ page, request }) => {
   const orderId = await placeOrderViaApi(request);
   await page.goto("/login?next=/admin");
   await loginViaUi(page, ADMIN.username, ADMIN.password);
   await expect(page.getByRole("heading", { name: "Tổng quan" })).toBeVisible();
 
-  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Ho_Chi_Minh" }).format(new Date());
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Ho_Chi_Minh" }).format(
+    new Date(),
+  );
   const sales = async () =>
-    (await (await page.request.get(`${API}/api/v1/admin/dashboard/sales?from=${today}&to=${today}`)).json()).data.totals.revenue as number;
+    (
+      await (
+        await page.request.get(`${API}/api/v1/admin/dashboard/sales?from=${today}&to=${today}`)
+      ).json()
+    ).data.totals.revenue as number;
   const before = await sales();
 
   for (const status of ["SHIPPING", "COMPLETED"]) {
-    const res = await page.request.patch(`${API}/api/v1/admin/orders/${orderId}/status`, { data: { status } });
+    const res = await page.request.patch(`${API}/api/v1/admin/orders/${orderId}/status`, {
+      data: { status },
+    });
     expect(res.ok()).toBeTruthy();
   }
-  const order = (await (await page.request.get(`${API}/api/v1/admin/orders/${orderId}`)).json()).data;
+  const order = (await (await page.request.get(`${API}/api/v1/admin/orders/${orderId}`)).json())
+    .data;
   expect(await sales()).toBe(before + order.totalPrice);
-  expect(order.history.map((h: { toStatus: string }) => h.toStatus)).toEqual(["PENDING", "SHIPPING", "COMPLETED"]);
+  expect(order.history.map((h: { toStatus: string }) => h.toStatus)).toEqual([
+    "PENDING",
+    "SHIPPING",
+    "COMPLETED",
+  ]);
 });

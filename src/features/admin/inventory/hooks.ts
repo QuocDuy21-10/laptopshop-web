@@ -31,7 +31,7 @@ export function useAdjustStock() {
       return unwrap(
         api.POST("/api/v1/admin/inventory/adjustments", {
           body,
-          headers: { "Idempotency-Key": idempotencyKey },
+          params: { header: { "Idempotency-Key": idempotencyKey } },
         }),
       );
     },
