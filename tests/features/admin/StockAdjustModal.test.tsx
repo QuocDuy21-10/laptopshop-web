@@ -5,14 +5,35 @@ import { StockAdjustModal } from "@/features/admin/inventory/StockAdjustModal";
 import { json, lastRequest, mockFetch, renderAdmin } from "../../utils";
 
 const product = {
-  id: 1, name: "Dell XPS", price: 100, image: null, detailDesc: "d", shortDesc: "s",
-  quantity: 3, sold: 0, factory: "DELL", target: "GAMING", isActive: true, cpu: null, gpu: null, ramGb: null, storageGb: null, screenSizeInch: null, screenResolution: null, refreshRateHz: null, batteryWh: null, weightGrams: null, warrantyMonths: null,
+  id: 1,
+  name: "Dell XPS",
+  price: 100,
+  image: null,
+  detailDesc: "d",
+  shortDesc: "s",
+  quantity: 3,
+  sold: 0,
+  factory: "DELL",
+  target: "GAMING",
+  isActive: true,
+  cpu: null,
+  gpu: null,
+  ramGb: null,
+  storageGb: null,
+  screenSizeInch: null,
+  screenResolution: null,
+  refreshRateHz: null,
+  batteryWh: null,
+  weightGrams: null,
+  warrantyMonths: null,
 };
 
 let fetchMock: ReturnType<typeof mockFetch>;
 beforeEach(() => {
   fetchMock = mockFetch();
-  fetchMock.mockResolvedValue(json(201, { data: { product: { ...product, quantity: 8 }, movement: {} } }));
+  fetchMock.mockResolvedValue(
+    json(201, { data: { product: { ...product, quantity: 8 }, movement: {} } }),
+  );
 });
 
 describe("StockAdjustModal", () => {
@@ -25,7 +46,7 @@ describe("StockAdjustModal", () => {
     await waitFor(() => expect(onClose).toHaveBeenCalled());
     const req = lastRequest(fetchMock);
     expect(new URL(req.url).pathname).toBe("/api/v1/admin/inventory/adjustments");
-    expect(await req.json()).toEqual({ productId: 1, delta: 5, reason: "RESTOCK" });
+    expect(await req.json()).toEqual({ productId: 1, delta: 5, reason: "RESTOCK", note: "" });
   });
 
   it("requires a note for a correction", async () => {

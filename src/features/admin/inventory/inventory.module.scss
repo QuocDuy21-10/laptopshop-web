@@ -1,0 +1,29 @@
+@use "mixins" as *;
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-two);
+  margin-block-end: var(--space-four);
+}
+
+.link {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  padding: 0 var(--space-three);
+  color: var(--color-foreground-muted);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible,
+  &[aria-current="page"] {
+    color: var(--color-foreground);
+    background: var(--color-surface-muted);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}

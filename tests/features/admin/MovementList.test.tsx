@@ -16,7 +16,21 @@ beforeEach(() => {
   fetchMock.mockResolvedValue(
     json(200, {
       data: [
-        { id: 3, productId: 1, productName: "Dell XPS", delta: -2, reason: "ORDER", orderId: 50, actor: { id: 2, name: "B" }, note: null, createdAt: "2026-10-19T03:00:00Z" },
+        {
+          id: 3,
+          productId: 1,
+          productName: "Dell XPS",
+          delta: -2,
+          balanceBefore: 3,
+          balanceAfter: 1,
+          receiptId: null,
+          receiptCode: null,
+          reason: "ORDER",
+          orderId: 50,
+          actor: { id: 2, name: "B" },
+          note: null,
+          createdAt: "2026-10-19T03:00:00Z",
+        },
       ],
       meta: { page: 1, pageSize: 10, total: 1, totalPages: 1 },
     }),
@@ -28,6 +42,7 @@ describe("MovementList", () => {
     renderAdmin(<MovementList />);
     expect(await screen.findByText("Dell XPS")).toBeInTheDocument();
     expect(screen.getByText("-2")).toBeInTheDocument();
+    expect(screen.getByText("3 → 1")).toBeInTheDocument();
     expect(screen.getAllByText("Bán hàng").length).toBeGreaterThan(0);
     expect(screen.getByRole("link", { name: "#50" })).toHaveAttribute("href", "/admin/orders/50");
     const url = new URL((fetchMock.mock.calls[0][0] as Request).url);

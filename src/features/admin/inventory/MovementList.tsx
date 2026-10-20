@@ -9,6 +9,7 @@ import { formatDate } from "@/lib/format";
 import styles from "../admin.module.scss";
 import { ExportCsvButton } from "../ExportCsvButton";
 import { useListParams } from "../useListParams";
+import { InventoryNav } from "./InventoryNav";
 import { type MovementQuery, useStockMovements } from "./hooks";
 import { REASON_LABEL } from "./labels";
 
@@ -17,15 +18,44 @@ const REASONS = Object.keys(REASON_LABEL);
 
 const columns: TableProps<StockMovement>["columns"] = [
   { title: "Thời gian", dataIndex: "createdAt", render: (_, m) => formatDate(m.createdAt) },
-  { title: "Sản phẩm", dataIndex: "productName", render: (_, m) => <Link href={`/admin/products/${m.productId}`}>{m.productName}</Link> },
+  {
+    title: "Sản phẩm",
+    dataIndex: "productName",
+    render: (_, m) => <Link href={`/admin/products/${m.productId}`}>{m.productName}</Link>,
+  },
   {
     title: "Thay đổi",
     dataIndex: "delta",
     align: "right",
-    render: (_, m) => <Tag color={m.delta > 0 ? "green" : "red"}>{m.delta > 0 ? `+${m.delta}` : m.delta}</Tag>,
+    render: (_, m) => (
+      <Tag color={m.delta > 0 ? "green" : "red"}>{m.delta > 0 ? `+${m.delta}` : m.delta}</Tag>
+    ),
+  },
+  {
+    title: "Tồn trước → sau",
+    key: "balance",
+    render: (_, m) =>
+      m.balanceBefore === null || m.balanceAfter === null
+        ? "—"
+        : `${m.balanceBefore} → ${m.balanceAfter}`,
   },
   { title: "Lý do", dataIndex: "reason", render: (_, m) => REASON_LABEL[m.reason] ?? m.reason },
-  { title: "Đơn hàng", dataIndex: "orderId", render: (_, m) => (m.orderId ? <Link href={`/admin/orders/${m.orderId}`}>#{m.orderId}</Link> : "—") },
+  {
+    title: "Đơn hàng",
+    dataIndex: "orderId",
+    render: (_, m) =>
+      m.orderId ? <Link href={`/admin/orders/${m.orderId}`}>#{m.orderId}</Link> : "—",
+  },
+  {
+    title: "Phiếu nhập",
+    dataIndex: "receiptCode",
+    render: (_, m) =>
+      m.receiptId && m.receiptCode ? (
+        <Link href={`/admin/inventory/receipts/${m.receiptId}`}>{m.receiptCode}</Link>
+      ) : (
+        "—"
+      ),
+  },
   { title: "Người thao tác", key: "actor", render: (_, m) => m.actor?.name ?? "—" },
   { title: "Ghi chú", dataIndex: "note", render: (_, m) => m.note ?? "—" },
 ];
@@ -36,14 +66,21 @@ export function MovementList() {
   const reason = REASONS.find((r) => r === get("reason")) as MovementQuery["reason"];
   const from = get("from");
   const to = get("to");
-  const range = from && to && dayjs(from, DAY).isValid() && dayjs(to, DAY).isValid() ? ([dayjs(from, DAY), dayjs(to, DAY)] as const) : null;
+  const range =
+    from && to && dayjs(from, DAY).isValid() && dayjs(to, DAY).isValid()
+      ? ([dayjs(from, DAY), dayjs(to, DAY)] as const)
+      : null;
   const { data, isFetching, error } = useStockMovements({ page, productId, reason, from, to });
 
   return (
     <>
+      <InventoryNav active="movements" />
       <div className={styles.head}>
         <h1 className={styles.title}>Nhật ký kho</h1>
-        <ExportCsvButton path="/api/v1/admin/inventory/movements/export.csv" query={{ productId, reason, from, to }} />
+        <ExportCsvButton
+          path="/api/v1/admin/inventory/movements/export.csv"
+          query={{ productId, reason, from, to }}
+        />
       </div>
       <Space wrap className={styles.filters}>
         {productId && (
@@ -67,7 +104,9 @@ export function MovementList() {
           onChange={(dates) => set({ from: dates?.[0]?.format(DAY), to: dates?.[1]?.format(DAY) })}
         />
       </Space>
-      {error && <Alert type="error" showIcon title={errorMessage(error)} className={styles.filters} />}
+      {error && (
+        <Alert type="error" showIcon title={errorMessage(error)} className={styles.filters} />
+      )}
       <Table
         rowKey="id"
         columns={columns}
@@ -75,7 +114,13 @@ export function MovementList() {
         loading={isFetching}
         scroll={{ x: "max-content" }}
         locale={{ emptyText: "Chưa có biến động kho" }}
-        pagination={{ current: page, pageSize: 10, total: data?.meta.total, showSizeChanger: false, onChange: (p) => set({ page: p }) }}
+        pagination={{
+          current: page,
+          pageSize: 10,
+          total: data?.meta.total,
+          showSizeChanger: false,
+          onChange: (p) => set({ page: p }),
+        }}
       />
     </>
   );
