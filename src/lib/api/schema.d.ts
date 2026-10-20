@@ -21,7 +21,7 @@ export interface paths {
         path?: never;
         cookie?: never;
       };
-      requestBody?: {
+      requestBody: {
         content: {
           "application/json": {
             fullName: string;
@@ -89,7 +89,7 @@ export interface paths {
         path?: never;
         cookie?: never;
       };
-      requestBody?: {
+      requestBody: {
         content: {
           "application/json": {
             username: string;
@@ -315,6 +315,75 @@ export interface paths {
         };
       };
     };
+    trace?: never;
+  };
+  "/api/v1/advisor/recommend": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Recommend laptops from structured preferences */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": components["schemas"]["AdvisorRequest"];
+        };
+      };
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AdvisorResult"];
+            };
+          };
+        };
+        /** @description Invalid preferences */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Too many advisor requests */
+        429: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
     trace?: never;
   };
   "/api/v1/products": {
@@ -596,7 +665,7 @@ export interface paths {
         path?: never;
         cookie?: never;
       };
-      requestBody?: {
+      requestBody: {
         content: {
           "application/json": {
             productId: number;
@@ -712,7 +781,7 @@ export interface paths {
         };
         cookie?: never;
       };
-      requestBody?: {
+      requestBody: {
         content: {
           "application/json": {
             quantity: number;
@@ -781,7 +850,7 @@ export interface paths {
         path?: never;
         cookie?: never;
       };
-      requestBody?: {
+      requestBody: {
         content: {
           "application/json": {
             receiverName: string;
@@ -1209,7 +1278,7 @@ export interface paths {
         };
         cookie?: never;
       };
-      requestBody?: {
+      requestBody: {
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2169,7 +2238,7 @@ export interface paths {
         };
         cookie?: never;
       };
-      requestBody?: {
+      requestBody: {
         content: {
           "application/json": {
             /** @enum {string} */
@@ -2714,7 +2783,7 @@ export interface paths {
         };
         cookie?: never;
       };
-      requestBody?: {
+      requestBody: {
         content: {
           "application/json": {
             note: string;
@@ -2794,7 +2863,7 @@ export interface paths {
         path?: never;
         cookie?: never;
       };
-      requestBody?: {
+      requestBody: {
         content: {
           "application/json": {
             productId: number;
@@ -3005,6 +3074,28 @@ export interface components {
       batteryWh: number | null;
       weightGrams: number | null;
       warrantyMonths: number | null;
+    };
+    AdvisorRequest: {
+      budgetMax: number;
+      /** @enum {string} */
+      usage: "CODING" | "GAMING" | "OFFICE" | "CREATIVE";
+      priorities: ("PERFORMANCE" | "PORTABILITY" | "BATTERY" | "DISPLAY" | "VALUE")[];
+      minRamGb?: 8 | 16 | 32;
+      workloads?: ("DOCKER_VM" | "ESPORTS" | "AAA_GAMING" | "PHOTO_VIDEO" | "CAD_3D")[];
+      note?: string;
+    };
+    AdvisorRecommendation: {
+      product: components["schemas"]["Product"];
+      matchScore: number;
+      highlights: string[];
+      reason: string;
+      tradeoffs: string[];
+    };
+    AdvisorResult: {
+      /** @enum {string} */
+      mode: "ai_enhanced" | "rule_based";
+      recommendations: components["schemas"]["AdvisorRecommendation"][];
+      suggestions: string[];
     };
     Cart: {
       items: {

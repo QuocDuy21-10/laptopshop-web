@@ -22,8 +22,8 @@ export default async function HomePage() {
             <Link href="/products" className={buttonClassName({ size: "lg" })}>
               Xem tất cả laptop
             </Link>
-            <Link href="/products?target=GAMING" className={buttonClassName({ variant: "secondary", size: "lg" })}>
-              Laptop gaming
+            <Link href="/advisor" className={buttonClassName({ variant: "secondary", size: "lg" })}>
+              Tư vấn chọn laptop
             </Link>
           </div>
         </div>

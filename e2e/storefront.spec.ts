@@ -96,3 +96,37 @@ test("log out", async ({ page, request }) => {
   await page.goto("/account");
   await expect(page).toHaveURL(/\/login\?next=%2Faccount/);
 });
+
+async function completeAdvisor(page: import("@playwright/test").Page) {
+  await page.goto("/advisor");
+  await page.getByLabel(/Ngân sách tối đa/).fill("40000000");
+  await page.getByLabel("Lập trình / CNTT").check();
+  await page.getByRole("button", { name: "Tiếp tục" }).click();
+  await page.getByRole("checkbox", { name: "Hiệu năng" }).check();
+  await page.getByRole("button", { name: "Tiếp tục" }).click();
+  await page.getByRole("radio", { name: "8 GB" }).check();
+  await page.getByRole("checkbox", { name: "Docker / máy ảo" }).check();
+  await page.getByRole("button", { name: "Tiếp tục" }).click();
+  await page.getByRole("button", { name: "Nhận tư vấn" }).click();
+  await expect(page.getByRole("heading", { name: "Laptop phù hợp với bạn" })).toBeFocused();
+}
+
+test("public advisor recommends three laptops and reuses compare", async ({ page }) => {
+  await completeAdvisor(page);
+  await expect(page.getByRole("article")).toHaveCount(3);
+  await expect(page.getByRole("article").first()).toContainText(/\d+\/100/);
+  const cards = page.getByRole("article");
+  await cards.nth(0).getByRole("button", { name: /^So sánh / }).click();
+  await cards.nth(1).getByRole("button", { name: /^So sánh / }).click();
+  await page.getByRole("complementary", { name: "So sánh sản phẩm" }).getByRole("link", { name: "So sánh (2)" }).click();
+  await expect(page).toHaveURL(/\/compare\?ids=\d+,\d+$/);
+  await expect(page.getByRole("columnheader")).toHaveCount(2);
+});
+
+test("advisor remains usable without horizontal overflow at 320px", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 800 });
+  await completeAdvisor(page);
+  await expect(page.getByRole("heading", { name: "Laptop phù hợp với bạn" })).toBeFocused();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await expect(page.getByRole("button", { name: "Sửa tiêu chí" })).not.toBeVisible();
+});

@@ -22,6 +22,7 @@ export async function Header() {
           LaptopShop
         </Link>
         <nav aria-label="Nhu cầu" className={styles.nav}>
+          <Link href="/advisor">Tư vấn chọn laptop</Link>
           {targets.slice(0, 4).map((t) => (
             <Link key={t.value} href={`/products?target=${t.value}`}>
               {t.name}
