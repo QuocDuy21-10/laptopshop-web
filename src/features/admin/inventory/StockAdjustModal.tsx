@@ -1,6 +1,7 @@
 "use client";
 
 import { App, Form, Input, InputNumber, Modal, Radio } from "antd";
+import { useRef } from "react";
 import { errorMessage } from "@/lib/api/errors";
 import type { Product } from "@/lib/api/types";
 import { setServerErrors } from "../form-errors";
@@ -12,14 +13,26 @@ export function StockAdjustModal({ product, onClose }: { product: Product; onClo
   const { message } = App.useApp();
   const [form] = Form.useForm<Values>();
   const adjust = useAdjustStock();
+  const keyRef = useRef<{ fingerprint: string; key: string } | undefined>(undefined);
   const reason = Form.useWatch("reason", form) ?? "RESTOCK";
   const delta = Form.useWatch("delta", form);
 
-  const onFinish = ({ reason, delta, note }: Values) =>
+  const onFinish = ({ reason, delta, note }: Values) => {
+    const body = {
+      productId: product.id,
+      delta: delta ?? 0,
+      reason,
+      note: note?.trim() ?? "",
+    } satisfies AdjustBody;
+    const fingerprint = JSON.stringify(body);
+    if (!keyRef.current || keyRef.current.fingerprint !== fingerprint) {
+      keyRef.current = { fingerprint, key: crypto.randomUUID() };
+    }
     adjust.mutate(
-      { productId: product.id, delta: delta ?? 0, reason, ...(note?.trim() ? { note: note.trim() } : {}) },
+      { body, idempotencyKey: keyRef.current.key },
       {
         onSuccess: () => {
+          keyRef.current = undefined;
           message.success("Đã cập nhật tồn kho");
           onClose();
         },
@@ -29,6 +42,7 @@ export function StockAdjustModal({ product, onClose }: { product: Product; onClo
         },
       },
     );
+  };
 
   return (
     <Modal
@@ -40,7 +54,13 @@ export function StockAdjustModal({ product, onClose }: { product: Product; onClo
       onOk={() => form.submit()}
       confirmLoading={adjust.isPending}
     >
-      <Form form={form} layout="vertical" disabled={adjust.isPending} onFinish={onFinish} initialValues={{ reason: "RESTOCK" }}>
+      <Form
+        form={form}
+        layout="vertical"
+        disabled={adjust.isPending}
+        onFinish={onFinish}
+        initialValues={{ reason: "RESTOCK" }}
+      >
         <Form.Item name="reason" label="Loại">
           <Radio.Group
             options={[
@@ -57,9 +77,16 @@ export function StockAdjustModal({ product, onClose }: { product: Product; onClo
             { required: true, message: "Nhập số lượng" },
             {
               validator: (_, v?: number) =>
-                v === undefined || (v !== 0 && Math.abs(v) <= 10000 && (reason === "CORRECTION" || v > 0))
+                v === undefined ||
+                (v !== 0 && Math.abs(v) <= 10000 && (reason === "CORRECTION" || v > 0))
                   ? Promise.resolve()
-                  : Promise.reject(new Error(reason === "RESTOCK" ? "Nhập hàng phải là số dương" : "Số lượng khác 0, tối đa 10.000")),
+                  : Promise.reject(
+                      new Error(
+                        reason === "RESTOCK"
+                          ? "Nhập hàng phải là số dương"
+                          : "Số lượng khác 0, tối đa 10.000",
+                      ),
+                    ),
             },
           ]}
         >
@@ -70,7 +97,7 @@ export function StockAdjustModal({ product, onClose }: { product: Product; onClo
           label="Ghi chú"
           rules={[
             { max: 500, message: "Tối đa 500 ký tự" },
-            ...(reason === "CORRECTION" ? [{ required: true, whitespace: true, message: "Nhập lý do điều chỉnh" }] : []),
+            { required: true, whitespace: true, message: "Nhập ghi chú điều chỉnh" },
           ]}
         >
           <Input.TextArea rows={2} maxLength={500} />

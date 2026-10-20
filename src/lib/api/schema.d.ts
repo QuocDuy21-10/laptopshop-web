@@ -2859,7 +2859,9 @@ export interface paths {
     post: {
       parameters: {
         query?: never;
-        header?: never;
+        header: {
+          "Idempotency-Key": string;
+        };
         path?: never;
         cookie?: never;
       };
@@ -2870,11 +2872,26 @@ export interface paths {
             delta: number;
             /** @enum {string} */
             reason: "RESTOCK" | "CORRECTION";
-            note?: string;
+            note: string;
           };
         };
       };
       responses: {
+        /** @description Replayed adjustment */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: {
+                product: components["schemas"]["Product"];
+                movement: components["schemas"]["StockMovement"];
+                created: boolean;
+              };
+            };
+          };
+        };
         /** @description Adjusted */
         201: {
           headers: {
@@ -2885,6 +2902,7 @@ export interface paths {
               data: {
                 product: components["schemas"]["Product"];
                 movement: components["schemas"]["StockMovement"];
+                created: boolean;
               };
             };
           };
@@ -2925,7 +2943,7 @@ export interface paths {
             "application/json": components["schemas"]["Error"];
           };
         };
-        /** @description Stock would go negative */
+        /** @description Stock would go negative or idempotency key was reused */
         409: {
           headers: {
             [name: string]: unknown;
@@ -3014,6 +3032,391 @@ export interface paths {
     };
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/inventory/receipts": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List stock receipts */
+    get: {
+      parameters: {
+        query?: {
+          page?: number;
+          pageSize?: number;
+          status?: "DRAFT" | "POSTED";
+          q?: string;
+          from?: string;
+          to?: string;
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["StockReceiptSummary"][];
+              meta: {
+                page: number;
+                pageSize: number;
+                total: number;
+                totalPages: number;
+              };
+            };
+          };
+        };
+        /** @description Invalid filter */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    /** Create a draft stock receipt */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            supplierName?: string;
+            note?: string;
+            items: {
+              productId: number;
+              quantity: number;
+              unitCost?: number | null;
+            }[];
+          };
+        };
+      };
+      responses: {
+        /** @description Created */
+        201: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["StockReceiptDetail"];
+            };
+          };
+        };
+        /** @description Invalid input */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Product unavailable */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/inventory/receipts/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get stock receipt detail */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: string;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["StockReceiptDetail"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Update a draft stock receipt */
+    patch: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: string;
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            supplierName?: string;
+            note?: string;
+            items?: {
+              productId: number;
+              quantity: number;
+              unitCost?: number | null;
+            }[];
+          };
+        };
+      };
+      responses: {
+        /** @description Updated */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["StockReceiptDetail"];
+            };
+          };
+        };
+        /** @description Invalid input */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Receipt is not a draft or product unavailable */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    trace?: never;
+  };
+  "/api/v1/admin/inventory/receipts/{id}/post": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Post a stock receipt */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: string;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Posted or replayed */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: {
+                receipt: components["schemas"]["StockReceiptDetail"];
+                movements: components["schemas"]["StockMovement"][];
+                created: boolean;
+              };
+            };
+          };
+        };
+        /** @description Receipt is empty */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Invalid status or product unavailable */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
     delete?: never;
     options?: never;
     head?: never;
@@ -3277,8 +3680,13 @@ export interface components {
       productId: number;
       productName: string;
       delta: number;
+      balanceBefore: number | null;
+      balanceAfter: number | null;
       reason: string;
       orderId: number | null;
+      /** Format: uuid */
+      receiptId: string | null;
+      receiptCode: string | null;
       actor: {
         id: number;
         name: string;
@@ -3286,6 +3694,60 @@ export interface components {
       note: string | null;
       /** Format: date-time */
       createdAt: string;
+    };
+    StockReceiptItem: {
+      id: number;
+      productId: number;
+      productName: string;
+      image: string | null;
+      isActive: boolean;
+      quantity: number;
+      unitCost: number | null;
+    };
+    StockReceiptSummary: {
+      /** Format: uuid */
+      id: string;
+      code: string;
+      supplierName: string | null;
+      /** @enum {string} */
+      status: "DRAFT" | "POSTED";
+      note: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      postedAt: string | null;
+      createdBy: {
+        id: number;
+        name: string;
+      } | null;
+      postedBy: {
+        id: number;
+        name: string;
+      } | null;
+      itemCount: number;
+    };
+    StockReceiptDetail: {
+      /** Format: uuid */
+      id: string;
+      code: string;
+      supplierName: string | null;
+      /** @enum {string} */
+      status: "DRAFT" | "POSTED";
+      note: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      postedAt: string | null;
+      createdBy: {
+        id: number;
+        name: string;
+      } | null;
+      postedBy: {
+        id: number;
+        name: string;
+      } | null;
+      items: components["schemas"]["StockReceiptItem"][];
+      movements: components["schemas"]["StockMovement"][];
     };
   };
   responses: never;
