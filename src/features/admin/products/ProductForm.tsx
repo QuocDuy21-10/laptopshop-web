@@ -8,7 +8,7 @@ import { useState } from "react";
 import { SPEC_ROWS } from "@/features/compare/specs";
 import { errorMessage } from "@/lib/api/errors";
 import { toFormData } from "@/lib/api/multipart";
-import type { Product } from "@/lib/api/types";
+import type { FilterOptions, Product } from "@/lib/api/types";
 import styles from "../admin.module.scss";
 import { StockAdjustModal } from "../inventory/StockAdjustModal";
 import { setServerErrors } from "../form-errors";
@@ -26,11 +26,15 @@ export type ProductFormValues = {
   detailDesc: string;
   image?: UploadFile[];
   cpu?: string | null;
+  cpuBrand?: string | null;
   gpu?: string | null;
+  gpuBrand?: string | null;
+  gpuType?: string | null;
   ramGb?: number | null;
   storageGb?: number | null;
   screenSizeInch?: number | null;
   screenResolution?: string | null;
+  panelType?: string | null;
   refreshRateHz?: number | null;
   batteryWh?: number | null;
   weightGrams?: number | null;
@@ -38,11 +42,15 @@ export type ProductFormValues = {
 };
 
 const SPEC_KEYS = SPEC_ROWS.map((r) => r.key);
+const NORMALIZED_SPEC_KEYS = ["cpuBrand", "gpuBrand", "gpuType", "panelType"] as const;
+
+const facetOptions = (options: FilterOptions | undefined, key: string) =>
+  options?.facetDefinitions?.find((definition) => definition.key === key)?.options?.map((o) => ({ value: o.value, label: o.name }));
 
 // toFormData drops null, which would leave a stored spec untouched; "" makes the API clear it
 export const toProductFormData = ({ image, ...fields }: ProductFormValues) => {
   const specs = Object.fromEntries(
-    SPEC_KEYS.map((key) => {
+    [...SPEC_KEYS, ...NORMALIZED_SPEC_KEYS].map((key) => {
       const value = fields[key];
       return [key, typeof value === "string" ? value.trim() : (value ?? "")];
     }),
@@ -90,11 +98,15 @@ export function ProductForm({ product }: { product?: Product }) {
             shortDesc: product.shortDesc ?? "",
             detailDesc: product.detailDesc ?? "",
             cpu: product.cpu ?? undefined,
+            cpuBrand: product.cpuBrand ?? undefined,
             gpu: product.gpu ?? undefined,
+            gpuBrand: product.gpuBrand ?? undefined,
+            gpuType: product.gpuType ?? undefined,
             ramGb: product.ramGb ?? undefined,
             storageGb: product.storageGb ?? undefined,
             screenSizeInch: product.screenSizeInch ?? undefined,
             screenResolution: product.screenResolution ?? undefined,
+            panelType: product.panelType ?? undefined,
             refreshRateHz: product.refreshRateHz ?? undefined,
             batteryWh: product.batteryWh ?? undefined,
             weightGrams: product.weightGrams ?? undefined,
@@ -160,8 +172,17 @@ export function ProductForm({ product }: { product?: Product }) {
           <Form.Item name="cpu" label="CPU" rules={[{ max: 255, message: "Tối đa 255 ký tự" }]}>
             <Input />
           </Form.Item>
+          <Form.Item name="cpuBrand" label="Hãng CPU">
+            <Select options={facetOptions(options, "cpuBrand")} />
+          </Form.Item>
           <Form.Item name="gpu" label="Card đồ hoạ" rules={[{ max: 255, message: "Tối đa 255 ký tự" }]}>
             <Input />
+          </Form.Item>
+          <Form.Item name="gpuBrand" label="Hãng GPU">
+            <Select options={facetOptions(options, "gpuBrand")} />
+          </Form.Item>
+          <Form.Item name="gpuType" label="Loại GPU">
+            <Select options={facetOptions(options, "gpuType")} />
           </Form.Item>
           <Form.Item name="ramGb" label="RAM (GB)">
             <InputNumber min={1} max={256} precision={0} className={styles.full} />
@@ -178,6 +199,12 @@ export function ProductForm({ product }: { product?: Product }) {
             rules={[{ max: 50, message: "Tối đa 50 ký tự" }]}
           >
             <Input placeholder="1920x1080" />
+          </Form.Item>
+          <Form.Item label="Cấp độ độ phân giải">
+            <span>{product?.resolutionTier ?? "Tự động tính từ độ phân giải"}</span>
+          </Form.Item>
+          <Form.Item name="panelType" label="Loại tấm nền">
+            <Select options={facetOptions(options, "panelType")} />
           </Form.Item>
           <Form.Item name="refreshRateHz" label="Tần số quét (Hz)">
             <InputNumber min={30} max={500} precision={0} className={styles.full} />
