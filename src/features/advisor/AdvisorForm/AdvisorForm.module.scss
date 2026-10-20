@@ -1,0 +1,121 @@
+@use "mixins" as *;
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-six);
+  padding: var(--space-six);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.header {
+  display: grid;
+  gap: var(--space-one);
+}
+
+.step {
+  margin: 0;
+  color: var(--color-primary);
+
+  @include text(label-sm);
+}
+
+.title {
+  @include text(headline-sm);
+}
+
+.content,
+.fieldset {
+  display: grid;
+  gap: var(--space-three);
+}
+
+.fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.legend,
+.textareaLabel {
+  @include text(label-md);
+}
+
+.choiceGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-three);
+}
+
+.choice {
+  display: flex;
+  align-items: center;
+  gap: var(--space-two);
+  min-height: var(--control-md);
+  padding: var(--space-three);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+
+  @include text(body-md);
+}
+
+.choice:has(input:checked) {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.choice input {
+  accent-color: var(--color-primary);
+}
+
+.textarea {
+  min-height: 132px;
+  padding: var(--space-three);
+  resize: vertical;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-foreground);
+  font: inherit;
+}
+
+.hint {
+  margin: 0;
+  color: var(--color-foreground-muted);
+
+  @include text(body-sm);
+}
+
+.fieldError {
+  margin: 0;
+  color: var(--color-error);
+
+  @include text(body-sm);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-three);
+}
+
+@include down(sm) {
+  .form {
+    padding: var(--space-four);
+  }
+
+  .choiceGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    justify-content: stretch;
+  }
+
+  .actions > button {
+    flex: 1;
+  }
+}
