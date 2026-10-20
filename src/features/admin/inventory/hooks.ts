@@ -22,19 +22,16 @@ export type ReceiptCreateBody = NonNullable<
 export type ReceiptUpdateBody = NonNullable<
   paths["/api/v1/admin/inventory/receipts/{id}"]["patch"]["requestBody"]
 >["content"]["application/json"];
-type LegacyAdjustBody = Omit<AdjustBody, "note"> & { note?: string };
-export type AdjustInput = LegacyAdjustBody | { body: LegacyAdjustBody; idempotencyKey?: string };
+export type AdjustInput = { body: AdjustBody; idempotencyKey: string };
 
 export function useAdjustStock() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (input: AdjustInput) => {
-      const body = "body" in input ? input.body : input;
-      const idempotencyKey = "body" in input ? input.idempotencyKey : undefined;
+    mutationFn: ({ body, idempotencyKey }: AdjustInput) => {
       return unwrap(
         api.POST("/api/v1/admin/inventory/adjustments", {
-          body: { ...body, note: body.note ?? "" } as AdjustBody,
-          ...(idempotencyKey ? { headers: { "Idempotency-Key": idempotencyKey } } : {}),
+          body,
+          headers: { "Idempotency-Key": idempotencyKey },
         }),
       );
     },
