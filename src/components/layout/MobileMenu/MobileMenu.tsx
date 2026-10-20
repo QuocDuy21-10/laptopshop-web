@@ -26,6 +26,9 @@ export function MobileMenu({ targets }: { targets: FilterOption[] }) {
     >
       <SearchForm />
       <nav aria-label="Danh mục" className={styles.nav}>
+        <Link href="/advisor" onClick={close}>
+          Tư vấn chọn laptop
+        </Link>
         <Link href="/products" onClick={close}>
           Tất cả laptop
         </Link>
