@@ -11,6 +11,8 @@ import styles from "./AdvisorView.module.scss";
 export function AdvisorView() {
   const advisor = useAdvisor();
   const [result, setResult] = useState<AdvisorResult | null>(null);
+  const [lastInput, setLastInput] = useState<AdvisorFormInput | null>(null);
+  const [formKey, setFormKey] = useState(0);
   const headingRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
@@ -18,15 +20,29 @@ export function AdvisorView() {
   }, [result]);
 
   const submit = async (input: AdvisorFormInput) => {
-    const body = advisorFormSchema.parse(input);
-    const response = await advisor.mutateAsync(body);
-    setResult(response.data);
+    setLastInput(input);
+    try {
+      const body = advisorFormSchema.parse(input);
+      const response = await advisor.mutateAsync(body);
+      setResult(response.data);
+    } catch {
+      // TanStack Query owns the error state; keeping the form mounted preserves the user's input.
+    }
+  };
+  const retry = () => {
+    if (lastInput) void submit(lastInput);
+  };
+  const edit = () => {
+    advisor.reset();
+    setResult(null);
+    setLastInput(null);
+    setFormKey((key) => key + 1);
   };
 
   return (
     <div className={styles.view}>
-      <AdvisorForm onSubmit={submit} pending={advisor.isPending} serverError={advisor.error} />
-      <AdvisorResults result={result} loading={advisor.isPending} onEdit={() => setResult(null)} headingRef={headingRef} />
+      <AdvisorForm key={formKey} onSubmit={submit} onRetry={retry} pending={advisor.isPending} serverError={advisor.error} />
+      <AdvisorResults result={result} loading={advisor.isPending} onEdit={edit} headingRef={headingRef} />
     </div>
   );
 }

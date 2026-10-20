@@ -13,6 +13,7 @@ import styles from "./AdvisorForm.module.scss";
 
 type Props = {
   onSubmit: (input: AdvisorFormInput) => void | Promise<void>;
+  onRetry?: () => void;
   pending: boolean;
   serverError?: unknown;
 };
@@ -38,7 +39,7 @@ const workloadOptions = [
   ["CAD_3D", "CAD / 3D"],
 ] as const;
 
-export function AdvisorForm({ onSubmit, pending, serverError }: Props) {
+export function AdvisorForm({ onSubmit, onRetry, pending, serverError }: Props) {
   const [step, setStep] = useState(1);
   const {
     control,
@@ -84,7 +85,11 @@ export function AdvisorForm({ onSubmit, pending, serverError }: Props) {
           Cho biết nhu cầu của bạn
         </h2>
       </div>
-      {formError && <Alert tone="error" title={formError} />}
+      {formError && (
+        <Alert tone="error" title={formError}>
+          {onRetry && <Button variant="secondary" onClick={onRetry} disabled={pending}>Thử lại</Button>}
+        </Alert>
+      )}
 
       {step === 1 && (
         <div className={styles.content}>

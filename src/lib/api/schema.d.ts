@@ -3081,7 +3081,7 @@ export interface components {
       usage: "CODING" | "GAMING" | "OFFICE" | "CREATIVE";
       priorities: ("PERFORMANCE" | "PORTABILITY" | "BATTERY" | "DISPLAY" | "VALUE")[];
       minRamGb?: 8 | 16 | 32;
-      workloads: ("DOCKER_VM" | "ESPORTS" | "AAA_GAMING" | "PHOTO_VIDEO" | "CAD_3D")[];
+      workloads?: ("DOCKER_VM" | "ESPORTS" | "AAA_GAMING" | "PHOTO_VIDEO" | "CAD_3D")[];
       note?: string;
     };
     AdvisorRecommendation: {

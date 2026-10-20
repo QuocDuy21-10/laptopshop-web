@@ -53,7 +53,40 @@ describe("AdvisorView", () => {
     await userEvent.click(screen.getByRole("button", { name: "Nhận tư vấn" }));
     const heading = await screen.findByRole("heading", { name: "Laptop phù hợp với bạn" });
     await waitFor(() => expect(heading).toHaveFocus());
-    expect(screen.getByRole("status")).toBeInTheDocument();
+    expect(screen.getAllByRole("status").length).toBeGreaterThan(0);
     expect(fetchMock).toHaveBeenCalledOnce();
+  });
+
+  it("focuses the empty result and resets the wizard when editing criteria", async () => {
+    const fetchMock = mockFetch();
+    fetchMock.mockResolvedValue(json(200, { data: { mode: "rule_based", recommendations: [], suggestions: ["Tăng ngân sách"] } }));
+    renderWithQuery(<AdvisorView />);
+    await userEvent.type(screen.getByLabelText(/Ngân sách tối đa/), "20000000");
+    await userEvent.click(screen.getByLabelText("Lập trình / CNTT"));
+    await userEvent.click(screen.getByRole("button", { name: "Tiếp tục" }));
+    await userEvent.click(screen.getByRole("button", { name: "Tiếp tục" }));
+    await userEvent.click(screen.getByRole("button", { name: "Tiếp tục" }));
+    await userEvent.click(screen.getByRole("button", { name: "Nhận tư vấn" }));
+    const heading = await screen.findByRole("heading", { name: "Laptop phù hợp với bạn" });
+    await waitFor(() => expect(heading).toHaveFocus());
+    await userEvent.click(screen.getByRole("button", { name: "Sửa tiêu chí" }));
+    expect(screen.getByText("Bước 1/4")).toBeInTheDocument();
+  });
+
+  it("offers a retry after a network failure and preserves the wizard", async () => {
+    const fetchMock = mockFetch();
+    fetchMock.mockRejectedValueOnce(new TypeError("Failed to fetch")).mockResolvedValueOnce(
+      json(200, { data: { mode: "rule_based", recommendations: [{ product, matchScore: 86, highlights: [], reason: "Lý do", tradeoffs: [] }], suggestions: [] } }),
+    );
+    renderWithQuery(<AdvisorView />);
+    await userEvent.type(screen.getByLabelText(/Ngân sách tối đa/), "20000000");
+    await userEvent.click(screen.getByLabelText("Lập trình / CNTT"));
+    await userEvent.click(screen.getByRole("button", { name: "Tiếp tục" }));
+    await userEvent.click(screen.getByRole("button", { name: "Tiếp tục" }));
+    await userEvent.click(screen.getByRole("button", { name: "Tiếp tục" }));
+    await userEvent.click(screen.getByRole("button", { name: "Nhận tư vấn" }));
+    await screen.findByRole("button", { name: "Thử lại" });
+    await userEvent.click(screen.getByRole("button", { name: "Thử lại" }));
+    await waitFor(() => expect(screen.getByRole("heading", { name: "Laptop phù hợp với bạn" })).toHaveFocus());
   });
 });
