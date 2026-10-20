@@ -1,0 +1,13 @@
+@use "mixins" as *;
+
+.view {
+  display: grid;
+  gap: var(--space-eight);
+}
+
+@include up(lg) {
+  .view {
+    grid-template-columns: minmax(280px, 0.72fr) minmax(0, 1.28fr);
+    align-items: start;
+  }
+}
