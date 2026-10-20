@@ -1,0 +1,28 @@
+@use "mixins" as *;
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-four);
+}
+
+.title {
+  @include text(headline-md);
+}
+
+.title:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 4px;
+}
+
+.grid,
+.loading {
+  display: grid;
+  gap: var(--space-four);
+}
+
+@include up(lg) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

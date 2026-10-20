@@ -1,0 +1,73 @@
+@use "mixins" as *;
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-three);
+  padding: var(--space-four);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-two);
+}
+
+.title {
+  color: var(--color-primary);
+
+  @include text(title-md);
+}
+
+.highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-one);
+}
+
+.highlights span {
+  padding: var(--space-one) var(--space-two);
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-full);
+  color: var(--color-primary);
+
+  @include text(label-sm);
+}
+
+.reason {
+  margin: 0;
+  color: var(--color-foreground-muted);
+
+  @include text(body-md);
+}
+
+.tradeoffs {
+  color: var(--color-foreground-muted);
+
+  @include text(body-sm);
+}
+
+.tradeoffs strong {
+  color: var(--color-foreground);
+}
+
+.tradeoffs ul {
+  margin: var(--space-one) 0 0;
+  padding-left: var(--space-five);
+}
+
+.card > article {
+  margin-top: var(--space-two);
+}
+
+@include down(sm) {
+  .heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
