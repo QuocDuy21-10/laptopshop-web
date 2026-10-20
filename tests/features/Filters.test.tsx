@@ -18,13 +18,13 @@ beforeEach(() => router.push.mockClear());
 
 describe("Filters", () => {
   it("adds a factory and resets to page 1", async () => {
-    render(<Filters options={options} filters={{ factory: [], target: [], price: [], page: 3 }} />);
+    render(<Filters options={{ ...options, facetDefinitions: [] }} filters={{ factory: [], target: [], price: [], cpuBrand: [], gpuBrand: [], gpuType: [], ramGb: [], storageGb: [], screenSize: [], resolutionTier: [], panelType: [], page: 3 }} />);
     await userEvent.click(screen.getByRole("checkbox", { name: "Asus" }));
     expect(router.push).toHaveBeenCalledWith("/products?factory=ASUS", { scroll: false });
   });
 
   it("removes a selected price range and keeps the search", async () => {
-    render(<Filters options={options} filters={{ factory: [], target: [], price: ["under-10m"], q: "tuf", page: 1 }} />);
+    render(<Filters options={{ ...options, facetDefinitions: [] }} filters={{ factory: [], target: [], price: ["under-10m"], cpuBrand: [], gpuBrand: [], gpuType: [], ramGb: [], storageGb: [], screenSize: [], resolutionTier: [], panelType: [], q: "tuf", page: 1 }} />);
     const box = screen.getByRole("checkbox", { name: "Dưới 10 triệu" });
     expect(box).toBeChecked();
     await userEvent.click(box);

@@ -25,7 +25,7 @@ export function ActiveFilterChips({ options, filters }: { options: FilterOptions
         </li>
       ))}
       <li>
-        <Link href={`/products${toQueryString({ factory: [], target: [], price: [], q: filters.q, sort: filters.sort, page: 1 })}`} className={styles.clear}>
+        <Link href={`/products${toQueryString({ factory: [], target: [], price: [], cpuBrand: [], gpuBrand: [], gpuType: [], ramGb: [], storageGb: [], screenSize: [], resolutionTier: [], panelType: [], q: filters.q, sort: filters.sort, page: 1 })}`} className={styles.clear}>
           Xoá bộ lọc
         </Link>
       </li>
