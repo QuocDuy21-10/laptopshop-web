@@ -20,7 +20,7 @@ export function ReviewForm({ fullName, review, onSubmit }: Props) {
     resolver: zodResolver(reviewSchema),
     defaultValues: { rating: review?.rating, title: review?.title ?? "", content: review?.content ?? "", isAnonymous: review?.isAnonymous },
   });
-  const identityError = formState.errors.isAnonymous?.message ?? (formState.isSubmitted && review?.isAnonymous === undefined && !formState.dirtyFields.isAnonymous ? "Hãy chọn cách hiển thị tên." : undefined);
+  const identityError = formState.errors.isAnonymous?.message ?? (formState.isSubmitted && review?.isAnonymous === undefined ? "Hãy chọn cách hiển thị tên." : undefined);
   const submit = handleSubmit(async (values) => {
     setFormError(null);
     try { await onSubmit(values); } catch (error) {
