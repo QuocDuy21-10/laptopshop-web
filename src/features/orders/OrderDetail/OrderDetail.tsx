@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/Skeleton/Skeleton";
 import { errorMessage, isApiError } from "@/lib/api/errors";
 import { formatDate } from "@/lib/format";
 import { CancelOrderDialog } from "../CancelOrderDialog/CancelOrderDialog";
+import { ReviewAction } from "@/features/reviews/ReviewAction/ReviewAction";
 import { useOrder } from "../hooks";
 import { OrderStatusBadge, PaymentStatusBadge } from "../OrderBadges/OrderBadges";
 import styles from "./OrderDetail.module.scss";
@@ -61,6 +62,7 @@ export function OrderDetail({ id, placed }: { id: number; placed: boolean }) {
               <span className={styles.qty}>
                 <Price value={item.price} size="sm" /> × {item.quantity}
               </span>
+              {o.status === "COMPLETED" && o.paymentStatus === "PAYMENT_SUCCESS" && <ReviewAction productId={item.productId} productName={item.name} />}
             </li>
           ))}
         </ul>
