@@ -1,8 +1,10 @@
 import { describe, expect, it, beforeEach } from "vitest";
 import { screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { useReviewEligibility, useProductReviews } from "@/features/reviews/hooks";
+import { useCreateReview } from "@/features/reviews/hooks";
 import { queryKeys } from "@/lib/api/query-keys";
-import { json, mockFetch, renderWithQuery, urlOf } from "../../utils";
+import { json, lastRequest, mockFetch, renderWithQuery, urlOf } from "../../utils";
 
 function EligibilityHarness({ userId, enabled = true }: { userId?: number; enabled?: boolean }) {
   const query = useReviewEligibility(12, userId, enabled);
@@ -42,5 +44,18 @@ describe("review query hooks", () => {
     renderWithQuery(<PublicAndEligibilityHarness />);
     await waitFor(() => expect(screen.getByTestId("combined")).toHaveTextContent("eligibility-error/reviews-success"));
     expect(screen.getByTestId("combined")).toHaveTextContent("reviews-success");
+  });
+
+  it("posts a review through the generated API and keeps the current user in the eligibility key", async () => {
+    const fetchMock = mockFetch();
+    fetchMock.mockResolvedValue(json(201, { data: { id: 1 } }));
+    function Harness() {
+      const mutation = useCreateReview(12);
+      return <button type="button" onClick={() => mutation.mutate({ rating: 5, content: "Nội dung đủ dài.", isAnonymous: true })}>Gửi</button>;
+    }
+    renderWithQuery(<Harness />);
+    await userEvent.click(screen.getByRole("button", { name: "Gửi" }));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    expect(urlOf(lastRequest(fetchMock))).toContain("/api/v1/products/12/reviews");
   });
 });

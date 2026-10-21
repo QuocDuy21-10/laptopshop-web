@@ -1,0 +1,57 @@
+@use "mixins" as *;
+
+.form {
+  display: grid;
+  gap: var(--space-four);
+}
+
+.fieldset {
+  display: grid;
+  gap: var(--space-two);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.fieldset legend {
+  margin-bottom: var(--space-one);
+
+  @include text(label-md);
+}
+
+.stars {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-two);
+}
+
+.stars label,
+.fieldset > label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-one);
+  min-height: var(--control-md);
+
+  @include text(body-md);
+}
+
+.textareaLabel {
+  @include text(label-md);
+}
+
+.textarea {
+  min-height: 120px;
+  padding: var(--space-three);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-foreground);
+  font: inherit;
+  resize: vertical;
+}
+
+.error {
+  margin: 0;
+  color: var(--color-error);
+
+  @include text(body-sm);
+}

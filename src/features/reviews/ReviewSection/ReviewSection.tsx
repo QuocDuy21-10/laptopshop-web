@@ -2,8 +2,13 @@
 
 import { useState } from "react";
 import { Alert } from "@/components/ui/Alert/Alert";
+import { Button, buttonClassName } from "@/components/ui/Button/Button";
+import Link from "next/link";
+import { useMe } from "@/features/account/useMe";
+import { loginHref } from "@/lib/safe-next";
 import type { ProductReviewsQuery, PublicReview, ReviewSummary as ReviewSummaryData } from "@/lib/api/types";
-import { useProductReviews, useReviewSummary } from "../hooks";
+import { useProductReviews, useReviewEligibility, useReviewSummary } from "../hooks";
+import { ReviewDialog } from "../ReviewDialog/ReviewDialog";
 import { ReviewList } from "../ReviewList/ReviewList";
 import { ReviewSummary } from "../ReviewSummary/ReviewSummary";
 import styles from "./ReviewSection.module.scss";
@@ -18,9 +23,12 @@ export function ReviewSection({ productId, initialSummary, initialPage }: Props)
   const [rating, setRating] = useState<number | undefined>();
   const [sort, setSort] = useState<ProductReviewsQuery["sort"]>("newest");
   const [page, setPage] = useState(1);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const query: ProductReviewsQuery = { page, pageSize: 10, ...(rating ? { rating } : {}), sort };
   const summaryQuery = useReviewSummary(productId);
   const reviewsQuery = useProductReviews(productId, query);
+  const me = useMe();
+  const eligibility = useReviewEligibility(productId, me.data?.id);
   const summary = summaryQuery.data ?? initialSummary;
   const pageData = reviewsQuery.data ?? (page === 1 && !rating && sort === "newest" ? initialPage : { data: [], meta: { page, pageSize: 10, total: 0, totalPages: 0 } });
 
@@ -28,6 +36,9 @@ export function ReviewSection({ productId, initialSummary, initialPage }: Props)
     <section id="reviews" className={styles.section} aria-labelledby="reviews-title">
       <div className={styles.heading}>
         <div><h2 id="reviews-title">Đánh giá từ khách hàng</h2><p>Chỉ hiển thị nhận xét từ đơn hàng đã hoàn tất.</p></div>
+        <div className={styles.action}>
+          {!me.data ? <Link className={buttonClassName({ variant: "secondary" })} href={loginHref(`/products/${productId}#reviews`)}>Đăng nhập để đánh giá</Link> : eligibility.data?.existingReview ? <Button variant="secondary" onClick={() => setDialogOpen(true)}>Sửa đánh giá của tôi</Button> : eligibility.data?.eligible ? <Button onClick={() => setDialogOpen(true)}>Viết đánh giá</Button> : null}
+        </div>
       </div>
       {summaryQuery.isError ? <Alert tone="warning" title="Chưa thể tải thống kê đánh giá" /> : <ReviewSummary summary={summary} />}
       <div className={styles.toolbar}>
@@ -43,6 +54,7 @@ export function ReviewSection({ productId, initialSummary, initialPage }: Props)
         </label>
       </div>
       <ReviewList reviews={pageData.data} isPending={reviewsQuery.isPending && initialPage.data.length > 0} isError={reviewsQuery.isError} onRetry={() => void reviewsQuery.refetch()} page={pageData.meta.page} totalPages={pageData.meta.totalPages} onPage={setPage} />
+      {eligibility.data && <ReviewDialog productId={productId} productName="sản phẩm này" eligibility={eligibility.data} open={dialogOpen} onOpenChange={setDialogOpen} />}
     </section>
   );
 }
