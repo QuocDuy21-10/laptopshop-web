@@ -28,6 +28,14 @@ describe("DesktopFilters and active chips", () => {
     expect(router.push).toHaveBeenCalledWith("/products?cpuBrand=AMD&sort=price_desc&q=tuf", { scroll: false });
   });
 
+  it("keeps rapid selections cumulative while navigation is pending", async () => {
+    const user = userEvent.setup();
+    render(<DesktopFilters definitions={definitions} counts={{ cpuBrand: [{ value: "INTEL", count: 2 }, { value: "AMD", count: 2 }] }} filters={filters} />);
+    await user.click(screen.getByRole("checkbox", { name: "Intel (2)" }));
+    await user.click(screen.getByRole("checkbox", { name: "AMD (2)" }));
+    expect(router.push).toHaveBeenLastCalledWith("/products?cpuBrand=INTEL%2CAMD&sort=price_desc&q=tuf", { scroll: false });
+  });
+
   it("renders and removes advanced scalar and toggle chips", async () => {
     render(<ActiveFilterChips options={options} filters={{ ...filters, cpuBrand: ["INTEL"], minRefreshHz: 144, inStock: true, page: 1 }} />);
     expect(screen.getByText("Intel")).toBeInTheDocument();

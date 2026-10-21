@@ -78,4 +78,21 @@ describe("FilterSheet", () => {
     expect(screen.getByText(/Không thể cập nhật số lượng/)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Áp dụng/ })).toBeEnabled();
   });
+
+  it("does not disable Apply from a superseded preview response", async () => {
+    let resolveFirst!: (value: ReturnType<typeof result>) => void;
+    const first = new Promise<ReturnType<typeof result>>((resolve) => { resolveFirst = resolve; });
+    getFacets.mockReturnValueOnce(first).mockResolvedValue(result(3));
+    renderSheet();
+    fireEvent.click(screen.getByRole("button", { name: /Bộ lọc/ }));
+    fireEvent.click(screen.getByRole("checkbox", { name: /AMD/ }));
+    vi.advanceTimersByTime(300);
+    await vi.runOnlyPendingTimersAsync();
+    fireEvent.click(screen.getByRole("checkbox", { name: /AMD/ }));
+    vi.advanceTimersByTime(300);
+    await vi.runAllTimersAsync();
+    resolveFirst(result(0));
+    await vi.runAllTimersAsync();
+    expect(screen.getByRole("button", { name: /Xem 3 sản phẩm/ })).toBeEnabled();
+  });
 });

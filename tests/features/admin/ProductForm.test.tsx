@@ -93,6 +93,17 @@ describe("ProductForm", () => {
     expect(form.get("ramGb")).toBe("");
   });
 
+  it("clears dependent GPU facets when the GPU text is cleared", async () => {
+    renderAdmin(<ProductForm product={{ ...PRODUCT, gpu: "RTX 4060", gpuBrand: "NVIDIA", gpuType: "DEDICATED" }} />);
+    await userEvent.clear(screen.getByLabelText("Card đồ hoạ"));
+    await userEvent.click(screen.getByRole("button", { name: "Lưu thay đổi" }));
+    await waitFor(() => expect(mocks.mutate).toHaveBeenCalled());
+    const form = mocks.mutate.mock.calls[0][0] as FormData;
+    expect(form.get("gpu")).toBe("");
+    expect(form.get("gpuBrand")).toBe("");
+    expect(form.get("gpuType")).toBe("");
+  });
+
   it("shows stock read-only when editing and does not send it", async () => {
     renderAdmin(<ProductForm product={PRODUCT} />);
     expect(screen.getByRole("button", { name: "Điều chỉnh kho" })).toBeInTheDocument();

@@ -170,19 +170,19 @@ export function ProductForm({ product }: { product?: Product }) {
         <Divider>Thông số kỹ thuật</Divider>
         <div className={styles.row}>
           <Form.Item name="cpu" label="CPU" rules={[{ max: 255, message: "Tối đa 255 ký tự" }]}>
-            <Input />
+            <Input onChange={(event) => { if (!event.target.value.trim()) form.setFieldsValue({ cpuBrand: undefined }); }} />
           </Form.Item>
-          <Form.Item name="cpuBrand" label="Hãng CPU">
-            <Select options={facetOptions(options, "cpuBrand")} />
+          <Form.Item name="cpuBrand" label="Hãng CPU" dependencies={["cpu"]} rules={[({ getFieldValue }) => ({ validator(_, value) { return getFieldValue("cpu")?.trim() && !value ? Promise.reject(new Error("Chọn hãng CPU")) : Promise.resolve(); } })]}>
+            <Select allowClear options={facetOptions(options, "cpuBrand")} />
           </Form.Item>
           <Form.Item name="gpu" label="Card đồ hoạ" rules={[{ max: 255, message: "Tối đa 255 ký tự" }]}>
-            <Input />
+            <Input onChange={(event) => { if (!event.target.value.trim()) form.setFieldsValue({ gpuBrand: undefined, gpuType: undefined }); }} />
           </Form.Item>
-          <Form.Item name="gpuBrand" label="Hãng GPU">
-            <Select options={facetOptions(options, "gpuBrand")} />
+          <Form.Item name="gpuBrand" label="Hãng GPU" dependencies={["gpu"]} rules={[({ getFieldValue }) => ({ validator(_, value) { return getFieldValue("gpu")?.trim() && !value ? Promise.reject(new Error("Chọn hãng GPU")) : Promise.resolve(); } })]}>
+            <Select allowClear options={facetOptions(options, "gpuBrand")} />
           </Form.Item>
-          <Form.Item name="gpuType" label="Loại GPU">
-            <Select options={facetOptions(options, "gpuType")} />
+          <Form.Item name="gpuType" label="Loại GPU" dependencies={["gpu"]} rules={[({ getFieldValue }) => ({ validator(_, value) { return getFieldValue("gpu")?.trim() && !value ? Promise.reject(new Error("Chọn loại GPU")) : Promise.resolve(); } })]}>
+            <Select allowClear options={facetOptions(options, "gpuType")} />
           </Form.Item>
           <Form.Item name="ramGb" label="RAM (GB)">
             <InputNumber min={1} max={256} precision={0} className={styles.full} />
@@ -204,7 +204,7 @@ export function ProductForm({ product }: { product?: Product }) {
             <span>{product?.resolutionTier ?? "Tự động tính từ độ phân giải"}</span>
           </Form.Item>
           <Form.Item name="panelType" label="Loại tấm nền">
-            <Select options={facetOptions(options, "panelType")} />
+            <Select allowClear options={facetOptions(options, "panelType")} />
           </Form.Item>
           <Form.Item name="refreshRateHz" label="Tần số quét (Hz)">
             <InputNumber min={30} max={500} precision={0} className={styles.full} />

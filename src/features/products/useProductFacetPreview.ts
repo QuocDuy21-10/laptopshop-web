@@ -12,7 +12,7 @@ export function useProductFacetPreview(
   filters: ProductFilters,
   enabled: boolean,
   initialData?: ProductFacets,
-): UseQueryResult<ProductFacets> {
+): UseQueryResult<ProductFacets> & { isPreviewFresh: boolean } {
   const [debounced, setDebounced] = useState(filters);
   const [initialKey] = useState(() => toQueryString(filters));
   useEffect(() => {
@@ -22,7 +22,7 @@ export function useProductFacetPreview(
 
   const query = toFacetsApiQuery(debounced);
   const seeded = toQueryString(debounced) === initialKey ? initialData : undefined;
-  return useQuery({
+  const result = useQuery({
     enabled,
     queryKey: queryKeys.productFacets(query),
     initialData: seeded,
@@ -30,4 +30,5 @@ export function useProductFacetPreview(
     retry: false,
     queryFn: async ({ signal }) => (await unwrap(api.GET("/api/v1/products/facets", { params: { query }, signal }))).data,
   });
+  return { ...result, isPreviewFresh: toQueryString(debounced) === toQueryString(filters) };
 }

@@ -24,7 +24,8 @@ export function FilterSheet({ options, filters, facets }: { options: FilterOptio
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState(filters);
   const preview = useProductFacetPreview(draft, open, facets ?? undefined);
-  const countsAvailable = !preview.isError && preview.data !== undefined;
+  const previewFresh = preview.isPreviewFresh && !preview.isFetching;
+  const countsAvailable = previewFresh && !preview.isError && preview.data !== undefined;
   const apply = () => {
     router.push(`/products${toQueryString(draft)}`, { scroll: false });
     setOpen(false);
@@ -50,8 +51,8 @@ export function FilterSheet({ options, filters, facets }: { options: FilterOptio
         {preview.isError && <p role="status" className={styles.error}>Không thể cập nhật số lượng. Bạn vẫn có thể áp dụng bộ lọc.</p>}
         <div className={styles.footer}>
           <Button variant="ghost" onClick={() => setDraft(clearFacets(draft))}>Đặt lại</Button>
-          <Button variant="primary" disabled={!preview.isError && preview.data?.total === 0} onClick={apply}>
-            {preview.data ? `Xem ${preview.data.total} sản phẩm` : "Áp dụng bộ lọc"}
+          <Button variant="primary" disabled={previewFresh && !preview.isError && preview.data?.total === 0} onClick={apply}>
+            {previewFresh && preview.data ? `Xem ${preview.data.total} sản phẩm` : "Áp dụng bộ lọc"}
           </Button>
         </div>
       </Dialog>
