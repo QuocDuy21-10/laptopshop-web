@@ -9,22 +9,28 @@ import { ActiveFilterChips } from "@/features/products/ActiveFilterChips/ActiveF
 import { FilterSheet } from "@/features/products/FilterSheet/FilterSheet";
 import { DesktopFilters } from "@/features/products/DesktopFilters/DesktopFilters";
 import { ProductGrid } from "@/features/products/ProductGrid/ProductGrid";
-import { parseFilters, toApiQuery, toQueryString } from "@/features/products/search-params";
-import { getFilterOptions, listProducts } from "@/features/products/server";
+import { parseFilters, toApiQuery, toFacetsApiQuery, toQueryString } from "@/features/products/search-params";
+import { getFilterOptions, getProductFacets, listProducts } from "@/features/products/server";
+import { productsMetadata } from "@/features/products/metadata";
 import { SortSelect } from "@/features/products/SortSelect/SortSelect";
 import styles from "./page.module.scss";
 
 type Props = { searchParams: Promise<Record<string, string | string[] | undefined>> };
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
-  const { q } = await searchParams;
-  return { title: typeof q === "string" && q.trim() ? `Tìm “${q.trim()}”` : "Laptop" };
+  const raw = await searchParams;
+  const metadata = productsMetadata(raw);
+  const q = raw.q;
+  return { ...metadata, title: typeof q === "string" && q.trim() ? `Tìm “${q.trim()}”` : "Laptop" };
 }
 
 export default async function ProductsPage({ searchParams }: Props) {
   const [raw, options] = await Promise.all([searchParams, getFilterOptions()]);
   const filters = parseFilters(raw, options);
-  const result = await listProducts(toApiQuery(filters));
+  const [result, facets] = await Promise.all([
+    listProducts(toApiQuery(filters)),
+    getProductFacets(toFacetsApiQuery(filters)).catch(() => null),
+  ]);
 
   return (
     <Container className={styles.page}>
@@ -34,11 +40,11 @@ export default async function ProductsPage({ searchParams }: Props) {
       </div>
       <div className={styles.layout}>
         <aside className={styles.sidebar} aria-label="Bộ lọc">
-          <DesktopFilters definitions={options.facetDefinitions ?? []} counts={{}} filters={filters} countsAvailable={false} />
+          <DesktopFilters definitions={options.facetDefinitions ?? []} counts={facets?.groups ?? {}} filters={filters} countsAvailable={facets !== null} />
         </aside>
         <div className={styles.results}>
           <div className={styles.toolbar}>
-            <FilterSheet options={options} filters={filters} />
+            <FilterSheet options={options} filters={filters} facets={facets} />
             <SortSelect filters={filters} />
           </div>
           <ActiveFilterChips options={options} filters={filters} />
