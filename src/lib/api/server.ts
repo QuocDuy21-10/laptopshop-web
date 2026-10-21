@@ -5,11 +5,16 @@ import { env } from "@/lib/env";
 import { toApiError } from "./errors";
 import type { paths } from "./schema";
 
-// openapi-fetch calls fetch(Request), so cache options must be injected here
-export const serverApi = createClient<paths>({
+// openapi-fetch calls fetch(Request), so Next cache options are injected here.
+export const catalogFetch = (request: Request) => fetch(request, { next: { revalidate: 3600 } });
+export const freshFetch = (request: Request) => fetch(request, { cache: "no-store" });
+
+export const catalogServerApi = createClient<paths>({
   baseUrl: env.API_ORIGIN,
-  fetch: (request) => fetch(request, { next: { revalidate: 60 } }),
+  fetch: catalogFetch,
 });
+export const freshServerApi = createClient<paths>({ baseUrl: env.API_ORIGIN, fetch: freshFetch });
+export const serverApi = freshServerApi;
 
 type Result<T> = { data?: T; error?: unknown; response: Response };
 

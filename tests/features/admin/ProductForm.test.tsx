@@ -9,14 +9,23 @@ const mocks = vi.hoisted(() => ({ push: vi.fn(), mutate: vi.fn() }));
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: mocks.push }) }));
 vi.mock("@/features/admin/products/hooks", () => ({
   useProductFilterOptions: () => ({
-    data: { factoryOptions: [{ name: "Dell", value: "DELL" }], targetOptions: [{ name: "Doanh nhân", value: "DOANH-NHAN" }] },
+    data: {
+      factoryOptions: [{ name: "Dell", value: "DELL" }],
+      targetOptions: [{ name: "Doanh nhân", value: "DOANH-NHAN" }],
+      facetDefinitions: [
+        { key: "cpuBrand", name: "CPU", mode: "MULTI", kind: "categorical", options: [{ name: "Intel", value: "INTEL" }] },
+        { key: "gpuBrand", name: "Hãng GPU", mode: "MULTI", kind: "categorical", options: [{ name: "NVIDIA", value: "NVIDIA" }] },
+        { key: "gpuType", name: "Loại GPU", mode: "MULTI", kind: "categorical", options: [{ name: "Rời", value: "DEDICATED" }] },
+        { key: "panelType", name: "Loại tấm nền", mode: "MULTI", kind: "categorical", options: [{ name: "IPS", value: "IPS" }] },
+      ],
+    },
   }),
   useSaveProduct: () => ({ mutate: mocks.mutate, isPending: false }),
 }));
 
 const PRODUCT = {
   id: 7, name: "Dell XPS", price: 30000000, image: "/images/product/xps.png", detailDesc: "Chi tiết", shortDesc: "Ngắn",
-  quantity: 3, sold: 1, factory: "DELL", target: "DOANH-NHAN", isActive: true, cpu: null, gpu: null, ramGb: null, storageGb: null, screenSizeInch: null, screenResolution: null, refreshRateHz: null, batteryWh: null, weightGrams: null, warrantyMonths: null,
+  quantity: 3, sold: 1, factory: "DELL", target: "DOANH-NHAN", isActive: true, cpu: null, cpuBrand: null, gpu: null, gpuBrand: null, gpuType: null, ramGb: null, storageGb: null, screenSizeInch: null, screenResolution: null, resolutionTier: null, panelType: null, refreshRateHz: null, batteryWh: null, weightGrams: null, warrantyMonths: null,
 };
 
 beforeEach(() => vi.clearAllMocks());
@@ -29,7 +38,7 @@ describe("toProductFormData", () => {
       image: [{ uid: "1", name: "a.png", originFileObj: file as UploadFile["originFileObj"] }],
     });
     expect([...form.keys()].sort()).toEqual([
-      "batteryWh", "cpu", "detailDesc", "factory", "gpu", "image", "name", "price", "quantity",
+      "batteryWh", "cpu", "cpuBrand", "detailDesc", "factory", "gpu", "gpuBrand", "gpuType", "image", "name", "panelType", "price", "quantity",
       "ramGb", "refreshRateHz", "screenResolution", "screenSizeInch", "shortDesc", "storageGb",
       "target", "warrantyMonths", "weightGrams",
     ]);
@@ -40,10 +49,13 @@ describe("toProductFormData", () => {
   it("sends specs, trimming text and blanking empty ones so the API clears them", () => {
     const form = toProductFormData({
       name: "A", price: 100, factory: "DELL", target: "DOANH-NHAN", shortDesc: "s", detailDesc: "d",
-      cpu: " Intel Core i5 ", ramGb: 16, screenSizeInch: 15.6, gpu: null, batteryWh: undefined,
+      cpu: " Intel Core i5 ", cpuBrand: "INTEL", ramGb: 16, screenSizeInch: 15.6, gpu: null, gpuBrand: null, gpuType: null, batteryWh: undefined,
     });
     expect(form.get("cpu")).toBe("Intel Core i5");
+    expect(form.get("cpuBrand")).toBe("INTEL");
     expect(form.get("ramGb")).toBe("16");
+    expect(form.get("gpuBrand")).toBe("");
+    expect(form.get("gpuType")).toBe("");
     expect(form.get("screenSizeInch")).toBe("15.6");
     expect(form.get("gpu")).toBe("");
     expect(form.get("batteryWh")).toBe("");
@@ -70,14 +82,26 @@ describe("ProductForm", () => {
   });
 
   it("loads stored specs and sends a cleared one as empty", async () => {
-    renderAdmin(<ProductForm product={{ ...PRODUCT, cpu: "Intel Core i7", ramGb: 16 }} />);
+    renderAdmin(<ProductForm product={{ ...PRODUCT, cpu: "Intel Core i7", cpuBrand: "INTEL", ramGb: 16, resolutionTier: "FHD" }} />);
     expect(screen.getByLabelText("CPU")).toHaveValue("Intel Core i7");
+    expect(screen.getByText("FHD")).toBeInTheDocument();
     await userEvent.clear(screen.getByLabelText("RAM (GB)"));
     await userEvent.click(screen.getByRole("button", { name: "Lưu thay đổi" }));
     await waitFor(() => expect(mocks.mutate).toHaveBeenCalled());
     const form = mocks.mutate.mock.calls[0][0] as FormData;
     expect(form.get("cpu")).toBe("Intel Core i7");
     expect(form.get("ramGb")).toBe("");
+  });
+
+  it("clears dependent GPU facets when the GPU text is cleared", async () => {
+    renderAdmin(<ProductForm product={{ ...PRODUCT, gpu: "RTX 4060", gpuBrand: "NVIDIA", gpuType: "DEDICATED" }} />);
+    await userEvent.clear(screen.getByLabelText("Card đồ hoạ"));
+    await userEvent.click(screen.getByRole("button", { name: "Lưu thay đổi" }));
+    await waitFor(() => expect(mocks.mutate).toHaveBeenCalled());
+    const form = mocks.mutate.mock.calls[0][0] as FormData;
+    expect(form.get("gpu")).toBe("");
+    expect(form.get("gpuBrand")).toBe("");
+    expect(form.get("gpuType")).toBe("");
   });
 
   it("shows stock read-only when editing and does not send it", async () => {

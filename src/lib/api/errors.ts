@@ -35,6 +35,7 @@ const MESSAGES: Record<string, string> = {
   PRODUCT_IN_USE: "Sản phẩm đã có trong đơn hàng nên không thể xoá. Hãy ẩn sản phẩm.",
   EXPORT_TOO_LARGE: "Quá nhiều dòng để xuất. Hãy thu hẹp bộ lọc.",
   PRODUCT_UNAVAILABLE: "Sản phẩm đã ngừng kinh doanh.",
+  INVALID_PRODUCT_SPECS: "Thông số kỹ thuật không nhất quán.",
   USER_HAS_ORDERS: "Người dùng đã có đơn hàng nên không thể xoá.",
   CANNOT_CHANGE_OWN_ROLE: "Bạn không thể đổi vai trò của chính mình.",
   CANNOT_DELETE_SELF: "Bạn không thể xoá tài khoản của chính mình.",

@@ -23,6 +23,45 @@ test("browse, filter, search and open a product", async ({ page }) => {
   await expect(page.getByRole("button", { name: "Mua ngay" })).toBeVisible();
 });
 
+test("dynamic facets keep OR groups, counts and URL navigation stable", async ({ page }) => {
+  await page.goto("/products");
+  const sidebar = page.getByRole("complementary", { name: "Bộ lọc" });
+  await expect(sidebar.getByText(/^Intel \(\d+\)$/).first()).toBeVisible();
+  await sidebar.getByRole("checkbox", { name: /Asus/ }).click();
+  await expect(page).toHaveURL(/factory=ASUS/);
+  await sidebar.getByRole("checkbox", { name: /Dell/ }).click();
+  await expect(page).toHaveURL(/factory=ASUS(?:%2C|,)DELL/);
+  await page.reload();
+  await expect(page).toHaveURL(/factory=ASUS(?:%2C|,)DELL/);
+  await page.getByRole("link", { name: "Bỏ lọc Asus" }).click();
+  await expect(page).toHaveURL(/factory=DELL/);
+  await page.goBack();
+  await expect(page).toHaveURL(/factory=ASUS(?:%2C|,)DELL/);
+});
+
+test("mobile facet draft can cancel or apply without horizontal overflow", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 800 });
+  await page.goto("/products");
+  const initialUrl = page.url();
+  await page.getByRole("button", { name: /^Bộ lọc/ }).click();
+  const dialog = page.getByRole("dialog");
+  await dialog.locator("summary").filter({ hasText: "RAM" }).click();
+  await dialog.getByRole("checkbox", { name: /16 GB/ }).click();
+  await expect(page).toHaveURL(initialUrl);
+  await dialog.getByRole("button", { name: "Đóng" }).click();
+  await page.getByRole("button", { name: /^Bộ lọc/ }).click();
+  const reopened = page.getByRole("dialog");
+  await reopened.locator("summary").filter({ hasText: "RAM" }).click();
+  expect(await reopened.getByRole("checkbox", { name: /16 GB/ }).isChecked()).toBe(false);
+  await reopened.getByRole("checkbox", { name: /16 GB/ }).click();
+  await expect(page.getByRole("dialog").getByRole("button", { name: /Xem \d+ sản phẩm/ })).toBeEnabled();
+  await page.getByRole("dialog").getByRole("button", { name: /Xem \d+ sản phẩm/ }).click();
+  await expect(page).toHaveURL(/ramGb=16/);
+
+  await page.setViewportSize({ width: 320, height: 800 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+});
+
 test("compare two laptops", async ({ page }) => {
   await page.goto("/products");
   const cards = page.getByRole("article");
