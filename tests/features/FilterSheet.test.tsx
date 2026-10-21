@@ -96,4 +96,13 @@ describe("FilterSheet", () => {
     await vi.runAllTimersAsync();
     expect(screen.getByRole("button", { name: /Xem 3 sản phẩm/ })).toBeEnabled();
   });
+
+  it("clears the active minimum-rating facet when resetting mobile filters", () => {
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    render(<QueryClientProvider client={client}><FilterSheet options={options} filters={{ ...filters, minRating: 4 }} facets={result(2).data.data} /></QueryClientProvider>);
+    fireEvent.click(screen.getByRole("button", { name: /Bộ lọc/ }));
+    expect(screen.getByRole("radio", { name: /Từ 4 sao/ })).toBeChecked();
+    fireEvent.click(screen.getByRole("button", { name: "Đặt lại" }));
+    expect(screen.getByRole("radio", { name: /Từ 4 sao/ })).not.toBeChecked();
+  });
 });
