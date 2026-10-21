@@ -41,7 +41,7 @@ export function HelpfulButton({ productId, reviewId, reviewIds, count, helpful, 
     });
   };
   if (selfVoteDisabled) {
-    return <div className={styles.wrapper}><Button variant="secondary" disabled aria-label="Không thể đánh dấu hữu ích">Hữu ích ({currentCount})</Button><span className={styles.hint}>Bạn không thể tự đánh giá review của mình.</span></div>;
+    return <div className={styles.wrapper}><Button variant="secondary" disabled aria-pressed={active} aria-label="Không thể đánh dấu hữu ích">Hữu ích ({currentCount})</Button><span className={styles.hint}>Bạn không thể tự đánh giá review của mình.</span></div>;
   }
   return <Button variant="secondary" className={styles.button} aria-pressed={active} aria-label={`${active ? "Bỏ đánh dấu hữu ích" : "Đánh dấu hữu ích"} (${currentCount})`} loading={mutation.isPending} onClick={toggle}>Hữu ích ({currentCount})</Button>;
 }

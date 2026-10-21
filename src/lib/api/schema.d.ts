@@ -4882,6 +4882,7 @@ export interface components {
         fullName: string | null;
       } | null;
       images: components["schemas"]["ReviewImage"][];
+      helpfulCount: number;
     };
     AdminReviewDetail: {
       id: number;
@@ -4923,6 +4924,7 @@ export interface components {
         fullName: string | null;
       } | null;
       images: components["schemas"]["ReviewImage"][];
+      helpfulCount: number;
     };
     AdminReviewSummary: {
       totalReviews: number;

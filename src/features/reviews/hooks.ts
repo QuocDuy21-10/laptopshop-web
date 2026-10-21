@@ -132,13 +132,15 @@ export function useToggleHelpful(reviewIds: number[], userId?: number) {
       return { previous };
     },
     onError: (_error, _variables, context) => {
-      if (context?.previous) queryClient.setQueryData(key, context.previous);
+      if (context?.previous !== undefined) queryClient.setQueryData(key, context.previous);
+      else queryClient.removeQueries({ queryKey: key, exact: true });
     },
     onSuccess: (result, { reviewId }) => {
       queryClient.setQueryData<number[]>(key, (current) => {
         const currentIds = current ?? [];
         return result.helpful ? [...new Set([...currentIds, reviewId])] : currentIds.filter((id) => id !== reviewId);
       });
+      void queryClient.invalidateQueries({ queryKey: ["reviews"] });
     },
   });
 }
