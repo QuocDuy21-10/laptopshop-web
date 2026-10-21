@@ -29,4 +29,7 @@ export const queryKeys = {
   adminPaymentEvents: (query: object) => ["admin", "payment-events", query] as const,
   adminPaymentEvent: (id: string) => ["admin", "payment-event", id] as const,
   adminRoles: ["admin", "roles"] as const,
+  adminReviews: (query: object) => ["admin", "reviews", query] as const,
+  adminReview: (id: number) => ["admin", "review", id] as const,
+  adminReviewSummary: ["admin", "reviews", "summary"] as const,
 };
