@@ -59,4 +59,17 @@ describe("ReviewSection", () => {
     renderWithQuery(<ReviewSection productId={12} initialSummary={emptySummary} initialPage={{ ...initialPage, data: [] }} />);
     expect(await screen.findByRole("button", { name: "Thử lại" })).toBeInTheDocument();
   });
+
+  it("explains why a signed-in customer cannot review yet", async () => {
+    const fetchMock = mockFetch();
+    fetchMock.mockImplementation(async (input) => {
+      const url = urlOf(input);
+      if (url.includes("/users/me")) return json(200, { data: { id: 7, fullName: "Buyer" } });
+      if (url.includes("eligibility")) return json(200, { data: { eligible: false, reason: "ORDER_NOT_COMPLETED", existingReview: null, willRequireModeration: false } });
+      if (url.includes("summary")) return json(200, { data: emptySummary });
+      return json(200, { data: [], meta: { page: 1, pageSize: 10, total: 0, totalPages: 0 } });
+    });
+    renderWithQuery(<ReviewSection productId={12} initialSummary={emptySummary} initialPage={{ ...initialPage, data: [] }} />);
+    expect(await screen.findByText("Bạn có thể đánh giá sau khi đơn hàng hoàn tất.")).toBeInTheDocument();
+  });
 });

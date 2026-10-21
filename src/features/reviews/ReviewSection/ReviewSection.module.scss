@@ -19,6 +19,14 @@
   @include text(body-sm);
 }
 
+.eligibility {
+  max-width: 280px;
+  margin: 0;
+  color: var(--color-foreground-muted);
+
+  @include text(body-sm);
+}
+
 .toolbar {
   display: flex;
   flex-wrap: wrap;

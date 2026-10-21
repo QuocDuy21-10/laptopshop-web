@@ -28,6 +28,7 @@ describe("ReviewList", () => {
     expect(await screen.findByText("Đánh giá")).toBeInTheDocument();
     expect(await screen.findByText("Nguyễn Văn A")).toBeInTheDocument();
     expect(screen.getByText("Ẩn danh")).toBeInTheDocument();
+    expect(screen.getByLabelText("Lọc trạng thái xoá")).toBeInTheDocument();
     expect(screen.getByText("Rating trung bình").parentElement?.parentElement).toHaveTextContent("4.7");
   });
 });

@@ -34,6 +34,7 @@ export function ReviewList() {
       <Input.Search aria-label="Tìm đánh giá" placeholder="Sản phẩm hoặc khách hàng" allowClear onSearch={(value) => set({ q: value.trim() })} />
       <Select aria-label="Lọc trạng thái" placeholder="Trạng thái" allowClear value={query.status} options={[{ value: "PUBLISHED", label: "Hiển thị" }, { value: "HIDDEN", label: "Đã ẩn" }]} onChange={(value) => set({ status: value })} />
       <Select aria-label="Lọc số sao" placeholder="Số sao" allowClear value={query.rating} options={[1, 2, 3, 4, 5].map((value) => ({ value, label: `${value} sao` }))} onChange={(value) => set({ rating: value })} />
+      <Select aria-label="Lọc trạng thái xoá" placeholder="Đã xoá?" allowClear value={query.deleted} options={[{ value: "true", label: "Đã xoá" }, { value: "false", label: "Đang hoạt động" }]} onChange={(value) => set({ deleted: value })} />
     </Space>
     {reviews.error && <Alert type="error" showIcon title={errorMessage(reviews.error)} />}
     <Table rowKey="id" columns={columns} dataSource={reviews.data?.data} loading={reviews.isFetching} scroll={{ x: "max-content" }} pagination={{ current: page, pageSize: 10, total: reviews.data?.meta.total, showSizeChanger: false, onChange: (nextPage) => set({ page: nextPage }) }} />

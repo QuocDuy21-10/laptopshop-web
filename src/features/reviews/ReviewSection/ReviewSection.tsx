@@ -31,13 +31,20 @@ export function ReviewSection({ productId, initialSummary, initialPage }: Props)
   const eligibility = useReviewEligibility(productId, me.data?.id);
   const summary = summaryQuery.data ?? initialSummary;
   const pageData = reviewsQuery.data ?? (page === 1 && !rating && sort === "newest" ? initialPage : { data: [], meta: { page, pageSize: 10, total: 0, totalPages: 0 } });
+  const eligibilityMessage = eligibility.data?.reason === "NOT_PURCHASED"
+    ? "Chỉ khách đã mua sản phẩm mới có thể đánh giá."
+    : eligibility.data?.reason === "ORDER_NOT_COMPLETED"
+      ? "Bạn có thể đánh giá sau khi đơn hàng hoàn tất."
+      : eligibility.data?.reason === "PAYMENT_NOT_CONFIRMED"
+        ? "Đánh giá sẽ mở sau khi thanh toán được xác nhận."
+        : null;
 
   return (
     <section id="reviews" className={styles.section} aria-labelledby="reviews-title">
       <div className={styles.heading}>
         <div><h2 id="reviews-title">Đánh giá từ khách hàng</h2><p>Chỉ hiển thị nhận xét từ đơn hàng đã hoàn tất.</p></div>
         <div className={styles.action}>
-          {!me.data ? <Link className={buttonClassName({ variant: "secondary" })} href={loginHref(`/products/${productId}#reviews`)}>Đăng nhập để đánh giá</Link> : eligibility.data?.existingReview ? <Button variant="secondary" onClick={() => setDialogOpen(true)}>Sửa đánh giá của tôi</Button> : eligibility.data?.eligible ? <Button onClick={() => setDialogOpen(true)}>Viết đánh giá</Button> : null}
+          {!me.data ? <Link className={buttonClassName({ variant: "secondary" })} href={loginHref(`/products/${productId}#reviews`)}>Đăng nhập để đánh giá</Link> : eligibility.data?.existingReview ? <Button variant="secondary" onClick={() => setDialogOpen(true)}>Sửa đánh giá của tôi</Button> : eligibility.data?.eligible ? <Button onClick={() => setDialogOpen(true)}>Viết đánh giá</Button> : eligibilityMessage ? <p className={styles.eligibility}>{eligibilityMessage}</p> : null}
         </div>
       </div>
       {summaryQuery.isError ? <Alert tone="warning" title="Chưa thể tải thống kê đánh giá" /> : <ReviewSummary summary={summary} />}
