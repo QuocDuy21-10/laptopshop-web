@@ -1,8 +1,7 @@
 import { describe, expect, it, beforeEach } from "vitest";
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useReviewEligibility, useProductReviews } from "@/features/reviews/hooks";
-import { useCreateReview } from "@/features/reviews/hooks";
+import { useReviewEligibility, useProductReviews, useCreateReview, useAddReviewImages, useReorderReviewImages, useDeleteReviewImage } from "@/features/reviews/hooks";
 import { queryKeys } from "@/lib/api/query-keys";
 import { json, lastRequest, mockFetch, renderWithQuery, urlOf } from "../../utils";
 
@@ -57,5 +56,37 @@ describe("review query hooks", () => {
     await userEvent.click(screen.getByRole("button", { name: "Gửi" }));
     await waitFor(() => expect(fetchMock).toHaveBeenCalled());
     expect(urlOf(lastRequest(fetchMock))).toContain("/api/v1/products/12/reviews");
+  });
+
+  it("uploads repeated images through the review image multipart endpoint", async () => {
+    const fetchMock = mockFetch();
+    fetchMock.mockResolvedValue(json(201, { data: [] }));
+    function Harness() {
+      const mutation = useAddReviewImages(12, 18);
+      return <button type="button" onClick={() => mutation.mutate([new File(["one"], "one.png", { type: "image/png" }), new File(["two"], "two.png", { type: "image/png" })])}>Upload</button>;
+    }
+    renderWithQuery(<Harness />);
+    await userEvent.click(screen.getByRole("button", { name: "Upload" }));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    const request = lastRequest(fetchMock);
+    expect(new URL(request.url).pathname).toBe("/api/v1/reviews/18/images");
+    expect(request.headers.get("content-type")).toContain("multipart/form-data");
+  });
+
+  it("uses generated JSON routes for reorder and image delete", async () => {
+    const fetchMock = mockFetch();
+    fetchMock.mockResolvedValue(json(200, { data: [] }));
+    function Harness() {
+      const reorder = useReorderReviewImages(12, 18);
+      const remove = useDeleteReviewImage(12, 18);
+      return <><button type="button" onClick={() => reorder.mutate([22, 21])}>Reorder</button><button type="button" onClick={() => remove.mutate(21)}>Delete image</button></>;
+    }
+    renderWithQuery(<Harness />);
+    await userEvent.click(screen.getByRole("button", { name: "Reorder" }));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    expect(new URL(lastRequest(fetchMock).url).pathname).toBe("/api/v1/reviews/18/images/order");
+    await userEvent.click(screen.getByRole("button", { name: "Delete image" }));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+    expect(new URL(lastRequest(fetchMock).url).pathname).toBe("/api/v1/reviews/18/images/21");
   });
 });

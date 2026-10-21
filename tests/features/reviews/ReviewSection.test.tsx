@@ -20,6 +20,7 @@ const review: PublicReview = {
   content: "Nội dung <script>alert('x')</script>",
   author: { name: "****", anonymous: true },
   verifiedPurchase: true,
+  images: [],
   createdAt: "2026-10-21T03:00:00.000Z",
   updatedAt: "2026-10-21T03:00:00.000Z",
 };
