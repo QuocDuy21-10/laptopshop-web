@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/Badge/Badge";
 import type { PublicReview } from "@/lib/api/types";
+import { ReviewGallery } from "../ReviewGallery/ReviewGallery";
 import styles from "./ReviewCard.module.scss";
 
 export function ReviewCard({ review }: { review: PublicReview }) {
@@ -14,6 +15,7 @@ export function ReviewCard({ review }: { review: PublicReview }) {
       </header>
       {review.title && <h3 className={styles.title}>{review.title}</h3>}
       <p className={styles.content}>{review.content}</p>
+      <ReviewGallery images={review.images} />
     </article>
   );
 }
