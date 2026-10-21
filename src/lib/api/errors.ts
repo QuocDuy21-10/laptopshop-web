@@ -45,6 +45,11 @@ const MESSAGES: Record<string, string> = {
   PAID_ORDER_CANNOT_CANCEL: "Đơn đã thanh toán cần được cửa hàng xử lý hoàn tiền.",
   PAYMENT_REQUIRED: "Cần xác nhận thanh toán trước khi xử lý giao hàng.",
   FORBIDDEN: "Bạn không có quyền thực hiện thao tác này.",
+  REVIEW_NOT_ELIGIBLE: "Chỉ khách đã mua và hoàn tất đơn hàng mới được đánh giá.",
+  REVIEW_ALREADY_EXISTS: "Bạn đã đánh giá sản phẩm này. Hãy chỉnh sửa đánh giá hiện có.",
+  REVIEW_FULL_NAME_REQUIRED: "Hãy cập nhật họ tên trước khi công khai đánh giá.",
+  REVIEW_DELETED: "Đánh giá đã bị xoá. Hãy dùng luồng viết lại để tạo nội dung mới.",
+  REVIEW_NOT_FOUND: "Không tìm thấy đánh giá yêu cầu.",
 };
 
 export function errorMessage(e: unknown): string {
