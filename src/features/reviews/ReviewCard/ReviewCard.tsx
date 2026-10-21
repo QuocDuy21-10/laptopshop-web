@@ -17,7 +17,7 @@ export function ReviewCard({ review, productId, reviewIds, userId, helpful, self
       {review.title && <h3 className={styles.title}>{review.title}</h3>}
       <p className={styles.content}>{review.content}</p>
       <ReviewGallery images={review.images} />
-      <HelpfulButton key={`${review.id}-${helpful}-${review.helpfulCount}`} productId={productId} reviewId={review.id} reviewIds={reviewIds} userId={userId} count={review.helpfulCount} helpful={helpful} selfVoteDisabled={selfVoteDisabled} />
+      <HelpfulButton productId={productId} reviewId={review.id} reviewIds={reviewIds} userId={userId} count={review.helpfulCount} helpful={helpful} selfVoteDisabled={selfVoteDisabled} />
     </article>
   );
 }

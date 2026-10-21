@@ -18,25 +18,24 @@ type Props = {
 };
 
 export function HelpfulButton({ productId, reviewId, reviewIds, count, helpful, userId, selfVoteDisabled = false }: Props) {
-  const [active, setActive] = useState(helpful);
-  const [currentCount, setCurrentCount] = useState(count);
+  const [optimistic, setOptimistic] = useState<{ active: boolean; count: number } | null>(null);
   const mutation = useToggleHelpful(reviewIds, userId);
+  const active = optimistic?.active ?? helpful;
+  const currentCount = optimistic?.count ?? count;
   if (!userId) {
     return <Link className={styles.button} href={loginHref(`/products/${productId}#reviews`)}>Hữu ích ({currentCount})</Link>;
   }
   const toggle = () => {
     if (selfVoteDisabled || mutation.isPending) return;
     const next = !active;
-    setActive(next);
-    setCurrentCount((value) => value + (next ? 1 : -1));
+    const previous = { active, count: currentCount };
+    setOptimistic({ active: next, count: currentCount + (next ? 1 : -1) });
     mutation.mutate({ reviewId, helpful: next }, {
       onError: () => {
-        setActive(active);
-        setCurrentCount(count);
+        setOptimistic(previous);
       },
       onSuccess: (result) => {
-        setActive(result.helpful);
-        setCurrentCount(result.helpfulCount);
+        setOptimistic({ active: result.helpful, count: result.helpfulCount });
       },
     });
   };
