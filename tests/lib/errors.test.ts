@@ -59,3 +59,17 @@ describe("errorMessage (admin)", () => {
     expect(errorMessage(new ApiError(403, "FORBIDDEN", "x"))).toBe("Bạn không có quyền thực hiện thao tác này.");
   });
 });
+
+describe("errorMessage (reviews)", () => {
+  it("translates review ownership, eligibility and privacy errors", () => {
+    expect(errorMessage(new ApiError(403, "REVIEW_NOT_ELIGIBLE", "x"))).toBe(
+      "Chỉ khách đã mua và hoàn tất đơn hàng mới được đánh giá.",
+    );
+    expect(errorMessage(new ApiError(409, "REVIEW_ALREADY_EXISTS", "x"))).toBe(
+      "Bạn đã đánh giá sản phẩm này. Hãy chỉnh sửa đánh giá hiện có.",
+    );
+    expect(errorMessage(new ApiError(409, "REVIEW_FULL_NAME_REQUIRED", "x"))).toBe(
+      "Hãy cập nhật họ tên trước khi công khai đánh giá.",
+    );
+  });
+});

@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { assertApiUp, loginViaUi, PASSWORD, registerViaApi, uniqueEmail } from "./helpers";
+import { assertApiUp, createCompletedReviewOrder, loginViaUi, PASSWORD, registerViaApi, uniqueEmail } from "./helpers";
 
 test.beforeAll(async ({ request }) => {
   await assertApiUp(request);
@@ -134,6 +134,63 @@ test("log out", async ({ page, request }) => {
   await expect(page.getByRole("link", { name: "Đăng nhập" })).toBeVisible();
   await page.goto("/account");
   await expect(page).toHaveURL(/\/login\?next=%2Faccount/);
+});
+
+test("verified product review lifecycle", async ({ browser, request }) => {
+  test.skip(!process.env.E2E_ADMIN_PASSWORD, "E2E_ADMIN_PASSWORD is required for the admin moderation half of this lifecycle");
+  const setup = await createCompletedReviewOrder(request);
+  const adminContext = await browser.newContext();
+  const adminPage = await adminContext.newPage();
+  await adminPage.goto("/login?next=/admin");
+  await loginViaUi(adminPage, "admin@gmail.com", process.env.E2E_ADMIN_PASSWORD!);
+  for (const status of ["SHIPPING", "COMPLETED"]) {
+    await adminPage.request.patch(`${setup.api}/api/v1/admin/orders/${setup.orderId}/status`, { data: { status } });
+  }
+
+  const customerContext = await browser.newContext();
+  const customerPage = await customerContext.newPage();
+  await customerPage.goto(`/login?next=/account/orders/${setup.orderId}`);
+  await loginViaUi(customerPage, setup.username);
+  await customerPage.getByRole("button", { name: "Đánh giá sản phẩm" }).click();
+  await customerPage.getByRole("radio", { name: "5 sao" }).check();
+  await customerPage.getByLabel("Nội dung").fill("Nội dung review E2E đủ dài.");
+  await customerPage.getByRole("radio", { name: /Ẩn danh/ }).check();
+  await customerPage.getByRole("button", { name: "Gửi đánh giá" }).click();
+
+  await customerPage.goto(`/products/${setup.productId}#reviews`);
+  await expect(customerPage.getByText("****")).toBeVisible();
+  await customerPage.setViewportSize({ width: 320, height: 800 });
+  expect(await customerPage.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+
+  await adminPage.goto("/admin/reviews");
+  await adminPage.getByRole("link", { name: setup.productName, exact: true }).click();
+  await adminPage.getByRole("button", { name: "Ẩn review" }).click();
+  await adminPage.getByPlaceholder("Lý do ẩn review").fill("Cần kiểm tra nội dung");
+  await adminPage.getByRole("button", { name: "Ẩn", exact: true }).click();
+
+  await customerPage.reload();
+  await expect(customerPage.getByText("Nội dung review E2E đủ dài.")).not.toBeVisible();
+  await customerPage.goto(`/account/orders/${setup.orderId}`);
+  await customerPage.getByRole("button", { name: "Sửa đánh giá của tôi" }).click();
+  await customerPage.getByLabel("Nội dung").fill("Nội dung review E2E đã chỉnh sửa đủ dài.");
+  await customerPage.getByRole("button", { name: "Gửi đánh giá" }).click();
+
+  await adminPage.reload();
+  await adminPage.getByRole("button", { name: "Khôi phục" }).click();
+  await customerPage.goto(`/products/${setup.productId}#reviews`);
+  await expect(customerPage.getByText("Nội dung review E2E đã chỉnh sửa đủ dài.")).toBeVisible();
+
+  await customerPage.goto(`/account/orders/${setup.orderId}`);
+  await customerPage.getByRole("button", { name: "Sửa đánh giá của tôi" }).click();
+  await customerPage.getByRole("button", { name: "Xóa đánh giá" }).click();
+  await customerPage.getByRole("button", { name: "Xác nhận xóa" }).click();
+  await customerPage.getByRole("button", { name: "Đánh giá sản phẩm" }).click();
+  await customerPage.getByRole("radio", { name: "5 sao" }).check();
+  await customerPage.getByLabel("Nội dung").fill("Nội dung review viết lại đủ dài.");
+  await customerPage.getByRole("radio", { name: /Công khai tên/ }).check();
+  await customerPage.getByRole("button", { name: "Gửi đánh giá" }).click();
+  await customerContext.close();
+  await adminContext.close();
 });
 
 async function completeAdvisor(page: import("@playwright/test").Page) {

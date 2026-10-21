@@ -2,6 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { CancelOrderDialog } from "@/features/orders/CancelOrderDialog/CancelOrderDialog";
+import { OrderDetail } from "@/features/orders/OrderDetail/OrderDetail";
 import { OrderStatusBadge, PaymentStatusBadge } from "@/features/orders/OrderBadges/OrderBadges";
 import { json, lastRequest, mockFetch, renderWithQuery } from "../utils";
 
@@ -48,5 +49,17 @@ describe("CancelOrderDialog", () => {
     await waitFor(() =>
       expect(toast.error).toHaveBeenCalledWith("Không thể thực hiện thao tác ở trạng thái hiện tại của đơn hàng."),
     );
+  });
+});
+
+describe("OrderDetail review actions", () => {
+  it("shows one review action per item only for completed paid orders", async () => {
+    fetchMock.mockResolvedValue(json(200, { data: {
+      id: 50, status: "COMPLETED", paymentStatus: "PAYMENT_SUCCESS", paymentMethod: "COD", totalPrice: 2000,
+      receiverName: "R", receiverPhone: "0900000000", receiverAddress: "Addr", createdAt: "2026-10-21T03:00:00.000Z",
+      items: [{ productId: 1, name: "A", image: null, price: 1000, quantity: 1 }, { productId: 2, name: "B", image: null, price: 1000, quantity: 1 }],
+    } }));
+    renderWithQuery(<OrderDetail id={50} placed={false} />);
+    expect(await screen.findAllByRole("button", { name: "Đánh giá sản phẩm" })).toHaveLength(2);
   });
 });

@@ -23,6 +23,15 @@ export type AdminOrder = Schemas["AdminOrder"];
 export type AdminOrderDetail = Schemas["AdminOrderDetail"];
 export type PaymentEvent = Schemas["PaymentEvent"];
 export type Role = Schemas["Role"];
+export type PublicReview = Schemas["PublicReview"];
+export type ReviewSummary = Schemas["ReviewSummary"];
+export type OwnerReview = Schemas["OwnerReview"];
+export type ReviewEligibility = Omit<Schemas["ReviewEligibility"], "existingReview"> & {
+  existingReview: OwnerReview | null;
+};
+export type AdminReviewListItem = Schemas["AdminReviewListItem"];
+export type AdminReviewDetail = Schemas["AdminReviewDetail"];
+export type AdminReviewSummary = Schemas["AdminReviewSummary"];
 type GeneratedFilterOptions =
   paths["/api/v1/products/filters"]["get"]["responses"][200]["content"]["application/json"]["data"];
 export type FilterOptions = Omit<GeneratedFilterOptions, "facetDefinitions"> &
@@ -34,3 +43,5 @@ export type ProductFacetsQuery = NonNullable<paths["/api/v1/products/facets"]["g
 export type ProductFacets =
   paths["/api/v1/products/facets"]["get"]["responses"][200]["content"]["application/json"]["data"];
 export type PageMeta = { page: number; pageSize: number; total: number; totalPages: number };
+export type ProductReviewsQuery = NonNullable<paths["/api/v1/products/{id}/reviews"]["get"]["parameters"]["query"]>;
+export type AdminReviewsQuery = NonNullable<paths["/api/v1/admin/reviews"]["get"]["parameters"]["query"]>;
