@@ -35,6 +35,8 @@ export type HelpfulMutation = Schemas["HelpfulMutation"];
 export type AdminReviewListItem = Schemas["AdminReviewListItem"];
 export type AdminReviewDetail = Schemas["AdminReviewDetail"];
 export type AdminReviewSummary = Schemas["AdminReviewSummary"];
+export type PublicOfficialReply = Schemas["PublicOfficialReply"];
+export type AdminOfficialReply = Schemas["AdminOfficialReply"];
 type GeneratedFilterOptions =
   paths["/api/v1/products/filters"]["get"]["responses"][200]["content"]["application/json"]["data"];
 export type FilterOptions = Omit<GeneratedFilterOptions, "facetDefinitions"> &

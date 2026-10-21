@@ -9,6 +9,7 @@ import type { paths } from "@/lib/api/schema";
 import { ADMIN_PAGE_SIZE } from "../useListParams";
 
 export type ModerateReviewInput = NonNullable<paths["/api/v1/admin/reviews/{id}/moderation"]["patch"]["requestBody"]>["content"]["application/json"];
+export type ReviewReplyInput = NonNullable<paths["/api/v1/admin/reviews/{id}/reply"]["put"]["requestBody"]>["content"]["application/json"];
 
 export function useAdminReviews(query: Omit<AdminReviewsQuery, "pageSize">) {
   return useQuery({ queryKey: queryKeys.adminReviews(query), queryFn: () => unwrap(api.GET("/api/v1/admin/reviews", { params: { query: { ...query, pageSize: ADMIN_PAGE_SIZE } } })), placeholderData: keepPreviousData });
@@ -26,6 +27,30 @@ export function useModerateReview(id: number) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (body: ModerateReviewInput) => unwrap(api.PATCH("/api/v1/admin/reviews/{id}/moderation", { params: { path: { id } }, body })),
+    onSettled: () => {
+      void qc.invalidateQueries({ queryKey: queryKeys.adminAll });
+      void qc.invalidateQueries({ queryKey: queryKeys.adminReview(id) });
+      void qc.invalidateQueries({ queryKey: ["reviews"] });
+    },
+  });
+}
+
+export function usePutReviewReply(id: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: ReviewReplyInput) => unwrap(api.PUT("/api/v1/admin/reviews/{id}/reply", { params: { path: { id } }, body })),
+    onSettled: () => {
+      void qc.invalidateQueries({ queryKey: queryKeys.adminAll });
+      void qc.invalidateQueries({ queryKey: queryKeys.adminReview(id) });
+      void qc.invalidateQueries({ queryKey: ["reviews"] });
+    },
+  });
+}
+
+export function useDeleteReviewReply(id: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => unwrap(api.DELETE("/api/v1/admin/reviews/{id}/reply", { params: { path: { id } } })),
     onSettled: () => {
       void qc.invalidateQueries({ queryKey: queryKeys.adminAll });
       void qc.invalidateQueries({ queryKey: queryKeys.adminReview(id) });

@@ -22,6 +22,7 @@ const review: PublicReview = {
   verifiedPurchase: true,
   images: [],
   helpfulCount: 0,
+  officialReply: null,
   createdAt: "2026-10-21T03:00:00.000Z",
   updatedAt: "2026-10-21T03:00:00.000Z",
 };
