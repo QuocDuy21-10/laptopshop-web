@@ -1,0 +1,37 @@
+@use "mixins" as *;
+
+.list {
+  display: grid;
+  gap: var(--space-three);
+}
+
+.loading {
+  display: grid;
+  gap: var(--space-three);
+}
+
+.loading > div {
+  height: 120px;
+}
+
+.empty {
+  margin: 0;
+  padding: var(--space-six) var(--space-four);
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-md);
+  color: var(--color-foreground-muted);
+  text-align: center;
+
+  @include text(body-md);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--space-three);
+  margin-top: var(--space-two);
+
+  @include text(body-sm);
+}

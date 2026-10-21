@@ -9,6 +9,10 @@ export const queryKeys = {
   productFilters: ["product-filters"] as const,
   productFacets: (query: object) => ["product-facets", query] as const,
   compare: (ids: number[]) => ["compare", ids] as const,
+  reviews: (productId: number) => ["reviews", productId] as const,
+  reviewSummary: (productId: number) => ["reviews", productId, "summary"] as const,
+  productReviews: (productId: number, query: object) => ["reviews", productId, "list", query] as const,
+  reviewEligibility: (productId: number, userId: number) => ["reviews", productId, "eligibility", userId] as const,
   // admin mutations invalidate adminAll: every admin list, detail and the dashboard
   adminAll: ["admin"] as const,
   adminSales: (range: object) => ["admin", "sales", range] as const,
@@ -25,4 +29,7 @@ export const queryKeys = {
   adminPaymentEvents: (query: object) => ["admin", "payment-events", query] as const,
   adminPaymentEvent: (id: string) => ["admin", "payment-event", id] as const,
   adminRoles: ["admin", "roles"] as const,
+  adminReviews: (query: object) => ["admin", "reviews", query] as const,
+  adminReview: (id: number) => ["admin", "review", id] as const,
+  adminReviewSummary: ["admin", "reviews", "summary"] as const,
 };
