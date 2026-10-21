@@ -11,6 +11,7 @@ vi.mock("next/navigation", () => ({ useRouter: () => router }));
 const definitions = [
   { key: "cpuBrand", name: "CPU", mode: "MULTI" as const, kind: "categorical" as const, options: [{ value: "INTEL", name: "Intel" }, { value: "AMD", name: "AMD" }] },
   { key: "minRefreshHz", name: "Tần số quét tối thiểu", mode: "SINGLE_MIN" as const, kind: "bucket" as const, options: [{ value: "144", name: "144 Hz" }] },
+  { key: "minRating", name: "Đánh giá tối thiểu", mode: "SINGLE_MIN" as const, kind: "bucket" as const, options: [{ value: "4", name: "Từ 4 sao" }, { value: "3", name: "Từ 3 sao" }] },
   { key: "inStock", name: "Tình trạng", mode: "BOOLEAN" as const, kind: "categorical" as const, options: [{ value: "true", name: "Còn hàng" }] },
 ];
 const options = { factoryOptions: [], targetOptions: [], facetDefinitions: definitions };
@@ -42,5 +43,11 @@ describe("DesktopFilters and active chips", () => {
     expect(screen.getByText("Từ 144 Hz")).toBeInTheDocument();
     expect(screen.getByText("Còn hàng")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Bỏ lọc Intel" })).toHaveAttribute("href", expect.stringContaining("sort=price_desc"));
+  });
+
+  it("renders and removes the shared rating chip", () => {
+    render(<ActiveFilterChips options={options} filters={{ ...filters, minRating: 4, page: 1 }} />);
+    expect(screen.getByText("Từ 4 sao")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Bỏ lọc Từ 4 sao" })).toHaveAttribute("href", expect.not.stringContaining("minRating"));
   });
 });

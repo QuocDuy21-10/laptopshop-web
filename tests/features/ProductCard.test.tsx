@@ -50,4 +50,15 @@ describe("ProductCard", () => {
     expect(screen.getAllByText("Hết hàng").length).toBeGreaterThan(0);
     expect(screen.getByRole("button", { name: "Thêm Laptop Asus TUF Gaming vào giỏ" })).toBeDisabled();
   });
+
+  it("shows a localized rating summary when catalog data provides it", () => {
+    renderWithQuery(<ProductCard product={{ ...product, reviewSummary: { averageRating: 4.6, totalReviews: 25 } }} />);
+    expect(screen.getByText("★ 4.6 (25)")).toBeInTheDocument();
+    expect(screen.getByLabelText("Đánh giá 4.6 sao, 25 đánh giá")).toBeInTheDocument();
+  });
+
+  it("shows the empty review state for a catalog product without reviews", () => {
+    renderWithQuery(<ProductCard product={{ ...product, reviewSummary: { averageRating: null, totalReviews: 0 } }} />);
+    expect(screen.getByText("Chưa có đánh giá")).toBeInTheDocument();
+  });
 });

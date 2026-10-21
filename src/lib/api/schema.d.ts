@@ -414,9 +414,10 @@ export interface paths {
           minBatteryWh?: number;
           maxWeightGrams?: number;
           minWarrantyMonths?: number;
+          minRating?: number;
           inStock?: boolean | ("true" | "false");
           q?: string;
-          sort?: "price_asc" | "price_desc";
+          sort?: "price_asc" | "price_desc" | "rating_desc";
         };
         header?: never;
         path?: never;
@@ -431,7 +432,7 @@ export interface paths {
           };
           content: {
             "application/json": {
-              data: components["schemas"]["Product"][];
+              data: components["schemas"]["CatalogProduct"][];
               meta: {
                 page: number;
                 pageSize: number;
@@ -524,6 +525,7 @@ export interface paths {
           minBatteryWh?: number;
           maxWeightGrams?: number;
           minWarrantyMonths?: number;
+          minRating?: number;
           inStock?: boolean | ("true" | "false");
           q?: string;
         };
@@ -647,7 +649,7 @@ export interface paths {
           };
           content: {
             "application/json": {
-              data: components["schemas"]["Product"];
+              data: components["schemas"]["CatalogProduct"];
             };
           };
         };
@@ -1016,7 +1018,7 @@ export interface paths {
             "application/json": components["schemas"]["Error"];
           };
         };
-        /** @description Review deleted or public name unavailable */
+        /** @description Review deleted, state changed, or public name unavailable */
         409: {
           headers: {
             [name: string]: unknown;
@@ -2170,6 +2172,7 @@ export interface paths {
           minBatteryWh?: number;
           maxWeightGrams?: number;
           minWarrantyMonths?: number;
+          minRating?: number;
           inStock?: boolean | ("true" | "false");
           q?: string;
           sort?: "price_asc" | "price_desc";
@@ -3236,6 +3239,7 @@ export interface paths {
           minBatteryWh?: number;
           maxWeightGrams?: number;
           minWarrantyMonths?: number;
+          minRating?: number;
           inStock?: boolean | ("true" | "false");
           q?: string;
           sort?: "price_asc" | "price_desc";
@@ -3986,7 +3990,7 @@ export interface paths {
             "application/json": components["schemas"]["Error"];
           };
         };
-        /** @description Review deleted */
+        /** @description Review deleted or state changed */
         409: {
           headers: {
             [name: string]: unknown;
@@ -4680,6 +4684,39 @@ export interface components {
       batteryWh: number | null;
       weightGrams: number | null;
       warrantyMonths: number | null;
+    };
+    ProductReviewSummary: {
+      averageRating: number | null;
+      totalReviews: number;
+    };
+    CatalogProduct: {
+      id: number;
+      name: string;
+      price: number;
+      image: string | null;
+      detailDesc: string | null;
+      shortDesc: string | null;
+      quantity: number;
+      sold: number | null;
+      factory: string | null;
+      target: string | null;
+      isActive: boolean;
+      cpu: string | null;
+      cpuBrand: string | null;
+      gpu: string | null;
+      gpuBrand: string | null;
+      gpuType: string | null;
+      ramGb: number | null;
+      storageGb: number | null;
+      screenSizeInch: number | null;
+      screenResolution: string | null;
+      resolutionTier: string | null;
+      panelType: string | null;
+      refreshRateHz: number | null;
+      batteryWh: number | null;
+      weightGrams: number | null;
+      warrantyMonths: number | null;
+      reviewSummary: components["schemas"]["ProductReviewSummary"];
     };
     AdvisorRequest: {
       budgetMax: number;

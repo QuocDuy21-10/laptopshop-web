@@ -7,6 +7,7 @@ export type User = Schemas["User"];
 type GeneratedProduct = Schemas["Product"];
 export type Product = Omit<GeneratedProduct, "cpuBrand" | "gpuBrand" | "gpuType" | "resolutionTier" | "panelType"> &
   Partial<Pick<GeneratedProduct, "cpuBrand" | "gpuBrand" | "gpuType" | "resolutionTier" | "panelType">>;
+export type CatalogProduct = Product & { reviewSummary: Schemas["ProductReviewSummary"] };
 export type AdvisorRequest = Schemas["AdvisorRequest"];
 export type AdvisorRecommendation = Omit<Schemas["AdvisorRecommendation"], "product"> & { product: Product };
 export type AdvisorResult = Omit<Schemas["AdvisorResult"], "recommendations"> & { recommendations: AdvisorRecommendation[] };

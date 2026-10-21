@@ -62,6 +62,40 @@ test("mobile facet draft can cancel or apply without horizontal overflow", async
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
 
+test("catalog rating cards, filter, sort and mobile facet stay consistent", async ({ page, request }) => {
+  test.skip(!process.env.E2E_ADMIN_PASSWORD, "E2E_ADMIN_PASSWORD is required to seed a published rating");
+  const setup = await createCompletedReviewOrder(request);
+  const adminLogin = await request.post(`${setup.api}/api/v1/auth/login`, {
+    data: { username: "admin@gmail.com", password: process.env.E2E_ADMIN_PASSWORD },
+  });
+  expect(adminLogin.ok()).toBeTruthy();
+  for (const status of ["SHIPPING", "COMPLETED"]) {
+    const updated = await request.patch(`${setup.api}/api/v1/admin/orders/${setup.orderId}/status`, { data: { status } });
+    expect(updated.ok()).toBeTruthy();
+  }
+
+  await page.goto(`/login?next=/account/orders/${setup.orderId}`);
+  await loginViaUi(page, setup.username);
+  await page.getByRole("button", { name: "Đánh giá sản phẩm" }).click();
+  await page.getByRole("radio", { name: "4 sao" }).check();
+  await page.getByLabel("Nội dung").fill("Đánh giá rating catalog đủ dài.");
+  await page.getByRole("radio", { name: /Công khai tên/ }).check();
+  await page.getByRole("button", { name: "Gửi đánh giá" }).click();
+
+  await page.goto("/products?sort=rating_desc");
+  await expect(page.getByRole("article").filter({ hasText: "★ 4.0 (1)" })).toBeVisible();
+  await expect(page.locator("select")).toHaveValue("rating_desc");
+  await page.getByRole("checkbox", { name: /Từ 4 sao/ }).first().click();
+  await expect(page).toHaveURL(/minRating=4/);
+  await expect(page.getByRole("article").filter({ hasText: "★ 4.0 (1)" })).toBeVisible();
+
+  await page.setViewportSize({ width: 390, height: 800 });
+  await page.goto("/products?minRating=4");
+  await page.getByRole("button", { name: /^Bộ lọc/ }).click();
+  await expect(page.getByRole("dialog").getByText("Đánh giá tối thiểu")).toBeVisible();
+  await expect(page.getByRole("dialog").getByRole("radio", { name: /Từ 4 sao/ })).toBeChecked();
+});
+
 test("compare two laptops", async ({ page }) => {
   await page.goto("/products");
   const cards = page.getByRole("article");
