@@ -21,6 +21,7 @@ const review: PublicReview = {
   author: { name: "****", anonymous: true },
   verifiedPurchase: true,
   images: [],
+  helpfulCount: 0,
   createdAt: "2026-10-21T03:00:00.000Z",
   updatedAt: "2026-10-21T03:00:00.000Z",
 };
