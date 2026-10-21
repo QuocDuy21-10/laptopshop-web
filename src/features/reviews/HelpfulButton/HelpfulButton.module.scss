@@ -1,0 +1,16 @@
+@use "mixins" as *;
+
+.button {
+  align-self: flex-start;
+}
+
+.wrapper {
+  display: grid;
+  gap: var(--space-one);
+}
+
+.hint {
+  color: var(--color-foreground-muted);
+
+  @include text(body-sm);
+}
