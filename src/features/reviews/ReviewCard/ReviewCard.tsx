@@ -1,9 +1,10 @@
 import { Badge } from "@/components/ui/Badge/Badge";
 import type { PublicReview } from "@/lib/api/types";
 import { ReviewGallery } from "../ReviewGallery/ReviewGallery";
+import { HelpfulButton } from "../HelpfulButton/HelpfulButton";
 import styles from "./ReviewCard.module.scss";
 
-export function ReviewCard({ review }: { review: PublicReview }) {
+export function ReviewCard({ review, productId, reviewIds, userId, helpful, selfVoteDisabled }: { review: PublicReview; productId: number; reviewIds: number[]; userId?: number; helpful: boolean; selfVoteDisabled?: boolean }) {
   return (
     <article className={styles.card}>
       <header className={styles.header}>
@@ -16,6 +17,7 @@ export function ReviewCard({ review }: { review: PublicReview }) {
       {review.title && <h3 className={styles.title}>{review.title}</h3>}
       <p className={styles.content}>{review.content}</p>
       <ReviewGallery images={review.images} />
+      <HelpfulButton productId={productId} reviewId={review.id} reviewIds={reviewIds} userId={userId} count={review.helpfulCount} helpful={helpful} selfVoteDisabled={selfVoteDisabled} />
     </article>
   );
 }

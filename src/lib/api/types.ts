@@ -30,6 +30,8 @@ export type OwnerReview = Schemas["OwnerReview"];
 export type ReviewEligibility = Omit<Schemas["ReviewEligibility"], "existingReview"> & {
   existingReview: OwnerReview | null;
 };
+export type HelpfulReviewState = Schemas["HelpfulReviewState"];
+export type HelpfulMutation = Schemas["HelpfulMutation"];
 export type AdminReviewListItem = Schemas["AdminReviewListItem"];
 export type AdminReviewDetail = Schemas["AdminReviewDetail"];
 export type AdminReviewSummary = Schemas["AdminReviewSummary"];

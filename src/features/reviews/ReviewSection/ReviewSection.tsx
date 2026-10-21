@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useMe } from "@/features/account/useMe";
 import { loginHref } from "@/lib/safe-next";
 import type { ProductReviewsQuery, PublicReview, ReviewSummary as ReviewSummaryData } from "@/lib/api/types";
-import { useProductReviews, useReviewEligibility, useReviewSummary } from "../hooks";
+import { useHelpfulReviewIds, useProductReviews, useReviewEligibility, useReviewSummary } from "../hooks";
 import { ReviewDialog } from "../ReviewDialog/ReviewDialog";
 import { ReviewList } from "../ReviewList/ReviewList";
 import { ReviewSummary } from "../ReviewSummary/ReviewSummary";
@@ -31,6 +31,8 @@ export function ReviewSection({ productId, initialSummary, initialPage }: Props)
   const eligibility = useReviewEligibility(productId, me.data?.id);
   const summary = summaryQuery.data ?? initialSummary;
   const pageData = reviewsQuery.data ?? (page === 1 && !rating && sort === "newest" ? initialPage : { data: [], meta: { page, pageSize: 10, total: 0, totalPages: 0 } });
+  const visibleReviewIds = pageData.data.map((review) => review.id);
+  const helpfulState = useHelpfulReviewIds(visibleReviewIds, me.data?.id);
   const eligibilityMessage = eligibility.data?.reason === "NOT_PURCHASED"
     ? "Chỉ khách đã mua sản phẩm mới có thể đánh giá."
     : eligibility.data?.reason === "ORDER_NOT_COMPLETED"
@@ -60,7 +62,7 @@ export function ReviewSection({ productId, initialSummary, initialPage }: Props)
           </select>
         </label>
       </div>
-      <ReviewList reviews={pageData.data} isPending={reviewsQuery.isPending && initialPage.data.length > 0} isError={reviewsQuery.isError} onRetry={() => void reviewsQuery.refetch()} page={pageData.meta.page} totalPages={pageData.meta.totalPages} onPage={setPage} />
+      <ReviewList reviews={pageData.data} productId={productId} reviewIds={visibleReviewIds} helpfulIds={helpfulState.data ?? []} userId={me.data?.id} selfReviewId={eligibility.data?.existingReview?.id} isPending={reviewsQuery.isPending && initialPage.data.length > 0} isError={reviewsQuery.isError} onRetry={() => void reviewsQuery.refetch()} page={pageData.meta.page} totalPages={pageData.meta.totalPages} onPage={setPage} />
       {eligibility.data && <ReviewDialog productId={productId} productName="sản phẩm này" eligibility={eligibility.data} open={dialogOpen} onOpenChange={setDialogOpen} />}
     </section>
   );

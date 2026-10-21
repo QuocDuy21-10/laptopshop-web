@@ -5,7 +5,7 @@ import { api } from "@/lib/api/client";
 import { unwrap } from "@/lib/api/errors";
 import { sendMultipart } from "@/lib/api/multipart";
 import { queryKeys } from "@/lib/api/query-keys";
-import type { ProductReviewsQuery, ReviewImage } from "@/lib/api/types";
+import type { HelpfulMutation, ProductReviewsQuery, ReviewImage } from "@/lib/api/types";
 import type { ReviewEligibility } from "@/lib/api/types";
 import type { ReviewInput } from "./schema";
 
@@ -91,5 +91,65 @@ export function useDeleteReviewImage(productId: number, reviewId: number, userId
     mutationFn: (imageId: number) =>
       unwrap(api.DELETE("/api/v1/reviews/{id}/images/{imageId}", { params: { path: { id: reviewId, imageId } } })),
     onSuccess: () => invalidateReviewQueries(queryClient, productId, userId, reviewId),
+  });
+}
+
+const uniqueReviewIds = (reviewIds: number[]) => [...new Set(reviewIds.filter((id) => id > 0))].sort((a, b) => a - b);
+
+export function useHelpfulReviewIds(reviewIds: number[], userId?: number) {
+  const ids = uniqueReviewIds(reviewIds);
+  return useQuery<number[]>({
+    queryKey: queryKeys.reviewHelpfulState(ids, userId ?? 0),
+    enabled: Boolean(userId) && ids.length > 0,
+    queryFn: async () => {
+      const chunks: number[][] = [];
+      for (let index = 0; index < ids.length; index += 50) chunks.push(ids.slice(index, index + 50));
+      const responses = await Promise.all(
+        chunks.map((chunk) => unwrap(api.GET("/api/v1/reviews/helpful", { params: { query: { reviewIds: chunk.join(",") } } }))),
+      );
+      return uniqueReviewIds(responses.flatMap((response) => response.data.reviewIds));
+    },
+  });
+}
+
+export function useToggleHelpful(reviewIds: number[], userId?: number) {
+  const queryClient = useQueryClient();
+  const ids = uniqueReviewIds(reviewIds);
+  const key = queryKeys.reviewHelpfulState(ids, userId ?? 0);
+  return useMutation<HelpfulMutation, Error, { reviewId: number; helpful: boolean }, { previous?: number[] }>({
+    mutationFn: ({ reviewId, helpful }) =>
+      helpful
+        ? unwrap(api.PUT("/api/v1/reviews/{id}/helpful", { params: { path: { id: reviewId } } })).then((result) => result.data)
+        : unwrap(api.DELETE("/api/v1/reviews/{id}/helpful", { params: { path: { id: reviewId } } })).then((result) => result.data),
+    onMutate: async ({ reviewId, helpful }) => {
+      await queryClient.cancelQueries({ queryKey: key });
+      const previous = queryClient.getQueryData<number[]>(key);
+      queryClient.setQueryData<number[]>(key, (current) => {
+        const currentIds = current ?? [];
+        const nextIds = helpful ? [...new Set([...currentIds, reviewId])] : currentIds.filter((id) => id !== reviewId);
+        return nextIds;
+      });
+      return { previous };
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.previous !== undefined) queryClient.setQueryData(key, context.previous);
+      else queryClient.removeQueries({ queryKey: key, exact: true });
+    },
+    onSuccess: (result, { reviewId }) => {
+      queryClient.setQueryData<number[]>(key, (current) => {
+        const currentIds = current ?? [];
+        return result.helpful ? [...new Set([...currentIds, reviewId])] : currentIds.filter((id) => id !== reviewId);
+      });
+      queryClient.setQueriesData({ queryKey: ["reviews"] }, (current: unknown) => {
+        if (!current || typeof current !== "object" || !("data" in current) || !Array.isArray(current.data)) return current;
+        return {
+          ...current,
+          data: current.data.map((review: { id?: number; helpfulCount?: number }) =>
+            review.id === reviewId ? { ...review, helpfulCount: result.helpfulCount } : review,
+          ),
+        };
+      });
+      void queryClient.invalidateQueries({ queryKey: ["reviews"] });
+    },
   });
 }

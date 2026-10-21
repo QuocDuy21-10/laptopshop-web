@@ -26,8 +26,8 @@ describe("ReviewImagesEditor", () => {
     renderWithQuery(
       <ReviewImagesEditor
         images={[
-          { id: 21, url: "https://signed.test/21.webp", mimeType: "image/webp", byteSize: 10, width: 10, height: 10, position: 0, status: "READY", deletedAt: null, createdAt: "2026-10-21T00:00:00Z", updatedAt: "2026-10-21T00:00:00Z" },
-          { id: 22, url: "https://signed.test/22.webp", mimeType: "image/webp", byteSize: 10, width: 10, height: 10, position: 1, status: "READY", deletedAt: null, createdAt: "2026-10-21T00:00:00Z", updatedAt: "2026-10-21T00:00:00Z" },
+          { id: 21, url: "https://signed.test/21.webp", mimeType: "image/webp", width: 10, height: 10, position: 0 },
+          { id: 22, url: "https://signed.test/22.webp", mimeType: "image/webp", width: 10, height: 10, position: 1 },
         ]}
         onChange={onChange}
       />,
