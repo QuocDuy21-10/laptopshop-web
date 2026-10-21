@@ -4,12 +4,15 @@ type Schemas = components["schemas"];
 
 export type Me = Schemas["Me"];
 export type User = Schemas["User"];
-export type Product = Schemas["Product"];
+type GeneratedProduct = Schemas["Product"];
+export type Product = Omit<GeneratedProduct, "cpuBrand" | "gpuBrand" | "gpuType" | "resolutionTier" | "panelType"> &
+  Partial<Pick<GeneratedProduct, "cpuBrand" | "gpuBrand" | "gpuType" | "resolutionTier" | "panelType">>;
 export type AdvisorRequest = Schemas["AdvisorRequest"];
-export type AdvisorRecommendation = Schemas["AdvisorRecommendation"];
-export type AdvisorResult = Schemas["AdvisorResult"];
-export type Cart = Schemas["Cart"];
-export type CartItem = Cart["items"][number];
+export type AdvisorRecommendation = Omit<Schemas["AdvisorRecommendation"], "product"> & { product: Product };
+export type AdvisorResult = Omit<Schemas["AdvisorResult"], "recommendations"> & { recommendations: AdvisorRecommendation[] };
+type GeneratedCart = Schemas["Cart"];
+export type CartItem = Omit<GeneratedCart["items"][number], "product"> & { product: Product };
+export type Cart = Omit<GeneratedCart, "items"> & { items: CartItem[] };
 export type Order = Schemas["Order"];
 export type OrderStatus = Order["status"];
 export type StockMovement = Schemas["StockMovement"];
@@ -20,8 +23,14 @@ export type AdminOrder = Schemas["AdminOrder"];
 export type AdminOrderDetail = Schemas["AdminOrderDetail"];
 export type PaymentEvent = Schemas["PaymentEvent"];
 export type Role = Schemas["Role"];
-export type FilterOptions =
+type GeneratedFilterOptions =
   paths["/api/v1/products/filters"]["get"]["responses"][200]["content"]["application/json"]["data"];
+export type FilterOptions = Omit<GeneratedFilterOptions, "facetDefinitions"> &
+  Partial<Pick<GeneratedFilterOptions, "facetDefinitions">>;
 export type FilterOption = FilterOptions["factoryOptions"][number];
+export type FacetDefinition = NonNullable<GeneratedFilterOptions["facetDefinitions"]>[number];
 export type ProductQuery = NonNullable<paths["/api/v1/products"]["get"]["parameters"]["query"]>;
+export type ProductFacetsQuery = NonNullable<paths["/api/v1/products/facets"]["get"]["parameters"]["query"]>;
+export type ProductFacets =
+  paths["/api/v1/products/facets"]["get"]["responses"][200]["content"]["application/json"]["data"];
 export type PageMeta = { page: number; pageSize: number; total: number; totalPages: number };

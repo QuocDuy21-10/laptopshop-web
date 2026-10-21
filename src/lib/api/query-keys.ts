@@ -7,6 +7,7 @@ export const queryKeys = {
   payment: (orderId: number) => ["payment", orderId] as const,
   paymentMethods: ["payment-methods"] as const,
   productFilters: ["product-filters"] as const,
+  productFacets: (query: object) => ["product-facets", query] as const,
   compare: (ids: number[]) => ["compare", ids] as const,
   // admin mutations invalidate adminAll: every admin list, detail and the dashboard
   adminAll: ["admin"] as const,

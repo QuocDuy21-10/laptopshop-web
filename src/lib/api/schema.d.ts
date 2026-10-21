@@ -402,8 +402,21 @@ export interface paths {
           factory?: string;
           target?: string;
           price?: string;
-          sort?: "price_asc" | "price_desc";
+          cpuBrand?: string;
+          gpuBrand?: string;
+          gpuType?: string;
+          ramGb?: string;
+          storageGb?: string;
+          screenSize?: string;
+          resolutionTier?: string;
+          panelType?: string;
+          minRefreshHz?: number;
+          minBatteryWh?: number;
+          maxWeightGrams?: number;
+          minWarrantyMonths?: number;
+          inStock?: boolean | ("true" | "false");
           q?: string;
+          sort?: "price_asc" | "price_desc";
         };
         header?: never;
         path?: never;
@@ -471,17 +484,73 @@ export interface paths {
           };
           content: {
             "application/json": {
-              data: {
-                factoryOptions: {
-                  name: string;
-                  value: string;
-                }[];
-                targetOptions: {
-                  name: string;
-                  value: string;
-                }[];
-              };
+              data: components["schemas"]["ProductFilterCatalog"];
             };
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/products/facets": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Dynamic product facet counts */
+    get: {
+      parameters: {
+        query?: {
+          factory?: string;
+          target?: string;
+          price?: string;
+          cpuBrand?: string;
+          gpuBrand?: string;
+          gpuType?: string;
+          ramGb?: string;
+          storageGb?: string;
+          screenSize?: string;
+          resolutionTier?: string;
+          panelType?: string;
+          minRefreshHz?: number;
+          minBatteryWh?: number;
+          maxWeightGrams?: number;
+          minWarrantyMonths?: number;
+          inStock?: boolean | ("true" | "false");
+          q?: string;
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["ProductFacets"];
+            };
+          };
+        };
+        /** @description Invalid facet filter */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
           };
         };
       };
@@ -1344,8 +1413,21 @@ export interface paths {
           factory?: string;
           target?: string;
           price?: string;
-          sort?: "price_asc" | "price_desc";
+          cpuBrand?: string;
+          gpuBrand?: string;
+          gpuType?: string;
+          ramGb?: string;
+          storageGb?: string;
+          screenSize?: string;
+          resolutionTier?: string;
+          panelType?: string;
+          minRefreshHz?: number;
+          minBatteryWh?: number;
+          maxWeightGrams?: number;
+          minWarrantyMonths?: number;
+          inStock?: boolean | ("true" | "false");
           q?: string;
+          sort?: "price_asc" | "price_desc";
           isActive?: boolean | ("true" | "false");
           stock?: "low";
         };
@@ -1412,11 +1494,19 @@ export interface paths {
             factory: string;
             target: string;
             cpu?: string | null;
+            /** @enum {string|null} */
+            cpuBrand?: "INTEL" | "AMD" | "APPLE" | "QUALCOMM" | null;
             gpu?: string | null;
+            /** @enum {string|null} */
+            gpuBrand?: "NVIDIA" | "AMD" | "INTEL" | "APPLE" | "QUALCOMM" | null;
+            /** @enum {string|null} */
+            gpuType?: "INTEGRATED" | "DEDICATED" | null;
             ramGb?: number | null;
             storageGb?: number | null;
             screenSizeInch?: number | null;
             screenResolution?: string | null;
+            /** @enum {string|null} */
+            panelType?: "IPS" | "OLED" | "MINI_LED" | "TN" | "VA" | null;
             refreshRateHz?: number | null;
             batteryWh?: number | null;
             weightGrams?: number | null;
@@ -1613,11 +1703,19 @@ export interface paths {
             factory?: string;
             target?: string;
             cpu?: string | null;
+            /** @enum {string|null} */
+            cpuBrand?: "INTEL" | "AMD" | "APPLE" | "QUALCOMM" | null;
             gpu?: string | null;
+            /** @enum {string|null} */
+            gpuBrand?: "NVIDIA" | "AMD" | "INTEL" | "APPLE" | "QUALCOMM" | null;
+            /** @enum {string|null} */
+            gpuType?: "INTEGRATED" | "DEDICATED" | null;
             ramGb?: number | null;
             storageGb?: number | null;
             screenSizeInch?: number | null;
             screenResolution?: string | null;
+            /** @enum {string|null} */
+            panelType?: "IPS" | "OLED" | "MINI_LED" | "TN" | "VA" | null;
             refreshRateHz?: number | null;
             batteryWh?: number | null;
             weightGrams?: number | null;
@@ -2381,8 +2479,21 @@ export interface paths {
           factory?: string;
           target?: string;
           price?: string;
-          sort?: "price_asc" | "price_desc";
+          cpuBrand?: string;
+          gpuBrand?: string;
+          gpuType?: string;
+          ramGb?: string;
+          storageGb?: string;
+          screenSize?: string;
+          resolutionTier?: string;
+          panelType?: string;
+          minRefreshHz?: number;
+          minBatteryWh?: number;
+          maxWeightGrams?: number;
+          minWarrantyMonths?: number;
+          inStock?: boolean | ("true" | "false");
           q?: string;
+          sort?: "price_asc" | "price_desc";
           isActive?: boolean | ("true" | "false");
           stock?: "low";
         };
@@ -3468,11 +3579,16 @@ export interface components {
       target: string | null;
       isActive: boolean;
       cpu: string | null;
+      cpuBrand: string | null;
       gpu: string | null;
+      gpuBrand: string | null;
+      gpuType: string | null;
       ramGb: number | null;
       storageGb: number | null;
       screenSizeInch: number | null;
       screenResolution: string | null;
+      resolutionTier: string | null;
+      panelType: string | null;
       refreshRateHz: number | null;
       batteryWh: number | null;
       weightGrams: number | null;
@@ -3499,6 +3615,38 @@ export interface components {
       mode: "ai_enhanced" | "rule_based";
       recommendations: components["schemas"]["AdvisorRecommendation"][];
       suggestions: string[];
+    };
+    FacetDefinition: {
+      key: string;
+      name: string;
+      /** @enum {string} */
+      mode: "MULTI" | "SINGLE_MIN" | "SINGLE_MAX" | "BOOLEAN";
+      /** @enum {string} */
+      kind: "categorical" | "exact" | "bucket";
+      options?: {
+        name: string;
+        value: string;
+      }[];
+    };
+    ProductFilterCatalog: {
+      factoryOptions: {
+        name: string;
+        value: string;
+      }[];
+      targetOptions: {
+        name: string;
+        value: string;
+      }[];
+      facetDefinitions: components["schemas"]["FacetDefinition"][];
+    };
+    ProductFacets: {
+      total: number;
+      groups: {
+        [key: string]: {
+          value: string;
+          count: number;
+        }[];
+      };
     };
     Cart: {
       items: {
