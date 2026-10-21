@@ -5,3 +5,18 @@
     display: none;
   }
 }
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-two);
+  position: sticky;
+  bottom: calc(-1 * var(--space-six));
+  padding: var(--space-three) 0;
+  background: var(--color-surface);
+}
+
+.error {
+  color: var(--color-danger);
+  margin: 0;
+}
