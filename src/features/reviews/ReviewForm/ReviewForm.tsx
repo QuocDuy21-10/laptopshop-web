@@ -10,11 +10,18 @@ import { errorMessage } from "@/lib/api/errors";
 import { applyFieldErrors } from "@/lib/forms";
 import type { OwnerReview } from "@/lib/api/types";
 import { reviewSchema, type ReviewInput } from "../schema";
+import { ReviewImagesEditor, type ReviewImagesState } from "../ReviewImagesEditor/ReviewImagesEditor";
 import styles from "./ReviewForm.module.scss";
 
-type Props = { fullName: string | null; review?: OwnerReview | null; onSubmit: (input: ReviewInput) => Promise<void> };
+type Props = {
+  fullName: string | null;
+  review?: OwnerReview | null;
+  onSubmit: (input: ReviewInput) => Promise<void>;
+  onImagesChange?: (state: ReviewImagesState) => void;
+  imageError?: string | null;
+};
 
-export function ReviewForm({ fullName, review, onSubmit }: Props) {
+export function ReviewForm({ fullName, review, onSubmit, onImagesChange, imageError }: Props) {
   const [formError, setFormError] = useState<string | null>(null);
   const { register, handleSubmit, setError, formState } = useForm<ReviewInput>({
     resolver: zodResolver(reviewSchema),
@@ -29,7 +36,7 @@ export function ReviewForm({ fullName, review, onSubmit }: Props) {
   });
   return (
     <form className={styles.form} onSubmit={submit} noValidate>
-      {formError && <Alert tone="error" title={formError} />}
+      {(formError || imageError) && <Alert tone="error" title={imageError ?? formError ?? "Đã có lỗi xảy ra."} />}
       {review?.status === "HIDDEN" && <Alert tone="warning" title="Đánh giá đang được ẩn. Nội dung sửa vẫn cần admin khôi phục." />}
       <fieldset className={styles.fieldset}>
         <legend>Số sao <span aria-hidden="true">*</span></legend>
@@ -48,6 +55,7 @@ export function ReviewForm({ fullName, review, onSubmit }: Props) {
         <label><input aria-label="Công khai tên" type="radio" value="false" disabled={!fullName} {...register("isAnonymous", { required: "Hãy chọn cách hiển thị tên.", setValueAs: (value) => value === "true" })} /> Công khai tên{!fullName && " — hãy cập nhật họ tên trước"}</label>
         {identityError && <p className={styles.error}>{identityError}</p>}
       </fieldset>
+      <ReviewImagesEditor images={review?.images ?? []} onChange={onImagesChange ?? (() => undefined)} />
       <Button type="submit" size="lg" fullWidth loading={formState.isSubmitting}>Gửi đánh giá</Button>
     </form>
   );
