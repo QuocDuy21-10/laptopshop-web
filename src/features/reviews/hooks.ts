@@ -140,6 +140,15 @@ export function useToggleHelpful(reviewIds: number[], userId?: number) {
         const currentIds = current ?? [];
         return result.helpful ? [...new Set([...currentIds, reviewId])] : currentIds.filter((id) => id !== reviewId);
       });
+      queryClient.setQueriesData({ queryKey: ["reviews"] }, (current: unknown) => {
+        if (!current || typeof current !== "object" || !("data" in current) || !Array.isArray(current.data)) return current;
+        return {
+          ...current,
+          data: current.data.map((review: { id?: number; helpfulCount?: number }) =>
+            review.id === reviewId ? { ...review, helpfulCount: result.helpfulCount } : review,
+          ),
+        };
+      });
       void queryClient.invalidateQueries({ queryKey: ["reviews"] });
     },
   });
