@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button/Button";
 import { loginHref } from "@/lib/safe-next";
 import { useToggleHelpful } from "../hooks";
@@ -22,6 +22,13 @@ export function HelpfulButton({ productId, reviewId, reviewIds, count, helpful, 
   const mutation = useToggleHelpful(reviewIds, userId);
   const active = optimistic?.active ?? helpful;
   const currentCount = optimistic?.count ?? count;
+  useEffect(() => {
+    if (optimistic && optimistic.active === helpful && optimistic.count === count) {
+      // Props are authoritative again after the mutation response/refetch settles.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setOptimistic(null);
+    }
+  }, [helpful, count, optimistic]);
   if (!userId) {
     return <Link className={styles.button} href={loginHref(`/products/${productId}#reviews`)}>Hữu ích ({currentCount})</Link>;
   }
