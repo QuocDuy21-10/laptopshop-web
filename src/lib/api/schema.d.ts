@@ -1029,6 +1029,173 @@ export interface paths {
     };
     trace?: never;
   };
+  "/api/v1/reviews/helpful": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List helpful votes for the current user */
+    get: {
+      parameters: {
+        query: {
+          reviewIds: string;
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["HelpfulReviewState"];
+            };
+          };
+        };
+        /** @description Invalid or excessive review IDs */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/reviews/{id}/helpful": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Mark a public review as helpful */
+    put: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Updated */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["HelpfulMutation"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Review not found or not public */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Cannot vote for own review */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    post?: never;
+    /** Remove the current user's helpful vote */
+    delete: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Updated */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["HelpfulMutation"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Review not found or not public */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/reviews/{id}/images": {
     parameters: {
       query?: never;
@@ -4612,18 +4779,9 @@ export interface components {
       url: string;
       /** @enum {string} */
       mimeType: "image/webp";
-      byteSize: number;
       width: number;
       height: number;
       position: number;
-      /** @enum {string} */
-      status: "PENDING" | "READY" | "DELETING";
-      /** Format: date-time */
-      deletedAt: string | null;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
     };
     PublicReview: {
       id: number;
@@ -4635,6 +4793,7 @@ export interface components {
       /** @enum {boolean} */
       verifiedPurchase: true;
       images: components["schemas"]["ReviewImage"][];
+      helpfulCount: number;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -4723,6 +4882,7 @@ export interface components {
         fullName: string | null;
       } | null;
       images: components["schemas"]["ReviewImage"][];
+      helpfulCount: number;
     };
     AdminReviewDetail: {
       id: number;
@@ -4764,6 +4924,7 @@ export interface components {
         fullName: string | null;
       } | null;
       images: components["schemas"]["ReviewImage"][];
+      helpfulCount: number;
     };
     AdminReviewSummary: {
       totalReviews: number;
@@ -4771,6 +4932,14 @@ export interface components {
       hiddenReviews: number;
       deletedReviews: number;
       averageRating: number | null;
+    };
+    HelpfulReviewState: {
+      reviewIds: number[];
+    };
+    HelpfulMutation: {
+      reviewId: number;
+      helpfulCount: number;
+      helpful: boolean;
     };
     AdminOrder: {
       id: number;

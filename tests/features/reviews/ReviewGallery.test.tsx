@@ -9,14 +9,9 @@ const image = (id: number, position: number): ReviewImage => ({
   id,
   url: `https://signed.test/${id}.webp`,
   mimeType: "image/webp",
-  byteSize: 10,
   width: 800,
   height: 600,
   position,
-  status: "READY",
-  deletedAt: null,
-  createdAt: "2026-10-21T00:00:00Z",
-  updatedAt: "2026-10-21T00:00:00Z",
 });
 
 describe("ReviewGallery", () => {

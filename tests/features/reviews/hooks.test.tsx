@@ -1,7 +1,7 @@
 import { describe, expect, it, beforeEach } from "vitest";
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useReviewEligibility, useProductReviews, useCreateReview, useAddReviewImages, useReorderReviewImages, useDeleteReviewImage } from "@/features/reviews/hooks";
+import { useReviewEligibility, useProductReviews, useCreateReview, useAddReviewImages, useReorderReviewImages, useDeleteReviewImage, useHelpfulReviewIds, useToggleHelpful } from "@/features/reviews/hooks";
 import { queryKeys } from "@/lib/api/query-keys";
 import { json, lastRequest, mockFetch, renderWithQuery, urlOf } from "../../utils";
 
@@ -14,6 +14,11 @@ function PublicAndEligibilityHarness() {
   const eligibility = useReviewEligibility(12, 7);
   const reviews = useProductReviews(12, { page: 1, pageSize: 10, sort: "newest" });
   return <output data-testid="combined">{`${eligibility.isError ? "eligibility-error" : "eligibility-pending"}/${reviews.isSuccess ? "reviews-success" : "reviews-pending"}`}</output>;
+}
+
+function HelpfulStateHarness({ userId, ids }: { userId?: number; ids: number[] }) {
+  const query = useHelpfulReviewIds(ids, userId);
+  return <output data-testid="helpful-state">{query.isFetching ? "fetching" : query.data?.join(",") ?? "idle"}</output>;
 }
 
 describe("review query hooks", () => {
@@ -88,5 +93,34 @@ describe("review query hooks", () => {
     await userEvent.click(screen.getByRole("button", { name: "Delete image" }));
     await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
     expect(new URL(lastRequest(fetchMock).url).pathname).toBe("/api/v1/reviews/18/images/21");
+  });
+
+  it("does not fetch helpful viewer state anonymously and batches IDs in groups of 50", async () => {
+    const fetchMock = mockFetch();
+    fetchMock.mockResolvedValue(json(200, { data: { reviewIds: [1] } }));
+    renderWithQuery(<HelpfulStateHarness ids={[1, 2, 3]} />);
+    await waitFor(() => expect(screen.getByTestId("helpful-state")).toHaveTextContent("idle"));
+    expect(fetchMock).not.toHaveBeenCalled();
+
+    renderWithQuery(<HelpfulStateHarness userId={7} ids={Array.from({ length: 51 }, (_, i) => i + 1)} />);
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+    expect(urlOf(fetchMock.mock.calls[0][0])).toContain("reviewIds=");
+    expect(new URL(urlOf(fetchMock.mock.calls[0][0])).searchParams.get("reviewIds")?.split(",")).toHaveLength(50);
+  });
+
+  it("rolls helpful viewer state back when the mutation fails", async () => {
+    const fetchMock = mockFetch();
+    fetchMock.mockResolvedValueOnce(json(200, { data: { reviewIds: [] } }));
+    fetchMock.mockResolvedValueOnce(json(500, { error: { code: "UNKNOWN", message: "failed" } }));
+    function Harness() {
+      const state = useHelpfulReviewIds([2], 7);
+      const mutation = useToggleHelpful([2], 7);
+      return <button type="button" onClick={() => mutation.mutate({ reviewId: 2, helpful: true })}>{state.data?.includes(2) ? "yes" : "no"}</button>;
+    }
+    renderWithQuery(<Harness />);
+    await waitFor(() => expect(screen.getByRole("button")).toHaveTextContent("no"));
+    await userEvent.click(screen.getByRole("button"));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(screen.getByRole("button")).toHaveTextContent("no"));
   });
 });

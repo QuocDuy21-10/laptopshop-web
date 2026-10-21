@@ -13,9 +13,14 @@ type Props = {
   page: number;
   totalPages: number;
   onPage: (page: number) => void;
+  productId: number;
+  reviewIds: number[];
+  helpfulIds: number[];
+  userId?: number;
+  selfReviewId?: number;
 };
 
-export function ReviewList({ reviews, isPending, isError, onRetry, page, totalPages, onPage }: Props) {
+export function ReviewList({ reviews, isPending, isError, onRetry, page, totalPages, onPage, productId, reviewIds, helpfulIds, userId, selfReviewId }: Props) {
   if (isError) {
     return <Alert tone="error" title="Không thể tải đánh giá"><Button variant="secondary" onClick={onRetry}>Thử lại</Button></Alert>;
   }
@@ -23,7 +28,7 @@ export function ReviewList({ reviews, isPending, isError, onRetry, page, totalPa
   if (reviews.length === 0) return <p className={styles.empty}>Chưa có đánh giá nào</p>;
   return (
     <div className={styles.list}>
-      {reviews.map((review) => <ReviewCard key={review.id} review={review} />)}
+      {reviews.map((review) => <ReviewCard key={review.id} review={review} productId={productId} reviewIds={reviewIds} userId={userId} helpful={helpfulIds.includes(review.id)} selfVoteDisabled={review.id === selfReviewId} />)}
       {totalPages > 1 && (
         <nav className={styles.pagination} aria-label="Phân trang đánh giá">
           <Button variant="secondary" size="sm" disabled={page <= 1} onClick={() => onPage(page - 1)}>Trang trước</Button>

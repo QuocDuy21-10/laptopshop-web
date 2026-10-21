@@ -50,6 +50,8 @@ const MESSAGES: Record<string, string> = {
   REVIEW_FULL_NAME_REQUIRED: "Hãy cập nhật họ tên trước khi công khai đánh giá.",
   REVIEW_DELETED: "Đánh giá đã bị xoá. Hãy dùng luồng viết lại để tạo nội dung mới.",
   REVIEW_NOT_FOUND: "Không tìm thấy đánh giá yêu cầu.",
+  REVIEW_NOT_PUBLIC: "Đánh giá này hiện không còn công khai.",
+  REVIEW_HELPFUL_SELF_VOTE: "Bạn không thể tự đánh dấu hữu ích cho review của mình.",
 };
 
 export function errorMessage(e: unknown): string {
