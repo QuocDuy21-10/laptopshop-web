@@ -7,7 +7,7 @@ import { EmptyState } from "@/components/ui/EmptyState/EmptyState";
 import { Pagination } from "@/components/ui/Pagination/Pagination";
 import { ActiveFilterChips } from "@/features/products/ActiveFilterChips/ActiveFilterChips";
 import { FilterSheet } from "@/features/products/FilterSheet/FilterSheet";
-import { Filters } from "@/features/products/Filters/Filters";
+import { DesktopFilters } from "@/features/products/DesktopFilters/DesktopFilters";
 import { ProductGrid } from "@/features/products/ProductGrid/ProductGrid";
 import { parseFilters, toApiQuery, toQueryString } from "@/features/products/search-params";
 import { getFilterOptions, listProducts } from "@/features/products/server";
@@ -34,7 +34,7 @@ export default async function ProductsPage({ searchParams }: Props) {
       </div>
       <div className={styles.layout}>
         <aside className={styles.sidebar} aria-label="Bộ lọc">
-          <Filters options={options} filters={filters} />
+          <DesktopFilters definitions={options.facetDefinitions ?? []} counts={{}} filters={filters} countsAvailable={false} />
         </aside>
         <div className={styles.results}>
           <div className={styles.toolbar}>

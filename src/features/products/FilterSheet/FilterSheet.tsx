@@ -4,11 +4,14 @@ import { SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/Button/Button";
 import { Dialog } from "@/components/ui/Dialog/Dialog";
 import type { FilterOptions } from "@/lib/api/types";
-import { Filters } from "../Filters/Filters";
+import { FilterControls } from "../FilterControls/FilterControls";
+import { toQueryString } from "../search-params";
+import { useRouter } from "next/navigation";
 import { activeFilterCount, type ProductFilters } from "../search-params";
 import styles from "./FilterSheet.module.scss";
 
 export function FilterSheet({ options, filters }: { options: FilterOptions; filters: ProductFilters }) {
+  const router = useRouter();
   const count = activeFilterCount(filters);
   return (
     <div className={styles.wrap}>
@@ -22,7 +25,14 @@ export function FilterSheet({ options, filters }: { options: FilterOptions; filt
           </Button>
         }
       >
-        <Filters options={options} filters={filters} idPrefix="sheet" />
+        <FilterControls
+          definitions={options.facetDefinitions ?? []}
+          counts={{}}
+          countsAvailable={false}
+          filters={filters}
+          idPrefix="sheet"
+          onChange={(next) => router.push(`/products${toQueryString(next)}`, { scroll: false })}
+        />
       </Dialog>
     </div>
   );

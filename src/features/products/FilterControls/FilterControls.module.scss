@@ -1,0 +1,58 @@
+@use "mixins" as *;
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-four);
+
+  &[aria-busy="true"] {
+    opacity: 0.7;
+  }
+}
+
+.group {
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-three);
+}
+
+.summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+}
+
+.fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-one);
+  padding: 0;
+  border: 0;
+}
+
+.radioRow {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-two);
+  cursor: pointer;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

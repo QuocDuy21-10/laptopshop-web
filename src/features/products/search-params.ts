@@ -140,7 +140,10 @@ export function toApiQuery(f: ProductFilters): ProductQuery {
 
 export function toFacetsApiQuery(f: ProductFilters): ProductFacetsQuery {
   const query = toApiQuery(f);
-  const { page: _page, pageSize: _pageSize, sort: _sort, ...facets } = query;
+  const facets = { ...query };
+  delete facets.page;
+  delete facets.pageSize;
+  delete facets.sort;
   return facets;
 }
 
