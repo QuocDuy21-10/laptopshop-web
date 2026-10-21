@@ -9,6 +9,7 @@ export const SORT_OPTIONS = [
   { value: "", name: "Mặc định" },
   { value: "price_asc", name: "Giá tăng dần" },
   { value: "price_desc", name: "Giá giảm dần" },
+  { value: "rating_desc", name: "Đánh giá cao nhất" },
 ] as const;
 
 export const FACET_LABELS: Record<string, string> = {
@@ -24,6 +25,7 @@ export const FACET_LABELS: Record<string, string> = {
   minBatteryWh: "Pin tối thiểu",
   maxWeightGrams: "Trọng lượng tối đa",
   minWarrantyMonths: "Bảo hành tối thiểu",
+  minRating: "Đánh giá tối thiểu",
   inStock: "Tình trạng",
 };
 
@@ -34,6 +36,7 @@ export const formatFacetValue = (key: string, value: string) => {
   if (key === "minBatteryWh") return `Từ ${value} Wh`;
   if (key === "maxWeightGrams") return `Tối đa ${Number(value) / 1000} kg`;
   if (key === "minWarrantyMonths") return `Từ ${value} tháng`;
+  if (key === "minRating") return `Từ ${value} sao`;
   if (key === "inStock") return value === "true" ? "Còn hàng" : value;
   return value;
 };

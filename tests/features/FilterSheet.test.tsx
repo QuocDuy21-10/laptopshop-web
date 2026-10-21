@@ -23,6 +23,7 @@ const options = {
   targetOptions: [],
   facetDefinitions: [
     { key: "cpuBrand", name: "CPU", mode: "MULTI" as const, kind: "categorical" as const, options: [{ value: "INTEL", name: "Intel" }, { value: "AMD", name: "AMD" }] },
+    { key: "minRating", name: "Đánh giá tối thiểu", mode: "SINGLE_MIN" as const, kind: "bucket" as const, options: [{ value: "4", name: "Từ 4 sao" }, { value: "3", name: "Từ 3 sao" }] },
   ],
 };
 const filters: ProductFilters = {
