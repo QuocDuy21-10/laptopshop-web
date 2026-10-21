@@ -155,10 +155,16 @@ test("verified product review lifecycle", async ({ browser, request }) => {
   await customerPage.getByRole("radio", { name: "5 sao" }).check();
   await customerPage.getByLabel("Nội dung").fill("Nội dung review E2E đủ dài.");
   await customerPage.getByRole("radio", { name: /Ẩn danh/ }).check();
+  await customerPage.getByLabel("Chọn ảnh").setInputFiles({
+    name: "laptop.png",
+    mimeType: "image/png",
+    buffer: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=", "base64"),
+  });
   await customerPage.getByRole("button", { name: "Gửi đánh giá" }).click();
 
   await customerPage.goto(`/products/${setup.productId}#reviews`);
   await expect(customerPage.getByText("****")).toBeVisible();
+  await expect(customerPage.getByRole("img", { name: /Ảnh review/ })).toHaveCount(1);
   await customerPage.setViewportSize({ width: 320, height: 800 });
   expect(await customerPage.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 
@@ -170,6 +176,7 @@ test("verified product review lifecycle", async ({ browser, request }) => {
 
   await customerPage.reload();
   await expect(customerPage.getByText("Nội dung review E2E đủ dài.")).not.toBeVisible();
+  await expect(customerPage.getByRole("img", { name: /Ảnh review/ })).toHaveCount(0);
   await customerPage.goto(`/account/orders/${setup.orderId}`);
   await customerPage.getByRole("button", { name: "Sửa đánh giá của tôi" }).click();
   await customerPage.getByLabel("Nội dung").fill("Nội dung review E2E đã chỉnh sửa đủ dài.");
@@ -179,6 +186,7 @@ test("verified product review lifecycle", async ({ browser, request }) => {
   await adminPage.getByRole("button", { name: "Khôi phục" }).click();
   await customerPage.goto(`/products/${setup.productId}#reviews`);
   await expect(customerPage.getByText("Nội dung review E2E đã chỉnh sửa đủ dài.")).toBeVisible();
+  await expect(customerPage.getByRole("img", { name: /Ảnh review/ })).toHaveCount(1);
 
   await customerPage.goto(`/account/orders/${setup.orderId}`);
   await customerPage.getByRole("button", { name: "Sửa đánh giá của tôi" }).click();

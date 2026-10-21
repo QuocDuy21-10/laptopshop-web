@@ -4,11 +4,14 @@ import { ApiError, toApiError } from "./errors";
 // null/undefined are left out so a PATCH only touches the fields the form sent
 export function toFormData(
   fields: Record<string, string | number | null | undefined>,
-  files: Record<string, File | undefined> = {},
+  files: Record<string, File | File[] | undefined> = {},
 ): FormData {
   const form = new FormData();
   for (const [key, value] of Object.entries(fields)) if (value !== undefined && value !== null) form.set(key, String(value));
-  for (const [key, file] of Object.entries(files)) if (file) form.set(key, file);
+  for (const [key, file] of Object.entries(files)) {
+    if (Array.isArray(file)) for (const item of file) form.append(key, item);
+    else if (file) form.set(key, file);
+  }
   return form;
 }
 

@@ -24,6 +24,7 @@ export type AdminOrderDetail = Schemas["AdminOrderDetail"];
 export type PaymentEvent = Schemas["PaymentEvent"];
 export type Role = Schemas["Role"];
 export type PublicReview = Schemas["PublicReview"];
+export type ReviewImage = Schemas["ReviewImage"];
 export type ReviewSummary = Schemas["ReviewSummary"];
 export type OwnerReview = Schemas["OwnerReview"];
 export type ReviewEligibility = Omit<Schemas["ReviewEligibility"], "existingReview"> & {

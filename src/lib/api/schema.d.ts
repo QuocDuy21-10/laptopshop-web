@@ -1029,6 +1029,225 @@ export interface paths {
     };
     trace?: never;
   };
+  "/api/v1/reviews/{id}/images": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Add images to my review */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: {
+        content: {
+          "multipart/form-data": {
+            images: string[];
+          };
+        };
+      };
+      responses: {
+        /** @description Created */
+        201: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["ReviewImage"][];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Review not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Image limit reached */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Image too large */
+        413: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Storage unavailable */
+        503: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/reviews/{id}/images/order": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Reorder my review images */
+    patch: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            imageIds: number[];
+          };
+        };
+      };
+      responses: {
+        /** @description Updated */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["ReviewImage"][];
+            };
+          };
+        };
+        /** @description Invalid image order */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Review not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    trace?: never;
+  };
+  "/api/v1/reviews/{id}/images/{imageId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Delete one of my review images */
+    delete: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+          imageId: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Deleted */
+        204: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content?: never;
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Review or image not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/cart": {
     parameters: {
       query?: never;
@@ -4387,6 +4606,25 @@ export interface components {
       name: string;
       anonymous: boolean;
     };
+    ReviewImage: {
+      id: number;
+      /** Format: uri */
+      url: string;
+      /** @enum {string} */
+      mimeType: "image/webp";
+      byteSize: number;
+      width: number;
+      height: number;
+      position: number;
+      /** @enum {string} */
+      status: "PENDING" | "READY" | "DELETING";
+      /** Format: date-time */
+      deletedAt: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
     PublicReview: {
       id: number;
       productId: number;
@@ -4396,6 +4634,7 @@ export interface components {
       author: components["schemas"]["ReviewAuthor"];
       /** @enum {boolean} */
       verifiedPurchase: true;
+      images: components["schemas"]["ReviewImage"][];
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -4426,6 +4665,7 @@ export interface components {
       deletedAt: string | null;
       /** @enum {boolean} */
       verifiedPurchase: true;
+      images: components["schemas"]["ReviewImage"][];
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -4482,6 +4722,7 @@ export interface components {
         username: string;
         fullName: string | null;
       } | null;
+      images: components["schemas"]["ReviewImage"][];
     };
     AdminReviewDetail: {
       id: number;
@@ -4522,6 +4763,7 @@ export interface components {
         username: string;
         fullName: string | null;
       } | null;
+      images: components["schemas"]["ReviewImage"][];
     };
     AdminReviewSummary: {
       totalReviews: number;

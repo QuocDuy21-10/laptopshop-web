@@ -13,6 +13,7 @@ export const queryKeys = {
   reviewSummary: (productId: number) => ["reviews", productId, "summary"] as const,
   productReviews: (productId: number, query: object) => ["reviews", productId, "list", query] as const,
   reviewEligibility: (productId: number, userId: number) => ["reviews", productId, "eligibility", userId] as const,
+  reviewImages: (reviewId: number) => ["reviews", reviewId, "images"] as const,
   // admin mutations invalidate adminAll: every admin list, detail and the dashboard
   adminAll: ["admin"] as const,
   adminSales: (range: object) => ["admin", "sales", range] as const,

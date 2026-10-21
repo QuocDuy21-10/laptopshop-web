@@ -14,6 +14,12 @@ describe("toFormData", () => {
     expect(form.has("avatar")).toBe(false);
     expect((form.get("image") as File).name).toBe("a.png");
   });
+
+  it("appends every file when a multipart field contains an array", () => {
+    const files = [new File(["one"], "one.png", { type: "image/png" }), new File(["two"], "two.png", { type: "image/png" })];
+    const form = toFormData({}, { images: files });
+    expect(form.getAll("images").map((file) => (file as File).name)).toEqual(["one.png", "two.png"]);
+  });
 });
 
 describe("sendMultipart", () => {
