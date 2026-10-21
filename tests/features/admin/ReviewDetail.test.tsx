@@ -8,6 +8,7 @@ const detail = {
   createdAt: "2026-10-21T03:00:00.000Z", contentUpdatedAt: "2026-10-21T04:00:00.000Z", hiddenReason: "Cần xem lại", moderatedAt: "2026-10-21T03:30:00.000Z",
   author: { id: 1, username: "buyer@test.local", fullName: "Nguyễn Văn A" }, product: { id: 12, name: "Asus Zenbook" },
   purchase: { orderId: 45, orderDetailId: 91, status: "COMPLETED", paymentStatus: "PAYMENT_SUCCESS", completedAt: "2026-10-20T03:00:00.000Z" }, moderatedBy: null,
+  images: [], helpfulCount: 0, officialReply: null,
 };
 
 describe("ReviewDetail", () => {

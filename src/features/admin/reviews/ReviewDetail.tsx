@@ -9,6 +9,7 @@ import { useAdminReview } from "./hooks";
 import { ReviewModerationActions } from "./ReviewModerationActions";
 import { ReviewStatusTag } from "./ReviewStatusTag";
 import { ReviewGallery } from "@/features/reviews/ReviewGallery/ReviewGallery";
+import { ReviewReplyEditor } from "./ReviewReplyEditor";
 
 export function ReviewDetail({ id }: { id: number }) {
   const query = useAdminReview(id);
@@ -23,5 +24,6 @@ export function ReviewDetail({ id }: { id: number }) {
     <Card title="Ảnh thực tế" className={styles.panel}><ReviewGallery images={review.images} /></Card>
     <Card title="Tác giả" className={styles.panel}><Descriptions items={[{ key: "name", label: "Họ tên", children: review.author.fullName ?? "—" }, { key: "username", label: "Email", children: review.author.username }, { key: "anonymous", label: "Hiển thị", children: review.isAnonymous ? "Ẩn danh" : "Công khai" }]} /></Card>
     <Card title="Bằng chứng mua hàng" className={styles.panel}><Descriptions items={[{ key: "product", label: "Sản phẩm", children: review.product.name }, { key: "order", label: "Đơn hàng", children: <Link href={`/admin/orders/${review.purchase.orderId}`}>Đơn #{review.purchase.orderId}</Link> }, { key: "status", label: "Trạng thái", children: review.purchase.status }, { key: "payment", label: "Thanh toán", children: review.purchase.paymentStatus }, { key: "completed", label: "Hoàn tất", children: review.purchase.completedAt ? formatDate(review.purchase.completedAt) : "—" }]} /></Card>
+    <ReviewReplyEditor review={review} />
   </>;
 }

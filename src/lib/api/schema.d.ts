@@ -4113,6 +4113,51 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/admin/reviews/{id}/reply": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    patch?: never;
+    post?: never;
+    /** Create, update or reactivate an official review reply */
+    put: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: { id: number };
+        cookie?: never;
+      };
+      requestBody: {
+        content: { "application/json": { content: string } };
+      };
+      responses: {
+        200: { headers: { [name: string]: unknown }; content: { "application/json": { data: components["schemas"]["AdminOfficialReply"] } } };
+        400: { headers: { [name: string]: unknown }; content: { "application/json": components["schemas"]["Error"] } };
+        401: { headers: { [name: string]: unknown }; content: { "application/json": components["schemas"]["Error"] } };
+        403: { headers: { [name: string]: unknown }; content: { "application/json": components["schemas"]["Error"] } };
+        404: { headers: { [name: string]: unknown }; content: { "application/json": components["schemas"]["Error"] } };
+        409: { headers: { [name: string]: unknown }; content: { "application/json": components["schemas"]["Error"] } };
+      };
+    };
+    delete: {
+      parameters: { query?: never; header?: never; path: { id: number }; cookie?: never };
+      requestBody?: never;
+      responses: {
+        204: { headers: { [name: string]: unknown }; content?: never };
+        401: { headers: { [name: string]: unknown }; content: { "application/json": components["schemas"]["Error"] } };
+        403: { headers: { [name: string]: unknown }; content: { "application/json": components["schemas"]["Error"] } };
+        404: { headers: { [name: string]: unknown }; content: { "application/json": components["schemas"]["Error"] } };
+        409: { headers: { [name: string]: unknown }; content: { "application/json": components["schemas"]["Error"] } };
+      };
+    };
+    options?: never;
+    head?: never;
+    trace?: never;
+  };
   "/api/v1/admin/inventory/movements": {
     parameters: {
       query?: never;
@@ -4783,6 +4828,18 @@ export interface components {
       height: number;
       position: number;
     };
+    PublicOfficialReply: {
+      content: string;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    AdminOfficialReply: components["schemas"]["PublicOfficialReply"] & {
+      id: number;
+      createdBy: { id: number; username: string; fullName: string | null };
+      updatedBy: { id: number; username: string; fullName: string | null };
+    };
     PublicReview: {
       id: number;
       productId: number;
@@ -4798,6 +4855,7 @@ export interface components {
       createdAt: string;
       /** Format: date-time */
       updatedAt: string;
+      officialReply: components["schemas"]["PublicOfficialReply"] | null;
     };
     ReviewSummary: {
       productId: number;
@@ -4883,6 +4941,7 @@ export interface components {
       } | null;
       images: components["schemas"]["ReviewImage"][];
       helpfulCount: number;
+      officialReply: components["schemas"]["AdminOfficialReply"] | null;
     };
     AdminReviewDetail: {
       id: number;
@@ -4925,6 +4984,7 @@ export interface components {
       } | null;
       images: components["schemas"]["ReviewImage"][];
       helpfulCount: number;
+      officialReply: components["schemas"]["AdminOfficialReply"] | null;
     };
     AdminReviewSummary: {
       totalReviews: number;
