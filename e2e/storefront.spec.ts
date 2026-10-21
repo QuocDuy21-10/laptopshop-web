@@ -165,17 +165,42 @@ test("verified product review lifecycle", async ({ browser, request }) => {
   await customerPage.goto(`/products/${setup.productId}#reviews`);
   await expect(customerPage.getByText("****")).toBeVisible();
   await expect(customerPage.getByRole("img", { name: /Ảnh review/ })).toHaveCount(1);
+  const authorReview = customerPage.getByRole("article").filter({ hasText: "Nội dung review E2E đủ dài." });
+  await expect(authorReview.getByRole("button", { name: "Không thể đánh dấu hữu ích" })).toBeDisabled();
+
+  const voterUsername = await registerViaApi(request, "helpful-voter");
+  const voterContext = await browser.newContext();
+  const voterPage = await voterContext.newPage();
+  await voterPage.goto(`/login?next=/products/${setup.productId}%23reviews`);
+  await loginViaUi(voterPage, voterUsername);
+  await voterPage.goto(`/products/${setup.productId}#reviews`);
+  const voterReview = voterPage.getByRole("article").filter({ hasText: "Nội dung review E2E đủ dài." });
+  const helpfulButton = voterReview.getByRole("button", { name: /đánh dấu hữu ích/i });
+  await helpfulButton.click();
+  await expect(helpfulButton).toHaveAttribute("aria-pressed", "true");
+  await voterPage.reload();
+  const reloadedHelpfulButton = voterPage.getByRole("article").filter({ hasText: "Nội dung review E2E đủ dài." }).getByRole("button", { name: /bỏ đánh dấu hữu ích/i });
+  await expect(reloadedHelpfulButton).toHaveAttribute("aria-pressed", "true");
+  await reloadedHelpfulButton.click();
+  await expect(voterPage.getByRole("article").filter({ hasText: "Nội dung review E2E đủ dài." }).getByRole("button", { name: /đánh dấu hữu ích/i })).toHaveAttribute("aria-pressed", "false");
   await customerPage.setViewportSize({ width: 320, height: 800 });
   expect(await customerPage.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 
+  const publicReviews = (await (await request.get(`${setup.api}/api/v1/products/${setup.productId}/reviews`)).json()).data as Array<{ id: number; content: string }>;
+  const reviewId = publicReviews.find((review) => review.content === "Nội dung review E2E đủ dài.")?.id;
+  expect(reviewId).toBeTruthy();
   await adminPage.goto("/admin/reviews");
   await adminPage.getByRole("link", { name: setup.productName, exact: true }).click();
   await adminPage.getByRole("button", { name: "Ẩn review" }).click();
   await adminPage.getByPlaceholder("Lý do ẩn review").fill("Cần kiểm tra nội dung");
   await adminPage.getByRole("button", { name: "Ẩn", exact: true }).click();
 
+  const hiddenVote = await voterPage.request.put(`${setup.api}/api/v1/reviews/${reviewId}/helpful`);
+  expect(hiddenVote.status()).toBe(404);
   await customerPage.reload();
+  await voterPage.reload();
   await expect(customerPage.getByText("Nội dung review E2E đủ dài.")).not.toBeVisible();
+  await expect(voterPage.getByText("Nội dung review E2E đủ dài.")).not.toBeVisible();
   await expect(customerPage.getByRole("img", { name: /Ảnh review/ })).toHaveCount(0);
   await customerPage.goto(`/account/orders/${setup.orderId}`);
   await customerPage.getByRole("button", { name: "Sửa đánh giá của tôi" }).click();
@@ -198,6 +223,7 @@ test("verified product review lifecycle", async ({ browser, request }) => {
   await customerPage.getByRole("radio", { name: /Công khai tên/ }).check();
   await customerPage.getByRole("button", { name: "Gửi đánh giá" }).click();
   await customerContext.close();
+  await voterContext.close();
   await adminContext.close();
 });
 

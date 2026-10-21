@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/Button/Button";
-import { errorMessage } from "@/lib/api/errors";
 import { loginHref } from "@/lib/safe-next";
 import { useToggleHelpful } from "../hooks";
 import styles from "./HelpfulButton.module.scss";
