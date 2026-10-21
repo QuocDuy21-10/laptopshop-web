@@ -9,7 +9,9 @@ import { SpecTable } from "@/features/compare/SpecTable/SpecTable";
 import { AddToCart } from "@/features/products/AddToCart/AddToCart";
 import { optionName } from "@/features/products/labels";
 import { ProductImage } from "@/features/products/ProductImage/ProductImage";
+import { ReviewSection } from "@/features/reviews/ReviewSection/ReviewSection";
 import { getFilterOptions, getProduct } from "@/features/products/server";
+import { getInitialReviews } from "@/features/reviews/server";
 import styles from "./page.module.scss";
 
 type Props = { params: Promise<{ id: string }> };
@@ -29,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProductPage({ params }: Props) {
   const id = parseId((await params).id);
   if (!id) notFound();
-  const [product, options] = await Promise.all([getProduct(id), getFilterOptions()]);
+  const [product, options, reviews] = await Promise.all([getProduct(id), getFilterOptions(), getInitialReviews(id)]);
   const inStock = product.quantity > 0;
   const paragraphs = (product.detailDesc ?? "").split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
 
@@ -67,6 +69,7 @@ export default async function ProductPage({ params }: Props) {
           ))}
         </section>
       )}
+      <ReviewSection productId={product.id} initialSummary={reviews.summary} initialPage={reviews.page} />
     </Container>
   );
 }
