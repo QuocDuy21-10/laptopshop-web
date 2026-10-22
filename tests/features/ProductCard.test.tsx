@@ -6,7 +6,7 @@ import { ProductCard } from "@/features/products/ProductCard/ProductCard";
 import type { Product } from "@/lib/api/types";
 import { renderWithQuery } from "../utils";
 
-vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn() }), usePathname: () => "/products" }));
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn() }), usePathname: () => "/products", useSearchParams: () => new URLSearchParams() }));
 
 const product: Product = {
   id: 3,

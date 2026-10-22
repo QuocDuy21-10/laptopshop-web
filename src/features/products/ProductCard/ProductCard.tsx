@@ -5,6 +5,7 @@ import { CompareToggle } from "@/features/compare/CompareToggle/CompareToggle";
 import type { Product } from "@/lib/api/types";
 import { AddToCartButton } from "../AddToCart/AddToCartButton";
 import { ProductImage } from "../ProductImage/ProductImage";
+import { WishlistToggle } from "@/features/wishlist/WishlistToggle/WishlistToggle";
 import styles from "./ProductCard.module.scss";
 
 export function ProductCard({ product, factoryName }: { product: Product; factoryName?: string }) {
@@ -12,6 +13,7 @@ export function ProductCard({ product, factoryName }: { product: Product; factor
   return (
     <article className={styles.card}>
       <ProductImage src={product.image} alt={product.name} sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw" />
+      <div className={styles.wishlistOverlay}><WishlistToggle productId={product.id} productName={product.name} /></div>
       <p className={styles.maker}>{factoryName ?? product.factory}</p>
       <h3 className={styles.title}>
         <Link href={`/products/${product.id}`} className={styles.link}>

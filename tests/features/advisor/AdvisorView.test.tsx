@@ -54,7 +54,7 @@ describe("AdvisorView", () => {
     const heading = await screen.findByRole("heading", { name: "Laptop phù hợp với bạn" });
     await waitFor(() => expect(heading).toHaveFocus());
     expect(screen.getAllByRole("status").length).toBeGreaterThan(0);
-    expect(fetchMock).toHaveBeenCalledOnce();
+    expect(fetchMock).toHaveBeenCalledTimes(2); // advisor recommendation plus the shared session lookup used by wishlist controls
   });
 
   it("focuses the empty result and resets the wizard when editing criteria", async () => {

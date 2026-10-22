@@ -15,7 +15,7 @@ describe("proxy", () => {
     expect(proxy(req).headers.get("x-middleware-next")).toBe("1");
   });
 
-  it("guards cart, checkout, account and admin pages", () => {
-    expect(config.matcher).toEqual(["/cart", "/checkout", "/account/:path*", "/admin/:path*"]);
+  it("guards cart, checkout, wishlist, account and admin pages", () => {
+    expect(config.matcher).toEqual(["/cart", "/checkout", "/wishlist", "/account/:path*", "/admin/:path*"]);
   });
 });

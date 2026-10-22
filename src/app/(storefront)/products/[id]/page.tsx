@@ -12,6 +12,7 @@ import { ProductImage } from "@/features/products/ProductImage/ProductImage";
 import { ReviewSection } from "@/features/reviews/ReviewSection/ReviewSection";
 import { getFilterOptions, getProduct } from "@/features/products/server";
 import { getInitialReviews } from "@/features/reviews/server";
+import { WishlistToggle } from "@/features/wishlist/WishlistToggle/WishlistToggle";
 import styles from "./page.module.scss";
 
 type Props = { params: Promise<{ id: string }> };
@@ -54,6 +55,7 @@ export default async function ProductPage({ params }: Props) {
           <Price value={product.price} size="lg" />
           <Badge tone={inStock ? "success" : "error"}>{inStock ? "Còn hàng" : "Hết hàng"}</Badge>
           <AddToCart productId={product.id} stock={product.quantity} />
+          <WishlistToggle productId={product.id} productName={product.name} />
           <CompareToggle product={product} />
           <p className={styles.note}>Thanh toán khi nhận hàng (COD).</p>
         </div>

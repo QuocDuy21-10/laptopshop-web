@@ -31,6 +31,13 @@
   @include text(label-sm);
 }
 
+.wishlistOverlay {
+  position: absolute;
+  top: var(--space-two);
+  right: var(--space-two);
+  z-index: 2;
+}
+
 .title {
   display: -webkit-box;
   overflow: hidden;
