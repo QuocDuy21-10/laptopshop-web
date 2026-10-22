@@ -46,6 +46,7 @@ export function CheckoutView() {
         availableMethods={(paymentMethods.data ?? [{ code: "COD", enabled: true }]).filter((method) => method.enabled).map((method) => method.code)}
         couponCode={couponCode || undefined}
         pricingFingerprint={quote.data?.pricingFingerprint ?? ""}
+        pricingReady={!quote.isPending && Boolean(quote.data?.pricingFingerprint)}
       />
       <CartSummary
         cart={cart.data}

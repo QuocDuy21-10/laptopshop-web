@@ -19,7 +19,7 @@ type Problem = { message: string; backToCart: boolean } | null;
 
 const IDEMPOTENCY_STORAGE_KEY = "laptopshop.checkout.idempotency-key";
 
-export function CheckoutForm({ defaults, availableMethods = ["COD", "BANK_TRANSFER"], couponCode, pricingFingerprint = "" }: { defaults: Omit<ReceiverInput, "paymentMethod"> & Partial<Pick<ReceiverInput, "paymentMethod">>; availableMethods?: PaymentMethod[]; couponCode?: string; pricingFingerprint?: string }) {
+export function CheckoutForm({ defaults, availableMethods = ["COD", "BANK_TRANSFER"], couponCode, pricingFingerprint = "", pricingReady = true }: { defaults: Omit<ReceiverInput, "paymentMethod"> & Partial<Pick<ReceiverInput, "paymentMethod">>; availableMethods?: PaymentMethod[]; couponCode?: string; pricingFingerprint?: string; pricingReady?: boolean }) {
   const router = useRouter();
   const placeOrder = usePlaceOrder();
   const storedAttempt = useRef<string | null>(
@@ -113,7 +113,7 @@ export function CheckoutForm({ defaults, availableMethods = ["COD", "BANK_TRANSF
           </label>
         )}
       </fieldset>
-      <Button type="submit" size="lg" fullWidth loading={placeOrder.isPending}>
+      <Button type="submit" size="lg" fullWidth loading={placeOrder.isPending} disabled={!pricingReady}>
         Xác nhận đặt hàng
       </Button>
     </form>
