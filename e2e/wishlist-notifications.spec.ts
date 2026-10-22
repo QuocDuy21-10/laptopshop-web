@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { assertApiUp, loginViaUi, registerViaApi } from "./helpers";
+import { API, assertApiUp, loginViaUi, registerViaApi } from "./helpers";
 
 test.beforeAll(async ({ request }) => {
   await assertApiUp(request);
@@ -58,5 +58,16 @@ test("creates one automatic price alert notification", async ({ page, request, b
   await expect(page.getByText(/vừa giảm giá|đạt giá mục tiêu/)).toHaveCount(1);
   await page.reload();
   await expect(page.getByText(/vừa giảm giá|đạt giá mục tiêu/)).toHaveCount(1);
+
+  const currentProduct = (await (await page.request.get(`${API}/api/v1/products/${productId}`)).json()).data;
+  const target = Math.max(1, currentProduct.salePrice - 1);
+  const targetResponse = await page.request.patch(`${API}/api/v1/wishlist/items/${productId}`, { data: { mode: "TARGET_PRICE", targetPrice: target } });
+  expect(targetResponse.ok()).toBeTruthy();
+  const secondPromotion = await admin.post("http://localhost:8080/api/v1/admin/promotions", { data: { kind: "AUTOMATIC", name: `E2E Wishlist Target ${Date.now()}`, discountKind: "PERCENT", discountValue: 20, startsAt, endsAt, automatic: { priority: 20, stackableWithCoupon: false, targetProductIds: [productId] } } });
+  expect(secondPromotion.ok()).toBeTruthy();
+  const secondId = (await secondPromotion.json()).data.id;
+  expect((await admin.patch(`http://localhost:8080/api/v1/admin/promotions/${secondId}/state`, { data: { action: "ACTIVATE" } })).ok()).toBeTruthy();
+  await page.reload();
+  await expect(page.getByText(/đạt giá mục tiêu/i)).toHaveCount(1, { timeout: 20_000 });
   await adminContext.close();
 });
