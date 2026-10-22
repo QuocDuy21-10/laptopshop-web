@@ -1,23 +1,165 @@
-import { Laptop } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/layout/Container/Container";
+import { Alert } from "@/components/ui/Alert/Alert";
 import { buttonClassName } from "@/components/ui/Button/Button";
+import { EmptyState } from "@/components/ui/EmptyState/EmptyState";
+import { optionName } from "@/features/products/labels";
 import { ProductGrid } from "@/features/products/ProductGrid/ProductGrid";
 import { getFilterOptions, listProducts } from "@/features/products/server";
+import type { CatalogProduct, FilterOptions } from "@/lib/api/types";
 import styles from "./page.module.scss";
 
+export const metadata: Metadata = {
+  title: "LaptopShop — Chọn đúng laptop cho công việc và giải trí",
+  description:
+    "Cửa hàng laptop chính hãng. So sánh cấu hình trực quan, tư vấn chọn máy theo nhu cầu và ngân sách thực tế.",
+};
+
+const TARGET_CARDS = [
+  {
+    key: "GAMING",
+    desc: "Card rời RTX, tản nhiệt khỏe, màn 144Hz+",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        width="22"
+        height="22"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <line x1="6" y1="12" x2="10" y2="12" />
+        <line x1="8" y1="10" x2="8" y2="14" />
+        <line x1="15" y1="13" x2="15.01" y2="13" />
+        <line x1="18" y1="11" x2="18.01" y2="11" />
+        <rect x="2" y="6" width="20" height="12" rx="2" />
+      </svg>
+    ),
+  },
+  {
+    key: "SINHVIEN_VANPHONG",
+    desc: "Bền bỉ, bàn phím êm, pin dùng cả ngày",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        width="22"
+        height="22"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+      </svg>
+    ),
+  },
+  {
+    key: "THIET_KE_DO_HOA",
+    desc: "Màn chuẩn màu 100% sRGB, dựng phim mượt",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        width="22"
+        height="22"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <circle cx="13.5" cy="6.5" r=".5" fill="currentColor" />
+        <circle cx="17.5" cy="10.5" r=".5" fill="currentColor" />
+        <circle cx="8.5" cy="7.5" r=".5" fill="currentColor" />
+        <circle cx="6.5" cy="12.5" r=".5" fill="currentColor" />
+        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" />
+      </svg>
+    ),
+  },
+  {
+    key: "MONG_NHE",
+    desc: "Trọng lượng từ 1.1kg, vỏ hợp kim sang trọng",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        width="22"
+        height="22"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z" />
+        <line x1="16" y1="8" x2="2" y2="22" />
+        <line x1="17.5" y1="15" x2="9" y2="15" />
+      </svg>
+    ),
+  },
+  {
+    key: "DOANH_NHAN",
+    desc: "Bảo mật vân tay/IR, độ bền chuẩn quân đội",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        width="22"
+        height="22"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        <polyline points="9 12 11 14 15 10" />
+      </svg>
+    ),
+  },
+] as const;
+
+const POPULAR_BRANDS = ["APPLE", "ASUS", "DELL", "LENOVO", "LG", "ACER"] as const;
+
+const BUDGET_SHORTCUTS = [
+  { label: "Dưới 15 triệu", href: "/products?maxPrice=15000000" },
+  { label: "15 – 20 triệu", href: "/products?minPrice=15000000&maxPrice=20000000" },
+  { label: "20 – 30 triệu", href: "/products?minPrice=20000000&maxPrice=30000000" },
+  { label: "Trên 30 triệu", href: "/products?minPrice=30000000" },
+] as const;
+
 export default async function HomePage() {
-  const [options, products] = await Promise.all([getFilterOptions(), listProducts({ page: 1, pageSize: 8 })]);
+  let products: CatalogProduct[] = [];
+  let options: FilterOptions | null = null;
+  let loadError: string | null = null;
+
+  try {
+    const [loadedOptions, result] = await Promise.all([
+      getFilterOptions(),
+      listProducts({ page: 1, pageSize: 8 }),
+    ]);
+    options = loadedOptions;
+    products = result.data;
+  } catch (err) {
+    loadError = err instanceof Error ? err.message : "Không tải được danh sách sản phẩm.";
+  }
 
   return (
     <Container className={styles.page}>
-      <section className={styles.hero} aria-labelledby="hero-title">
-        <div>
-          <p className={styles.eyebrow}>Chính hãng · Thanh toán khi nhận hàng</p>
-          <h1 id="hero-title" className={styles.heroTitle}>
-            Chọn đúng laptop cho công việc và giải trí
-          </h1>
-          <p className={styles.lead}>So sánh theo hãng, nhu cầu và khoảng giá. Giá hiển thị là giá bán hiện tại.</p>
+      {/* HERO BANNER */}
+      <section className={styles.hero}>
+        <div className={styles.heroCopy}>
+          <span className={styles.eyebrow}>
+            <span className={styles.eyebrowDot} aria-hidden />
+            Chính hãng 100% · Thanh toán khi nhận hàng
+          </span>
+          <h1 className={styles.heroTitle}>Chọn đúng laptop cho công việc và giải trí</h1>
+          <p className={styles.heroLead}>
+            Tra cứu thông số minh bạch, so sánh trực tiếp tối đa 4 mẫu máy và nhận gợi ý cấu hình
+            tối ưu theo đúng ngân sách của bạn.
+          </p>
           <div className={styles.heroActions}>
             <Link href="/products" className={buttonClassName({ size: "lg" })}>
               Xem tất cả laptop
@@ -26,35 +168,143 @@ export default async function HomePage() {
               Tư vấn chọn laptop
             </Link>
           </div>
-        </div>
-        <div className={styles.heroArt} aria-hidden="true">
-          <Laptop size={96} strokeWidth={1.25} />
-        </div>
-      </section>
 
-      <section aria-labelledby="needs-title" className={styles.section}>
-        <h2 id="needs-title" className={styles.sectionTitle}>
-          Theo nhu cầu
-        </h2>
-        <ul role="list" className={styles.needs}>
-          {options.targetOptions.map((t) => (
-            <li key={t.value}>
-              <Link href={`/products?target=${t.value}`} className={styles.need}>
-                {t.name}
+          <div className={styles.trustStrip}>
+            <div className={styles.trustItem}>
+              <strong>Bảo hành chính hãng</strong>
+              <span>12 – 24 tháng toàn quốc</span>
+            </div>
+            <div className={styles.trustDivider} aria-hidden />
+            <div className={styles.trustItem}>
+              <strong>1 đổi 1 trong 15 ngày</strong>
+              <span>Nếu phát sinh lỗi NSX</span>
+            </div>
+            <div className={styles.trustDivider} aria-hidden />
+            <div className={styles.trustItem}>
+              <strong>Miễn phí giao hàng</strong>
+              <span>Kiểm tra hàng trước khi trả</span>
+            </div>
+          </div>
+        </div>
+
+        {/* HERO RIGHT PANEL: Interactive Quick Finder thay cho icon trống */}
+        <aside className={styles.heroCard} aria-label="Tìm nhanh theo ngân sách">
+          <div className={styles.heroCardHeader}>
+            <span className={styles.heroCardBadge}>Trợ lý cấu hình</span>
+            <h2 className={styles.heroCardTitle}>Bạn đang tìm máy tầm giá nào?</h2>
+            <p className={styles.heroCardSub}>
+              Chọn nhanh mức ngân sách hoặc để hệ thống phân tích theo công việc.
+            </p>
+          </div>
+
+          <div className={styles.budgetGrid}>
+            {BUDGET_SHORTCUTS.map((item) => (
+              <Link key={item.label} href={item.href} className={styles.budgetPill}>
+                <span>{item.label}</span>
+                <span aria-hidden className={styles.budgetArrow}>
+                  →
+                </span>
               </Link>
-            </li>
-          ))}
-        </ul>
+            ))}
+          </div>
+
+          <div className={styles.heroCardFooter}>
+            <div className={styles.advisorPromo}>
+              <div className={styles.advisorPromoIcon} aria-hidden>
+                <svg
+                  viewBox="0 0 24 24"
+                  width="20"
+                  height="20"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                </svg>
+              </div>
+              <div>
+                <strong>Chưa rõ nên chọn CPU hay RAM nào?</strong>
+                <p>Trả lời 3 câu hỏi để nhận Top 3 máy phù hợp nhất.</p>
+              </div>
+            </div>
+            <Link href="/advisor" className={styles.advisorLink}>
+              Bắt đầu tư vấn ngay →
+            </Link>
+          </div>
+        </aside>
       </section>
 
-      <section aria-labelledby="selling-title" className={styles.section}>
-        <div className={styles.sectionHead}>
-          <h2 id="selling-title" className={styles.sectionTitle}>
-            Laptop đang bán
-          </h2>
-          <Link href="/products">Xem tất cả</Link>
+      {/* THEO NHU CẦU */}
+      <section className={styles.section} aria-labelledby="targets-heading">
+        <div className={styles.sectionHeader}>
+          <div>
+            <h2 id="targets-heading" className={styles.sectionTitle}>
+              Theo nhu cầu
+            </h2>
+            <p className={styles.sectionSubtitle}>
+              Lọc nhanh các dòng máy được tối ưu sẵn cho từng mục đích sử dụng
+            </p>
+          </div>
         </div>
-        <ProductGrid products={products.data} options={options} />
+        <div className={styles.targetGrid}>
+          {TARGET_CARDS.map(({ key, desc, icon }) => (
+            <Link key={key} href={`/products?target=${key}`} className={styles.targetCard}>
+              <div className={styles.targetIconWrap} aria-hidden>
+                {icon}
+              </div>
+              <div className={styles.targetContent}>
+                <span className={styles.targetName}>{optionName(options?.targetOptions ?? [], key) || key}</span>
+                <span className={styles.targetDesc}>{desc}</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* DANH SÁCH SẢN PHẨM */}
+      <section className={styles.section} aria-labelledby="featured-heading">
+        <div className={styles.sectionHeader}>
+          <div>
+            <h2 id="featured-heading" className={styles.sectionTitle}>
+              Laptop đang bán
+            </h2>
+            <p className={styles.sectionSubtitle}>
+              Giá niêm yết rõ ràng, cập nhật tồn kho thời gian thực
+            </p>
+          </div>
+          <Link href="/products" className={styles.sectionLink}>
+            Xem tất cả ({products.length > 0 ? "Tất cả mẫu" : "Danh mục"}) →
+          </Link>
+        </div>
+
+        {/* LỐI TẮT THƯƠNG HIỆU */}
+        <div className={styles.brandStrip} aria-label="Lọc nhanh theo thương hiệu">
+          <Link href="/products" className={`${styles.brandPill} ${styles.brandPillActive}`}>
+            Tất cả hãng
+          </Link>
+          {POPULAR_BRANDS.map((brandKey) => (
+            <Link
+              key={brandKey}
+              href={`/products?factory=${brandKey}`}
+              className={styles.brandPill}
+            >
+              {optionName(options?.factoryOptions ?? [], brandKey) || brandKey}
+            </Link>
+          ))}
+        </div>
+
+        {loadError ? (
+          <Alert tone="error" title="Không tải được sản phẩm">
+            {loadError}
+          </Alert>
+        ) : products.length === 0 ? (
+          <EmptyState
+            title="Chưa có sản phẩm hiển thị"
+            description="Danh mục đang được cập nhật."
+          />
+        ) : (
+          <ProductGrid products={products} />
+        )}
       </section>
     </Container>
   );
