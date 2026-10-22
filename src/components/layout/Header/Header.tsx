@@ -6,6 +6,8 @@ import { CartLink } from "../CartLink/CartLink";
 import { Container } from "../Container/Container";
 import { MobileMenu } from "../MobileMenu/MobileMenu";
 import { SearchForm } from "../SearchForm/SearchForm";
+import { WishlistLink } from "../WishlistLink/WishlistLink";
+import { NotificationBell } from "@/features/notifications/NotificationBell/NotificationBell";
 import styles from "./Header.module.scss";
 
 export async function Header() {
@@ -31,6 +33,8 @@ export async function Header() {
         </nav>
         <SearchForm className={styles.search} />
         <div className={styles.actions}>
+          <WishlistLink />
+          <NotificationBell />
           <CartLink />
           <AccountMenu />
         </div>
