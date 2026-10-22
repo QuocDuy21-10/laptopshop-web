@@ -466,6 +466,552 @@ export interface paths {
     };
     trace?: never;
   };
+  "/api/v1/wishlist": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List my wishlist */
+    get: {
+      parameters: {
+        query?: {
+          page?: number;
+          pageSize?: number;
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["WishlistItem"][];
+              meta: {
+                page: number;
+                pageSize: number;
+                total: number;
+                totalPages: number;
+              };
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/wishlist/summary": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get my wishlist summary */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["WishlistSummary"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/wishlist/status": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get wishlist status for products */
+    get: {
+      parameters: {
+        query: {
+          productIds: number[];
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["WishlistStatus"][];
+            };
+          };
+        };
+        /** @description Invalid product batch */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/wishlist/items/{productId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Add a product to my wishlist */
+    put: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          productId: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["WishlistItem"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Product not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Product unavailable or wishlist limit reached */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    post?: never;
+    /** Remove a product from my wishlist */
+    delete: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          productId: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Removed */
+        204: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content?: never;
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    options?: never;
+    head?: never;
+    /** Configure a wishlist price alert */
+    patch: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          productId: number;
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json":
+            | {
+                /** @enum {string} */
+                mode: "PERCENT_DROP";
+              }
+            | {
+                /** @enum {string} */
+                mode: "TARGET_PRICE";
+                targetPrice: number;
+              }
+            | {
+                /** @enum {object|null} */
+                mode: never | null;
+              };
+        };
+      };
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["WishlistItem"];
+            };
+          };
+        };
+        /** @description Invalid target price */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Wishlist item not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Product unavailable */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    trace?: never;
+  };
+  "/api/v1/notifications": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List my notifications */
+    get: {
+      parameters: {
+        query?: {
+          page?: number;
+          pageSize?: number;
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["Notification"][];
+              meta: {
+                page: number;
+                pageSize: number;
+                total: number;
+                totalPages: number;
+              };
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/notifications/unread-count": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get my unread notification count */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: {
+                unreadCount: number;
+              };
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/notifications/read-all": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Mark all my notifications read */
+    patch: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: {
+                updatedCount: number;
+              };
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    trace?: never;
+  };
+  "/api/v1/notifications/{id}/read": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Mark one notification read */
+    patch: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["Notification"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Notification not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    trace?: never;
+  };
   "/api/v1/advisor/recommend": {
     parameters: {
       query?: never;
@@ -5744,6 +6290,47 @@ export interface components {
       } | null;
       reviewSummary: components["schemas"]["ProductReviewSummary"];
     };
+    /** @enum {string} */
+    PriceAlertMode: "PERCENT_DROP" | "TARGET_PRICE";
+    WishlistItem: {
+      id: number;
+      productId: number;
+      product: components["schemas"]["PricedProduct"];
+      /** @enum {string|null} */
+      alertMode: "PERCENT_DROP" | "TARGET_PRICE" | null;
+      targetPrice: number | null;
+      referencePrice: number | null;
+      /** @enum {string|null} */
+      lastAlertMode: "PERCENT_DROP" | "TARGET_PRICE" | null;
+      lastAlertedPrice: number | null;
+      /** Format: date-time */
+      lastAlertedAt: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    WishlistSummary: {
+      itemCount: number;
+    };
+    WishlistStatus: {
+      productId: number;
+      isWishlisted: boolean;
+    };
+    Notification: {
+      id: number;
+      productId: number | null;
+      /** @enum {string} */
+      type: "PRICE_DROP";
+      title: string;
+      message: string;
+      oldPrice: number | null;
+      newPrice: number | null;
+      /** Format: date-time */
+      readAt: string | null;
+      /** Format: date-time */
+      createdAt: string;
+    };
     AdvisorRequest: {
       budgetMax: number;
       /** @enum {string} */
@@ -6003,7 +6590,7 @@ export interface components {
       createdAt: string;
       /** Format: date-time */
       updatedAt: string;
-      officialReply: components["schemas"]["PublicOfficialReply"] | unknown | unknown;
+      officialReply: components["schemas"]["PublicOfficialReply"] & unknown;
     };
     ReviewSummary: {
       productId: number;
@@ -6045,7 +6632,7 @@ export interface components {
         | "PAYMENT_NOT_CONFIRMED"
         | "ALREADY_REVIEWED"
         | null;
-      existingReview: components["schemas"]["OwnerReview"] | unknown | unknown;
+      existingReview: components["schemas"]["OwnerReview"] & unknown;
       willRequireModeration: boolean;
     };
     AdminReviewListItem: {
@@ -6089,7 +6676,21 @@ export interface components {
       } | null;
       images: components["schemas"]["ReviewImage"][];
       helpfulCount: number;
-      officialReply: components["schemas"]["AdminOfficialReply"] | unknown | unknown;
+      officialReply: components["schemas"]["AdminOfficialReply"] &
+        (components["schemas"]["PublicOfficialReply"] &
+          ({
+            id: number;
+            createdBy: {
+              id: number;
+              username: string;
+              fullName: string | null;
+            };
+            updatedBy: {
+              id: number;
+              username: string;
+              fullName: string | null;
+            };
+          } | null));
     };
     AdminReviewDetail: {
       id: number;
@@ -6132,7 +6733,21 @@ export interface components {
       } | null;
       images: components["schemas"]["ReviewImage"][];
       helpfulCount: number;
-      officialReply: components["schemas"]["AdminOfficialReply"] | unknown | unknown;
+      officialReply: components["schemas"]["AdminOfficialReply"] &
+        (components["schemas"]["PublicOfficialReply"] &
+          ({
+            id: number;
+            createdBy: {
+              id: number;
+              username: string;
+              fullName: string | null;
+            };
+            updatedBy: {
+              id: number;
+              username: string;
+              fullName: string | null;
+            };
+          } | null));
     };
     AdminReviewSummary: {
       totalReviews: number;

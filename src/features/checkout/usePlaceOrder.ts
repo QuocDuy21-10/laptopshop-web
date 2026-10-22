@@ -9,8 +9,10 @@ import type { ReceiverInput } from "./schema";
 export function usePlaceOrder() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ key, receiver, couponCode, pricingFingerprint }: { key: string; receiver: ReceiverInput; couponCode?: string; pricingFingerprint: string }) =>
-      unwrap(api.POST("/api/v1/orders", { params: { header: { "Idempotency-Key": key } }, body: { ...receiver, couponCode, pricingFingerprint } })),
+    mutationFn: async ({ key, receiver, couponCode, pricingFingerprint }: { key: string; receiver: ReceiverInput; couponCode?: string; pricingFingerprint: string }) => {
+      const fingerprint = pricingFingerprint || (await unwrap(api.POST("/api/v1/orders/quote", { body: couponCode ? { couponCode } : {} }))).data.pricingFingerprint;
+      return unwrap(api.POST("/api/v1/orders", { params: { header: { "Idempotency-Key": key } }, body: { ...receiver, couponCode, pricingFingerprint: fingerprint } }));
+    },
     onSuccess: () =>
       Promise.all([
         qc.invalidateQueries({ queryKey: queryKeys.cart }),

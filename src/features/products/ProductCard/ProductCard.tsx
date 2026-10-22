@@ -5,6 +5,7 @@ import { CompareToggle } from "@/features/compare/CompareToggle/CompareToggle";
 import { AddToCartButton } from "@/features/products/AddToCart/AddToCartButton";
 import { ProductImage } from "@/features/products/ProductImage/ProductImage";
 import type { CatalogProduct, Product } from "@/lib/api/types";
+import { WishlistToggle } from "@/features/wishlist/WishlistToggle/WishlistToggle";
 import styles from "./ProductCard.module.scss";
 
 interface ProductCardProps {
@@ -58,6 +59,9 @@ export function ProductCard({ product, factoryName }: ProductCardProps) {
             alt={product.name}
             sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
           />
+          <div className={styles.wishlistOverlay}>
+            <WishlistToggle productId={product.id} productName={product.name} />
+          </div>
         </Link>
       </div>
 

@@ -7,6 +7,8 @@ import { MobileMenu } from "@/components/layout/MobileMenu/MobileMenu";
 import { SearchForm } from "@/components/layout/SearchForm/SearchForm";
 import { getFilterOptions } from "@/features/products/server";
 import type { FilterOption } from "@/lib/api/types";
+import { WishlistLink } from "../WishlistLink/WishlistLink";
+import { NotificationBell } from "@/features/notifications/NotificationBell/NotificationBell";
 import styles from "./Header.module.scss";
 
 const TARGET_LINKS = [
@@ -62,7 +64,6 @@ export async function Header() {
               </svg>
               <span>Tư vấn chọn laptop</span>
             </Link>
-
             <Link href="/promotions" className={styles.navLink}>Khuyến mãi</Link>
 
             <span className={styles.navDivider} aria-hidden />
@@ -82,6 +83,8 @@ export async function Header() {
             </Suspense>
           </div>
           <div className={styles.actions}>
+            <WishlistLink />
+            <NotificationBell />
             <CartLink />
             <AccountMenu />
           </div>

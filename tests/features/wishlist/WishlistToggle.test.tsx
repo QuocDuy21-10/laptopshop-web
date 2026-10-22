@@ -1,0 +1,60 @@
+import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { WishlistToggle } from "@/features/wishlist/WishlistToggle/WishlistToggle";
+import { renderWithQuery } from "../../utils";
+
+const mocks = vi.hoisted(() => ({
+  me: vi.fn(),
+  status: vi.fn(),
+  add: vi.fn(),
+  remove: vi.fn(),
+  push: vi.fn(),
+}));
+
+vi.mock("@/features/account/useMe", () => ({ useMe: mocks.me }));
+vi.mock("@/features/wishlist/hooks", () => ({
+  useWishlistStatus: mocks.status,
+  useAddWishlistItem: () => ({ mutate: mocks.add, isPending: false }),
+  useRemoveWishlistItem: () => ({ mutate: mocks.remove, isPending: false }),
+}));
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: mocks.push }),
+  usePathname: () => "/products",
+}));
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  window.history.replaceState({}, "", "/products?q=dell");
+  mocks.me.mockReturnValue({ data: { id: 7 }, isPending: false });
+  mocks.status.mockReturnValue({ data: [{ productId: 3, isWishlisted: false }], isPending: false });
+});
+
+describe("WishlistToggle", () => {
+  it("renders an accessible unpressed heart and adds for authenticated users", async () => {
+    renderWithQuery(<WishlistToggle productId={3} productName="Dell XPS" />);
+    const button = screen.getByRole("button", { name: "Thêm Dell XPS vào Wishlist" });
+    expect(button).toHaveAttribute("aria-pressed", "false");
+    expect(button.className).toContain("touchTarget");
+    await userEvent.click(button);
+    expect(mocks.add).toHaveBeenCalledWith(3);
+  });
+
+  it("removes an authenticated wishlisted product", async () => {
+    mocks.status.mockReturnValue({ data: [{ productId: 3, isWishlisted: true }], isPending: false });
+    renderWithQuery(<WishlistToggle productId={3} productName="Dell XPS" />);
+    const button = screen.getByRole("button", { name: "Bỏ Dell XPS khỏi Wishlist" });
+    expect(button).toHaveAttribute("aria-pressed", "true");
+    await userEvent.click(button);
+    expect(mocks.remove).toHaveBeenCalledWith(3);
+  });
+
+  it("stores a guest intent and redirects to login with the current path", async () => {
+    mocks.me.mockReturnValue({ data: null, isPending: false });
+    renderWithQuery(<WishlistToggle productId={3} productName="Dell XPS" />);
+    await userEvent.click(screen.getByRole("button", { name: "Thêm Dell XPS vào Wishlist" }));
+    expect(mocks.push).toHaveBeenCalledWith("/login?next=%2Fproducts%3Fq%3Ddell");
+    expect(JSON.parse(window.sessionStorage.getItem("laptopshop.wishlist.intent")!)).toMatchObject({ productId: 3 });
+    expect(mocks.add).not.toHaveBeenCalled();
+  });
+});

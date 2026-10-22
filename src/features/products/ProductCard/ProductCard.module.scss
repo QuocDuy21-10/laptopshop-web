@@ -104,6 +104,13 @@
   -webkit-line-clamp: 2;
 }
 
+.wishlistOverlay {
+  position: absolute;
+  top: var(--space-two);
+  right: var(--space-two);
+  z-index: 2;
+}
+
 .nameLink {
   color: inherit;
   text-decoration: none;

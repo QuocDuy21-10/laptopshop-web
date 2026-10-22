@@ -1,0 +1,25 @@
+.list {
+  display: grid;
+  gap: var(--space-three);
+}
+
+.item {
+  display: grid;
+  gap: var(--space-one);
+  padding: var(--space-three);
+  color: var(--color-foreground);
+  text-align: left;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.item[data-read="false"] {
+  background: var(--color-primary-soft);
+  border-color: var(--color-primary);
+}
+
+.item small {
+  color: var(--color-foreground-muted);
+}

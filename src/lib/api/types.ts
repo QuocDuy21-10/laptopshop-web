@@ -60,6 +60,16 @@ export type AdminReviewListItem = Schemas["AdminReviewListItem"];
 export type AdminReviewDetail = Omit<Schemas["AdminReviewDetail"], "officialReply"> & { officialReply: AdminOfficialReply | null };
 export type AdminReviewSummary = Schemas["AdminReviewSummary"];
 export type AdminOfficialReply = PublicOfficialReply & { id: number; createdBy: User; updatedBy: User };
+export type PriceAlertMode = Schemas["PriceAlertMode"];
+export type WishlistItem = Schemas["WishlistItem"];
+export type WishlistStatus = Schemas["WishlistStatus"];
+export type WishlistSummary = Schemas["WishlistSummary"];
+export type WishlistPage = paths["/api/v1/wishlist"]["get"]["responses"][200]["content"]["application/json"];
+export type InAppNotification = Schemas["Notification"];
+export type NotificationPage = paths["/api/v1/notifications"]["get"]["responses"][200]["content"]["application/json"];
+export type ConfigurePriceAlertInput = NonNullable<
+  paths["/api/v1/wishlist/items/{productId}"]["patch"]["requestBody"]
+>["content"]["application/json"] | { mode: null };
 type GeneratedFilterOptions =
   paths["/api/v1/products/filters"]["get"]["responses"][200]["content"]["application/json"]["data"];
 export type FilterOptions = Omit<GeneratedFilterOptions, "facetDefinitions"> &
