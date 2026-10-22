@@ -13,13 +13,14 @@ import { errorMessage, isApiError, unwrap } from "@/lib/api/errors";
 import { applyFieldErrors } from "@/lib/forms";
 import { receiverSchema, type PaymentMethod, type ReceiverInput } from "../schema";
 import { usePlaceOrder } from "../usePlaceOrder";
+import type { PricingQuote } from "@/lib/api/types";
 import styles from "./CheckoutForm.module.scss";
 
 type Problem = { message: string; backToCart: boolean } | null;
 
 const IDEMPOTENCY_STORAGE_KEY = "laptopshop.checkout.idempotency-key";
 
-export function CheckoutForm({ defaults, availableMethods = ["COD", "BANK_TRANSFER"] }: { defaults: Omit<ReceiverInput, "paymentMethod"> & Partial<Pick<ReceiverInput, "paymentMethod">>; availableMethods?: PaymentMethod[] }) {
+export function CheckoutForm({ defaults, quote, availableMethods = ["COD", "BANK_TRANSFER"] }: { defaults: Omit<ReceiverInput, "paymentMethod"> & Partial<Pick<ReceiverInput, "paymentMethod">>; quote?: PricingQuote; availableMethods?: PaymentMethod[] }) {
   const router = useRouter();
   const placeOrder = usePlaceOrder();
   const storedAttempt = useRef<string | null>(
@@ -56,13 +57,15 @@ export function CheckoutForm({ defaults, availableMethods = ["COD", "BANK_TRANSF
   const onSubmit = handleSubmit(async (receiver) => {
     setProblem(null);
     try {
-      const body = await placeOrder.mutateAsync({ key: idempotencyKey, receiver });
+      const body = await placeOrder.mutateAsync({ key: idempotencyKey, receiver, pricingFingerprint: quote?.pricingFingerprint ?? "" });
       window.sessionStorage.removeItem(IDEMPOTENCY_STORAGE_KEY);
       setIdempotencyKey(crypto.randomUUID());
       router.replace(body.data.paymentMethod === "BANK_TRANSFER" ? `/account/orders/${body.data.id}/payment` : `/account/orders/${body.data.id}?placed=1`);
     } catch (e) {
       if (isApiError(e, "CART_EMPTY")) router.replace("/cart");
       else if (isApiError(e, "OUT_OF_STOCK") || isApiError(e, "PRODUCT_UNAVAILABLE"))
+        setProblem({ message: errorMessage(e), backToCart: true });
+      else if (isApiError(e, "FLASH_SALE_QUOTA_EXCEEDED") || isApiError(e, "FLASH_SALE_USER_LIMIT") || isApiError(e, "PROMOTION_CHANGED"))
         setProblem({ message: errorMessage(e), backToCart: true });
       else if (!applyFieldErrors(e, setError)) setProblem({ message: errorMessage(e), backToCart: false });
     }
@@ -113,7 +116,7 @@ export function CheckoutForm({ defaults, availableMethods = ["COD", "BANK_TRANSF
           </label>
         )}
       </fieldset>
-      <Button type="submit" size="lg" fullWidth loading={placeOrder.isPending}>
+      <Button type="submit" size="lg" fullWidth loading={placeOrder.isPending} disabled={Boolean(quote && !quote.pricingFingerprint) || Boolean(problem?.backToCart)}>
         Xác nhận đặt hàng
       </Button>
     </form>

@@ -6,6 +6,7 @@ export const queryKeys = {
   order: (id: number) => ["order", id] as const,
   payment: (orderId: number) => ["payment", orderId] as const,
   paymentMethods: ["payment-methods"] as const,
+  checkoutQuote: (couponCode?: string) => ["checkout-quote", couponCode ?? null] as const,
   productFilters: ["product-filters"] as const,
   productFacets: (query: object) => ["product-facets", query] as const,
   compare: (ids: number[]) => ["compare", ids] as const,

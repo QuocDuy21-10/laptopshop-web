@@ -14,6 +14,7 @@ type GeneratedCart = Schemas["Cart"];
 export type CartItem = Omit<GeneratedCart["items"][number], "product" | "listLineTotal" | "productDiscountAmount"> & { product: Product };
 export type Cart = Omit<GeneratedCart, "items"> & { items: CartItem[] };
 export type Order = Schemas["Order"];
+export type PricingQuote = Schemas["PricingQuote"];
 export type OrderStatus = Order["status"];
 export type StockMovement = Schemas["StockMovement"];
 export type StockReceiptItem = Schemas["StockReceiptItem"];

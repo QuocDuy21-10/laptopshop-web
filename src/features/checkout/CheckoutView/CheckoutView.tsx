@@ -9,6 +9,7 @@ import { useMe } from "@/features/account/useMe";
 import { CartSummary } from "@/features/cart/CartSummary/CartSummary";
 import { useCart } from "@/features/cart/hooks";
 import { usePaymentMethods } from "@/features/payments/hooks";
+import { useCheckoutQuote } from "../useCheckoutQuote";
 import { errorMessage } from "@/lib/api/errors";
 import { CheckoutForm } from "../CheckoutForm/CheckoutForm";
 import styles from "./CheckoutView.module.scss";
@@ -18,6 +19,7 @@ export function CheckoutView() {
   const me = useMe();
   const cart = useCart();
   const paymentMethods = usePaymentMethods();
+  const quote = useCheckoutQuote();
   const empty = cart.data?.items.length === 0;
 
   useEffect(() => {
@@ -31,7 +33,8 @@ export function CheckoutView() {
 
   return (
     <div className={styles.layout}>
-      <CheckoutForm
+        <CheckoutForm
+        quote={quote.data}
         defaults={{
           receiverName: me.data?.fullName ?? "",
           receiverPhone: me.data?.phone ?? "",
