@@ -3,7 +3,7 @@ import { Price } from "@/components/ui/Price/Price";
 import type { Cart } from "@/lib/api/types";
 import styles from "./CartSummary.module.scss";
 
-export function CartSummary({ cart, action, title = "Tóm tắt đơn hàng" }: { cart: Cart; action?: ReactNode; title?: string }) {
+export function CartSummary({ cart, action, title = "Tóm tắt đơn hàng", coupon = 0 }: { cart: Cart; action?: ReactNode; title?: string; coupon?: number }) {
   return (
     <section className={styles.summary} aria-labelledby="summary-title">
       <h2 id="summary-title" className={styles.title}>
@@ -22,6 +22,12 @@ export function CartSummary({ cart, action, title = "Tóm tắt đơn hàng" }: 
           <div className={styles.row}>
             <dt>Giảm giá sản phẩm</dt>
             <dd><Price value={cart.productDiscount ?? 0} size="sm" /></dd>
+          </div>
+        )}
+        {coupon > 0 && (
+          <div className={styles.row}>
+            <dt>Giảm giá coupon</dt>
+            <dd><Price value={coupon} size="sm" /></dd>
           </div>
         )}
         <div className={styles.total}>

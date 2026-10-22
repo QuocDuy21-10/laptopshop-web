@@ -19,7 +19,7 @@ type Problem = { message: string; backToCart: boolean } | null;
 
 const IDEMPOTENCY_STORAGE_KEY = "laptopshop.checkout.idempotency-key";
 
-export function CheckoutForm({ defaults, availableMethods = ["COD", "BANK_TRANSFER"] }: { defaults: Omit<ReceiverInput, "paymentMethod"> & Partial<Pick<ReceiverInput, "paymentMethod">>; availableMethods?: PaymentMethod[] }) {
+export function CheckoutForm({ defaults, availableMethods = ["COD", "BANK_TRANSFER"], couponCode, pricingFingerprint = "" }: { defaults: Omit<ReceiverInput, "paymentMethod"> & Partial<Pick<ReceiverInput, "paymentMethod">>; availableMethods?: PaymentMethod[]; couponCode?: string; pricingFingerprint?: string }) {
   const router = useRouter();
   const placeOrder = usePlaceOrder();
   const storedAttempt = useRef<string | null>(
@@ -56,7 +56,7 @@ export function CheckoutForm({ defaults, availableMethods = ["COD", "BANK_TRANSF
   const onSubmit = handleSubmit(async (receiver) => {
     setProblem(null);
     try {
-      const body = await placeOrder.mutateAsync({ key: idempotencyKey, receiver });
+      const body = await placeOrder.mutateAsync({ key: idempotencyKey, receiver, couponCode, pricingFingerprint });
       window.sessionStorage.removeItem(IDEMPOTENCY_STORAGE_KEY);
       setIdempotencyKey(crypto.randomUUID());
       router.replace(body.data.paymentMethod === "BANK_TRANSFER" ? `/account/orders/${body.data.id}/payment` : `/account/orders/${body.data.id}?placed=1`);
