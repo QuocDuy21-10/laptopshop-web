@@ -25,7 +25,9 @@ export function WishlistCard({ userId, item }: { userId: number; item: WishlistI
         <Price value={livePrice} />
         {product.salePrice !== undefined && product.salePrice < product.price && <p className={styles.oldPrice}>{formatVnd(product.price)}</p>}
         <Badge tone={product.isActive && product.quantity > 0 ? "success" : "error"}>{!product.isActive ? "Ngừng kinh doanh" : product.quantity > 0 ? "Còn hàng" : "Hết hàng"}</Badge>
-        {item.lastAlertMode === "TARGET_PRICE" && <p className={styles.alertState}>Đã đạt mục tiêu</p>}
+        {item.alertMode === "PERCENT_DROP" && <p className={styles.alertState}>Đang theo dõi: giảm thêm 5% (mốc {formatVnd(item.referencePrice ?? livePrice)})</p>}
+        {item.alertMode === "TARGET_PRICE" && item.targetPrice !== null && <p className={styles.alertState}>Mục tiêu: {formatVnd(item.targetPrice)}</p>}
+        {item.alertMode === null && item.lastAlertMode === "TARGET_PRICE" && <p className={styles.alertState}>Đã đạt mục tiêu</p>}
         {item.lastAlertedAt && <p className={styles.meta}>Thông báo gần nhất: {formatDate(item.lastAlertedAt)} ({formatVnd(item.lastAlertedPrice ?? livePrice)})</p>}
         <div className={styles.actions}>
           <AddToCartButton productId={product.id} productName={product.name} disabled={!product.isActive || product.quantity <= 0} />

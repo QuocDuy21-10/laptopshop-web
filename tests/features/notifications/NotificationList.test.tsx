@@ -25,4 +25,9 @@ describe("NotificationList", () => {
     expect(screen.getByText("Dell giảm")).toBeInTheDocument();
     expect(screen.queryByRole("link")).toBeNull();
   });
+
+  it("renders pagination for notification pages beyond the first", () => {
+    renderWithQuery(<NotificationList userId={7} items={[item]} unreadCount={1} page={1} totalPages={2} />);
+    expect(screen.getByRole("link", { name: "Trang 2" })).toHaveAttribute("href", "/account/notifications?page=2");
+  });
 });

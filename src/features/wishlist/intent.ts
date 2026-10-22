@@ -12,7 +12,7 @@ const TTL_MS = 10 * 60 * 1000;
 const isSafeReturnTo = (value: unknown): value is string =>
   typeof value === "string" && value.startsWith("/") && !value.startsWith("//");
 
-const parse = (value: string | null): PendingWishlistIntent | null => {
+const parse = (value: string | null, now = Date.now()): PendingWishlistIntent | null => {
   if (!value) return null;
   try {
     const parsed = JSON.parse(value) as Partial<PendingWishlistIntent>;
@@ -23,7 +23,9 @@ const parse = (value: string | null): PendingWishlistIntent | null => {
       !Number.isInteger(parsed.productId) ||
       parsed.productId <= 0 ||
       !isSafeReturnTo(parsed.returnTo) ||
-      !Number.isFinite(parsed.expiresAt)
+      typeof parsed.expiresAt !== "number" ||
+      !Number.isFinite(parsed.expiresAt) ||
+      parsed.expiresAt > now + TTL_MS
     ) return null;
     return parsed as PendingWishlistIntent;
   } catch {
@@ -43,7 +45,7 @@ export const savePendingWishlistIntent = (
 };
 
 export const readPendingWishlistIntent = (now = Date.now()): PendingWishlistIntent | null => {
-  const parsed = parse(window.sessionStorage.getItem(STORAGE_KEY));
+  const parsed = parse(window.sessionStorage.getItem(STORAGE_KEY), now);
   if (!parsed || parsed.expiresAt <= now) {
     clearPendingWishlistIntent();
     return null;

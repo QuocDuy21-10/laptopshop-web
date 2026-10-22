@@ -6296,10 +6296,12 @@ export interface components {
       id: number;
       productId: number;
       product: components["schemas"]["PricedProduct"];
-      alertMode: components["schemas"]["PriceAlertMode"] & unknown;
+      /** @enum {string|null} */
+      alertMode: "PERCENT_DROP" | "TARGET_PRICE" | null;
       targetPrice: number | null;
       referencePrice: number | null;
-      lastAlertMode: components["schemas"]["PriceAlertMode"] & unknown;
+      /** @enum {string|null} */
+      lastAlertMode: "PERCENT_DROP" | "TARGET_PRICE" | null;
       lastAlertedPrice: number | null;
       /** Format: date-time */
       lastAlertedAt: string | null;

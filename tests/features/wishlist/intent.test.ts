@@ -27,4 +27,9 @@ describe("pending wishlist intent", () => {
     clearPendingWishlistIntent();
     expect(readPendingWishlistIntent(601_001)).toBeNull();
   });
+
+  it("rejects an intent whose expiry exceeds the ten-minute maximum", () => {
+    window.sessionStorage.setItem("laptopshop.wishlist.intent", JSON.stringify({ version: 1, action: "ADD_WISHLIST", productId: 7, returnTo: "/products/7", expiresAt: 999_999_999 }));
+    expect(readPendingWishlistIntent(1_000)).toBeNull();
+  });
 });

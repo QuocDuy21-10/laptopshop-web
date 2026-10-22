@@ -32,4 +32,12 @@ describe("PendingWishlistIntent", () => {
     await vi.waitFor(() => expect(mocks.mutateAsync).toHaveBeenCalled());
     expect(window.sessionStorage.getItem("laptopshop.wishlist.intent")).not.toBeNull();
   });
+
+  it("clears the pending intent when the wishlist limit is terminal", async () => {
+    savePendingWishlistIntent({ action: "ADD_WISHLIST", productId: 3, returnTo: "/products/3" });
+    mocks.mutateAsync.mockRejectedValueOnce(new ApiError(409, "WISHLIST_LIMIT_REACHED", "x"));
+    renderWithQuery(<PendingWishlistIntent />);
+    await vi.waitFor(() => expect(mocks.mutateAsync).toHaveBeenCalled());
+    expect(window.sessionStorage.getItem("laptopshop.wishlist.intent")).toBeNull();
+  });
 });

@@ -14,6 +14,7 @@ import { queryKeys } from "@/lib/api/query-keys";
 describe("wishlist notification generated contract", () => {
   it("exports the generated feature aliases", () => {
     const mode: PriceAlertMode = "PERCENT_DROP";
+    const nullableMode: WishlistItem["alertMode"] = null;
     const item = null as unknown as WishlistItem;
     const status = null as unknown as WishlistStatus;
     const summary = null as unknown as WishlistSummary;
@@ -22,7 +23,7 @@ describe("wishlist notification generated contract", () => {
     const notification = null as unknown as InAppNotification;
     const input = null as unknown as ConfigurePriceAlertInput;
 
-    expect([mode, item, status, summary, page, notifications, notification, input]).toHaveLength(8);
+    expect([mode, nullableMode, item, status, summary, page, notifications, notification, input]).toHaveLength(9);
   });
 
   it("isolates private keys by user and canonicalizes status ids", () => {

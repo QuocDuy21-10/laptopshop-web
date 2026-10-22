@@ -9,6 +9,7 @@ test("keeps a guest wishlist intent through login and isolates accounts", async 
   const usernameA = await registerViaApi(request, "wishlist-a");
   await page.goto("/products");
   const first = page.getByRole("article").filter({ hasText: "Còn hàng" }).first();
+  const productLink = await first.getByRole("link").first().getAttribute("href");
   const productName = await first.getByRole("link").first().innerText();
   await first.getByRole("button", { name: new RegExp(`Thêm ${productName} vào Wishlist`) }).click();
   await expect(page).toHaveURL(/\/login\?next=/);
@@ -25,10 +26,12 @@ test("keeps a guest wishlist intent through login and isolates accounts", async 
   await loginViaUi(page, usernameB);
   await expect(page).toHaveURL(/\/wishlist$/);
   await expect(page.getByText("Wishlist đang trống")).toBeVisible();
+  await page.goto(productLink!);
+  await expect(page.getByRole("button", { name: new RegExp(`Thêm ${productName} vào Wishlist`) })).toHaveAttribute("aria-pressed", "false");
 });
 
 test("creates one automatic price alert notification", async ({ page, request, browser }) => {
-  test.skip(!process.env.E2E_PRICE_ALERTS || !process.env.E2E_ADMIN_PASSWORD, "E2E_PRICE_ALERTS=true, admin credentials and a running price-alert worker are required");
+  test.skip(process.env.E2E_PRICE_ALERTS !== "true" || !process.env.E2E_ADMIN_PASSWORD, "E2E_PRICE_ALERTS=true, admin credentials and a running price-alert worker are required");
   const username = await registerViaApi(request, "wishlist-price-alert");
   await page.goto("/login?next=/products");
   await loginViaUi(page, username);
@@ -52,6 +55,8 @@ test("creates one automatic price alert notification", async ({ page, request, b
   expect(activated.ok()).toBeTruthy();
   await page.goto("/account/notifications");
   await expect(page.getByText(/vừa giảm giá|đạt giá mục tiêu/)).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByText(/vừa giảm giá|đạt giá mục tiêu/)).toHaveCount(1);
+  await page.reload();
   await expect(page.getByText(/vừa giảm giá|đạt giá mục tiêu/)).toHaveCount(1);
   await adminContext.close();
 });
