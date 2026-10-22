@@ -20,7 +20,8 @@ type GeneratedCart = Schemas["Cart"];
 type GeneratedCartItem = GeneratedCart["items"][number];
 export type CartItem = Omit<GeneratedCartItem, "product" | "listLineTotal" | "productDiscountAmount"> &
   Partial<Pick<GeneratedCartItem, "listLineTotal" | "productDiscountAmount">> & { product: PricedProduct };
-export type Cart = Omit<GeneratedCart, "items"> & { items: CartItem[] };
+export type Cart = Omit<GeneratedCart, "items" | "productDiscount" | "totalAfterProductDiscount"> &
+  Partial<Pick<GeneratedCart, "productDiscount" | "totalAfterProductDiscount">> & { items: CartItem[] };
 type GeneratedOrder = Schemas["Order"];
 export type Order = Omit<GeneratedOrder, "subtotalPrice" | "productDiscountAmount" | "couponEligibleSubtotal" | "couponDiscountAmount" | "couponCode" | "couponName" | "paymentRequired"> &
   Partial<Pick<GeneratedOrder, "subtotalPrice" | "productDiscountAmount" | "couponEligibleSubtotal" | "couponDiscountAmount" | "couponCode" | "couponName" | "paymentRequired">>;
