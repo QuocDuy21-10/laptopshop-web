@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/Badge/Badge";
-import { Price } from "@/components/ui/Price/Price";
+import { PromotionPrice } from "@/features/promotions/PromotionPrice/PromotionPrice";
 import { CompareToggle } from "@/features/compare/CompareToggle/CompareToggle";
 import { AddToCartButton } from "@/features/products/AddToCart/AddToCartButton";
 import { ProductImage } from "@/features/products/ProductImage/ProductImage";
@@ -103,7 +103,7 @@ export function ProductCard({ product, factoryName }: ProductCardProps) {
 
         <div className={styles.footer}>
           <div className={styles.priceRow}>
-            <Price value={product.price} size="md" />
+            <PromotionPrice product={product} />
             <CompareToggle product={product} />
           </div>
 

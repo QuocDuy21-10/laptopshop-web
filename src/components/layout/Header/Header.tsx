@@ -63,6 +63,8 @@ export async function Header() {
               <span>Tư vấn chọn laptop</span>
             </Link>
 
+            <Link href="/promotions" className={styles.navLink}>Khuyến mãi</Link>
+
             <span className={styles.navDivider} aria-hidden />
 
             {TARGET_LINKS.map((item) => (

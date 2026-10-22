@@ -1,0 +1,17 @@
+.wrap {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.listPrice {
+  color: var(--color-foreground-muted);
+  text-decoration: line-through;
+}
+
+.badge {
+  color: var(--color-sale);
+  font-size: 12px;
+  font-weight: 600;
+}

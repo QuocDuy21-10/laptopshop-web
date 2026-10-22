@@ -27,7 +27,7 @@ export function CartLine({ line }: { line: CartItem }) {
         <Link href={`/products/${line.product.id}`} className={styles.name}>
           {line.product.name}
         </Link>
-        <Price value={line.product.price} size="sm" />
+        <Price value={line.product.salePrice ?? line.product.price} size="sm" />
         {unavailable && <Badge tone="neutral">Ngừng kinh doanh</Badge>}
         {error && (
           <p className={styles.error} role="alert">

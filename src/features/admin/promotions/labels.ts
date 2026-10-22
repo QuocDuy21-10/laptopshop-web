@@ -1,0 +1,1 @@
+export const stateLabel: Record<string, string> = { DRAFT: "Bản nháp", ACTIVE: "Đã kích hoạt", PAUSED: "Tạm dừng", ENDED: "Đã kết thúc", SCHEDULED: "Sắp chạy", RUNNING: "Đang chạy", EXPIRED: "Hết hạn" };

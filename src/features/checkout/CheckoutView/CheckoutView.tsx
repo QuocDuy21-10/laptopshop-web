@@ -11,13 +11,18 @@ import { useCart } from "@/features/cart/hooks";
 import { usePaymentMethods } from "@/features/payments/hooks";
 import { errorMessage } from "@/lib/api/errors";
 import { CheckoutForm } from "../CheckoutForm/CheckoutForm";
+import { CouponInput } from "../CouponInput/CouponInput";
+import { usePricingQuote } from "../hooks";
 import styles from "./CheckoutView.module.scss";
+import { useState } from "react";
 
 export function CheckoutView() {
   const router = useRouter();
   const me = useMe();
   const cart = useCart();
   const paymentMethods = usePaymentMethods();
+  const [couponCode, setCouponCode] = useState("");
+  const quote = usePricingQuote(couponCode || undefined);
   const empty = cart.data?.items.length === 0;
 
   useEffect(() => {
@@ -39,9 +44,13 @@ export function CheckoutView() {
           paymentMethod: "COD",
         }}
         availableMethods={(paymentMethods.data ?? [{ code: "COD", enabled: true }]).filter((method) => method.enabled).map((method) => method.code)}
+        couponCode={couponCode || undefined}
+        pricingFingerprint={quote.data?.pricingFingerprint ?? ""}
+        pricingReady={!quote.isPending && Boolean(quote.data?.pricingFingerprint)}
       />
       <CartSummary
         cart={cart.data}
+        coupon={quote.data?.couponDiscount ?? 0}
         title="Đơn hàng của bạn"
         action={
           <ul role="list" className={styles.items}>
@@ -56,6 +65,7 @@ export function CheckoutView() {
           </ul>
         }
       />
+      <CouponInput value={couponCode} onApply={setCouponCode} error={quote.isError ? quote.error : undefined} />
     </div>
   );
 }

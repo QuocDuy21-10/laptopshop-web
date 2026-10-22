@@ -4,7 +4,7 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tansta
 import { api } from "@/lib/api/client";
 import { unwrap } from "@/lib/api/errors";
 import { queryKeys } from "@/lib/api/query-keys";
-import type { AdminReviewsQuery } from "@/lib/api/types";
+import type { AdminReviewDetail, AdminReviewsQuery } from "@/lib/api/types";
 import type { paths } from "@/lib/api/schema";
 import { ADMIN_PAGE_SIZE } from "../useListParams";
 
@@ -20,7 +20,7 @@ export function useAdminReviewSummary() {
 }
 
 export function useAdminReview(id: number) {
-  return useQuery({ queryKey: queryKeys.adminReview(id), queryFn: async () => (await unwrap(api.GET("/api/v1/admin/reviews/{id}", { params: { path: { id } } }))).data });
+  return useQuery<AdminReviewDetail>({ queryKey: queryKeys.adminReview(id), queryFn: async () => (await unwrap(api.GET("/api/v1/admin/reviews/{id}", { params: { path: { id } } }))).data as AdminReviewDetail });
 }
 
 export function useModerateReview(id: number) {

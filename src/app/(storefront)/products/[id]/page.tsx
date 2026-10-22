@@ -3,13 +3,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/layout/Container/Container";
 import { Badge } from "@/components/ui/Badge/Badge";
-import { Price } from "@/components/ui/Price/Price";
 import { CompareToggle } from "@/features/compare/CompareToggle/CompareToggle";
 import { SpecTable } from "@/features/compare/SpecTable/SpecTable";
 import { AddToCart } from "@/features/products/AddToCart/AddToCart";
 import { optionName } from "@/features/products/labels";
 import { ProductImage } from "@/features/products/ProductImage/ProductImage";
 import { ReviewSection } from "@/features/reviews/ReviewSection/ReviewSection";
+import { PromotionPrice } from "@/features/promotions/PromotionPrice/PromotionPrice";
 import { getFilterOptions, getProduct } from "@/features/products/server";
 import { getInitialReviews } from "@/features/reviews/server";
 import styles from "./page.module.scss";
@@ -51,7 +51,7 @@ export default async function ProductPage({ params }: Props) {
             </Link>
           )}
           {product.shortDesc && <p className={styles.highlight}>{product.shortDesc}</p>}
-          <Price value={product.price} size="lg" />
+          <PromotionPrice product={product} size="lg" />
           <Badge tone={inStock ? "success" : "error"}>{inStock ? "Còn hàng" : "Hết hàng"}</Badge>
           <AddToCart productId={product.id} stock={product.quantity} />
           <CompareToggle product={product} />

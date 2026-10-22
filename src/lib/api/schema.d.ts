@@ -72,6 +72,155 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/admin/reviews/{id}/reply": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Create, update or reactivate an official review reply */
+    put: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            content: string;
+          };
+        };
+      };
+      responses: {
+        /** @description Updated */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AdminOfficialReply"];
+            };
+          };
+        };
+        /** @description Invalid reply content */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Review not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Review deleted */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    post?: never;
+    /** Soft-delete an official review reply */
+    delete: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Deleted */
+        204: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": unknown;
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Review not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Review deleted */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/auth/login": {
     parameters: {
       query?: never;
@@ -591,7 +740,7 @@ export interface paths {
           };
           content: {
             "application/json": {
-              data: components["schemas"]["Product"][];
+              data: components["schemas"]["PricedProduct"][];
             };
           };
         };
@@ -1677,6 +1826,8 @@ export interface paths {
              * @enum {string}
              */
             paymentMethod?: "COD" | "BANK_TRANSFER";
+            couponCode?: string;
+            pricingFingerprint: string;
           };
         };
       };
@@ -1711,6 +1862,68 @@ export interface paths {
           };
         };
         /** @description Cart empty, out of stock or product no longer sold */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/orders/quote": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Quote the authenticated cart */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            couponCode?: string;
+          };
+        };
+      };
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PricingQuote"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Coupon invalid, minimum order not met or cart empty */
         409: {
           headers: {
             [name: string]: unknown;
@@ -2144,6 +2357,44 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/promotions/available": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List public promotions */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PublicPromotion"][];
+            };
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/admin/products": {
     parameters: {
       query?: never;
@@ -2305,6 +2556,624 @@ export interface paths {
         };
       };
     };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/promotions": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List promotions */
+    get: {
+      parameters: {
+        query?: {
+          page?: number;
+          pageSize?: number;
+          kind?: "COUPON" | "AUTOMATIC";
+          state?: "DRAFT" | "ACTIVE" | "PAUSED" | "ENDED";
+          q?: string;
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PromotionSummary"][];
+              meta: {
+                page: number;
+                pageSize: number;
+                total: number;
+                totalPages: number;
+              };
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    /** Create a promotion draft */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            /** @enum {string} */
+            kind: "COUPON" | "AUTOMATIC";
+            name: string;
+            description?: string;
+            /** @enum {string} */
+            discountKind: "PERCENT" | "FIXED";
+            discountValue: number;
+            startsAt: string | null;
+            endsAt: string | null;
+            coupon?: {
+              code: string;
+              /** @enum {string} */
+              scope: "ORDER" | "PRODUCT";
+              /** @default 0 */
+              minOrderValue?: number | null;
+              maxDiscount?: number | null;
+              maxUses?: number | null;
+              /** @default 1 */
+              maxUsesPerUser?: number;
+              /** @default false */
+              isPublic?: boolean;
+              /** @default [] */
+              targetProductIds?: number[];
+            };
+            automatic?: {
+              /** @default 0 */
+              priority?: number | null;
+              /** @default false */
+              stackableWithCoupon?: boolean;
+              /** @default [] */
+              targetProductIds?: number[];
+            };
+          };
+        };
+      };
+      responses: {
+        /** @description Created */
+        201: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PromotionDetail"];
+            };
+          };
+        };
+        /** @description Invalid promotion */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Duplicate or invalid commercial configuration */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/promotions/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Promotion detail */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PromotionDetail"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Promotion not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Update an editable promotion */
+    patch: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            name?: string;
+            description?: string;
+            /** @enum {string} */
+            discountKind?: "PERCENT" | "FIXED";
+            discountValue?: number;
+            startsAt?: string | null;
+            endsAt?: string | null;
+            coupon?: {
+              code?: string;
+              /** @enum {string} */
+              scope?: "ORDER" | "PRODUCT";
+              /** @default 0 */
+              minOrderValue?: number | null;
+              maxDiscount?: number | null;
+              maxUses?: number | null;
+              /** @default 1 */
+              maxUsesPerUser?: number;
+              /** @default false */
+              isPublic?: boolean;
+              /** @default [] */
+              targetProductIds?: number[];
+            };
+            automatic?: {
+              /** @default 0 */
+              priority?: number | null;
+              /** @default false */
+              stackableWithCoupon?: boolean;
+              /** @default [] */
+              targetProductIds?: number[];
+            };
+          };
+        };
+      };
+      responses: {
+        /** @description Updated */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PromotionDetail"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Promotion not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Commercial fields are locked */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    trace?: never;
+  };
+  "/api/v1/admin/promotions/{id}/state": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Transition promotion state */
+    patch: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            /** @enum {string} */
+            action: "ACTIVATE" | "PAUSE" | "RESUME" | "END";
+          };
+        };
+      };
+      responses: {
+        /** @description Updated */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PromotionDetail"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Promotion not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Invalid lifecycle transition */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    trace?: never;
+  };
+  "/api/v1/admin/promotions/{id}/clone": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Clone a promotion as a new draft */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Created */
+        201: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PromotionDetail"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Promotion not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/promotions/{id}/redemptions": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List promotion redemptions */
+    get: {
+      parameters: {
+        query?: {
+          page?: number;
+          pageSize?: number;
+        };
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PromotionRedemption"][];
+              meta: {
+                page: number;
+                pageSize: number;
+                total: number;
+                totalPages: number;
+              };
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Promotion not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/promotions/{id}/summary": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Promotion summary */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PromotionStats"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Promotion not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -4117,51 +4986,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/v1/admin/reviews/{id}/reply": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    patch?: never;
-    post?: never;
-    /** Create, update or reactivate an official review reply */
-    put: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path: { id: number };
-        cookie?: never;
-      };
-      requestBody: {
-        content: { "application/json": { content: string } };
-      };
-      responses: {
-        200: { headers: { [name: string]: unknown }; content: { "application/json": { data: components["schemas"]["AdminOfficialReply"] } } };
-        400: { headers: { [name: string]: unknown }; content: { "application/json": components["schemas"]["Error"] } };
-        401: { headers: { [name: string]: unknown }; content: { "application/json": components["schemas"]["Error"] } };
-        403: { headers: { [name: string]: unknown }; content: { "application/json": components["schemas"]["Error"] } };
-        404: { headers: { [name: string]: unknown }; content: { "application/json": components["schemas"]["Error"] } };
-        409: { headers: { [name: string]: unknown }; content: { "application/json": components["schemas"]["Error"] } };
-      };
-    };
-    delete: {
-      parameters: { query?: never; header?: never; path: { id: number }; cookie?: never };
-      requestBody?: never;
-      responses: {
-        204: { headers: { [name: string]: unknown }; content?: never };
-        401: { headers: { [name: string]: unknown }; content: { "application/json": components["schemas"]["Error"] } };
-        403: { headers: { [name: string]: unknown }; content: { "application/json": components["schemas"]["Error"] } };
-        404: { headers: { [name: string]: unknown }; content: { "application/json": components["schemas"]["Error"] } };
-        409: { headers: { [name: string]: unknown }; content: { "application/json": components["schemas"]["Error"] } };
-      };
-    };
-    options?: never;
-    head?: never;
-    trace?: never;
-  };
   "/api/v1/admin/inventory/movements": {
     parameters: {
       query?: never;
@@ -4685,6 +5509,42 @@ export interface components {
       weightGrams: number | null;
       warrantyMonths: number | null;
     };
+    PricedProduct: {
+      id: number;
+      name: string;
+      price: number;
+      image: string | null;
+      detailDesc: string | null;
+      shortDesc: string | null;
+      quantity: number;
+      sold: number | null;
+      factory: string | null;
+      target: string | null;
+      isActive: boolean;
+      cpu: string | null;
+      cpuBrand: string | null;
+      gpu: string | null;
+      gpuBrand: string | null;
+      gpuType: string | null;
+      ramGb: number | null;
+      storageGb: number | null;
+      screenSizeInch: number | null;
+      screenResolution: string | null;
+      resolutionTier: string | null;
+      panelType: string | null;
+      refreshRateHz: number | null;
+      batteryWh: number | null;
+      weightGrams: number | null;
+      warrantyMonths: number | null;
+      salePrice: number;
+      productDiscountAmount: number;
+      promotion: {
+        id: number;
+        name: string;
+        /** Format: date-time */
+        endsAt: string;
+      } | null;
+    };
     ProductReviewSummary: {
       averageRating: number | null;
       totalReviews: number;
@@ -4716,6 +5576,14 @@ export interface components {
       batteryWh: number | null;
       weightGrams: number | null;
       warrantyMonths: number | null;
+      salePrice: number;
+      productDiscountAmount: number;
+      promotion: {
+        id: number;
+        name: string;
+        /** Format: date-time */
+        endsAt: string;
+      } | null;
       reviewSummary: components["schemas"]["ProductReviewSummary"];
     };
     AdvisorRequest: {
@@ -4728,7 +5596,7 @@ export interface components {
       note?: string;
     };
     AdvisorRecommendation: {
-      product: components["schemas"]["Product"];
+      product: components["schemas"]["PricedProduct"];
       matchScore: number;
       highlights: string[];
       reason: string;
@@ -4776,17 +5644,65 @@ export interface components {
       items: {
         id: number;
         quantity: number;
+        listLineTotal: number;
+        productDiscountAmount: number;
         lineTotal: number;
-        product: components["schemas"]["Product"];
+        product: components["schemas"]["PricedProduct"];
       }[];
       itemCount: number;
       subtotal: number;
+      productDiscount: number;
+      totalAfterProductDiscount: number;
+    };
+    PricingQuote: {
+      subtotal: number;
+      productDiscount: number;
+      couponEligibleSubtotal: number;
+      couponDiscount: number;
+      total: number;
+      lines: {
+        [key: string]: unknown;
+      }[];
+      coupon: {
+        id: number;
+        code: string;
+        name: string;
+        /** @enum {boolean} */
+        valid: true;
+      } | null;
+      /** Format: date-time */
+      calculatedAt: string;
+      pricingFingerprint: string;
+    };
+    PublicPromotion: {
+      id: number;
+      name: string;
+      description: string | null;
+      code: string;
+      /** @enum {string} */
+      scope: "ORDER" | "PRODUCT";
+      /** @enum {string} */
+      discountKind: "PERCENT" | "FIXED";
+      discountValue: number;
+      minOrderValue: number;
+      maxDiscount: number | null;
+      /** Format: date-time */
+      startsAt: string;
+      /** Format: date-time */
+      endsAt: string;
     };
     Order: {
       id: number;
       /** @enum {string} */
       status: "PENDING" | "SHIPPING" | "COMPLETED" | "CANCELLED";
       totalPrice: number;
+      subtotalPrice: number;
+      productDiscountAmount: number;
+      couponEligibleSubtotal: number;
+      couponDiscountAmount: number;
+      couponCode: string | null;
+      couponName: string | null;
+      paymentRequired: boolean;
       paymentMethod: string;
       paymentStatus: string;
       receiverName: string;
@@ -4800,6 +5716,11 @@ export interface components {
         image: string | null;
         price: number;
         quantity: number;
+        productDiscountAmount: number;
+        couponDiscountAmount: number;
+        netLineTotal: number;
+        automaticPromotionId: number | null;
+        automaticPromotionName: string | null;
       }[];
     };
     Payment: {
@@ -4874,8 +5795,16 @@ export interface components {
     };
     AdminOfficialReply: components["schemas"]["PublicOfficialReply"] & {
       id: number;
-      createdBy: { id: number; username: string; fullName: string | null };
-      updatedBy: { id: number; username: string; fullName: string | null };
+      createdBy: {
+        id: number;
+        username: string;
+        fullName: string | null;
+      };
+      updatedBy: {
+        id: number;
+        username: string;
+        fullName: string | null;
+      };
     };
     PublicReview: {
       id: number;
@@ -4892,7 +5821,7 @@ export interface components {
       createdAt: string;
       /** Format: date-time */
       updatedAt: string;
-      officialReply: components["schemas"]["PublicOfficialReply"] | null;
+      officialReply: components["schemas"]["PublicOfficialReply"] | unknown | unknown;
     };
     ReviewSummary: {
       productId: number;
@@ -4978,7 +5907,7 @@ export interface components {
       } | null;
       images: components["schemas"]["ReviewImage"][];
       helpfulCount: number;
-      officialReply: components["schemas"]["AdminOfficialReply"] | null;
+      officialReply: components["schemas"]["AdminOfficialReply"] | unknown | unknown;
     };
     AdminReviewDetail: {
       id: number;
@@ -5021,7 +5950,7 @@ export interface components {
       } | null;
       images: components["schemas"]["ReviewImage"][];
       helpfulCount: number;
-      officialReply: components["schemas"]["AdminOfficialReply"] | null;
+      officialReply: components["schemas"]["AdminOfficialReply"] | unknown | unknown;
     };
     AdminReviewSummary: {
       totalReviews: number;
@@ -5043,6 +5972,13 @@ export interface components {
       /** @enum {string} */
       status: "PENDING" | "SHIPPING" | "COMPLETED" | "CANCELLED";
       totalPrice: number;
+      subtotalPrice: number;
+      productDiscountAmount: number;
+      couponEligibleSubtotal: number;
+      couponDiscountAmount: number;
+      couponCode: string | null;
+      couponName: string | null;
+      paymentRequired: boolean;
       paymentMethod: string;
       paymentStatus: string;
       receiverName: string;
@@ -5056,6 +5992,11 @@ export interface components {
         image: string | null;
         price: number;
         quantity: number;
+        productDiscountAmount: number;
+        couponDiscountAmount: number;
+        netLineTotal: number;
+        automaticPromotionId: number | null;
+        automaticPromotionName: string | null;
       }[];
       /** Format: date-time */
       completedAt: string | null;
@@ -5070,6 +6011,13 @@ export interface components {
       /** @enum {string} */
       status: "PENDING" | "SHIPPING" | "COMPLETED" | "CANCELLED";
       totalPrice: number;
+      subtotalPrice: number;
+      productDiscountAmount: number;
+      couponEligibleSubtotal: number;
+      couponDiscountAmount: number;
+      couponCode: string | null;
+      couponName: string | null;
+      paymentRequired: boolean;
       paymentMethod: string;
       paymentStatus: string;
       receiverName: string;
@@ -5083,6 +6031,11 @@ export interface components {
         image: string | null;
         price: number;
         quantity: number;
+        productDiscountAmount: number;
+        couponDiscountAmount: number;
+        netLineTotal: number;
+        automaticPromotionId: number | null;
+        automaticPromotionName: string | null;
       }[];
       /** Format: date-time */
       completedAt: string | null;
@@ -5207,6 +6160,90 @@ export interface components {
       } | null;
       items: components["schemas"]["StockReceiptItem"][];
       movements: components["schemas"]["StockMovement"][];
+    };
+    PromotionSummary: {
+      id: number;
+      /** @enum {string} */
+      kind: "COUPON" | "AUTOMATIC";
+      /** @enum {string} */
+      state: "DRAFT" | "ACTIVE" | "PAUSED" | "ENDED";
+      /** @enum {string} */
+      effectiveState: "DRAFT" | "ACTIVE" | "PAUSED" | "ENDED" | "SCHEDULED" | "RUNNING" | "EXPIRED";
+      name: string;
+      /** @enum {string} */
+      discountKind: "PERCENT" | "FIXED";
+      discountValue: number;
+      /** Format: date-time */
+      startsAt: string;
+      /** Format: date-time */
+      endsAt: string;
+      coupon: {
+        code: string;
+        /** @enum {string} */
+        scope: "ORDER" | "PRODUCT";
+        maxUses: number | null;
+        usedCount: number;
+        isPublic: boolean;
+      } | null;
+      priority: number | null;
+      redemptionCount: number;
+    };
+    PromotionDetail: components["schemas"]["PromotionSummary"] & {
+      description: string | null;
+      /** Format: date-time */
+      activatedAt: string | null;
+      pricingVersion: number;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      createdBy: {
+        id: number;
+        name: string;
+      } | null;
+      updatedBy: {
+        id: number;
+        name: string;
+      } | null;
+      lockedFields: string[];
+      products: {
+        id: number;
+        name: string;
+        image: string | null;
+      }[];
+      automatic: {
+        priority: number;
+        stackableWithCoupon: boolean;
+        targetProductIds: number[];
+      } | null;
+    };
+    PromotionRedemption: {
+      id: number;
+      promotionId: number;
+      user: {
+        id: number;
+        username: string;
+        fullName: string | null;
+      };
+      orderId: number;
+      orderStatus: string;
+      orderTotal: number;
+      discountAmount: number;
+      /** @enum {string} */
+      status: "APPLIED" | "REVERSED";
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      reversedAt: string | null;
+      reverseReason: string | null;
+    };
+    PromotionStats: {
+      promotionId: number;
+      /** @enum {string} */
+      kind: "COUPON" | "AUTOMATIC";
+      redemptionCount: number;
+      activeUsageCount: number;
+      totalDiscountAmount: number;
     };
   };
   responses: never;
