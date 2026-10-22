@@ -53,6 +53,10 @@ export function OrderDetail({ id }: { id: number }) {
             { key: "phone", label: "Số điện thoại", children: order.receiverPhone },
             { key: "address", label: "Địa chỉ", children: order.receiverAddress },
             { key: "method", label: "Phương thức thanh toán", children: order.paymentMethod },
+            ...(order.subtotalPrice !== undefined ? [{ key: "subtotal", label: "Tạm tính", children: formatVnd(order.subtotalPrice) }] : []),
+            ...(order.productDiscountAmount !== undefined ? [{ key: "productDiscount", label: "Giảm giá sản phẩm", children: formatVnd(order.productDiscountAmount) }] : []),
+            ...(order.couponDiscountAmount !== undefined ? [{ key: "couponDiscount", label: "Giảm giá coupon", children: formatVnd(order.couponDiscountAmount) }] : []),
+            ...(order.couponCode ? [{ key: "couponCode", label: "Mã coupon", children: order.couponCode }] : []),
             { key: "total", label: "Tổng tiền", children: formatVnd(order.totalPrice) },
           ]}
         />
