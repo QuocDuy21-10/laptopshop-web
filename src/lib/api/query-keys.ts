@@ -1,6 +1,18 @@
 export const queryKeys = {
   me: ["me"] as const,
   cart: ["cart"] as const,
+  wishlistAll: (userId: number) => ["wishlist", userId] as const,
+  wishlist: (userId: number, page: number) => ["wishlist", userId, "list", page] as const,
+  wishlistSummary: (userId: number) => ["wishlist", userId, "summary"] as const,
+  wishlistStatus: (userId: number, ids: number[]) => [
+    "wishlist",
+    userId,
+    "status",
+    [...new Set(ids)].sort((a, b) => a - b),
+  ] as const,
+  notificationsAll: (userId: number) => ["notifications", userId] as const,
+  notifications: (userId: number, page: number) => ["notifications", userId, "list", page] as const,
+  notificationUnreadCount: (userId: number) => ["notifications", userId, "unread-count"] as const,
   ordersAll: ["orders"] as const,
   orders: (page: number) => ["orders", page] as const,
   order: (id: number) => ["order", id] as const,

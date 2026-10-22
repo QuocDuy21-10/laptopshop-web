@@ -45,6 +45,21 @@ describe("CheckoutForm", () => {
     expect(third).not.toBe(first);
   });
 
+  it("quotes the cart and sends the server pricing fingerprint with the order", async () => {
+    fetchMock.mockImplementation(async (input) => {
+      if (urlOf(input).endsWith("/orders/quote")) {
+        return json(200, { data: { pricingFingerprint: "f".repeat(64) } });
+      }
+      return json(201, { data: order });
+    });
+    renderWithQuery(<CheckoutForm defaults={defaults} />);
+
+    await submit();
+    await waitFor(() => expect(router.replace).toHaveBeenCalledWith("/account/orders/50?placed=1"));
+    const orderRequest = orderCalls()[0];
+    expect(await orderRequest.json()).toMatchObject({ pricingFingerprint: "f".repeat(64) });
+  });
+
   it("recovers a persisted checkout attempt before submitting a new order", async () => {
     window.sessionStorage.setItem("laptopshop.checkout.idempotency-key", "recover-key");
     fetchMock.mockImplementation(async (input) => {
@@ -84,7 +99,11 @@ describe("CheckoutForm", () => {
   });
 
   it("waits while offline and sends the order once the connection is back", async () => {
-    fetchMock.mockResolvedValue(json(201, { data: order }));
+    fetchMock.mockImplementation(async (input) =>
+      urlOf(input).endsWith("/orders/quote")
+        ? json(200, { data: { pricingFingerprint: "f".repeat(64) } })
+        : json(201, { data: order }),
+    );
     renderWithQuery(<CheckoutForm defaults={defaults} />);
     act(() => onlineManager.setOnline(false));
     try {
