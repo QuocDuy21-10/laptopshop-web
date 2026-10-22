@@ -11,7 +11,7 @@ export type AdvisorRequest = Schemas["AdvisorRequest"];
 export type AdvisorRecommendation = Omit<Schemas["AdvisorRecommendation"], "product"> & { product: Product };
 export type AdvisorResult = Omit<Schemas["AdvisorResult"], "recommendations"> & { recommendations: AdvisorRecommendation[] };
 type GeneratedCart = Schemas["Cart"];
-export type CartItem = Omit<GeneratedCart["items"][number], "product"> & { product: Product };
+export type CartItem = Omit<GeneratedCart["items"][number], "product" | "listLineTotal" | "productDiscountAmount"> & { product: Product };
 export type Cart = Omit<GeneratedCart, "items"> & { items: CartItem[] };
 export type Order = Schemas["Order"];
 export type OrderStatus = Order["status"];
@@ -19,11 +19,12 @@ export type StockMovement = Schemas["StockMovement"];
 export type StockReceiptItem = Schemas["StockReceiptItem"];
 export type StockReceiptSummary = Schemas["StockReceiptSummary"];
 export type StockReceiptDetail = Schemas["StockReceiptDetail"];
-export type AdminOrder = Schemas["AdminOrder"];
+export type AdminOrder = Omit<Schemas["AdminOrder"], "subtotalPrice" | "productDiscountAmount" | "couponEligibleSubtotal" | "couponDiscountAmount" | "couponCode" | "couponName" | "paymentRequired"> &
+  Partial<Pick<Schemas["AdminOrder"], "subtotalPrice" | "productDiscountAmount" | "couponEligibleSubtotal" | "couponDiscountAmount" | "couponCode" | "couponName" | "paymentRequired">>;
 export type AdminOrderDetail = Schemas["AdminOrderDetail"];
 export type PaymentEvent = Schemas["PaymentEvent"];
 export type Role = Schemas["Role"];
-export type PublicReview = Schemas["PublicReview"];
+export type PublicReview = Omit<Schemas["PublicReview"], "officialReply"> & { officialReply?: Schemas["PublicReview"]["officialReply"] };
 export type ReviewImage = Schemas["ReviewImage"];
 export type ReviewSummary = Schemas["ReviewSummary"];
 export type OwnerReview = Schemas["OwnerReview"];
@@ -32,6 +33,15 @@ export type ReviewEligibility = Omit<Schemas["ReviewEligibility"], "existingRevi
 };
 export type HelpfulReviewState = Schemas["HelpfulReviewState"];
 export type HelpfulMutation = Schemas["HelpfulMutation"];
+export type FlashSaleAvailability = Schemas["FlashSaleAvailability"];
+export type FlashSaleAllocation = Schemas["FlashSaleAllocation"];
+export type PromotionStats = Schemas["PromotionStats"];
+export type FlashSaleAvailabilityQuery = NonNullable<
+  paths["/api/v1/promotions/flash-sales/availability"]["get"]["parameters"]["query"]
+>;
+export type FlashSaleAllocationQuery = NonNullable<
+  paths["/api/v1/admin/promotions/{id}/allocations"]["get"]["parameters"]["query"]
+>;
 export type AdminReviewListItem = Schemas["AdminReviewListItem"];
 export type AdminReviewDetail = Schemas["AdminReviewDetail"];
 export type AdminReviewSummary = Schemas["AdminReviewSummary"];
