@@ -64,6 +64,8 @@ export function CheckoutForm({ defaults, availableMethods = ["COD", "BANK_TRANSF
       if (isApiError(e, "CART_EMPTY")) router.replace("/cart");
       else if (isApiError(e, "OUT_OF_STOCK") || isApiError(e, "PRODUCT_UNAVAILABLE"))
         setProblem({ message: errorMessage(e), backToCart: true });
+      else if (isApiError(e, "FLASH_SALE_QUOTA_EXCEEDED") || isApiError(e, "FLASH_SALE_USER_LIMIT") || isApiError(e, "PROMOTION_CHANGED"))
+        setProblem({ message: errorMessage(e), backToCart: true });
       else if (!applyFieldErrors(e, setError)) setProblem({ message: errorMessage(e), backToCart: false });
     }
   });

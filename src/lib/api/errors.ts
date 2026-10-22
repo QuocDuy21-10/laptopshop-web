@@ -44,6 +44,8 @@ const MESSAGES: Record<string, string> = {
   PAYMENT_NOT_PAYABLE: "Phiên thanh toán này không còn hiệu lực.",
   PAID_ORDER_CANNOT_CANCEL: "Đơn đã thanh toán cần được cửa hàng xử lý hoàn tiền.",
   PAYMENT_REQUIRED: "Cần xác nhận thanh toán trước khi xử lý giao hàng.",
+  FLASH_SALE_QUOTA_EXCEEDED: "quota Flash Sale không còn đủ cho số lượng này.",
+  FLASH_SALE_USER_LIMIT: "Bạn đã đạt giới hạn mua Flash Sale cho sản phẩm này.",
   FORBIDDEN: "Bạn không có quyền thực hiện thao tác này.",
   REVIEW_NOT_ELIGIBLE: "Chỉ khách đã mua và hoàn tất đơn hàng mới được đánh giá.",
   REVIEW_ALREADY_EXISTS: "Bạn đã đánh giá sản phẩm này. Hãy chỉnh sửa đánh giá hiện có.",

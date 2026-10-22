@@ -2395,6 +2395,59 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/promotions/flash-sales/availability": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get Flash Sale availability */
+    get: {
+      parameters: {
+        query: {
+          productIds: number[];
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: {
+                /** Format: date-time */
+                serverTime: string;
+                items: components["schemas"]["FlashSaleAvailability"][];
+              };
+            };
+          };
+        };
+        /** @description Invalid product batch */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/admin/products": {
     parameters: {
       query?: never;
@@ -2575,7 +2628,7 @@ export interface paths {
         query?: {
           page?: number;
           pageSize?: number;
-          kind?: "COUPON" | "AUTOMATIC";
+          kind?: "COUPON" | "AUTOMATIC" | "FLASH_SALE";
           state?: "DRAFT" | "ACTIVE" | "PAUSED" | "ENDED";
           q?: string;
         };
@@ -2635,7 +2688,7 @@ export interface paths {
         content: {
           "application/json": {
             /** @enum {string} */
-            kind: "COUPON" | "AUTOMATIC";
+            kind: "COUPON" | "AUTOMATIC" | "FLASH_SALE";
             name: string;
             description?: string;
             /** @enum {string} */
@@ -2665,6 +2718,19 @@ export interface paths {
               stackableWithCoupon?: boolean;
               /** @default [] */
               targetProductIds?: number[];
+            };
+            flashSale?: {
+              /** @default 0 */
+              priority?: number | null;
+              /** @default false */
+              stackableWithCoupon?: boolean;
+              /** @default true */
+              showRemainingQuota?: boolean;
+              items: {
+                productId: number;
+                totalQuota: number;
+                maxUnitsPerUser: number;
+              }[];
             };
           };
         };
@@ -2831,6 +2897,19 @@ export interface paths {
               stackableWithCoupon?: boolean;
               /** @default [] */
               targetProductIds?: number[];
+            };
+            flashSale?: {
+              /** @default 0 */
+              priority?: number | null;
+              /** @default false */
+              stackableWithCoupon?: boolean;
+              /** @default true */
+              showRemainingQuota?: boolean;
+              items?: {
+                productId: number;
+                totalQuota: number;
+                maxUnitsPerUser: number;
+              }[];
             };
           };
         };
@@ -3153,6 +3232,85 @@ export interface paths {
           };
         };
         /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Promotion not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/promotions/{id}/allocations": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List Flash Sale allocation history */
+    get: {
+      parameters: {
+        query?: {
+          page?: number;
+          pageSize?: number;
+          status?: "CLAIMED" | "RELEASED";
+          productId?: number;
+          userId?: number;
+        };
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["FlashSaleAllocation"][];
+              meta: {
+                page: number;
+                pageSize: number;
+                total: number;
+                totalPages: number;
+              };
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Admin only */
         403: {
           headers: {
             [name: string]: unknown;
@@ -5691,6 +5849,21 @@ export interface components {
       /** Format: date-time */
       endsAt: string;
     };
+    FlashSaleAvailability: {
+      productId: number;
+      promotionId: number;
+      name: string;
+      /** @enum {string} */
+      state: "SCHEDULED" | "RUNNING";
+      available: boolean;
+      remainingQuota: number | null;
+      maxUnitsPerUser: number;
+      userRemainingQuota?: number;
+      /** Format: date-time */
+      startsAt: string;
+      /** Format: date-time */
+      endsAt: string;
+    };
     Order: {
       id: number;
       /** @enum {string} */
@@ -5721,6 +5894,15 @@ export interface components {
         netLineTotal: number;
         automaticPromotionId: number | null;
         automaticPromotionName: string | null;
+        /** @enum {string|null} */
+        promotionKind: "AUTOMATIC" | "FLASH_SALE" | null;
+        flashSaleAllocation: {
+          promotionId: number;
+          quantity: number;
+          discountAmount: number;
+          /** @enum {string} */
+          status: "CLAIMED" | "RELEASED";
+        } | null;
       }[];
     };
     Payment: {
@@ -5997,6 +6179,15 @@ export interface components {
         netLineTotal: number;
         automaticPromotionId: number | null;
         automaticPromotionName: string | null;
+        /** @enum {string|null} */
+        promotionKind: "AUTOMATIC" | "FLASH_SALE" | null;
+        flashSaleAllocation: {
+          promotionId: number;
+          quantity: number;
+          discountAmount: number;
+          /** @enum {string} */
+          status: "CLAIMED" | "RELEASED";
+        } | null;
       }[];
       /** Format: date-time */
       completedAt: string | null;
@@ -6036,6 +6227,15 @@ export interface components {
         netLineTotal: number;
         automaticPromotionId: number | null;
         automaticPromotionName: string | null;
+        /** @enum {string|null} */
+        promotionKind: "AUTOMATIC" | "FLASH_SALE" | null;
+        flashSaleAllocation: {
+          promotionId: number;
+          quantity: number;
+          discountAmount: number;
+          /** @enum {string} */
+          status: "CLAIMED" | "RELEASED";
+        } | null;
       }[];
       /** Format: date-time */
       completedAt: string | null;
@@ -6164,7 +6364,7 @@ export interface components {
     PromotionSummary: {
       id: number;
       /** @enum {string} */
-      kind: "COUPON" | "AUTOMATIC";
+      kind: "COUPON" | "AUTOMATIC" | "FLASH_SALE";
       /** @enum {string} */
       state: "DRAFT" | "ACTIVE" | "PAUSED" | "ENDED";
       /** @enum {string} */
@@ -6216,6 +6416,18 @@ export interface components {
         stackableWithCoupon: boolean;
         targetProductIds: number[];
       } | null;
+      flashSale: {
+        priority: number;
+        stackableWithCoupon: boolean;
+        showRemainingQuota: boolean;
+        quotas: {
+          productId: number;
+          totalQuota: number;
+          claimedUnits: number;
+          remainingQuota: number;
+          maxUnitsPerUser: number;
+        }[];
+      } | null;
     };
     PromotionRedemption: {
       id: number;
@@ -6240,10 +6452,45 @@ export interface components {
     PromotionStats: {
       promotionId: number;
       /** @enum {string} */
-      kind: "COUPON" | "AUTOMATIC";
+      kind: "COUPON" | "AUTOMATIC" | "FLASH_SALE";
       redemptionCount: number;
       activeUsageCount: number;
       totalDiscountAmount: number;
+      totalQuota?: number;
+      claimedUnits?: number;
+      remainingUnits?: number;
+      releasedUnits?: number;
+      completedUnits?: number;
+      allocationCount?: number;
+      breakdown?: {
+        [key: string]: number;
+      }[];
+    };
+    FlashSaleAllocation: {
+      id: number;
+      promotionId: number;
+      productId: number;
+      product: {
+        id: number;
+        name: string;
+      };
+      user: {
+        id: number;
+        username: string;
+        fullName: string | null;
+      };
+      orderId: number;
+      orderStatus: string;
+      orderDetailId: number;
+      quantity: number;
+      discountAmount: number;
+      /** @enum {string} */
+      status: "CLAIMED" | "RELEASED";
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      releasedAt: string | null;
+      releaseReason: string | null;
     };
   };
   responses: never;

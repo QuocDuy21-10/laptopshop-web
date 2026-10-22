@@ -3,6 +3,7 @@
 import { PackageX } from "lucide-react";
 import Link from "next/link";
 import { Alert } from "@/components/ui/Alert/Alert";
+import { Badge } from "@/components/ui/Badge/Badge";
 import { buttonClassName } from "@/components/ui/Button/Button";
 import { EmptyState } from "@/components/ui/EmptyState/EmptyState";
 import { Price } from "@/components/ui/Price/Price";
@@ -62,6 +63,7 @@ export function OrderDetail({ id, placed }: { id: number; placed: boolean }) {
               <span className={styles.qty}>
                 <Price value={item.price} size="sm" /> × {item.quantity}
               </span>
+              {item.promotionKind === "FLASH_SALE" && <Badge tone="warning">Flash Sale</Badge>}
               {o.status === "COMPLETED" && o.paymentStatus === "PAYMENT_SUCCESS" && <ReviewAction productId={item.productId} productName={item.name} />}
             </li>
           ))}

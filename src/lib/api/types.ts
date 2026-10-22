@@ -27,6 +27,10 @@ export type Order = Omit<GeneratedOrder, "subtotalPrice" | "productDiscountAmoun
   Partial<Pick<GeneratedOrder, "subtotalPrice" | "productDiscountAmount" | "couponEligibleSubtotal" | "couponDiscountAmount" | "couponCode" | "couponName" | "paymentRequired">>;
 export type OrderStatus = Order["status"];
 export type PricingQuote = Schemas["PricingQuote"];
+export type FlashSaleAvailability = Schemas["FlashSaleAvailability"];
+export type FlashSaleAllocation = Schemas["FlashSaleAllocation"];
+export type FlashSaleAvailabilityQuery = NonNullable<paths["/api/v1/promotions/flash-sales/availability"]["get"]["parameters"]["query"]>;
+export type FlashSaleAllocationQuery = NonNullable<paths["/api/v1/admin/promotions/{id}/allocations"]["get"]["parameters"]["query"]>;
 export type PublicPromotion = Schemas["PublicPromotion"];
 export type PromotionSummary = Schemas["PromotionSummary"];
 export type PromotionDetail = Schemas["PromotionDetail"];
