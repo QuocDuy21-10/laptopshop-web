@@ -1,8 +1,4 @@
-@use "mixins" as *;
-
 .touchTarget {
-  @include reset-button;
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -13,6 +9,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-full);
   cursor: pointer;
+  font: inherit;
 
   &:hover,
   &[aria-pressed="true"] {
