@@ -6,6 +6,7 @@ export const queryKeys = {
   order: (id: number) => ["order", id] as const,
   payment: (orderId: number) => ["payment", orderId] as const,
   paymentMethods: ["payment-methods"] as const,
+  promotionsAvailable: ["promotions", "available"] as const,
   productFilters: ["product-filters"] as const,
   productFacets: (query: object) => ["product-facets", query] as const,
   compare: (ids: number[]) => ["compare", ids] as const,
@@ -33,6 +34,9 @@ export const queryKeys = {
   adminPaymentEvent: (id: string) => ["admin", "payment-event", id] as const,
   adminRoles: ["admin", "roles"] as const,
   adminReviews: (query: object) => ["admin", "reviews", query] as const,
+  adminPromotions: (query: object) => ["admin", "promotions", query] as const,
+  adminPromotion: (id: number) => ["admin", "promotion", id] as const,
+  adminPromotionRedemptions: (id: number, query: object) => ["admin", "promotion", id, "redemptions", query] as const,
   adminReview: (id: number) => ["admin", "review", id] as const,
   adminReviewSummary: ["admin", "reviews", "summary"] as const,
 };

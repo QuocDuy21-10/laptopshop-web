@@ -7,23 +7,41 @@ export type User = Schemas["User"];
 type GeneratedProduct = Schemas["Product"];
 export type Product = Omit<GeneratedProduct, "cpuBrand" | "gpuBrand" | "gpuType" | "resolutionTier" | "panelType"> &
   Partial<Pick<GeneratedProduct, "cpuBrand" | "gpuBrand" | "gpuType" | "resolutionTier" | "panelType">>;
+type GeneratedPricedProduct = Schemas["PricedProduct"];
+export type PricedProduct = Omit<GeneratedPricedProduct, "cpuBrand" | "gpuBrand" | "gpuType" | "resolutionTier" | "panelType" | "salePrice" | "productDiscountAmount" | "promotion"> &
+  Partial<Pick<GeneratedPricedProduct, "cpuBrand" | "gpuBrand" | "gpuType" | "resolutionTier" | "panelType" | "salePrice" | "productDiscountAmount" | "promotion">>;
+type GeneratedCatalogProduct = Schemas["CatalogProduct"];
+export type CatalogProduct = Omit<GeneratedCatalogProduct, "cpuBrand" | "gpuBrand" | "gpuType" | "resolutionTier" | "panelType" | "salePrice" | "productDiscountAmount" | "promotion"> &
+  Partial<Pick<GeneratedCatalogProduct, "cpuBrand" | "gpuBrand" | "gpuType" | "resolutionTier" | "panelType" | "salePrice" | "productDiscountAmount" | "promotion">>;
 export type AdvisorRequest = Schemas["AdvisorRequest"];
-export type AdvisorRecommendation = Omit<Schemas["AdvisorRecommendation"], "product"> & { product: Product };
+export type AdvisorRecommendation = Omit<Schemas["AdvisorRecommendation"], "product"> & { product: PricedProduct };
 export type AdvisorResult = Omit<Schemas["AdvisorResult"], "recommendations"> & { recommendations: AdvisorRecommendation[] };
 type GeneratedCart = Schemas["Cart"];
-export type CartItem = Omit<GeneratedCart["items"][number], "product"> & { product: Product };
+type GeneratedCartItem = GeneratedCart["items"][number];
+export type CartItem = Omit<GeneratedCartItem, "product" | "listLineTotal" | "productDiscountAmount"> &
+  Partial<Pick<GeneratedCartItem, "listLineTotal" | "productDiscountAmount">> & { product: PricedProduct };
 export type Cart = Omit<GeneratedCart, "items"> & { items: CartItem[] };
-export type Order = Schemas["Order"];
+type GeneratedOrder = Schemas["Order"];
+export type Order = Omit<GeneratedOrder, "subtotalPrice" | "productDiscountAmount" | "couponEligibleSubtotal" | "couponDiscountAmount" | "couponCode" | "couponName" | "paymentRequired"> &
+  Partial<Pick<GeneratedOrder, "subtotalPrice" | "productDiscountAmount" | "couponEligibleSubtotal" | "couponDiscountAmount" | "couponCode" | "couponName" | "paymentRequired">>;
 export type OrderStatus = Order["status"];
+export type PricingQuote = Schemas["PricingQuote"];
+export type PublicPromotion = Schemas["PublicPromotion"];
+export type PromotionSummary = Schemas["PromotionSummary"];
+export type PromotionDetail = Schemas["PromotionDetail"];
+export type PromotionRedemption = Schemas["PromotionRedemption"];
+export type PromotionStats = Schemas["PromotionStats"];
 export type StockMovement = Schemas["StockMovement"];
 export type StockReceiptItem = Schemas["StockReceiptItem"];
 export type StockReceiptSummary = Schemas["StockReceiptSummary"];
 export type StockReceiptDetail = Schemas["StockReceiptDetail"];
-export type AdminOrder = Schemas["AdminOrder"];
-export type AdminOrderDetail = Schemas["AdminOrderDetail"];
+type GeneratedAdminOrder = Schemas["AdminOrder"];
+type OrderPricingFields = "subtotalPrice" | "productDiscountAmount" | "couponEligibleSubtotal" | "couponDiscountAmount" | "couponCode" | "couponName" | "paymentRequired";
+export type AdminOrder = Omit<GeneratedAdminOrder, OrderPricingFields> & Partial<Pick<GeneratedAdminOrder, OrderPricingFields>>;
+export type AdminOrderDetail = Omit<Schemas["AdminOrderDetail"], OrderPricingFields> & Partial<Pick<Schemas["AdminOrderDetail"], OrderPricingFields>>;
 export type PaymentEvent = Schemas["PaymentEvent"];
 export type Role = Schemas["Role"];
-export type PublicReview = Schemas["PublicReview"];
+export type PublicReview = Omit<Schemas["PublicReview"], "officialReply"> & Partial<Pick<Schemas["PublicReview"], "officialReply">>;
 export type ReviewImage = Schemas["ReviewImage"];
 export type ReviewSummary = Schemas["ReviewSummary"];
 export type OwnerReview = Schemas["OwnerReview"];
