@@ -14,6 +14,7 @@ vi.mock("@/features/notifications/hooks", () => ({
     data: { inAppEnabled: true, emailEnabled: false, webPushEnabled: false },
     isPending: false,
   }),
+  useWebPushConfig: () => ({ data: { enabled: false, publicKey: null }, isPending: false }),
   useUpdateNotificationPreferences: () => ({ mutate: vi.fn(), error: null }),
   useRequestEmailOtp: () => ({ mutateAsync: vi.fn(), isPending: false }),
   useConfirmEmailOtp: () => ({ mutateAsync: vi.fn(), isPending: false }),
@@ -24,6 +25,6 @@ describe("NotificationSettings", () => {
     renderWithQuery(<NotificationSettings />);
     expect(screen.getByLabelText("In-App luôn bật")).toBeDisabled();
     expect(screen.getByLabelText("Email")).not.toBeChecked();
-    expect(screen.getByLabelText("Web Push")).not.toBeChecked();
+    expect(screen.getByRole("button", { name: /Bật Web Push/i })).toBeDisabled();
   });
 });
