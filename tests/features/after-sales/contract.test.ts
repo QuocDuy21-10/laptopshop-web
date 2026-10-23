@@ -1,4 +1,4 @@
-import { describe, expect, expectTypeOf, it } from "vitest";
+import { describe, expectTypeOf, it } from "vitest";
 import type { components, paths } from "@/lib/api/schema";
 
 describe("after-sales generated API contract", () => {
