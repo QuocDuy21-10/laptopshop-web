@@ -53,6 +53,17 @@
   font-size: 0.875rem;
 }
 
+.priceSource,
+.flashSaleState {
+  color: var(--color-foreground-muted);
+  font-size: 0.875rem;
+}
+
+.flashSaleState {
+  color: var(--color-warning);
+  font-weight: 600;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;

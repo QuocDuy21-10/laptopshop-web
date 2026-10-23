@@ -22,6 +22,14 @@
   font-size: 0.875rem;
 }
 
+.flashSale {
+  display: flex;
+  align-items: center;
+  gap: var(--space-two);
+  min-height: 44px;
+  font-weight: 600;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;

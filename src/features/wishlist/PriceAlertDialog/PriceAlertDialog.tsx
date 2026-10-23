@@ -13,12 +13,27 @@ import type { WishlistItem } from "@/lib/api/types";
 import { priceAlertFormSchema, type PriceAlertForm } from "../schema";
 import styles from "./PriceAlertDialog.module.scss";
 
-export function PriceAlertDialog({ userId, item, open, onOpenChange }: { userId: number; item: WishlistItem; open: boolean; onOpenChange: (open: boolean) => void }) {
-  const currentPrice = item.product.salePrice ?? item.product.price;
+export function PriceAlertDialog({
+  userId,
+  item,
+  open,
+  onOpenChange,
+}: {
+  userId: number;
+  item: WishlistItem;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  const currentPrice =
+    item.priceSnapshot?.effectivePrice ?? item.product.salePrice ?? item.product.price;
   const [formError, setFormError] = useState<string | null>(null);
   const configure = useConfigurePriceAlert(userId);
   const { register, handleSubmit, setError, watch, formState } = useForm<PriceAlertForm>({
-    defaultValues: { mode: item.alertMode === "TARGET_PRICE" ? "TARGET_PRICE" : "PERCENT_DROP", targetPrice: item.targetPrice ?? undefined },
+    defaultValues: {
+      mode: item.alertMode === "TARGET_PRICE" ? "TARGET_PRICE" : "PERCENT_DROP",
+      targetPrice: item.targetPrice ?? undefined,
+      includeFlashSale: item.includeFlashSale ?? false,
+    },
   });
   const mode = watch("mode");
   const submit = handleSubmit(async (values) => {
@@ -28,14 +43,22 @@ export function PriceAlertDialog({ userId, item, open, onOpenChange }: { userId:
       setError("targetPrice", { message: "Giá mục tiêu không hợp lệ" });
       return;
     }
-    if (parsed.data.mode === "TARGET_PRICE" && (parsed.data.targetPrice === undefined || parsed.data.targetPrice >= currentPrice)) {
+    if (
+      parsed.data.mode === "TARGET_PRICE" &&
+      (parsed.data.targetPrice === undefined || parsed.data.targetPrice >= currentPrice)
+    ) {
       setError("targetPrice", { message: "Giá mục tiêu phải thấp hơn giá hiện tại" });
       return;
     }
     try {
-      const input = parsed.data.mode === "TARGET_PRICE"
-        ? { mode: "TARGET_PRICE" as const, targetPrice: parsed.data.targetPrice! }
-        : { mode: "PERCENT_DROP" as const };
+      const input =
+        parsed.data.mode === "TARGET_PRICE"
+          ? {
+              mode: "TARGET_PRICE" as const,
+              targetPrice: parsed.data.targetPrice!,
+              includeFlashSale: parsed.data.includeFlashSale,
+            }
+          : { mode: "PERCENT_DROP" as const, includeFlashSale: parsed.data.includeFlashSale };
       await configure.mutateAsync({ productId: item.productId, input });
       onOpenChange(false);
     } catch (error) {
@@ -52,20 +75,58 @@ export function PriceAlertDialog({ userId, item, open, onOpenChange }: { userId:
     }
   };
   return (
-    <Dialog open={open} onOpenChange={onOpenChange} title={`Theo dõi giá — ${item.product.name}`} description="Cảnh báo dựa trên giá niêm yết và Automatic Promotion.">
+    <Dialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={`Theo dõi giá — ${item.product.name}`}
+      description="Cảnh báo dựa trên giá niêm yết và Automatic Promotion."
+    >
       <form className={styles.form} onSubmit={submit} noValidate>
         {formError && <Alert tone="error" title={formError} />}
-        <p>Giá hiện tại: <strong>{formatVnd(currentPrice)}</strong></p>
+        <p>
+          Giá hiện tại: <strong>{formatVnd(currentPrice)}</strong>
+        </p>
         <fieldset className={styles.modes}>
           <legend>Điều kiện cảnh báo</legend>
-          <label><input type="radio" value="PERCENT_DROP" {...register("mode")} /> Báo khi giảm thêm ít nhất 5%</label>
-          <label><input type="radio" value="TARGET_PRICE" {...register("mode")} /> Báo khi đạt mức giá mong muốn</label>
+          <label>
+            <input type="radio" value="PERCENT_DROP" {...register("mode")} /> Báo khi giảm thêm ít
+            nhất 5%
+          </label>
+          <label>
+            <input type="radio" value="TARGET_PRICE" {...register("mode")} /> Báo khi đạt mức giá
+            mong muốn
+          </label>
         </fieldset>
-        {mode === "TARGET_PRICE" && <TextField label="Giá mục tiêu" type="number" inputMode="numeric" hint="Phải thấp hơn giá hiện tại." error={formState.errors.targetPrice?.message} {...register("targetPrice", { valueAsNumber: true })} />}
-        <p className={styles.note}>Không áp dụng Coupon hoặc Flash Sale. Checkout sẽ xác nhận lại giá cuối cùng.</p>
+        {mode === "TARGET_PRICE" && (
+          <TextField
+            label="Giá mục tiêu"
+            type="number"
+            inputMode="numeric"
+            hint="Phải thấp hơn giá hiện tại."
+            error={formState.errors.targetPrice?.message}
+            {...register("targetPrice", { valueAsNumber: true })}
+          />
+        )}
+        <label className={styles.flashSale}>
+          <input type="checkbox" {...register("includeFlashSale")} /> Theo dõi Flash Sale
+        </label>
+        <p className={styles.note}>
+          Flash Sale phụ thuộc stock và quota; checkout sẽ xác nhận lại giá cuối cùng.
+        </p>
         <div className={styles.actions}>
-          <Button type="submit" loading={configure.isPending}>Lưu cảnh báo</Button>
-          {item.alertMode && <Button type="button" variant="secondary" onClick={disable} disabled={configure.isPending}>Tắt cảnh báo</Button>}
+          <Button type="submit" loading={configure.isPending}>
+            Lưu cảnh báo
+          </Button>
+          {item.alertMode && (
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={disable}
+              disabled={configure.isPending}
+            >
+              Tắt cảnh báo
+            </Button>
+          )}
         </div>
       </form>
     </Dialog>
