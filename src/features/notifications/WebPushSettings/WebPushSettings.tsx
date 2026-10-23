@@ -8,7 +8,7 @@ import { subscribeCurrentBrowser, unsubscribeCurrentBrowser } from "../web-push"
 import styles from "./WebPushSettings.module.scss";
 
 export function WebPushSettings({
-  userId: _userId,
+  userId,
   publicKey,
   enabled,
   permission,
@@ -44,7 +44,7 @@ export function WebPushSettings({
     }
   };
   return (
-    <div className={styles.panel}>
+    <div className={styles.panel} data-user-id={userId}>
       {error && <Alert tone="error" title={error} />}
       {unsupported && (
         <p className={styles.note}>
