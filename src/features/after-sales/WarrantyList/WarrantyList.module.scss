@@ -1,0 +1,7 @@
+.list {
+  display: grid;
+  gap: .75rem;
+}
+
+.skeleton { min-height: 8rem; }
+.empty { color: var(--color-muted); }
