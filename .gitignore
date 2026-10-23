@@ -16,3 +16,4 @@ test-results/
 blob-report/
 docs-local/
 .claude/
+.codex/

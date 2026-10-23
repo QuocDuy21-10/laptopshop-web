@@ -7,7 +7,8 @@ import { renderWithQuery } from "../../utils";
 
 const read = vi.fn();
 vi.mock("@/features/notifications/hooks", () => ({ useMarkNotificationRead: () => ({ mutateAsync: read, isPending: false }), useMarkAllNotificationsRead: () => ({ mutate: vi.fn(), isPending: false }) }));
-vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn() }) }));
+const push = vi.fn();
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
 
 const item = { id: 1, productId: 3, type: "PRICE_DROP" as const, title: "Giảm giá", message: "Dell giảm", oldPrice: 1_000, newPrice: 900, readAt: null, createdAt: "2026-10-22T00:00:00.000Z" } as InAppNotification;
 
@@ -29,5 +30,11 @@ describe("NotificationList", () => {
   it("renders pagination for notification pages beyond the first", () => {
     renderWithQuery(<NotificationList userId={7} items={[item]} unreadCount={1} page={1} totalPages={2} />);
     expect(screen.getByRole("link", { name: "Trang 2" })).toHaveAttribute("href", "/account/notifications?page=2");
+  });
+
+  it("deep-links after-sales notifications to the request", async () => {
+    renderWithQuery(<NotificationList userId={7} items={[{ ...item, productId: null, serviceRequestId: 90 } as InAppNotification & { serviceRequestId: number }]} unreadCount={1} />);
+    await userEvent.click(screen.getByRole("button", { name: /Dell giảm/i }));
+    expect(push).toHaveBeenCalledWith("/account/after-sales/90");
   });
 });

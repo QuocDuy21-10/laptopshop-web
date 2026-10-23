@@ -69,6 +69,11 @@
   gap: var(--space-one);
 }
 
+.afterSalesAction {
+  min-height: 44px;
+  color: var(--color-accent) !important;
+}
+
 .total {
   display: flex;
   align-items: baseline;

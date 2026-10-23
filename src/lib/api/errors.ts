@@ -58,6 +58,15 @@ const MESSAGES: Record<string, string> = {
   WISHLIST_ITEM_NOT_FOUND: "Không tìm thấy sản phẩm trong Wishlist.",
   INVALID_TARGET_PRICE: "Giá mục tiêu phải thấp hơn giá hiện tại.",
   NOTIFICATION_NOT_FOUND: "Không tìm thấy thông báo yêu cầu.",
+  SERVICE_REQUEST_NOT_FOUND: "Không tìm thấy yêu cầu hậu mãi.",
+  ORDER_DETAIL_NOT_ELIGIBLE: "Sản phẩm này chưa đủ điều kiện hậu mãi.",
+  WARRANTY_EXPIRED: "Sản phẩm đã hết hạn bảo hành. Bạn có thể gửi yêu cầu hỗ trợ ngoài bảo hành.",
+  ACTIVE_DEVICE_LIMIT_REACHED: "Thiết bị này đang có yêu cầu hậu mãi được xử lý.",
+  SERVICE_ITEM_VERSION_CONFLICT: "Dữ liệu thiết bị vừa thay đổi. Vui lòng tải lại.",
+  SERVICE_REQUEST_VERSION_CONFLICT: "Phiếu vừa được cập nhật. Vui lòng tải lại.",
+  QUOTE_EXPIRED: "Báo giá đã hết hạn.",
+  ATTACHMENT_LIMIT_REACHED: "Thiết bị đã đạt giới hạn số ảnh đính kèm.",
+  ATTACHMENT_STORAGE_UNAVAILABLE: "Không thể lưu ảnh lúc này. Vui lòng thử lại.",
 };
 
 export function errorMessage(e: unknown): string {
