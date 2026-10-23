@@ -14,6 +14,7 @@ import {
   Tag as TagIcon,
   Users,
   Warehouse,
+  Wrench,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -30,6 +31,7 @@ const NAV = [
   { href: "/admin/promotions", label: "Khuyến mãi", icon: TagIcon },
   { href: "/admin/payments", label: "Đối soát thanh toán", icon: Banknote },
   { href: "/admin/reviews", label: "Đánh giá", icon: MessageSquareQuote },
+  { href: "/admin/after-sales", label: "Bảo hành & Hậu mãi", icon: Wrench },
   { href: "/admin/notifications", label: "Thông báo", icon: BellRing },
   { href: "/admin/users", label: "Người dùng", icon: Users },
 ];
