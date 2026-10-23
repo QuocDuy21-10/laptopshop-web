@@ -4,15 +4,12 @@ export const queryKeys = {
   wishlistAll: (userId: number) => ["wishlist", userId] as const,
   wishlist: (userId: number, page: number) => ["wishlist", userId, "list", page] as const,
   wishlistSummary: (userId: number) => ["wishlist", userId, "summary"] as const,
-  wishlistStatus: (userId: number, ids: number[]) => [
-    "wishlist",
-    userId,
-    "status",
-    [...new Set(ids)].sort((a, b) => a - b),
-  ] as const,
+  wishlistStatus: (userId: number, ids: number[]) =>
+    ["wishlist", userId, "status", [...new Set(ids)].sort((a, b) => a - b)] as const,
   notificationsAll: (userId: number) => ["notifications", userId] as const,
   notifications: (userId: number, page: number) => ["notifications", userId, "list", page] as const,
   notificationUnreadCount: (userId: number) => ["notifications", userId, "unread-count"] as const,
+  notificationPreferences: (userId: number) => ["notifications", userId, "preferences"] as const,
   ordersAll: ["orders"] as const,
   orders: (page: number) => ["orders", page] as const,
   order: (id: number) => ["order", id] as const,
@@ -20,14 +17,17 @@ export const queryKeys = {
   paymentMethods: ["payment-methods"] as const,
   promotionsAvailable: ["promotions", "available"] as const,
   checkoutQuote: (couponCode?: string) => ["checkout-quote", couponCode ?? null] as const,
-  flashSaleAvailability: (productIds: number[]) => ["promotions", "flash-sale-availability", productIds] as const,
+  flashSaleAvailability: (productIds: number[]) =>
+    ["promotions", "flash-sale-availability", productIds] as const,
   productFilters: ["product-filters"] as const,
   productFacets: (query: object) => ["product-facets", query] as const,
   compare: (ids: number[]) => ["compare", ids] as const,
   reviews: (productId: number) => ["reviews", productId] as const,
   reviewSummary: (productId: number) => ["reviews", productId, "summary"] as const,
-  productReviews: (productId: number, query: object) => ["reviews", productId, "list", query] as const,
-  reviewEligibility: (productId: number, userId: number) => ["reviews", productId, "eligibility", userId] as const,
+  productReviews: (productId: number, query: object) =>
+    ["reviews", productId, "list", query] as const,
+  reviewEligibility: (productId: number, userId: number) =>
+    ["reviews", productId, "eligibility", userId] as const,
   reviewImages: (reviewId: number) => ["reviews", reviewId, "images"] as const,
   reviewHelpfulState: (reviewIds: number[], userId: number) =>
     ["reviews", "helpful", userId, reviewIds] as const,
@@ -50,8 +50,10 @@ export const queryKeys = {
   adminReviews: (query: object) => ["admin", "reviews", query] as const,
   adminPromotions: (query: object) => ["admin", "promotions", query] as const,
   adminPromotion: (id: number) => ["admin", "promotion", id] as const,
-  adminPromotionRedemptions: (id: number, query: object) => ["admin", "promotion", id, "redemptions", query] as const,
-  adminPromotionAllocations: (id: number, query: object) => ["admin", "promotion-allocations", id, query] as const,
+  adminPromotionRedemptions: (id: number, query: object) =>
+    ["admin", "promotion", id, "redemptions", query] as const,
+  adminPromotionAllocations: (id: number, query: object) =>
+    ["admin", "promotion-allocations", id, query] as const,
   adminReview: (id: number) => ["admin", "review", id] as const,
   adminReviewSummary: ["admin", "reviews", "summary"] as const,
 };
