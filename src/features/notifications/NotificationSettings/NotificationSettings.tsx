@@ -4,18 +4,33 @@ import { useState } from "react";
 import { Alert } from "@/components/ui/Alert/Alert";
 import { useMe } from "@/features/account/useMe";
 import { errorMessage } from "@/lib/api/errors";
-import { useNotificationPreferences, useUpdateNotificationPreferences } from "../hooks";
+import {
+  useNotificationPreferences,
+  useUpdateNotificationPreferences,
+  useWebPushConfig,
+} from "../hooks";
+import { WebPushSettings } from "../WebPushSettings/WebPushSettings";
 import { EmailVerificationDialog } from "../EmailVerificationDialog/EmailVerificationDialog";
 import styles from "./NotificationSettings.module.scss";
 
 export function NotificationSettings() {
   const me = useMe();
   const preferences = useNotificationPreferences(me.data?.id);
+  const pushConfig = useWebPushConfig(me.data?.id);
   const update = useUpdateNotificationPreferences(me.data?.id);
   const [otpOpen, setOtpOpen] = useState(false);
-  if (me.isPending || preferences.isPending) return <p>Đang tải cài đặt thông báo…</p>;
-  if (me.isError || preferences.isError || !preferences.data)
-    return <Alert tone="error" title={errorMessage(me.error ?? preferences.error)} />;
+  if (me.isPending || preferences.isPending || pushConfig.isPending)
+    return <p>Đang tải cài đặt thông báo…</p>;
+  if (
+    me.isError ||
+    preferences.isError ||
+    pushConfig.isError ||
+    !preferences.data ||
+    !pushConfig.data
+  )
+    return (
+      <Alert tone="error" title={errorMessage(me.error ?? preferences.error ?? pushConfig.error)} />
+    );
   const value = preferences.data;
   const toggleEmail = () => {
     if (value.emailEnabled) {
@@ -35,14 +50,14 @@ export function NotificationSettings() {
         Chọn kênh nhận Price Alert. In-App luôn bật để không bỏ lỡ trạng thái giá.
       </p>
       {update.error && <Alert tone="error" title={errorMessage(update.error)} />}
-      <label className={styles.row}>
+      <div className={styles.row}>
         <span>
           <strong>In-App</strong>
           <small>Luôn bật</small>
         </span>
         <input type="checkbox" checked disabled aria-label="In-App luôn bật" />
-      </label>
-      <label className={styles.row}>
+      </div>
+      <div className={styles.row}>
         <span>
           <strong>Email</strong>
           <small>{me.data?.emailVerifiedAt ? "Email đã xác minh" : "Cần xác minh OTP"}</small>
@@ -53,19 +68,27 @@ export function NotificationSettings() {
           onChange={toggleEmail}
           aria-label="Email"
         />
-      </label>
-      <label className={styles.row}>
+      </div>
+      <div className={styles.row}>
         <span>
           <strong>Web Push</strong>
           <small>Quản lý ở bước đăng ký thiết bị</small>
         </span>
-        <input
-          type="checkbox"
-          checked={value.webPushEnabled}
-          onChange={(event) => update.mutate({ webPushEnabled: event.target.checked })}
-          aria-label="Web Push"
+        <WebPushSettings
+          userId={me.data!.id}
+          publicKey={pushConfig.data.publicKey}
+          enabled={value.webPushEnabled}
+          permission={
+            typeof window === "undefined"
+              ? "unsupported"
+              : "Notification" in window
+                ? Notification.permission
+                : "unsupported"
+          }
+          onEnabled={() => update.mutate({ webPushEnabled: true })}
+          onDisabled={() => update.mutate({ webPushEnabled: false })}
         />
-      </label>
+      </div>
       <EmailVerificationDialog
         userId={me.data!.id}
         open={otpOpen}

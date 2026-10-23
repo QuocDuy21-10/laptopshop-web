@@ -100,6 +100,14 @@ export function useConfirmEmailOtp(userId: number | undefined) {
   });
 }
 
+export function useWebPushConfig(userId: number | undefined) {
+  return useQuery({
+    queryKey: userId ? ["web-push", userId, "config"] : ["web-push", "anonymous"],
+    enabled: userId !== undefined,
+    queryFn: async () => (await unwrap(api.GET("/api/v1/web-push/config"))).data,
+  });
+}
+
 const getListEntries = (client: ReturnType<typeof useQueryClient>, userId: number) =>
   client
     .getQueriesData<NotificationPage>({ queryKey: queryKeys.notificationsAll(userId) })
