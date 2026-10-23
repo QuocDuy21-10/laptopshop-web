@@ -172,6 +172,8 @@ export type NotificationPreferences = {
   inAppEnabled: boolean;
   emailEnabled: boolean;
   webPushEnabled: boolean;
+  afterSalesEmailEnabled?: boolean;
+  afterSalesWebPushEnabled?: boolean;
 };
 export type EmailVerificationAccepted = { accepted: boolean };
 export type EmailVerificationResult = { verified: boolean };

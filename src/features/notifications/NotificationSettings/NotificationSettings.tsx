@@ -47,7 +47,7 @@ export function NotificationSettings() {
     <section className={styles.panel} aria-labelledby="notification-settings-title">
       <h1 id="notification-settings-title">Cài đặt thông báo</h1>
       <p className={styles.description}>
-        Chọn kênh nhận Price Alert. In-App luôn bật để không bỏ lỡ trạng thái giá.
+        Chọn kênh nhận thông báo. In-App luôn bật để không bỏ lỡ trạng thái dịch vụ.
       </p>
       {update.error && <Alert tone="error" title={errorMessage(update.error)} />}
       <div className={styles.row}>
@@ -56,6 +56,14 @@ export function NotificationSettings() {
           <small>Luôn bật</small>
         </span>
         <input type="checkbox" checked disabled aria-label="In-App luôn bật" />
+      </div>
+      <div className={styles.row}>
+        <span><strong>Cập nhật hậu mãi qua Email</strong><small>Không ảnh hưởng Price Alert</small></span>
+        <input type="checkbox" aria-label="Email cập nhật hậu mãi" checked={value.afterSalesEmailEnabled ?? true} disabled={!value.emailEnabled} onChange={(event) => update.mutate({ afterSalesEmailEnabled: event.target.checked })} />
+      </div>
+      <div className={styles.row}>
+        <span><strong>Cập nhật hậu mãi qua Web Push</strong><small>Không ảnh hưởng Price Alert</small></span>
+        <input type="checkbox" aria-label="Web Push cập nhật hậu mãi" checked={value.afterSalesWebPushEnabled ?? true} disabled={!value.webPushEnabled} onChange={(event) => update.mutate({ afterSalesWebPushEnabled: event.target.checked })} />
       </div>
       <div className={styles.row}>
         <span>

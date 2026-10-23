@@ -65,6 +65,8 @@ export function OrderDetail({ id, placed }: { id: number; placed: boolean }) {
               </span>
               {item.promotionKind === "FLASH_SALE" && <Badge tone="warning">Flash Sale</Badge>}
               {o.status === "COMPLETED" && o.paymentStatus === "PAYMENT_SUCCESS" && <ReviewAction productId={item.productId} productName={item.name} />}
+              {o.status === "COMPLETED" && o.paymentStatus === "PAYMENT_SUCCESS" && item.allowedRequestTypes?.includes("WARRANTY") && <Link href={`/account/after-sales/new?type=WARRANTY&orderDetailId=${item.orderDetailId}`} className={styles.afterSalesAction}>Yêu cầu bảo hành</Link>}
+              {o.status === "COMPLETED" && o.paymentStatus === "PAYMENT_SUCCESS" && item.allowedRequestTypes?.includes("TECHNICAL_SUPPORT") && <Link href={`/account/after-sales/new?type=TECHNICAL_SUPPORT&orderDetailId=${item.orderDetailId}`} className={styles.afterSalesAction}>Hỗ trợ kỹ thuật</Link>}
             </li>
           ))}
         </ul>

@@ -70,7 +70,7 @@ export function useNotificationPreferences(userId: number | undefined) {
 export function useUpdateNotificationPreferences(userId: number | undefined) {
   const client = useQueryClient();
   return useMutation({
-    mutationFn: (input: { emailEnabled?: boolean; webPushEnabled?: boolean }) =>
+    mutationFn: (input: { emailEnabled?: boolean; webPushEnabled?: boolean; afterSalesEmailEnabled?: boolean; afterSalesWebPushEnabled?: boolean }) =>
       unwrap(api.PATCH("/api/v1/notification-preferences", { body: input })),
     onSuccess: () => {
       if (userId !== undefined) {

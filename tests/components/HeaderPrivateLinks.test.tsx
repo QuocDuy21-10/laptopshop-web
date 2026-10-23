@@ -23,6 +23,7 @@ describe("private header links", () => {
     renderWithQuery(<AccountMenu />);
     await userEvent.click(screen.getByRole("button", { name: /A/ }));
     expect(screen.getByRole("menuitem", { name: "Sản phẩm yêu thích" })).toBeInTheDocument();
+    expect(screen.getByRole("menuitem", { name: "Bảo hành & Hậu mãi" })).toHaveAttribute("href", "/account/after-sales");
     expect(screen.getByRole("menuitem", { name: "Thông báo" })).toBeInTheDocument();
   });
 });
