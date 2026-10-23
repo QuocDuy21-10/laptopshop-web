@@ -1,7 +1,20 @@
 "use client";
 
 import { Button, Drawer, Grid, Layout, Menu } from "antd";
-import { Banknote, LayoutDashboard, LogOut, Menu as MenuIcon, MessageSquareQuote, Package, ShoppingBag, Store, Tag as TagIcon, Users, Warehouse } from "lucide-react";
+import {
+  BellRing,
+  Banknote,
+  LayoutDashboard,
+  LogOut,
+  Menu as MenuIcon,
+  MessageSquareQuote,
+  Package,
+  ShoppingBag,
+  Store,
+  Tag as TagIcon,
+  Users,
+  Warehouse,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
@@ -17,10 +30,12 @@ const NAV = [
   { href: "/admin/promotions", label: "Khuyến mãi", icon: TagIcon },
   { href: "/admin/payments", label: "Đối soát thanh toán", icon: Banknote },
   { href: "/admin/reviews", label: "Đánh giá", icon: MessageSquareQuote },
+  { href: "/admin/notifications", label: "Thông báo", icon: BellRing },
   { href: "/admin/users", label: "Người dùng", icon: Users },
 ];
 
-const activeKey = (pathname: string) => NAV.slice(1).find((n) => pathname.startsWith(n.href))?.href ?? "/admin";
+const activeKey = (pathname: string) =>
+  NAV.slice(1).find((n) => pathname.startsWith(n.href))?.href ?? "/admin";
 
 export function AdminShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -87,7 +102,12 @@ export function AdminShell({ children }: { children: ReactNode }) {
           {children}
         </Layout.Content>
       </Layout>
-      <Drawer open={!desktop && drawerOpen} onClose={() => setDrawerOpen(false)} placement="left" title="LaptopShop">
+      <Drawer
+        open={!desktop && drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        placement="left"
+        title="LaptopShop"
+      >
         {menu}
       </Drawer>
     </Layout>
