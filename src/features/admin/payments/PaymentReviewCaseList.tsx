@@ -13,7 +13,8 @@ import {
 } from "./hooks";
 
 export function PaymentReviewCaseList() {
-  const { data, error, isFetching } = usePaymentReviewCases({ page: 1, status: "OPEN" });
+  const [page, setPage] = useState(1);
+  const { data, error, isFetching } = usePaymentReviewCases({ page, status: "OPEN" });
   const [selected, setSelected] = useState<PaymentReviewCase | null>(null);
   const [action, setAction] = useState<"extend" | "release" | null>(null);
   const [note, setNote] = useState("");
@@ -63,7 +64,7 @@ export function PaymentReviewCaseList() {
     <section>
       <div className={styles.head}><h2 className={styles.title}>Đơn chờ xác minh</h2></div>
       {error && <Alert type="error" showIcon title={errorMessage(error)} className={styles.filters} />}
-      <Table rowKey="id" columns={columns} dataSource={data?.data} loading={isFetching} pagination={false} scroll={{ x: "max-content" }} />
+      <Table rowKey="id" columns={columns} dataSource={data?.data} loading={isFetching} scroll={{ x: "max-content" }} pagination={{ current: page, pageSize: 10, total: data?.meta.total, showSizeChanger: false, onChange: setPage }} />
       <Modal
         open={Boolean(selected && action)}
         title={action === "release" ? "Giải phóng tồn kho chưa xác minh" : "Gia hạn giữ hàng"}

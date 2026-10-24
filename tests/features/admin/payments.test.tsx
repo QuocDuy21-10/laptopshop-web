@@ -40,6 +40,14 @@ describe("PaymentReviewCaseList", () => {
     expect(screen.getByRole("button", { name: "Giải phóng tồn kho" })).toBeInTheDocument();
   });
 
+  it("keeps pagination available when the review queue has multiple pages", async () => {
+    fetchMock.mockResolvedValue(json(200, { data: [reviewCase], meta: { page: 1, pageSize: 10, total: 25, totalPages: 3 } }));
+    renderAdmin(<PaymentReviewCaseList />);
+    await screen.findByText("RECONCILIATION_INCONCLUSIVE");
+    expect(screen.getByRole("list")).toBeInTheDocument();
+    expect(screen.getByTitle("2")).toBeInTheDocument();
+  });
+
   it("requires note and confirmation before releasing stock", async () => {
     fetchMock.mockResolvedValue(json(200, { data: [reviewCase], meta: { page: 1, pageSize: 10, total: 1, totalPages: 1 } }));
     renderAdmin(<PaymentReviewCaseList />);
