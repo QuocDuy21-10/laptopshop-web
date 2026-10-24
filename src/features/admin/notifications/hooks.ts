@@ -3,21 +3,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api/client";
 import { unwrap } from "@/lib/api/errors";
-
-export type NotificationOperations = {
-  activeAlerts: number;
-  notifications: number;
-  deadDeliveries: number;
-  pendingOutbox: number;
-  workers: Array<{ workerName: string; instanceId: string; status: string; lastSeenAt: string }>;
-};
+import type { NotificationOperations } from "@/lib/api/types";
 
 export function useNotificationOperations() {
   return useQuery({
     queryKey: ["admin", "notification-operations"],
-    queryFn: async () =>
-      (await unwrap(api.GET("/api/v1/admin/notifications/operations")))
-        .data as NotificationOperations,
+    queryFn: async (): Promise<NotificationOperations> =>
+      (await unwrap(api.GET("/api/v1/admin/notifications/operations"))).data,
   });
 }
 

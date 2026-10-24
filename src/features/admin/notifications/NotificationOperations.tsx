@@ -38,10 +38,30 @@ export function NotificationOperations() {
       <Card title="Worker heartbeat" style={{ marginTop: 16 }}>
         {query.data.workers.map((worker) => (
           <p key={worker.workerName + worker.instanceId}>
-            {worker.workerName} · {worker.status} ·{" "}
+            {worker.workerName} · {worker.status} · {worker.isStale ? "STALE" : "FRESH"} ·{" "}
             {new Date(worker.lastSeenAt).toLocaleString("vi-VN")}
           </p>
         ))}
+      </Card>
+      <Card title="Price Alert sweep" style={{ marginTop: 16 }}>
+        {query.data.priceAlertSweep ? (
+          <div>
+            <p>Checkpoint product: {query.data.priceAlertSweep.checkpointProductId}</p>
+            <p>Last succeeded: {query.data.priceAlertSweep.lastSucceededAt ? new Date(query.data.priceAlertSweep.lastSucceededAt).toLocaleString("vi-VN") : "Chưa có"}</p>
+            <p>Duration: {query.data.priceAlertSweep.lastDurationMs ?? "—"} ms</p>
+            <p>Consecutive failures: {query.data.priceAlertSweep.consecutiveFailures}</p>
+            {query.data.priceAlertSweep.lastStats && (
+              <>
+                <p>Products scanned: {query.data.priceAlertSweep.lastStats.productsScanned}</p>
+                <p>Items evaluated: {query.data.priceAlertSweep.lastStats.itemsEvaluated}</p>
+                <p>Notifications created: {query.data.priceAlertSweep.lastStats.notificationsCreated}</p>
+                <p>Errors: {query.data.priceAlertSweep.lastStats.errors}</p>
+              </>
+            )}
+          </div>
+        ) : (
+          <p>Chưa có checkpoint Price Alert.</p>
+        )}
       </Card>
     </div>
   );
