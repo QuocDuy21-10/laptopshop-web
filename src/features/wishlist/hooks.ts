@@ -140,7 +140,7 @@ export function useConfigurePriceAlert(userId: number | undefined) {
   const client = useQueryClient();
   return useMutation({
     mutationFn: ({ productId, input }: { productId: number; input: ConfigurePriceAlertInput }) =>
-      unwrap(api.PATCH("/api/v1/wishlist/items/{productId}", { params: { path: { productId } }, body: input as never })),
+      unwrap(api.PATCH("/api/v1/wishlist/items/{productId}", { params: { path: { productId } }, body: input })),
     onSuccess: () => {
       if (userId !== undefined) void client.invalidateQueries({ queryKey: queryKeys.wishlistAll(userId) });
     },

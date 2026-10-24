@@ -187,11 +187,12 @@ export type EmailVerificationAccepted = { accepted: boolean };
 export type EmailVerificationResult = { verified: boolean };
 export type NotificationPage =
   paths["/api/v1/notifications"]["get"]["responses"][200]["content"]["application/json"];
+export type NotificationOperations =
+  paths["/api/v1/admin/notifications/operations"]["get"]["responses"][200]["content"]["application/json"]["data"];
 export type ConfigurePriceAlertInput =
-  | NonNullable<
-      paths["/api/v1/wishlist/items/{productId}"]["patch"]["requestBody"]
-    >["content"]["application/json"]
-  | { mode: null };
+  NonNullable<
+    paths["/api/v1/wishlist/items/{productId}"]["patch"]["requestBody"]
+  >["content"]["application/json"];
 type GeneratedFilterOptions =
   paths["/api/v1/products/filters"]["get"]["responses"][200]["content"]["application/json"]["data"];
 export type FilterOptions = Omit<GeneratedFilterOptions, "facetDefinitions"> &

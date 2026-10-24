@@ -1139,7 +1139,42 @@ export interface paths {
           content: {
             "application/json": {
               data: {
-                [key: string]: unknown;
+                activeAlerts: number;
+                notifications: number;
+                deadDeliveries: number;
+                pendingOutbox: number;
+                workers: {
+                  workerName: string;
+                  instanceId: string;
+                  status: string;
+                  /** Format: date-time */
+                  lastSeenAt: string;
+                  isStale: boolean;
+                }[];
+                priceAlertSweep: {
+                  checkpointProductId: number;
+                  /** Format: date-time */
+                  cycleStartedAt: string | null;
+                  /** Format: date-time */
+                  lastStartedAt: string | null;
+                  /** Format: date-time */
+                  lastCompletedAt: string | null;
+                  /** Format: date-time */
+                  lastSucceededAt: string | null;
+                  lastDurationMs: number | null;
+                  consecutiveFailures: number;
+                  lastErrorCode: string | null;
+                  lastStats: {
+                    productsScanned: number;
+                    itemsEvaluated: number;
+                    notificationsCreated: number;
+                    duplicatesSkipped: number;
+                    invalidStatesSkipped: number;
+                    errors: number;
+                  } | null;
+                  /** Format: date-time */
+                  updatedAt: string;
+                } | null;
               };
             };
           };

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import type {
   ConfigurePriceAlertInput,
   InAppNotification,
+  NotificationOperations,
   NotificationPage,
   PriceAlertMode,
   WishlistItem,
@@ -22,8 +23,15 @@ describe("wishlist notification generated contract", () => {
     const notifications = null as unknown as NotificationPage;
     const notification = null as unknown as InAppNotification;
     const input = null as unknown as ConfigurePriceAlertInput;
+    const operations = null as unknown as NotificationOperations;
+    const inputs: ConfigurePriceAlertInput[] = [
+      { mode: "PERCENT_DROP" },
+      { mode: "TARGET_PRICE", targetPrice: 900_000 },
+      { mode: null },
+    ];
 
-    expect([mode, nullableMode, item, status, summary, page, notifications, notification, input]).toHaveLength(9);
+    expect([mode, nullableMode, item, status, summary, page, notifications, notification, input, operations, ...inputs]).toHaveLength(13);
+    expect(operations).toBeNull();
   });
 
   it("isolates private keys by user and canonicalizes status ids", () => {
