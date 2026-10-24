@@ -3490,7 +3490,7 @@ export interface paths {
           };
           content: {
             "application/json": {
-              data: unknown[];
+              data: components["schemas"]["AfterSalesRequest"][];
               meta: {
                 page: number;
                 pageSize: number;
@@ -3535,7 +3535,7 @@ export interface paths {
           };
           content: {
             "application/json": {
-              data?: unknown;
+              data: components["schemas"]["AfterSalesRequest"];
             };
           };
         };
@@ -3600,7 +3600,7 @@ export interface paths {
           };
           content: {
             "application/json": {
-              data?: unknown;
+              data: components["schemas"]["AfterSalesRequest"];
             };
           };
         };
@@ -3661,7 +3661,7 @@ export interface paths {
           };
           content: {
             "application/json": {
-              data?: unknown;
+              data: components["schemas"]["AfterSalesRequest"];
             };
           };
         };
@@ -3729,7 +3729,7 @@ export interface paths {
           };
           content: {
             "application/json": {
-              data?: unknown;
+              data: components["schemas"]["AfterSalesRequest"];
             };
           };
         };
@@ -3805,7 +3805,7 @@ export interface paths {
           };
           content: {
             "application/json": {
-              data?: unknown;
+              data: components["schemas"]["AfterSalesRequest"];
             };
           };
         };
@@ -3879,7 +3879,7 @@ export interface paths {
           };
           content: {
             "application/json": {
-              data?: unknown;
+              data: components["schemas"]["AfterSalesEvent"];
             };
           };
         };
@@ -3945,7 +3945,27 @@ export interface paths {
       requestBody: {
         content: {
           "application/json": {
-            [key: string]: unknown;
+            /** @enum {string} */
+            to:
+              | "SUBMITTED"
+              | "REVIEWING"
+              | "APPROVED"
+              | "AWAITING_ITEM"
+              | "RECEIVED"
+              | "DIAGNOSING"
+              | "AWAITING_QUOTE_DECISION"
+              | "IN_SERVICE"
+              | "READY_FOR_RETURN"
+              | "RETURNED"
+              | "RESOLVED"
+              | "CLOSED"
+              | "REJECTED"
+              | "CANCELLED";
+            expectedVersion: number;
+            note?: string;
+            resolution?: string;
+            /** @enum {string} */
+            closeMode?: "ADMINISTRATIVE" | "TIMEOUT";
           };
         };
       };
@@ -3957,7 +3977,7 @@ export interface paths {
           };
           content: {
             "application/json": {
-              data?: unknown;
+              data: components["schemas"]["AdminAfterSalesRequest"];
             };
           };
         };
@@ -4001,6 +4021,94 @@ export interface paths {
     };
     trace?: never;
   };
+  "/api/v1/admin/after-sales/{id}/items/{itemId}/warranty-verifications": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Record an admin warranty verification */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+          itemId: number;
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            expectedVersion: number;
+            /** @enum {string} */
+            decision: "IN_WARRANTY" | "OUT_OF_WARRANTY" | "NO_WARRANTY" | "UNVERIFIABLE";
+            warrantyStartAt?: string | null;
+            warrantyEndAt?: string | null;
+            note?: string;
+          };
+        };
+      };
+      responses: {
+        /** @description Verified */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AdminAfterSalesRequest"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Type, date or version conflict */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/admin/after-sales/{id}/messages": {
     parameters: {
       query?: never;
@@ -4036,7 +4144,7 @@ export interface paths {
           };
           content: {
             "application/json": {
-              data?: unknown;
+              data: components["schemas"]["AfterSalesEvent"];
             };
           };
         };
@@ -4119,7 +4227,7 @@ export interface paths {
           };
           content: {
             "application/json": {
-              data?: unknown;
+              data: components["schemas"]["AfterSalesEvent"];
             };
           };
         };
@@ -4204,7 +4312,7 @@ export interface paths {
           };
           content: {
             "application/json": {
-              data?: unknown;
+              data: components["schemas"]["AfterSalesRequest"];
             };
           };
         };
@@ -4266,7 +4374,15 @@ export interface paths {
       requestBody: {
         content: {
           "application/json": {
-            [key: string]: unknown;
+            expectedVersion: number;
+            /** @default 7 */
+            validDays?: number;
+            note?: string;
+            lines: {
+              description: string;
+              quantity: number;
+              unitPrice: number;
+            }[];
           };
         };
       };
@@ -4278,7 +4394,7 @@ export interface paths {
           };
           content: {
             "application/json": {
-              data?: unknown;
+              data: components["schemas"]["AdminAfterSalesRequest"];
             };
           };
         };
@@ -4333,13 +4449,58 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get?: never;
+    /** List my ready after-sales images */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+          itemId: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["ServiceAttachment"][];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
     put?: never;
     /** Upload after-sales images */
     post: {
       parameters: {
         query?: never;
-        header?: never;
+        header: {
+          "Upload-Key": string;
+        };
         path: {
           id: number;
           itemId: number;
@@ -4361,7 +4522,7 @@ export interface paths {
           };
           content: {
             "application/json": {
-              data: unknown[];
+              data: components["schemas"]["ServiceAttachment"][];
             };
           };
         };
@@ -4480,13 +4641,67 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get?: never;
+    /** List ready admin after-sales images */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+          itemId: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["ServiceAttachment"][];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
     put?: never;
     /** Upload an admin after-sales image */
     post: {
       parameters: {
         query?: never;
-        header?: never;
+        header: {
+          "Upload-Key": string;
+        };
         path: {
           id: number;
           itemId: number;
@@ -4508,7 +4723,7 @@ export interface paths {
           };
           content: {
             "application/json": {
-              data: unknown[];
+              data: components["schemas"]["ServiceAttachment"][];
             };
           };
         };
@@ -4648,7 +4863,23 @@ export interface paths {
     /** List after-sales requests */
     get: {
       parameters: {
-        query?: never;
+        query?: {
+          page?: number;
+          pageSize?: number;
+          type?: "WARRANTY" | "TECHNICAL_SUPPORT";
+          status?:
+            | "SUBMITTED"
+            | "REVIEWING"
+            | "IN_PROGRESS"
+            | "AWAITING_CUSTOMER"
+            | "PARTIALLY_COMPLETED"
+            | "CLOSED";
+          itemStatus?: string;
+          assigneeId?: number;
+          q?: string;
+          from?: string;
+          to?: string;
+        };
         header?: never;
         path?: never;
         cookie?: never;
@@ -4662,7 +4893,7 @@ export interface paths {
           };
           content: {
             "application/json": {
-              data: unknown[];
+              data: components["schemas"]["AdminAfterSalesRequest"][];
               meta: {
                 page: number;
                 pageSize: number;
@@ -4724,7 +4955,7 @@ export interface paths {
           };
           content: {
             "application/json": {
-              data?: unknown;
+              data: components["schemas"]["AfterSalesSummary"];
             };
           };
         };
@@ -4841,7 +5072,7 @@ export interface paths {
           };
           content: {
             "application/json": {
-              data?: unknown;
+              data: components["schemas"]["AdminAfterSalesRequest"];
             };
           };
         };
@@ -4921,7 +5152,7 @@ export interface paths {
           };
           content: {
             "application/json": {
-              data?: unknown;
+              data: components["schemas"]["AdminAfterSalesRequest"];
             };
           };
         };
@@ -8772,6 +9003,17 @@ export interface components {
         } | null;
       }[];
     };
+    CustomerWarrantyVerification: {
+      id: number;
+      /** @enum {string} */
+      decision: "IN_WARRANTY" | "OUT_OF_WARRANTY" | "NO_WARRANTY" | "UNVERIFIABLE";
+      /** Format: date-time */
+      warrantyStartAt: string | null;
+      /** Format: date-time */
+      warrantyEndAt: string | null;
+      /** Format: date-time */
+      verifiedAt: string;
+    };
     EligibleAfterSalesDevice: {
       orderDetailId: number;
       orderId: number;
@@ -8792,6 +9034,8 @@ export interface components {
       warrantyPolicySource: "CHECKOUT_SNAPSHOT" | "CURRENT_PRODUCT_POLICY_BACKFILL" | "UNAVAILABLE";
       /** @enum {string} */
       coverage: "IN_WARRANTY" | "OUT_OF_WARRANTY" | "NO_WARRANTY" | "REQUIRES_VERIFICATION";
+      warrantyVerification:
+        components["schemas"]["CustomerWarrantyVerification"] | unknown | unknown;
       allowed: boolean;
       reason: string | null;
       allowedRequestTypes: ("WARRANTY" | "TECHNICAL_SUPPORT")[];
@@ -8807,6 +9051,247 @@ export interface components {
         serialNumber?: string;
         issueDescription: string;
       }[];
+    };
+    AdminWarrantyVerification: {
+      id: number;
+      /** @enum {string} */
+      decision: "IN_WARRANTY" | "OUT_OF_WARRANTY" | "NO_WARRANTY" | "UNVERIFIABLE";
+      /** Format: date-time */
+      warrantyStartAt: string | null;
+      /** Format: date-time */
+      warrantyEndAt: string | null;
+      /** Format: date-time */
+      verifiedAt: string;
+      verifiedBy: {
+        id: number;
+        username: string;
+        fullName: string | null;
+      } | null;
+      internalNote: string | null;
+    };
+    ServiceQuoteLine: {
+      id: number;
+      description: string;
+      quantity: number;
+      unitPrice: number;
+      lineTotal: number;
+      position: number;
+    };
+    ServiceQuote: {
+      id: number;
+      version: number;
+      /** @enum {string} */
+      status: "SENT" | "ACCEPTED" | "DECLINED" | "EXPIRED" | "SUPERSEDED";
+      currency: string;
+      subtotal: number;
+      total: number;
+      note: string | null;
+      /** Format: date-time */
+      validUntil: string;
+      /** Format: date-time */
+      respondedAt: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      lines: components["schemas"]["ServiceQuoteLine"][];
+    };
+    ServiceAttachment: {
+      id: number;
+      itemId: number | null;
+      /** Format: uri */
+      url: string;
+      mimeType: string;
+      byteSize: number;
+      width: number;
+      height: number;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    AfterSalesEvent: {
+      id: number;
+      itemId: number | null;
+      kind: string;
+      /** @enum {string} */
+      visibility: "PUBLIC" | "INTERNAL";
+      fromStatus: string | null;
+      toStatus: string | null;
+      body: string | null;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    AdminAfterSalesEvent: {
+      id: number;
+      itemId: number | null;
+      kind: string;
+      /** @enum {string} */
+      visibility: "PUBLIC" | "INTERNAL";
+      fromStatus: string | null;
+      toStatus: string | null;
+      body: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      actor: {
+        id: number;
+        username: string;
+        fullName: string | null;
+      } | null;
+    };
+    AfterSalesItem: {
+      id: number;
+      orderDetailId: number;
+      orderId: number;
+      position: number;
+      productNameSnapshot: string;
+      deviceLabel: string;
+      serialNumber: string | null;
+      issueDescription: string;
+      /** @enum {string} */
+      coverageAtCreation:
+        "IN_WARRANTY" | "OUT_OF_WARRANTY" | "NO_WARRANTY" | "REQUIRES_VERIFICATION";
+      status: string;
+      resolution: string | null;
+      version: number;
+      /** Format: date-time */
+      resolvedAt: string | null;
+      /** Format: date-time */
+      returnedAt: string | null;
+      /** Format: date-time */
+      confirmationDueAt: string | null;
+      /** Format: date-time */
+      customerConfirmedAt: string | null;
+      /** Format: date-time */
+      closedAt: string | null;
+      closeReason: string | null;
+      warrantyVerification:
+        components["schemas"]["CustomerWarrantyVerification"] | unknown | unknown;
+      allowedActions: string[];
+      quotes: components["schemas"]["ServiceQuote"][];
+    };
+    AdminAfterSalesItem: {
+      id: number;
+      orderDetailId: number;
+      orderId: number;
+      position: number;
+      productNameSnapshot: string;
+      deviceLabel: string;
+      serialNumber: string | null;
+      issueDescription: string;
+      /** @enum {string} */
+      coverageAtCreation:
+        "IN_WARRANTY" | "OUT_OF_WARRANTY" | "NO_WARRANTY" | "REQUIRES_VERIFICATION";
+      status: string;
+      resolution: string | null;
+      version: number;
+      /** Format: date-time */
+      resolvedAt: string | null;
+      /** Format: date-time */
+      returnedAt: string | null;
+      /** Format: date-time */
+      confirmationDueAt: string | null;
+      /** Format: date-time */
+      customerConfirmedAt: string | null;
+      /** Format: date-time */
+      closedAt: string | null;
+      closeReason: string | null;
+      warrantyVerification: components["schemas"]["AdminWarrantyVerification"] | unknown | unknown;
+      allowedActions: string[];
+      quotes: components["schemas"]["ServiceQuote"][];
+      allowedTransitions: string[];
+    };
+    AfterSalesRequest: {
+      id: number;
+      code: string;
+      /** @enum {string} */
+      type: "WARRANTY" | "TECHNICAL_SUPPORT";
+      status: string;
+      version: number;
+      subject: string;
+      previousRequestId: number | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      /** Format: date-time */
+      closedAt: string | null;
+      items: components["schemas"]["AfterSalesItem"][];
+      previousRequest: {
+        id: number;
+        code: string;
+        /** @enum {string} */
+        type: "WARRANTY" | "TECHNICAL_SUPPORT";
+        status: string;
+        subject: string;
+        /** Format: date-time */
+        createdAt: string;
+      } | null;
+      followUps: {
+        id: number;
+        code: string;
+        /** @enum {string} */
+        type: "WARRANTY" | "TECHNICAL_SUPPORT";
+        status: string;
+        subject: string;
+        /** Format: date-time */
+        createdAt: string;
+      }[];
+      events: components["schemas"]["AfterSalesEvent"][];
+    };
+    AdminAfterSalesRequest: {
+      id: number;
+      code: string;
+      /** @enum {string} */
+      type: "WARRANTY" | "TECHNICAL_SUPPORT";
+      status: string;
+      version: number;
+      subject: string;
+      previousRequestId: number | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      /** Format: date-time */
+      closedAt: string | null;
+      items: components["schemas"]["AdminAfterSalesItem"][];
+      previousRequest: {
+        id: number;
+        code: string;
+        /** @enum {string} */
+        type: "WARRANTY" | "TECHNICAL_SUPPORT";
+        status: string;
+        subject: string;
+        /** Format: date-time */
+        createdAt: string;
+      } | null;
+      followUps: {
+        id: number;
+        code: string;
+        /** @enum {string} */
+        type: "WARRANTY" | "TECHNICAL_SUPPORT";
+        status: string;
+        subject: string;
+        /** Format: date-time */
+        createdAt: string;
+      }[];
+      events: components["schemas"]["AdminAfterSalesEvent"][];
+      customer: {
+        id: number;
+        username: string;
+        fullName: string | null;
+        phone: string | null;
+        address: string | null;
+      };
+      assignee: {
+        id: number;
+        username: string;
+        fullName: string | null;
+      } | null;
+    };
+    AfterSalesSummary: {
+      total: number;
+      submitted: number;
+      reviewing: number;
+      inProgress: number;
+      awaitingCustomer: number;
+      closed: number;
     };
     Payment: {
       id: string;

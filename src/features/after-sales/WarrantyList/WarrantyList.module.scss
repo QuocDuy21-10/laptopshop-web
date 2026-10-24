@@ -5,3 +5,11 @@
 
 .skeleton { min-height: 8rem; }
 .empty { color: var(--color-muted); }
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .75rem;
+  margin-top: 1rem;
+}

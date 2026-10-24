@@ -168,6 +168,14 @@ export type WishlistSummary = Schemas["WishlistSummary"];
 export type WishlistPage =
   paths["/api/v1/wishlist"]["get"]["responses"][200]["content"]["application/json"];
 export type InAppNotification = Schemas["Notification"];
+export type AfterSalesRequest = Schemas["AfterSalesRequest"];
+export type AdminAfterSalesRequest = Schemas["AdminAfterSalesRequest"];
+export type AfterSalesItem = Schemas["AfterSalesItem"];
+export type AdminAfterSalesItem = Schemas["AdminAfterSalesItem"];
+export type ServiceQuote = Schemas["ServiceQuote"];
+export type ServiceAttachment = Schemas["ServiceAttachment"];
+export type CustomerWarrantyVerification = Schemas["CustomerWarrantyVerification"];
+export type AdminWarrantyVerification = Schemas["AdminWarrantyVerification"];
 export type NotificationPreferences = {
   inAppEnabled: boolean;
   emailEnabled: boolean;

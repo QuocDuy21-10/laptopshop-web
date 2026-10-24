@@ -11,6 +11,8 @@ describe("after-sales generated API contract", () => {
     expectTypeOf<DevicePath>().not.toBeNever();
     expectTypeOf<DetailPath>().not.toBeNever();
     expectTypeOf<AdminStatusPath>().not.toBeNever();
+    expectTypeOf<components["schemas"]["AfterSalesRequest"]["items"]>().not.toBeNever();
+    expectTypeOf<components["schemas"]["AdminAfterSalesRequest"]["items"]>().not.toBeNever();
   });
 
   it("contains device, quote, dispute, assignee, preference, and order fields", () => {
@@ -21,6 +23,8 @@ describe("after-sales generated API contract", () => {
     expectTypeOf<DeviceId>().not.toBeNever();
     expectTypeOf<CreateItems>().not.toBeNever();
     expectTypeOf<components["schemas"]["Order"]["items"]>().not.toBeNever();
+    expectTypeOf<components["schemas"]["ServiceAttachment"]>().not.toBeNever();
+    expectTypeOf<components["schemas"]["CustomerWarrantyVerification"]>().not.toBeNever();
     expectTypeOf<paths["/api/v1/notification-preferences"]["patch"]>().not.toBeNever();
   });
 });

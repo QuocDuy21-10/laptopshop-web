@@ -8,7 +8,8 @@ vi.mock("@/features/admin/after-sales/hooks", () => ({ useAdminAfterSalesStatus:
 describe("Admin ServiceRequestActions", () => {
   it("renders status control and internal-note action", () => {
     renderAdmin(<ServiceRequestActions requestId={90} item={{ id: 1, deviceLabel: "Thiết bị 1", status: "DIAGNOSING", version: 2 }} />);
-    expect(screen.getByRole("combobox", { name: "Trạng thái Thiết bị 1" })).toHaveValue("DIAGNOSING");
+    expect(screen.getByRole("combobox", { name: "Trạng thái Thiết bị 1" })).toBeInTheDocument();
+    expect(screen.getByText("DIAGNOSING")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Ghi chú nội bộ" })).toBeEnabled();
   });
 });

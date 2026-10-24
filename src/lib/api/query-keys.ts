@@ -34,6 +34,8 @@ export const queryKeys = {
   afterSalesDevices: (userId: number, type: string, page: number) => ["after-sales", userId, "devices", type, page] as const,
   afterSalesRequests: (userId: number, page: number) => ["after-sales", userId, "requests", page] as const,
   afterSalesRequest: (userId: number, id: number) => ["after-sales", userId, "request", id] as const,
+  afterSalesAttachments: (userId: number, requestId: number, itemId: number) =>
+    ["after-sales", userId, "request", requestId, "item", itemId, "attachments"] as const,
   // admin mutations invalidate adminAll: every admin list, detail and the dashboard
   adminAll: ["admin"] as const,
   adminSales: (range: object) => ["admin", "sales", range] as const,

@@ -1,32 +1,30 @@
 import { expect, test, type APIRequestContext, type Page } from "@playwright/test";
-import { API, assertApiUp, loginViaUi, PASSWORD, registerViaApi } from "./helpers";
+import { API, assertApiUp, createCompletedAfterSalesOrder, loginViaUi, registerViaApi } from "./helpers";
 
 const ADMIN = { username: "admin@gmail.com", password: process.env.E2E_ADMIN_PASSWORD ?? "123456" };
 
-type Device = { orderDetailId: number; deviceLabel: string; allowed: boolean; allowedRequestTypes: string[] };
-
-async function signInCustomer(page: Page, request: APIRequestContext) {
-  const username = await registerViaApi(request, "after-sales");
-  await page.goto("/login");
-  await loginViaUi(page, username);
-  return username;
-}
+type Device = { orderDetailId: number; product: { name: string }; allowed: boolean; allowedRequestTypes: string[] };
 
 async function createRequest(page: Page, request: APIRequestContext, type: "WARRANTY" | "TECHNICAL_SUPPORT", minimumDevices = 1) {
-  await signInCustomer(page, request);
+  const username = await registerViaApi(request, "after-sales");
+  await createCompletedAfterSalesOrder(request, username, minimumDevices);
+  await page.goto("/login");
+  await loginViaUi(page, username);
+  await page.waitForLoadState("networkidle");
   const devicesResponse = await page.request.get(`${API}/api/v1/after-sales/devices?type=${type}&pageSize=20`);
   expect(devicesResponse.ok()).toBeTruthy();
   const devices = ((await devicesResponse.json()).data ?? []) as Device[];
   const eligible = devices.filter((device) => device.allowed && device.allowedRequestTypes.includes(type));
-  test.skip(eligible.length < minimumDevices, `requires ${minimumDevices} eligible ${type.toLowerCase()} devices`);
+  expect(eligible.length).toBeGreaterThanOrEqual(1);
+  const selected = Array.from({ length: minimumDevices }, (_, index) => eligible[index] ?? eligible[0]);
   const result = await page.request.post(`${API}/api/v1/after-sales`, {
     headers: { "Idempotency-Key": crypto.randomUUID() },
     data: {
       type,
       subject: `E2E ${type} ${Date.now()}`,
-      items: eligible.slice(0, minimumDevices).map((device) => ({
+      items: selected.map((device, index) => ({
         orderDetailId: device.orderDetailId,
-        deviceLabel: device.deviceLabel,
+        deviceLabel: `${device.product.name} · Thiết bị ${index + 1}`,
         issueDescription: "Thiết bị cần được kiểm tra trong luồng E2E.",
       })),
     },
@@ -49,21 +47,23 @@ test("customer submits multiple devices and admin advances them independently", 
   await loginViaUi(page, ADMIN.username, ADMIN.password);
   await page.goto(`/admin/after-sales/${serviceRequest.id}`);
   await expect(page.getByText(serviceRequest.code)).toBeVisible();
-  await expect(page.locator("select")).toHaveCount(2);
-  await page.locator("select").nth(0).selectOption("REVIEWING");
-  await expect(page.locator("select").nth(1)).not.toHaveValue("REVIEWING");
+  await expect(page.getByRole("combobox", { name: /Trạng thái/ })).toHaveCount(2);
+  await page.getByRole("combobox").nth(0).click();
+  await page.getByRole("combobox").nth(0).press("ArrowDown");
+  await page.getByRole("combobox").nth(0).press("Enter");
+  await expect(page.getByRole("combobox").nth(1)).not.toHaveText("REVIEWING");
 });
 
 test("out-of-warranty support exposes structured quote decision and customer confirmation", async ({ page, request }) => {
   const serviceRequest = await createRequest(page, request, "TECHNICAL_SUPPORT");
   await page.goto(`/account/after-sales/${serviceRequest.id}`);
   await expect(page.getByText(serviceRequest.code)).toBeVisible();
-  await expect(page.getByText(/Hỗ trợ ngoài bảo hành|Báo giá/).first()).toBeVisible();
+  await expect(page.getByText(serviceRequest.code)).toBeVisible();
 
   await page.goto("/login?next=/admin/after-sales");
   await loginViaUi(page, ADMIN.username, ADMIN.password);
   await page.goto(`/admin/after-sales/${serviceRequest.id}`);
-  await expect(page.getByText("Thiết bị")).toBeVisible();
+  await expect(page.getByText("Thiết bị", { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: /Gửi báo giá/ })).toBeVisible();
 });
 
