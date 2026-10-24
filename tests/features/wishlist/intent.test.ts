@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { clearPendingWishlistIntent, readPendingWishlistIntent, savePendingWishlistIntent } from "@/features/wishlist/intent";
 
 describe("pending wishlist intent", () => {
@@ -31,5 +31,26 @@ describe("pending wishlist intent", () => {
   it("rejects an intent whose expiry exceeds the ten-minute maximum", () => {
     window.sessionStorage.setItem("laptopshop.wishlist.intent", JSON.stringify({ version: 1, action: "ADD_WISHLIST", productId: 7, returnTo: "/products/7", expiresAt: 999_999_999 }));
     expect(readPendingWishlistIntent(1_000)).toBeNull();
+  });
+
+  it("does not throw when sessionStorage is blocked", () => {
+    const getSpy = vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => { throw new DOMException("blocked", "SecurityError"); });
+    const setSpy = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => { throw new DOMException("blocked", "SecurityError"); });
+    const removeSpy = vi.spyOn(Storage.prototype, "removeItem").mockImplementation(() => { throw new DOMException("blocked", "SecurityError"); });
+
+    let saved = true;
+    expect(() => { saved = savePendingWishlistIntent({ action: "ADD_WISHLIST", productId: 7, returnTo: "/products/7" }); }).not.toThrow();
+    expect(saved).toBe(false);
+    expect(() => readPendingWishlistIntent()).not.toThrow();
+    expect(readPendingWishlistIntent()).toBeNull();
+    expect(() => clearPendingWishlistIntent()).not.toThrow();
+    getSpy.mockRestore();
+    setSpy.mockRestore();
+    removeSpy.mockRestore();
+  });
+
+  it("rejects backslash-prefixed external return paths", () => {
+    savePendingWishlistIntent({ action: "ADD_WISHLIST", productId: 7, returnTo: "/\\evil.test" });
+    expect(readPendingWishlistIntent()).toBeNull();
   });
 });

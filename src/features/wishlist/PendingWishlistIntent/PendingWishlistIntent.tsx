@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/Button/Button";
 import { useMe } from "@/features/account/useMe";
 import { useAddWishlistItem } from "@/features/wishlist/hooks";
 import { clearPendingWishlistIntent, readPendingWishlistIntent } from "@/features/wishlist/intent";
@@ -11,6 +12,7 @@ export function PendingWishlistIntent() {
   const add = useAddWishlistItem(me.data?.id);
   const processed = useRef(false);
   const [error, setError] = useState<string | null>(null);
+  const [retryVersion, setRetryVersion] = useState(0);
   useEffect(() => {
     if (!me.data || processed.current) return;
     const intent = readPendingWishlistIntent();
@@ -23,6 +25,6 @@ export function PendingWishlistIntent() {
         else setError(errorMessage(error));
       },
     );
-  }, [add, me.data]);
-  return error ? <p role="alert">{error}</p> : null;
+  }, [add, me.data, retryVersion]);
+  return error ? <><p role="alert">{error}</p><Button type="button" variant="secondary" onClick={() => { processed.current = false; setError(null); setRetryVersion((value) => value + 1); }}>Thử lại</Button></> : null;
 }
