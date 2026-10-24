@@ -22,6 +22,7 @@ export type StockReceiptDetail = Schemas["StockReceiptDetail"];
 export type AdminOrder = Schemas["AdminOrder"];
 export type AdminOrderDetail = Schemas["AdminOrderDetail"];
 export type PaymentEvent = Schemas["PaymentEvent"];
+export type PaymentReviewCase = Schemas["PaymentReviewCase"];
 export type Role = Schemas["Role"];
 export type PublicReview = Schemas["PublicReview"];
 export type ReviewImage = Schemas["ReviewImage"];
