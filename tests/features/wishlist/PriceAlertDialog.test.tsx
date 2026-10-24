@@ -53,4 +53,31 @@ describe("PriceAlertDialog", () => {
     expect(await screen.findByText("Giá mục tiêu phải thấp hơn giá hiện tại")).toBeInTheDocument();
     expect(configure).not.toHaveBeenCalled();
   });
+
+  it("resets unsaved values when the dialog is reopened", async () => {
+    const onOpenChange = vi.fn();
+    const view = renderWithQuery(<PriceAlertDialog userId={7} item={item} open onOpenChange={onOpenChange} />);
+    await userEvent.click(screen.getByRole("radio", { name: /mức giá mong muốn/i }));
+    await userEvent.type(screen.getByLabelText(/Giá mục tiêu/i), "800000");
+    view.rerender(<PriceAlertDialog userId={7} item={item} open={false} onOpenChange={onOpenChange} />);
+    view.rerender(<PriceAlertDialog userId={7} item={item} open onOpenChange={onOpenChange} />);
+
+    expect(screen.getByRole("radio", { name: /giảm thêm ít nhất 5%/i })).toBeChecked();
+    expect(screen.queryByLabelText(/Giá mục tiêu/i)).toBeNull();
+  });
+
+  it("resets values when a reused dialog receives another item", () => {
+    const nextItem = { ...item, id: 2, productId: 4, alertMode: null, targetPrice: null } as unknown as WishlistItem;
+    const view = renderWithQuery(<PriceAlertDialog userId={7} item={{ ...item, alertMode: "TARGET_PRICE", targetPrice: 700_000 } as WishlistItem} open onOpenChange={vi.fn()} />);
+    expect(screen.getByRole("radio", { name: /mức giá mong muốn/i })).toBeChecked();
+    view.rerender(<PriceAlertDialog userId={7} item={nextItem} open onOpenChange={vi.fn()} />);
+
+    expect(screen.getByRole("radio", { name: /giảm thêm ít nhất 5%/i })).toBeChecked();
+    expect(screen.queryByLabelText(/Giá mục tiêu/i)).toBeNull();
+  });
+
+  it("explains that target alerts send once and disable themselves", () => {
+    renderWithQuery(<PriceAlertDialog userId={7} item={item} open onOpenChange={vi.fn()} />);
+    expect(screen.getByText(/gửi một thông báo rồi tự động tắt/i)).toBeInTheDocument();
+  });
 });

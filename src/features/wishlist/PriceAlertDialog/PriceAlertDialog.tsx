@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Alert } from "@/components/ui/Alert/Alert";
 import { Button } from "@/components/ui/Button/Button";
@@ -28,13 +28,22 @@ export function PriceAlertDialog({
     item.priceSnapshot?.effectivePrice ?? item.product.salePrice ?? item.product.price;
   const [formError, setFormError] = useState<string | null>(null);
   const configure = useConfigurePriceAlert(userId);
-  const { register, handleSubmit, setError, watch, formState } = useForm<PriceAlertForm>({
+  const { register, handleSubmit, reset, setError, watch, formState } = useForm<PriceAlertForm>({
     defaultValues: {
       mode: item.alertMode === "TARGET_PRICE" ? "TARGET_PRICE" : "PERCENT_DROP",
       targetPrice: item.targetPrice ?? undefined,
       includeFlashSale: item.includeFlashSale ?? false,
     },
   });
+  useEffect(() => {
+    if (!open) return;
+    reset({
+      mode: item.alertMode === "TARGET_PRICE" ? "TARGET_PRICE" : "PERCENT_DROP",
+      targetPrice: item.targetPrice ?? undefined,
+      includeFlashSale: item.includeFlashSale ?? false,
+    });
+    setFormError(null);
+  }, [item.alertMode, item.id, item.includeFlashSale, item.targetPrice, open, reset]);
   const mode = watch("mode");
   const submit = handleSubmit(async (values) => {
     setFormError(null);
@@ -79,7 +88,7 @@ export function PriceAlertDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={`Theo dõi giá — ${item.product.name}`}
-      description="Cảnh báo dựa trên giá niêm yết và Automatic Promotion."
+      description="Cảnh báo dựa trên giá niêm yết và Automatic Promotion; Flash Sale là tùy chọn."
     >
       <form className={styles.form} onSubmit={submit} noValidate>
         {formError && <Alert tone="error" title={formError} />}
@@ -112,6 +121,9 @@ export function PriceAlertDialog({
         </label>
         <p className={styles.note}>
           Flash Sale phụ thuộc stock và quota; checkout sẽ xác nhận lại giá cuối cùng.
+        </p>
+        <p className={styles.note}>
+          Khi đạt giá mục tiêu, hệ thống gửi một thông báo rồi tự động tắt cảnh báo.
         </p>
         <div className={styles.actions}>
           <Button type="submit" loading={configure.isPending}>
