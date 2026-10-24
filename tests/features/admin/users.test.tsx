@@ -21,7 +21,7 @@ const ROLES = [
   { id: 2, name: "USER", description: null },
 ];
 const user = (id: number, username: string, role: string) => ({
-  id, username, fullName: `User ${id}`, address: null, phone: null, accountType: null, avatar: null, role,
+  id, username, fullName: `User ${id}`, address: null, phone: null, accountType: null, avatar: null, emailVerifiedAt: null, role,
 });
 
 let fetchMock: ReturnType<typeof mockFetch>;

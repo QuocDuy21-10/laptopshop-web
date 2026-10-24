@@ -9,6 +9,7 @@ import { useMe } from "@/features/account/useMe";
 import { CartSummary } from "@/features/cart/CartSummary/CartSummary";
 import { useCart } from "@/features/cart/hooks";
 import { usePaymentMethods } from "@/features/payments/hooks";
+import { usePricingQuote } from "../usePricingQuote";
 import { errorMessage } from "@/lib/api/errors";
 import { CheckoutForm } from "../CheckoutForm/CheckoutForm";
 import styles from "./CheckoutView.module.scss";
@@ -18,6 +19,7 @@ export function CheckoutView() {
   const me = useMe();
   const cart = useCart();
   const paymentMethods = usePaymentMethods();
+  const quote = usePricingQuote();
   const empty = cart.data?.items.length === 0;
 
   useEffect(() => {
@@ -39,6 +41,8 @@ export function CheckoutView() {
           paymentMethod: "COD",
         }}
         availableMethods={(paymentMethods.data ?? [{ code: "COD", enabled: true }]).filter((method) => method.enabled).map((method) => method.code)}
+        pricingFingerprint={quote.data?.pricingFingerprint ?? ""}
+        pricingReady={quote.isSuccess}
       />
       <CartSummary
         cart={cart.data}

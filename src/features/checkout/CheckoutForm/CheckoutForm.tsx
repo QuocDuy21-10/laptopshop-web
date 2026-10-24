@@ -19,7 +19,7 @@ type Problem = { message: string; backToCart: boolean } | null;
 
 const IDEMPOTENCY_STORAGE_KEY = "laptopshop.checkout.idempotency-key";
 
-export function CheckoutForm({ defaults, availableMethods = ["COD", "BANK_TRANSFER"] }: { defaults: Omit<ReceiverInput, "paymentMethod"> & Partial<Pick<ReceiverInput, "paymentMethod">>; availableMethods?: PaymentMethod[] }) {
+export function CheckoutForm({ defaults, availableMethods = ["COD", "BANK_TRANSFER"], couponCode, pricingFingerprint = "", pricingReady = true }: { defaults: Omit<ReceiverInput, "paymentMethod"> & Partial<Pick<ReceiverInput, "paymentMethod">>; availableMethods?: PaymentMethod[]; couponCode?: string; pricingFingerprint?: string; pricingReady?: boolean }) {
   const router = useRouter();
   const placeOrder = usePlaceOrder();
   const storedAttempt = useRef<string | null>(
@@ -56,7 +56,7 @@ export function CheckoutForm({ defaults, availableMethods = ["COD", "BANK_TRANSF
   const onSubmit = handleSubmit(async (receiver) => {
     setProblem(null);
     try {
-      const body = await placeOrder.mutateAsync({ key: idempotencyKey, receiver });
+      const body = await placeOrder.mutateAsync({ key: idempotencyKey, receiver, couponCode, pricingFingerprint });
       window.sessionStorage.removeItem(IDEMPOTENCY_STORAGE_KEY);
       setIdempotencyKey(crypto.randomUUID());
       router.replace(body.data.paymentMethod === "BANK_TRANSFER" ? `/account/orders/${body.data.id}/payment` : `/account/orders/${body.data.id}?placed=1`);
@@ -77,6 +77,7 @@ export function CheckoutForm({ defaults, availableMethods = ["COD", "BANK_TRANSF
         // TanStack Query pauses mutations while the browser is offline and resumes them with the same key
         <Alert tone="warning" title="Mất kết nối mạng. Đơn hàng sẽ được gửi khi có mạng trở lại." />
       )}
+      {!pricingReady && <Alert tone="warning" title="Đang kiểm tra giá và tồn kho. Vui lòng chờ trước khi đặt hàng." />}
       {problem && (
         <Alert tone="error" title={problem.message}>
           {problem.backToCart && <Link href="/cart">Quay lại giỏ hàng</Link>}
@@ -113,7 +114,7 @@ export function CheckoutForm({ defaults, availableMethods = ["COD", "BANK_TRANSF
           </label>
         )}
       </fieldset>
-      <Button type="submit" size="lg" fullWidth loading={placeOrder.isPending}>
+      <Button type="submit" size="lg" fullWidth loading={placeOrder.isPending} disabled={!pricingReady}>
         Xác nhận đặt hàng
       </Button>
     </form>

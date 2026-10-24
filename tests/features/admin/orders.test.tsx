@@ -7,7 +7,7 @@ import type { AdminOrder } from "@/lib/api/types";
 import { json, lastRequest, mockFetch, renderAdmin } from "../../utils";
 
 const order = (status: AdminOrder["status"]): AdminOrder => ({
-  id: 9, status, totalPrice: 100, paymentMethod: "COD", paymentStatus: "PAYMENT_UNPAID", receiverName: "B",
+  id: 9, status, totalPrice: 100, subtotalPrice: 100, productDiscountAmount: 0, couponEligibleSubtotal: 100, couponDiscountAmount: 0, couponCode: null, couponName: null, paymentRequired: true, paymentMethod: "COD", paymentStatus: "PAYMENT_UNPAID", paymentCancellationBlockedReason: null, receiverName: "B",
   receiverAddress: "HN", receiverPhone: "0900000000", createdAt: "2026-10-01T00:00:00Z", completedAt: null, items: [],
   user: { id: 2, username: "b@test.local", fullName: "B" },
 });
