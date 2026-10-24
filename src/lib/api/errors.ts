@@ -43,6 +43,7 @@ const MESSAGES: Record<string, string> = {
   PAYMENT_NOT_FOUND: "Không tìm thấy thông tin thanh toán.",
   PAYMENT_NOT_PAYABLE: "Phiên thanh toán này không còn hiệu lực.",
   PAID_ORDER_CANNOT_CANCEL: "Đơn đã thanh toán cần được cửa hàng xử lý hoàn tiền.",
+  PAYMENT_VERIFICATION_IN_PROGRESS: "Thanh toán đang được đối soát. Vui lòng liên hệ cửa hàng nếu cần hỗ trợ.",
   PAYMENT_REQUIRED: "Cần xác nhận thanh toán trước khi xử lý giao hàng.",
   FORBIDDEN: "Bạn không có quyền thực hiện thao tác này.",
   REVIEW_NOT_ELIGIBLE: "Chỉ khách đã mua và hoàn tất đơn hàng mới được đánh giá.",

@@ -83,9 +83,15 @@ export function OrderDetail({ id, placed }: { id: number; placed: boolean }) {
         {o.paymentMethod === "BANK_TRANSFER" && o.paymentStatus !== "PAYMENT_SUCCESS" && o.status !== "CANCELLED" && (
           <Link href={`/account/orders/${o.id}/payment`}>Xem hướng dẫn thanh toán</Link>
         )}
+        {o.paymentCancellationBlockedReason === "PAID" && (
+          <Alert tone="warning" title="Đơn hàng đã thanh toán. Vui lòng liên hệ cửa hàng để được hỗ trợ hủy và hoàn tiền." />
+        )}
+        {o.paymentCancellationBlockedReason === "VERIFYING" && (
+          <Alert tone="warning" title="Thanh toán đang được đối soát. Vui lòng không chuyển khoản thêm và liên hệ cửa hàng nếu cần hỗ trợ." />
+        )}
       </section>
 
-      {o.status === "PENDING" && (
+      {o.status === "PENDING" && !o.paymentCancellationBlockedReason && (
         <div className={styles.actions}>
           <CancelOrderDialog orderId={o.id} />
         </div>
