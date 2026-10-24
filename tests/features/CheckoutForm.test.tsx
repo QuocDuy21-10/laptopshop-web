@@ -36,13 +36,9 @@ describe("CheckoutForm", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent("Không thể kết nối máy chủ");
     await submit();
     await waitFor(() => expect(router.replace).toHaveBeenCalledWith("/account/orders/50?placed=1"));
-    await submit();
-    await waitFor(() => expect(orderCalls()).toHaveLength(3));
-
-    const [first, second, third] = orderCalls().map((r) => r.headers.get("Idempotency-Key"));
+    const [first, second] = orderCalls().map((r) => r.headers.get("Idempotency-Key"));
     expect(first).toBeTruthy();
     expect(second).toBe(first);
-    expect(third).not.toBe(first);
   });
 
   it("quotes the cart and sends the server pricing fingerprint with the order", async () => {
@@ -122,5 +118,39 @@ describe("CheckoutForm", () => {
     await submit();
     expect(await screen.findByText("Số điện thoại không hợp lệ")).toBeInTheDocument();
     expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("does not submit while a stored checkout attempt is still recovering", async () => {
+    window.sessionStorage.setItem("laptopshop.checkout.idempotency-key", "recover-key");
+    let resolveAttempt!: (response: Response) => void;
+    const attemptResponse = new Promise<Response>((resolve) => { resolveAttempt = resolve; });
+    fetchMock.mockImplementation(async (input) => {
+      if (urlOf(input).endsWith("/checkout-attempt")) return attemptResponse;
+      return json(201, { data: order });
+    });
+    renderWithQuery(<CheckoutForm defaults={defaults} />);
+    await submit();
+    expect(orderCalls()).toHaveLength(0);
+    resolveAttempt(json(404, { error: { code: "CHECKOUT_ATTEMPT_NOT_FOUND", message: "missing" } }));
+    await waitFor(() => expect(screen.getByRole("button", { name: "Xác nhận đặt hàng" })).toBeEnabled());
+  });
+
+  it("keeps the idempotency key and offers recovery retry after a network error", async () => {
+    window.sessionStorage.setItem("laptopshop.checkout.idempotency-key", "recover-key");
+    let recoveryAttempts = 0;
+    fetchMock.mockImplementation(async (input) => {
+      if (urlOf(input).endsWith("/checkout-attempt")) {
+        recoveryAttempts += 1;
+        if (recoveryAttempts === 1) throw new TypeError("Failed to fetch");
+        return json(200, { data: { ...order, paymentMethod: "BANK_TRANSFER" } });
+      }
+      return json(201, { data: order });
+    });
+    renderWithQuery(<CheckoutForm defaults={defaults} />);
+    expect(await screen.findByRole("alert")).toHaveTextContent("Không thể kết nối máy chủ");
+    expect(screen.getByRole("button", { name: "Thử lại" })).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Thử lại" }));
+    await waitFor(() => expect(router.replace).toHaveBeenCalledWith("/account/orders/50/payment"));
+    expect(window.sessionStorage.getItem("laptopshop.checkout.idempotency-key")).toBeNull();
   });
 });

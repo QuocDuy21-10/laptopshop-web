@@ -7787,6 +7787,318 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/admin/payment-review-cases": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List payment review cases */
+    get: {
+      parameters: {
+        query?: {
+          page?: number;
+          pageSize?: number;
+          status?: "OPEN" | "RESOLVED";
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PaymentReviewCase"][];
+              meta: {
+                page: number;
+                pageSize: number;
+                total: number;
+                totalPages: number;
+              };
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/payment-review-cases/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Payment review case detail */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: string;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PaymentReviewCase"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/payment-review-cases/{id}/extend": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Extend a payment review hold */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: string;
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            note: string;
+            /** Format: date-time */
+            holdUntil: string;
+            version: number;
+          };
+        };
+      };
+      responses: {
+        /** @description Extended */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PaymentReviewCase"];
+            };
+          };
+        };
+        /** @description Invalid hold */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Case version conflict */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/payment-review-cases/{id}/release": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Release stock for an inconclusive payment */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: string;
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            note: string;
+            /** @enum {string} */
+            confirmation: "RELEASE_STOCK";
+            version: number;
+          };
+        };
+      };
+      responses: {
+        /** @description Released */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PaymentReviewCase"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Case version conflict or payment already succeeded */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/admin/reviews": {
     parameters: {
       query?: never;
@@ -8999,6 +9311,8 @@ export interface components {
       paymentRequired: boolean;
       paymentMethod: string;
       paymentStatus: string;
+      /** @enum {string|null} */
+      paymentCancellationBlockedReason: "PAID" | "VERIFYING" | null;
       receiverName: string;
       receiverAddress: string;
       receiverPhone: string;
@@ -9334,7 +9648,7 @@ export interface components {
       provider: string;
       method: string;
       /** @enum {string} */
-      status: "PENDING" | "SUCCEEDED" | "EXPIRED" | "CANCELLED";
+      status: "PENDING" | "VERIFYING" | "SUCCEEDED" | "EXPIRED" | "CANCELLED" | "REVIEW_REQUIRED";
       amount: number;
       currency: string;
       /** Format: date-time */
@@ -9376,6 +9690,37 @@ export interface components {
       /** Format: date-time */
       resolvedAt: string | null;
       resolvedById: number | null;
+    };
+    PaymentReviewCase: {
+      id: string;
+      paymentId: string;
+      reason: string;
+      /** @enum {string} */
+      status: "OPEN" | "RESOLVED";
+      version: number;
+      /** Format: date-time */
+      openedAt: string;
+      /** Format: date-time */
+      nextReviewAt: string | null;
+      /** Format: date-time */
+      resolvedAt: string | null;
+      resolution: string | null;
+      payment: {
+        id: string;
+        orderId: number;
+        status: string;
+        amount: number;
+        transferCode: string;
+        /** Format: date-time */
+        expiresAt: string;
+        /** Format: date-time */
+        reviewAfter: string;
+        order: {
+          status: string;
+          paymentMethod: string;
+          paymentStatus: string;
+        };
+      };
     };
     ReviewAuthor: {
       name: string;
@@ -9614,6 +9959,8 @@ export interface components {
       paymentRequired: boolean;
       paymentMethod: string;
       paymentStatus: string;
+      /** @enum {string|null} */
+      paymentCancellationBlockedReason: "PAID" | "VERIFYING" | null;
       receiverName: string;
       receiverAddress: string;
       receiverPhone: string;
@@ -9674,6 +10021,8 @@ export interface components {
       paymentRequired: boolean;
       paymentMethod: string;
       paymentStatus: string;
+      /** @enum {string|null} */
+      paymentCancellationBlockedReason: "PAID" | "VERIFYING" | null;
       receiverName: string;
       receiverAddress: string;
       receiverPhone: string;

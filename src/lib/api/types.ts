@@ -138,6 +138,7 @@ export type AdminOrder = Omit<GeneratedAdminOrder, OrderPricingFields> &
 export type AdminOrderDetail = Omit<Schemas["AdminOrderDetail"], OrderPricingFields> &
   Partial<Pick<Schemas["AdminOrderDetail"], OrderPricingFields>>;
 export type PaymentEvent = Schemas["PaymentEvent"];
+export type PaymentReviewCase = Schemas["PaymentReviewCase"];
 export type Role = Schemas["Role"];
 export type PublicOfficialReply = { content: string; createdAt: string; updatedAt: string };
 export type PublicReview = Omit<Schemas["PublicReview"], "officialReply"> & {

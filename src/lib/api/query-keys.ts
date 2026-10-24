@@ -51,6 +51,7 @@ export const queryKeys = {
   adminUser: (id: number) => ["admin", "user", id] as const,
   adminPaymentEvents: (query: object) => ["admin", "payment-events", query] as const,
   adminPaymentEvent: (id: string) => ["admin", "payment-event", id] as const,
+  adminPaymentReviewCases: (query: object) => ["admin", "payment-review-cases", query] as const,
   adminRoles: ["admin", "roles"] as const,
   adminReviews: (query: object) => ["admin", "reviews", query] as const,
   adminPromotions: (query: object) => ["admin", "promotions", query] as const,

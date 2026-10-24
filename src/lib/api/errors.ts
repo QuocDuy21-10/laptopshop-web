@@ -43,6 +43,7 @@ const MESSAGES: Record<string, string> = {
   PAYMENT_NOT_FOUND: "Không tìm thấy thông tin thanh toán.",
   PAYMENT_NOT_PAYABLE: "Phiên thanh toán này không còn hiệu lực.",
   PAID_ORDER_CANNOT_CANCEL: "Đơn đã thanh toán cần được cửa hàng xử lý hoàn tiền.",
+  PAYMENT_VERIFICATION_IN_PROGRESS: "Thanh toán đang được đối soát. Vui lòng liên hệ cửa hàng nếu cần hỗ trợ.",
   PAYMENT_REQUIRED: "Cần xác nhận thanh toán trước khi xử lý giao hàng.",
   FLASH_SALE_QUOTA_EXCEEDED: "quota Flash Sale không còn đủ cho số lượng này.",
   FLASH_SALE_USER_LIMIT: "Bạn đã đạt giới hạn mua Flash Sale cho sản phẩm này.",

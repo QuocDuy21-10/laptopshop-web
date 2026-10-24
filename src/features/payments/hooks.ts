@@ -3,6 +3,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api/client";
 import { unwrap } from "@/lib/api/errors";
+import { isApiError } from "@/lib/api/errors";
 import { queryKeys } from "@/lib/api/query-keys";
 
 export function usePaymentMethods() {
@@ -11,6 +12,33 @@ export function usePaymentMethods() {
     queryFn: async () => (await unwrap(api.GET("/api/v1/payments/methods"))).data,
     staleTime: 60_000,
   });
+}
+
+type PaymentQueryState = {
+  state: {
+    data?: { status?: string };
+    error?: unknown;
+    fetchFailureCount: number;
+  };
+};
+
+const errorStatus = (error: unknown) =>
+  isApiError(error) ? error.status : (error as { status?: unknown } | null)?.status;
+
+export function paymentRefetchInterval(query: PaymentQueryState): number | false {
+  const status = query.state.data?.status;
+  if (status && !["PENDING", "VERIFYING", "REVIEW_REQUIRED"].includes(status)) return false;
+  if ([401, 403, 404].includes(errorStatus(query.state.error) as number)) return false;
+  if (query.state.fetchFailureCount >= 3) return 30_000;
+  if (query.state.fetchFailureCount >= 1) return 15_000;
+  if (status === "VERIFYING") return 15_000;
+  if (status === "REVIEW_REQUIRED") return 30_000;
+  return 5_000;
+}
+
+export function paymentRetry(failureCount: number, error: unknown) {
+  if ([401, 403, 404].includes(errorStatus(error) as number)) return false;
+  return failureCount < 2;
 }
 
 export function usePaymentStatus(orderId: number) {
@@ -29,15 +57,9 @@ export function usePaymentStatus(orderId: number) {
     },
     enabled: Number.isSafeInteger(orderId) && orderId > 0,
     staleTime: 0,
-    refetchInterval: (query) => {
-      const status = query.state.data?.status;
-      if (status && status !== "PENDING") return false;
-      if (query.state.fetchFailureCount >= 3) return 30_000;
-      if (query.state.fetchFailureCount >= 1) return 15_000;
-      return 5_000;
-    },
+    refetchInterval: paymentRefetchInterval,
     refetchIntervalInBackground: false,
     refetchOnWindowFocus: true,
-    retry: 2,
+    retry: paymentRetry,
   });
 }

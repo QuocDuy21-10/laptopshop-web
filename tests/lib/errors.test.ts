@@ -57,6 +57,9 @@ describe("errorMessage (admin)", () => {
     expect(errorMessage(new ApiError(409, "USER_HAS_ORDERS", "x"))).toBe("Người dùng đã có đơn hàng nên không thể xoá.");
     expect(errorMessage(new ApiError(409, "CANNOT_DELETE_SELF", "x"))).toBe("Bạn không thể xoá tài khoản của chính mình.");
     expect(errorMessage(new ApiError(403, "FORBIDDEN", "x"))).toBe("Bạn không có quyền thực hiện thao tác này.");
+    expect(errorMessage(new ApiError(409, "PAYMENT_VERIFICATION_IN_PROGRESS", "x"))).toBe(
+      "Thanh toán đang được đối soát. Vui lòng liên hệ cửa hàng nếu cần hỗ trợ.",
+    );
   });
 });
 
