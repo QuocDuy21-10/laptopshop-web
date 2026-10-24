@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient, type UseMutationResult, type UseQueryResult } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, type QueryClient, type UseMutationResult, type UseQueryResult } from "@tanstack/react-query";
 import { api } from "@/lib/api/client";
 import { ApiError, unwrap } from "@/lib/api/errors";
 import { queryKeys } from "@/lib/api/query-keys";
@@ -13,36 +13,92 @@ import type {
 } from "@/lib/api/types";
 
 export type WishlistOptimisticContext = {
-  statusEntries: Array<[readonly unknown[], WishlistStatus[] | undefined]>;
+  productId: number;
+  generation: number;
+  statusSnapshots: Array<{ key: readonly unknown[]; previous: WishlistStatus | undefined }>;
   summary: WishlistSummary | undefined;
-  listEntries: Array<[readonly unknown[], WishlistPage | undefined]>;
+  summaryDelta: number;
 };
 
-const statusEntries = (client: ReturnType<typeof useQueryClient>, userId: number) =>
+const statusSnapshots = (client: QueryClient, userId: number, productId: number) =>
   client
     .getQueriesData<WishlistStatus[]>({ queryKey: queryKeys.wishlistAll(userId) })
-    .filter(([key, value]) => key[2] === "status" && Array.isArray(value));
+    .filter(([key]) => key[2] === "status")
+    .map(([key, value]) => ({
+      key,
+      previous: value?.find((item) => item.productId === productId),
+    }));
 
-const listEntries = (client: ReturnType<typeof useQueryClient>, userId: number) =>
+const listContainsProduct = (client: QueryClient, userId: number, productId: number) =>
   client
     .getQueriesData<WishlistPage>({ queryKey: queryKeys.wishlistAll(userId) })
-    .filter(([key]) => key[2] === "list");
+    .some(([key, value]) => key[2] === "list" && value?.data.some((item) => item.productId === productId));
 
 const patchStatus = (
-  client: ReturnType<typeof useQueryClient>,
-  entries: Array<[readonly unknown[], WishlistStatus[] | undefined]>,
+  client: QueryClient,
+  snapshots: Array<{ key: readonly unknown[]; previous: WishlistStatus | undefined }>,
   productId: number,
   isWishlisted: boolean,
 ) => {
-  for (const [key, value] of entries) {
-    if (!value) continue;
+  for (const { key } of snapshots) {
+    const value = client.getQueryData<WishlistStatus[]>(key);
     client.setQueryData<WishlistStatus[]>(
       key,
-      value.some((item) => item.productId === productId)
+      value?.some((item) => item.productId === productId)
         ? value.map((item) => (item.productId === productId ? { ...item, isWishlisted } : item))
-        : [...value, { productId, isWishlisted }].sort((a, b) => a.productId - b.productId),
+        : [...(value ?? []), { productId, isWishlisted }].sort((a, b) => a.productId - b.productId),
     );
   }
+};
+
+const generationRegistry = new WeakMap<QueryClient, Map<string, number>>();
+
+const nextGeneration = (client: QueryClient, userId: number, productId: number) => {
+  const generations = generationRegistry.get(client) ?? new Map<string, number>();
+  const key = `${userId}:${productId}`;
+  const generation = (generations.get(key) ?? 0) + 1;
+  generations.set(key, generation);
+  generationRegistry.set(client, generations);
+  return generation;
+};
+
+const currentGeneration = (client: QueryClient, userId: number, productId: number) =>
+  generationRegistry.get(client)?.get(`${userId}:${productId}`) ?? 0;
+
+const rollbackStatus = (
+  client: QueryClient,
+  snapshots: Array<{ key: readonly unknown[]; previous: WishlistStatus | undefined }>,
+  productId: number,
+) => {
+  for (const { key, previous } of snapshots) {
+    const value = client.getQueryData<WishlistStatus[]>(key) ?? [];
+    client.setQueryData<WishlistStatus[]>(
+      key,
+      previous
+        ? value.map((item) => (item.productId === productId ? previous : item))
+        : value.filter((item) => item.productId !== productId),
+    );
+  }
+};
+
+const optimisticContext = (
+  client: QueryClient,
+  userId: number,
+  productId: number,
+  adding: boolean,
+): WishlistOptimisticContext => {
+  const snapshots = statusSnapshots(client, userId, productId);
+  const previousStatus = snapshots.find(({ previous }) => previous !== undefined)?.previous;
+  const wasWishlisted = previousStatus?.isWishlisted ?? listContainsProduct(client, userId, productId);
+  const summary = client.getQueryData<WishlistSummary>(queryKeys.wishlistSummary(userId));
+  const summaryDelta = summary && (adding ? !wasWishlisted : wasWishlisted) ? (adding ? 1 : -1) : 0;
+  return {
+    productId,
+    generation: nextGeneration(client, userId, productId),
+    statusSnapshots: snapshots,
+    summary,
+    summaryDelta,
+  };
 };
 
 export function useWishlist(userId: number | undefined, page: number): UseQueryResult<WishlistPage> {
@@ -80,22 +136,23 @@ export function useAddWishlistItem(userId: number | undefined): UseMutationResul
   return useMutation({
     mutationFn: (productId: number) => unwrap(api.PUT("/api/v1/wishlist/items/{productId}", { params: { path: { productId } } })),
     onMutate: async (productId) => {
-      if (userId === undefined) return { statusEntries: [], summary: undefined, listEntries: [] };
+      if (userId === undefined) return { productId, generation: 0, statusSnapshots: [], summary: undefined, summaryDelta: 0 };
       await client.cancelQueries({ queryKey: queryKeys.wishlistAll(userId) });
-      const context: WishlistOptimisticContext = {
-        statusEntries: statusEntries(client, userId),
-        summary: client.getQueryData<WishlistSummary>(queryKeys.wishlistSummary(userId)),
-        listEntries: listEntries(client, userId),
-      };
-      patchStatus(client, context.statusEntries, productId, true);
-      if (context.summary) client.setQueryData(queryKeys.wishlistSummary(userId), { itemCount: context.summary.itemCount + 1 });
+      const context = optimisticContext(client, userId, productId, true);
+      patchStatus(client, context.statusSnapshots, productId, true);
+      if (context.summaryDelta) client.setQueryData(queryKeys.wishlistSummary(userId), { itemCount: context.summary!.itemCount + context.summaryDelta });
       return context;
     },
     onError: (_error, _productId, context) => {
       if (!context || userId === undefined) return;
-      for (const [key, value] of context.statusEntries) client.setQueryData(key, value);
-      client.setQueryData(queryKeys.wishlistSummary(userId), context.summary);
-      for (const [key, value] of context.listEntries) client.setQueryData(key, value);
+      const isLatest = context.generation === currentGeneration(client, userId, context.productId);
+      if (isLatest) {
+        rollbackStatus(client, context.statusSnapshots, context.productId);
+        if (context.summaryDelta) {
+          const summary = client.getQueryData<WishlistSummary>(queryKeys.wishlistSummary(userId));
+          if (summary) client.setQueryData(queryKeys.wishlistSummary(userId), { itemCount: Math.max(0, summary.itemCount - context.summaryDelta) });
+        }
+      }
     },
     onSettled: () => {
       if (userId !== undefined) void client.invalidateQueries({ queryKey: queryKeys.wishlistAll(userId) });
@@ -113,22 +170,23 @@ export function useRemoveWishlistItem(userId: number | undefined): UseMutationRe
   return useMutation({
     mutationFn: (productId: number) => unwrap(api.DELETE("/api/v1/wishlist/items/{productId}", { params: { path: { productId } } })),
     onMutate: async (productId) => {
-      if (userId === undefined) return { statusEntries: [], summary: undefined, listEntries: [] };
+      if (userId === undefined) return { productId, generation: 0, statusSnapshots: [], summary: undefined, summaryDelta: 0 };
       await client.cancelQueries({ queryKey: queryKeys.wishlistAll(userId) });
-      const context: WishlistOptimisticContext = {
-        statusEntries: statusEntries(client, userId),
-        summary: client.getQueryData<WishlistSummary>(queryKeys.wishlistSummary(userId)),
-        listEntries: listEntries(client, userId),
-      };
-      patchStatus(client, context.statusEntries, productId, false);
-      if (context.summary) client.setQueryData(queryKeys.wishlistSummary(userId), { itemCount: Math.max(0, context.summary.itemCount - 1) });
+      const context = optimisticContext(client, userId, productId, false);
+      patchStatus(client, context.statusSnapshots, productId, false);
+      if (context.summaryDelta) client.setQueryData(queryKeys.wishlistSummary(userId), { itemCount: Math.max(0, context.summary!.itemCount + context.summaryDelta) });
       return context;
     },
     onError: (_error, _productId, context) => {
       if (!context || userId === undefined) return;
-      for (const [key, value] of context.statusEntries) client.setQueryData(key, value);
-      client.setQueryData(queryKeys.wishlistSummary(userId), context.summary);
-      for (const [key, value] of context.listEntries) client.setQueryData(key, value);
+      const isLatest = context.generation === currentGeneration(client, userId, context.productId);
+      if (isLatest) {
+        rollbackStatus(client, context.statusSnapshots, context.productId);
+        if (context.summaryDelta) {
+          const summary = client.getQueryData<WishlistSummary>(queryKeys.wishlistSummary(userId));
+          if (summary) client.setQueryData(queryKeys.wishlistSummary(userId), { itemCount: Math.max(0, summary.itemCount - context.summaryDelta) });
+        }
+      }
     },
     onSettled: () => {
       if (userId !== undefined) void client.invalidateQueries({ queryKey: queryKeys.wishlistAll(userId) });
