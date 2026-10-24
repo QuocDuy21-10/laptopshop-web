@@ -28,9 +28,9 @@ vi.mock("@/features/admin/notifications/hooks", () => ({
         lastCompletedAt: "2026-10-23T00:01:00Z",
         lastSucceededAt: "2026-10-23T00:01:00Z",
         lastDurationMs: 1200,
-        consecutiveFailures: 0,
-        lastErrorCode: null,
-        lastStats: { productsScanned: 4, itemsEvaluated: 8, notificationsCreated: 2, duplicatesSkipped: 1, invalidStatesSkipped: 0, errors: 0 },
+        consecutiveFailures: 2,
+        lastErrorCode: "BATCH_ERROR",
+        lastStats: { productsScanned: 4, itemsEvaluated: 8, notificationsCreated: 2, duplicatesSkipped: 3, invalidStatesSkipped: 1, errors: 1 },
         updatedAt: "2026-10-23T00:01:00Z",
       },
     },
@@ -45,6 +45,9 @@ describe("NotificationOperations", () => {
     expect(screen.getByText(/notification-worker/)).toBeInTheDocument();
     expect(screen.getByText(/Checkpoint product: 42/i)).toBeInTheDocument();
     expect(screen.getByText(/Products scanned: 4/i)).toBeInTheDocument();
+    expect(screen.getByText(/Duplicates skipped: 3/i)).toBeInTheDocument();
+    expect(screen.getByText(/Invalid states skipped: 1/i)).toBeInTheDocument();
+    expect(screen.getByText(/Last error: BATCH_ERROR/i)).toBeInTheDocument();
     expect(screen.getByText(/price-alert-worker.*stale/i)).toBeInTheDocument();
     expect(screen.queryByText(/endpoint|otp|p256dh/i)).not.toBeInTheDocument();
   });

@@ -55,9 +55,12 @@ export function NotificationOperations() {
                 <p>Products scanned: {query.data.priceAlertSweep.lastStats.productsScanned}</p>
                 <p>Items evaluated: {query.data.priceAlertSweep.lastStats.itemsEvaluated}</p>
                 <p>Notifications created: {query.data.priceAlertSweep.lastStats.notificationsCreated}</p>
+                <p>Duplicates skipped: {query.data.priceAlertSweep.lastStats.duplicatesSkipped}</p>
+                <p>Invalid states skipped: {query.data.priceAlertSweep.lastStats.invalidStatesSkipped}</p>
                 <p>Errors: {query.data.priceAlertSweep.lastStats.errors}</p>
               </>
             )}
+            {query.data.priceAlertSweep.lastErrorCode && <p>Last error: {query.data.priceAlertSweep.lastErrorCode}</p>}
           </div>
         ) : (
           <p>Chưa có checkpoint Price Alert.</p>
