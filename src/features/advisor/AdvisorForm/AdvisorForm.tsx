@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button/Button";
 import { TextField } from "@/components/ui/TextField/TextField";
 import { errorMessage, isApiError } from "@/lib/api/errors";
 import { applyFieldErrors } from "@/lib/forms";
-import { advisorFormSchema, type AdvisorFormInput } from "../schema";
+import { advisorFormSchema, type AdvisorFormInput, type AdvisorFormOutput } from "../schema";
 import styles from "./AdvisorForm.module.scss";
 
 type Props = {
@@ -39,6 +39,9 @@ const workloadOptions = [
   ["CAD_3D", "CAD / 3D"],
 ] as const;
 
+type Priority = AdvisorFormOutput["priorities"][number];
+type Workload = AdvisorFormOutput["workloads"][number];
+
 export function AdvisorForm({ onSubmit, onRetry, pending, serverError }: Props) {
   const [step, setStep] = useState(1);
   const {
@@ -65,14 +68,20 @@ export function AdvisorForm({ onSubmit, onRetry, pending, serverError }: Props) 
     if (fields.length && !(await trigger(fields))) return;
     setStep((current) => Math.min(4, current + 1));
   };
-  const priorities = (useWatch({ control, name: "priorities" }) ?? []) as string[];
-  const workloads = (useWatch({ control, name: "workloads" }) ?? []) as string[];
-  const toggleArray = (field: "priorities" | "workloads", value: string, max?: number) => {
-    const current = field === "priorities" ? priorities : workloads;
-    if (current.includes(value)) {
-      setValue(field, current.filter((item) => item !== value) as never, { shouldValidate: true });
-    } else if (!max || current.length < max) {
-      setValue(field, [...current, value] as never, { shouldValidate: true });
+  const priorities = useWatch({ control, name: "priorities" }) ?? [];
+  const workloads = useWatch({ control, name: "workloads" }) ?? [];
+  const togglePriority = (value: Priority) => {
+    if (priorities.includes(value)) {
+      setValue("priorities", priorities.filter((item) => item !== value), { shouldValidate: true });
+    } else if (priorities.length < 3) {
+      setValue("priorities", [...priorities, value], { shouldValidate: true });
+    }
+  };
+  const toggleWorkload = (value: Workload) => {
+    if (workloads.includes(value)) {
+      setValue("workloads", workloads.filter((item) => item !== value), { shouldValidate: true });
+    } else {
+      setValue("workloads", [...workloads, value], { shouldValidate: true });
     }
   };
   const submit = handleSubmit((data) => onSubmit(data));
@@ -123,7 +132,7 @@ export function AdvisorForm({ onSubmit, onRetry, pending, serverError }: Props) 
           <div className={styles.choiceGrid}>
             {priorityOptions.map(([value, label]) => (
               <label className={styles.choice} key={value}>
-                <input type="checkbox" checked={priorities.includes(value)} onChange={() => toggleArray("priorities", value, 3)} />
+                <input type="checkbox" checked={priorities.includes(value)} onChange={() => togglePriority(value)} />
                 <span>{label}</span>
               </label>
             ))}
@@ -146,7 +155,7 @@ export function AdvisorForm({ onSubmit, onRetry, pending, serverError }: Props) 
             <div className={styles.choiceGrid}>
               {workloadOptions.map(([value, label]) => (
                 <label className={styles.choice} key={value}>
-                  <input type="checkbox" checked={workloads.includes(value)} onChange={() => toggleArray("workloads", value)} />
+                  <input type="checkbox" checked={workloads.includes(value)} onChange={() => toggleWorkload(value)} />
                   <span>{label}</span>
                 </label>
               ))}
