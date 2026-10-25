@@ -1,3 +1,4 @@
+import { QueryClientProvider } from "@tanstack/react-query";
 import { screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { CheckoutView } from "@/features/checkout/CheckoutView/CheckoutView";
@@ -87,5 +88,21 @@ describe("CheckoutView", () => {
     expect(screen.queryByText("60.000.000 ₫")).not.toBeInTheDocument();
     expect(screen.queryByText("Tổng cộng")).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Xác nhận đặt hàng" })).toBeDisabled();
+  });
+
+  it("redirects an empty cart to the cart page but not a cart emptied by the order itself", () => {
+    const items = state.cart.data.items;
+    state.cart.data.items = [];
+    const { unmount } = renderWithQuery(<CheckoutView />);
+    expect(router.replace).toHaveBeenCalledWith("/cart");
+    unmount();
+    router.replace.mockClear();
+
+    state.cart.data.items = items;
+    const { rerender, client } = renderWithQuery(<CheckoutView />);
+    state.cart.data = { ...state.cart.data, items: [] };
+    rerender(<QueryClientProvider client={client}><CheckoutView /></QueryClientProvider>);
+    expect(router.replace).not.toHaveBeenCalled();
+    state.cart.data.items = items;
   });
 });

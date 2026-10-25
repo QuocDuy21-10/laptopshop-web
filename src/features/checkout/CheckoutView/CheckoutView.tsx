@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Alert } from "@/components/ui/Alert/Alert";
 import { Price } from "@/components/ui/Price/Price";
 import { Skeleton } from "@/components/ui/Skeleton/Skeleton";
@@ -43,9 +43,12 @@ export function CheckoutView() {
   const validQuote = hasPricingForCart && !quote.isPending && !quote.isFetching && !quote.isError && quoteData ? quoteData : null;
   const pricingReady = Boolean(validQuote);
 
+  // a cart emptied while this page is open was emptied by placing the order: the form navigates to it, so only redirect carts that were empty on arrival
+  const hadItems = useRef(false);
   useEffect(() => {
-    if (empty) router.replace("/cart");
-  }, [empty, router]);
+    if (cart.data?.items.length) hadItems.current = true;
+    else if (empty && !hadItems.current) router.replace("/cart");
+  }, [cart.data, empty, router]);
 
   if (cart.isError || me.isError) {
     return <Alert tone="error" title={errorMessage(cart.error ?? me.error)} />;
