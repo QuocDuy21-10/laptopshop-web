@@ -15,3 +15,17 @@
   font-size: 12px;
   font-weight: 600;
 }
+
+.conditional {
+  display: flex;
+  flex-basis: 100%;
+  flex-direction: column;
+  color: var(--color-sale);
+  font-size: 12px;
+  font-weight: 600;
+
+  small {
+    color: var(--color-foreground-muted);
+    font-weight: 400;
+  }
+}

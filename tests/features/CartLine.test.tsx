@@ -65,4 +65,35 @@ describe("CartLine", () => {
     await userEvent.click(screen.getByRole("button", { name: "Xoá Dell Inspiron 15 khỏi giỏ" }));
     await waitFor(() => expect(lastRequest(fetchMock).method).toBe("DELETE"));
   });
+
+  const fallbackLine = (promotionFallback: Partial<NonNullable<CartItem["promotionFallback"]>>): CartItem => ({
+    ...line,
+    quantity: 3,
+    promotionFallback: {
+      skippedKind: "FLASH_SALE",
+      promotionId: 4,
+      reason: "GLOBAL_QUOTA",
+      requestedQuantity: 3,
+      availableQuantity: 2,
+      appliedPromotionKind: "AUTOMATIC",
+      ...promotionFallback,
+    },
+  });
+
+  it("tells the shopper to reduce the quantity when some flash sale units remain", () => {
+    renderWithQuery(<CartLine line={fallbackLine({})} />);
+    expect(screen.getByRole("status")).toHaveTextContent("Giảm số lượng xuống 2 để nhận giá Flash Sale");
+  });
+
+  it("does not suggest reducing to zero when no flash sale units remain", () => {
+    renderWithQuery(<CartLine line={fallbackLine({ availableQuantity: 0, reason: "USER_QUOTA", appliedPromotionKind: null })} />);
+    const note = screen.getByRole("status");
+    expect(note).toHaveTextContent("giá niêm yết");
+    expect(note).not.toHaveTextContent("xuống 0");
+  });
+
+  it("renders no fallback note without a fallback", () => {
+    renderWithQuery(<CartLine line={line} />);
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+  });
 });

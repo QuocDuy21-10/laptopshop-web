@@ -23,7 +23,7 @@ export function FlashSaleCountdown({
   const boundaryNotified = useRef(false);
   const start = Date.parse(startsAt);
   const end = Date.parse(endsAt);
-  const serverNow = Date.parse(serverTime) + (now - observedAt);
+  const serverNow = Date.parse(serverTime) + (Math.max(now, observedAt) - observedAt);
   const running = serverNow >= start && serverNow < end;
   const expired = serverNow >= end;
   const target = running ? end : start;
