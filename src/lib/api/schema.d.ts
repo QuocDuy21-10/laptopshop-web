@@ -72,6 +72,155 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/admin/reviews/{id}/reply": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Create, update or reactivate an official review reply */
+    put: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            content: string;
+          };
+        };
+      };
+      responses: {
+        /** @description Updated */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AdminOfficialReply"];
+            };
+          };
+        };
+        /** @description Invalid reply content */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Review not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Review deleted */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    post?: never;
+    /** Soft-delete an official review reply */
+    delete: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Deleted */
+        204: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": unknown;
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Review not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Review deleted */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/auth/login": {
     parameters: {
       query?: never;
@@ -317,6 +466,1268 @@ export interface paths {
     };
     trace?: never;
   };
+  "/api/v1/wishlist": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List my wishlist */
+    get: {
+      parameters: {
+        query?: {
+          page?: number;
+          pageSize?: number;
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["WishlistItem"][];
+              meta: {
+                page: number;
+                pageSize: number;
+                total: number;
+                totalPages: number;
+              };
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/wishlist/summary": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get my wishlist summary */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["WishlistSummary"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/wishlist/status": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get wishlist status for products */
+    get: {
+      parameters: {
+        query: {
+          productIds: number[];
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["WishlistStatus"][];
+            };
+          };
+        };
+        /** @description Invalid product batch */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/wishlist/items/{productId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Add a product to my wishlist */
+    put: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          productId: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["WishlistItem"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Product not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Product unavailable or wishlist limit reached */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    post?: never;
+    /** Remove a product from my wishlist */
+    delete: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          productId: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Removed */
+        204: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content?: never;
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    options?: never;
+    head?: never;
+    /** Configure a wishlist price alert */
+    patch: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          productId: number;
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json":
+            | {
+                /** @enum {string} */
+                mode: "PERCENT_DROP";
+                includeFlashSale?: boolean;
+              }
+            | {
+                /** @enum {string} */
+                mode: "TARGET_PRICE";
+                targetPrice: number;
+                includeFlashSale?: boolean;
+              }
+            | {
+                /** @enum {object|null} */
+                mode: never | null;
+              };
+        };
+      };
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["WishlistItem"];
+            };
+          };
+        };
+        /** @description Invalid target price */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Wishlist item not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Product unavailable */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    trace?: never;
+  };
+  "/api/v1/notification-preferences": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get notification preferences */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: {
+                inAppEnabled: boolean;
+                emailEnabled: boolean;
+                webPushEnabled: boolean;
+              };
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Update notification preferences */
+    patch: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            emailEnabled?: boolean;
+            webPushEnabled?: boolean;
+            afterSalesEmailEnabled?: boolean;
+            afterSalesWebPushEnabled?: boolean;
+          };
+        };
+      };
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: {
+                inAppEnabled: boolean;
+                emailEnabled: boolean;
+                webPushEnabled: boolean;
+              };
+            };
+          };
+        };
+        /** @description Invalid preferences */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Email is not verified */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    trace?: never;
+  };
+  "/api/v1/web-push/config": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get Web Push configuration */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: {
+                enabled: boolean;
+                publicKey: string | null;
+              };
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/me/email-verification/request": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Request email verification OTP */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Accepted */
+        202: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: {
+                accepted: boolean;
+              };
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Rate limited */
+        429: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Email delivery unavailable */
+        503: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/me/email-verification/confirm": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Confirm email verification OTP */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            code: string;
+          };
+        };
+      };
+      responses: {
+        /** @description Verified */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: {
+                verified: boolean;
+              };
+            };
+          };
+        };
+        /** @description Invalid or expired OTP */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Email changed */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description OTP locked */
+        429: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/notifications/operations": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Notification operations */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: {
+                activeAlerts: number;
+                notifications: number;
+                deadDeliveries: number;
+                pendingOutbox: number;
+                workers: {
+                  workerName: string;
+                  instanceId: string;
+                  status: string;
+                  /** Format: date-time */
+                  lastSeenAt: string;
+                  isStale: boolean;
+                }[];
+                priceAlertSweep: {
+                  checkpointProductId: number;
+                  /** Format: date-time */
+                  cycleStartedAt: string | null;
+                  /** Format: date-time */
+                  lastStartedAt: string | null;
+                  /** Format: date-time */
+                  lastCompletedAt: string | null;
+                  /** Format: date-time */
+                  lastSucceededAt: string | null;
+                  lastDurationMs: number | null;
+                  consecutiveFailures: number;
+                  lastErrorCode: string | null;
+                  lastStats: {
+                    productsScanned: number;
+                    itemsEvaluated: number;
+                    notificationsCreated: number;
+                    duplicatesSkipped: number;
+                    invalidStatesSkipped: number;
+                    errors: number;
+                  } | null;
+                  /** Format: date-time */
+                  updatedAt: string;
+                } | null;
+              };
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/notification-deliveries": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List notification deliveries */
+    get: {
+      parameters: {
+        query?: {
+          page?: number;
+          pageSize?: number;
+          status?:
+            | "PENDING"
+            | "PROCESSING"
+            | "DELIVERED"
+            | "RETRYING"
+            | "FAILED"
+            | "DEAD"
+            | "CANCELLED"
+            | "SUPPRESSED";
+          channel?: "EMAIL" | "WEB_PUSH";
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: {
+                [key: string]: unknown;
+              }[];
+              meta: {
+                page: number;
+                pageSize: number;
+                total: number;
+                totalPages: number;
+              };
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/notification-deliveries/{id}/retry": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Retry a failed notification delivery */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            reason: string;
+          };
+        };
+      };
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: {
+                id: number;
+                status: string;
+              };
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Delivery not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Delivery is not retryable */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/web-push/subscriptions": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Register the current browser for Web Push */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            /** Format: uri */
+            endpoint: string;
+            keys: {
+              p256dh: string;
+              auth: string;
+            };
+            userAgent?: string;
+          };
+        };
+      };
+      responses: {
+        /** @description Created */
+        201: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: {
+                id: number;
+                userAgent: string | null;
+                /** Format: date-time */
+                lastSeenAt: string;
+                /** Format: date-time */
+                disabledAt: string | null;
+              };
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    /** Disable all Web Push subscriptions */
+    delete: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Disabled */
+        204: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content?: never;
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/web-push/subscriptions/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Disable one Web Push subscription */
+    delete: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Disabled */
+        204: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content?: never;
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Push subscription not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/notifications": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List my notifications */
+    get: {
+      parameters: {
+        query?: {
+          page?: number;
+          pageSize?: number;
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["Notification"][];
+              meta: {
+                page: number;
+                pageSize: number;
+                total: number;
+                totalPages: number;
+              };
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/notifications/unread-count": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get my unread notification count */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: {
+                unreadCount: number;
+              };
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/notifications/read-all": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Mark all my notifications read */
+    patch: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: {
+                updatedCount: number;
+              };
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    trace?: never;
+  };
+  "/api/v1/notifications/{id}/read": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Mark one notification read */
+    patch: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["Notification"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Notification not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    trace?: never;
+  };
   "/api/v1/advisor/recommend": {
     parameters: {
       query?: never;
@@ -414,9 +1825,10 @@ export interface paths {
           minBatteryWh?: number;
           maxWeightGrams?: number;
           minWarrantyMonths?: number;
+          minRating?: number;
           inStock?: boolean | ("true" | "false");
           q?: string;
-          sort?: "price_asc" | "price_desc";
+          sort?: "price_asc" | "price_desc" | "rating_desc";
         };
         header?: never;
         path?: never;
@@ -431,7 +1843,7 @@ export interface paths {
           };
           content: {
             "application/json": {
-              data: components["schemas"]["Product"][];
+              data: components["schemas"]["CatalogProduct"][];
               meta: {
                 page: number;
                 pageSize: number;
@@ -524,6 +1936,7 @@ export interface paths {
           minBatteryWh?: number;
           maxWeightGrams?: number;
           minWarrantyMonths?: number;
+          minRating?: number;
           inStock?: boolean | ("true" | "false");
           q?: string;
         };
@@ -589,7 +2002,7 @@ export interface paths {
           };
           content: {
             "application/json": {
-              data: components["schemas"]["Product"][];
+              data: components["schemas"]["PricedProduct"][];
             };
           };
         };
@@ -647,7 +2060,7 @@ export interface paths {
           };
           content: {
             "application/json": {
-              data: components["schemas"]["Product"];
+              data: components["schemas"]["CatalogProduct"];
             };
           };
         };
@@ -1016,7 +2429,7 @@ export interface paths {
             "application/json": components["schemas"]["Error"];
           };
         };
-        /** @description Review deleted or public name unavailable */
+        /** @description Review deleted, state changed, or public name unavailable */
         409: {
           headers: {
             [name: string]: unknown;
@@ -1675,6 +3088,8 @@ export interface paths {
              * @enum {string}
              */
             paymentMethod?: "COD" | "BANK_TRANSFER";
+            couponCode?: string;
+            pricingFingerprint: string;
           };
         };
       };
@@ -1709,6 +3124,68 @@ export interface paths {
           };
         };
         /** @description Cart empty, out of stock or product no longer sold */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/orders/quote": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Quote the authenticated cart */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            couponCode?: string;
+          };
+        };
+      };
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PricingQuote"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Coupon invalid, minimum order not met or cart empty */
         409: {
           headers: {
             [name: string]: unknown;
@@ -1964,6 +3441,1796 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/after-sales/devices": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List my eligible after-sales devices */
+    get: {
+      parameters: {
+        query: {
+          page?: number;
+          pageSize?: number;
+          type: "WARRANTY" | "TECHNICAL_SUPPORT";
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["EligibleAfterSalesDevice"][];
+              meta: {
+                page: number;
+                pageSize: number;
+                total: number;
+                totalPages: number;
+              };
+            };
+          };
+        };
+        /** @description Unauthenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/after-sales": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List my after-sales requests */
+    get: {
+      parameters: {
+        query?: {
+          page?: number;
+          pageSize?: number;
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AfterSalesRequest"][];
+              meta: {
+                page: number;
+                pageSize: number;
+                total: number;
+                totalPages: number;
+              };
+            };
+          };
+        };
+        /** @description Unauthenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    /** Create an after-sales request */
+    post: {
+      parameters: {
+        query?: never;
+        header: {
+          "Idempotency-Key": string;
+        };
+        path?: never;
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": components["schemas"]["CreateServiceRequest"];
+        };
+      };
+      responses: {
+        /** @description Created (200 when the key was already used) */
+        201: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AfterSalesRequest"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Order detail not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Order detail ineligible, warranty unavailable, duplicate serial, or idempotency conflict */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/after-sales/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get my after-sales request */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AfterSalesRequest"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Service request not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/after-sales/{id}/items/{itemId}/cancel": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Cancel an eligible after-sales device */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+          itemId: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Cancelled */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AfterSalesRequest"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Invalid transition */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/after-sales/{id}/items/{itemId}/confirm": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Confirm an after-sales device completion */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+          itemId: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Confirmed */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AfterSalesRequest"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Confirmation unavailable */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/after-sales/{id}/items/{itemId}/dispute-completion": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Dispute an after-sales completion */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+          itemId: number;
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            /** @enum {string} */
+            reason: "DEVICE_NOT_RECEIVED" | "ISSUE_PERSISTS";
+            note: string;
+          };
+        };
+      };
+      responses: {
+        /** @description Disputed */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AfterSalesRequest"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Invalid transition */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/after-sales/{id}/messages": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Send a public after-sales message */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            itemId?: number;
+            body: string;
+          };
+        };
+      };
+      responses: {
+        /** @description Created */
+        201: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AfterSalesEvent"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Conversation unavailable */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/after-sales/{id}/items/{itemId}/status": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Transition an after-sales device */
+    patch: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+          itemId: number;
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            /** @enum {string} */
+            to:
+              | "SUBMITTED"
+              | "REVIEWING"
+              | "APPROVED"
+              | "AWAITING_ITEM"
+              | "RECEIVED"
+              | "DIAGNOSING"
+              | "AWAITING_QUOTE_DECISION"
+              | "IN_SERVICE"
+              | "READY_FOR_RETURN"
+              | "RETURNED"
+              | "RESOLVED"
+              | "CLOSED"
+              | "REJECTED"
+              | "CANCELLED";
+            expectedVersion: number;
+            note?: string;
+            resolution?: string;
+            /** @enum {string} */
+            closeMode?: "ADMINISTRATIVE" | "TIMEOUT";
+          };
+        };
+      };
+      responses: {
+        /** @description Updated */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AdminAfterSalesRequest"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Invalid transition or version conflict */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    trace?: never;
+  };
+  "/api/v1/admin/after-sales/{id}/items/{itemId}/warranty-verifications": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Record an admin warranty verification */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+          itemId: number;
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            expectedVersion: number;
+            /** @enum {string} */
+            decision: "IN_WARRANTY" | "OUT_OF_WARRANTY" | "NO_WARRANTY" | "UNVERIFIABLE";
+            warrantyStartAt?: string | null;
+            warrantyEndAt?: string | null;
+            note?: string;
+          };
+        };
+      };
+      responses: {
+        /** @description Verified */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AdminAfterSalesRequest"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Type, date or version conflict */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/after-sales/{id}/messages": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Send a public admin after-sales message */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            itemId?: number;
+            body: string;
+          };
+        };
+      };
+      responses: {
+        /** @description Created */
+        201: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AfterSalesEvent"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Conversation unavailable */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/after-sales/{id}/notes": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Add an internal after-sales note */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            itemId?: number;
+            body: string;
+          };
+        };
+      };
+      responses: {
+        /** @description Created */
+        201: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AfterSalesEvent"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Conversation unavailable */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/after-sales/{id}/items/{itemId}/quotes/{quoteId}/decision": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Decide an after-sales quote */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+          itemId: number;
+          quoteId: number;
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            /** @enum {string} */
+            decision: "ACCEPT" | "DECLINE";
+          };
+        };
+      };
+      responses: {
+        /** @description Updated */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AfterSalesRequest"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Quote expired or already decided */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/after-sales/{id}/items/{itemId}/quotes": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Send an after-sales quote */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+          itemId: number;
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            expectedVersion: number;
+            /** @default 7 */
+            validDays?: number;
+            note?: string;
+            lines: {
+              description: string;
+              quantity: number;
+              unitPrice: number;
+            }[];
+          };
+        };
+      };
+      responses: {
+        /** @description Created */
+        201: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AdminAfterSalesRequest"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Quote or version conflict */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/after-sales/{id}/items/{itemId}/attachments": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List my ready after-sales images */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+          itemId: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["ServiceAttachment"][];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    /** Upload after-sales images */
+    post: {
+      parameters: {
+        query?: never;
+        header: {
+          "Upload-Key": string;
+        };
+        path: {
+          id: number;
+          itemId: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: {
+        content: {
+          "multipart/form-data": {
+            images: string[];
+          };
+        };
+      };
+      responses: {
+        /** @description Created */
+        201: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["ServiceAttachment"][];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Limit or invalid state */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Image too large */
+        413: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Storage unavailable */
+        503: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/after-sales/{id}/attachments/{attachmentId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Redact an after-sales image */
+    delete: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+          attachmentId: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Deleted */
+        204: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content?: never;
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/after-sales/{id}/items/{itemId}/attachments": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List ready admin after-sales images */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+          itemId: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["ServiceAttachment"][];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    /** Upload an admin after-sales image */
+    post: {
+      parameters: {
+        query?: never;
+        header: {
+          "Upload-Key": string;
+        };
+        path: {
+          id: number;
+          itemId: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: {
+        content: {
+          "multipart/form-data": {
+            images: string[];
+          };
+        };
+      };
+      responses: {
+        /** @description Created */
+        201: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["ServiceAttachment"][];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Limit or invalid state */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Image too large */
+        413: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Storage unavailable */
+        503: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/after-sales/{id}/attachments/{attachmentId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Redact an admin after-sales image */
+    delete: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+          attachmentId: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Deleted */
+        204: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content?: never;
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/after-sales": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List after-sales requests */
+    get: {
+      parameters: {
+        query?: {
+          page?: number;
+          pageSize?: number;
+          type?: "WARRANTY" | "TECHNICAL_SUPPORT";
+          status?:
+            | "SUBMITTED"
+            | "REVIEWING"
+            | "IN_PROGRESS"
+            | "AWAITING_CUSTOMER"
+            | "PARTIALLY_COMPLETED"
+            | "CLOSED";
+          itemStatus?: string;
+          assigneeId?: number;
+          q?: string;
+          from?: string;
+          to?: string;
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AdminAfterSalesRequest"][];
+              meta: {
+                page: number;
+                pageSize: number;
+                total: number;
+                totalPages: number;
+              };
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/after-sales/summary": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Summarize after-sales requests */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AfterSalesSummary"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/after-sales/assignees": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List after-sales assignees */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: {
+                id: number;
+                name: string;
+              }[];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/after-sales/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get an after-sales request */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AdminAfterSalesRequest"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/after-sales/{id}/assign": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Assign an after-sales request */
+    patch: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            assignedToId: number | null;
+            expectedVersion: number;
+          };
+        };
+      };
+      responses: {
+        /** @description Updated */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AdminAfterSalesRequest"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Assignee or version conflict */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    trace?: never;
+  };
   "/api/v1/orders/me/{id}/payment": {
     parameters: {
       query?: never;
@@ -2142,6 +5409,97 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/promotions/available": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List public promotions */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PublicPromotion"][];
+            };
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/promotions/flash-sales/availability": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get Flash Sale availability */
+    get: {
+      parameters: {
+        query: {
+          productIds: number[];
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: {
+                /** Format: date-time */
+                serverTime: string;
+                items: components["schemas"]["FlashSaleAvailability"][];
+              };
+            };
+          };
+        };
+        /** @description Invalid product batch */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/admin/products": {
     parameters: {
       query?: never;
@@ -2170,6 +5528,7 @@ export interface paths {
           minBatteryWh?: number;
           maxWeightGrams?: number;
           minWarrantyMonths?: number;
+          minRating?: number;
           inStock?: boolean | ("true" | "false");
           q?: string;
           sort?: "price_asc" | "price_desc";
@@ -2302,6 +5661,729 @@ export interface paths {
         };
       };
     };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/promotions": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List promotions */
+    get: {
+      parameters: {
+        query?: {
+          page?: number;
+          pageSize?: number;
+          kind?: "COUPON" | "AUTOMATIC" | "FLASH_SALE";
+          state?: "DRAFT" | "ACTIVE" | "PAUSED" | "ENDED";
+          q?: string;
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PromotionSummary"][];
+              meta: {
+                page: number;
+                pageSize: number;
+                total: number;
+                totalPages: number;
+              };
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    /** Create a promotion draft */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            /** @enum {string} */
+            kind: "COUPON" | "AUTOMATIC" | "FLASH_SALE";
+            name: string;
+            description?: string;
+            /** @enum {string} */
+            discountKind: "PERCENT" | "FIXED";
+            discountValue: number;
+            startsAt: string | null;
+            endsAt: string | null;
+            coupon?: {
+              code: string;
+              /** @enum {string} */
+              scope: "ORDER" | "PRODUCT";
+              /** @default 0 */
+              minOrderValue?: number | null;
+              maxDiscount?: number | null;
+              maxUses?: number | null;
+              /** @default 1 */
+              maxUsesPerUser?: number;
+              /** @default false */
+              isPublic?: boolean;
+              /** @default [] */
+              targetProductIds?: number[];
+            };
+            automatic?: {
+              /** @default 0 */
+              priority?: number | null;
+              /** @default false */
+              stackableWithCoupon?: boolean;
+              /** @default [] */
+              targetProductIds?: number[];
+            };
+            flashSale?: {
+              /** @default 0 */
+              priority?: number | null;
+              /** @default false */
+              stackableWithCoupon?: boolean;
+              /** @default true */
+              showRemainingQuota?: boolean;
+              items: {
+                productId: number;
+                totalQuota: number;
+                maxUnitsPerUser: number;
+              }[];
+            };
+          };
+        };
+      };
+      responses: {
+        /** @description Created */
+        201: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PromotionDetail"];
+            };
+          };
+        };
+        /** @description Invalid promotion */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Duplicate or invalid commercial configuration */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/promotions/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Promotion detail */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PromotionDetail"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Promotion not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Update an editable promotion */
+    patch: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            name?: string;
+            description?: string;
+            /** @enum {string} */
+            discountKind?: "PERCENT" | "FIXED";
+            discountValue?: number;
+            startsAt?: string | null;
+            endsAt?: string | null;
+            coupon?: {
+              code?: string;
+              /** @enum {string} */
+              scope?: "ORDER" | "PRODUCT";
+              /** @default 0 */
+              minOrderValue?: number | null;
+              maxDiscount?: number | null;
+              maxUses?: number | null;
+              /** @default 1 */
+              maxUsesPerUser?: number;
+              /** @default false */
+              isPublic?: boolean;
+              /** @default [] */
+              targetProductIds?: number[];
+            };
+            automatic?: {
+              /** @default 0 */
+              priority?: number | null;
+              /** @default false */
+              stackableWithCoupon?: boolean;
+              /** @default [] */
+              targetProductIds?: number[];
+            };
+            flashSale?: {
+              /** @default 0 */
+              priority?: number | null;
+              /** @default false */
+              stackableWithCoupon?: boolean;
+              /** @default true */
+              showRemainingQuota?: boolean;
+              items?: {
+                productId: number;
+                totalQuota: number;
+                maxUnitsPerUser: number;
+              }[];
+            };
+          };
+        };
+      };
+      responses: {
+        /** @description Updated */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PromotionDetail"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Promotion not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Commercial fields are locked */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    trace?: never;
+  };
+  "/api/v1/admin/promotions/{id}/state": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Transition promotion state */
+    patch: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            /** @enum {string} */
+            action: "ACTIVATE" | "PAUSE" | "RESUME" | "END";
+          };
+        };
+      };
+      responses: {
+        /** @description Updated */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PromotionDetail"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Promotion not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Invalid lifecycle transition */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    trace?: never;
+  };
+  "/api/v1/admin/promotions/{id}/clone": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Clone a promotion as a new draft */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Created */
+        201: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PromotionDetail"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Promotion not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/promotions/{id}/redemptions": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List promotion redemptions */
+    get: {
+      parameters: {
+        query?: {
+          page?: number;
+          pageSize?: number;
+        };
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PromotionRedemption"][];
+              meta: {
+                page: number;
+                pageSize: number;
+                total: number;
+                totalPages: number;
+              };
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Promotion not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/promotions/{id}/summary": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Promotion summary */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PromotionStats"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Promotion not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/promotions/{id}/allocations": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List Flash Sale allocation history */
+    get: {
+      parameters: {
+        query?: {
+          page?: number;
+          pageSize?: number;
+          status?: "CLAIMED" | "RELEASED";
+          productId?: number;
+          userId?: number;
+        };
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["FlashSaleAllocation"][];
+              meta: {
+                page: number;
+                pageSize: number;
+                total: number;
+                totalPages: number;
+              };
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Admin only */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Promotion not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -2795,6 +6877,8 @@ export interface paths {
       requestBody?: {
         content: {
           "multipart/form-data": {
+            /** Format: email */
+            username?: string;
             fullName?: string;
             phone?: string;
             address?: string;
@@ -3236,6 +7320,7 @@ export interface paths {
           minBatteryWh?: number;
           maxWeightGrams?: number;
           minWarrantyMonths?: number;
+          minRating?: number;
           inStock?: boolean | ("true" | "false");
           q?: string;
           sort?: "price_asc" | "price_desc";
@@ -3702,6 +7787,318 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/admin/payment-review-cases": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List payment review cases */
+    get: {
+      parameters: {
+        query?: {
+          page?: number;
+          pageSize?: number;
+          status?: "OPEN" | "RESOLVED";
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PaymentReviewCase"][];
+              meta: {
+                page: number;
+                pageSize: number;
+                total: number;
+                totalPages: number;
+              };
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/payment-review-cases/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Payment review case detail */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: string;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PaymentReviewCase"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/payment-review-cases/{id}/extend": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Extend a payment review hold */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: string;
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            note: string;
+            /** Format: date-time */
+            holdUntil: string;
+            version: number;
+          };
+        };
+      };
+      responses: {
+        /** @description Extended */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PaymentReviewCase"];
+            };
+          };
+        };
+        /** @description Invalid hold */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Case version conflict */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/payment-review-cases/{id}/release": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Release stock for an inconclusive payment */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: string;
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            note: string;
+            /** @enum {string} */
+            confirmation: "RELEASE_STOCK";
+            version: number;
+          };
+        };
+      };
+      responses: {
+        /** @description Released */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["PaymentReviewCase"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Case version conflict or payment already succeeded */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/admin/reviews": {
     parameters: {
       query?: never;
@@ -3986,7 +8383,7 @@ export interface paths {
             "application/json": components["schemas"]["Error"];
           };
         };
-        /** @description Review deleted */
+        /** @description Review deleted or state changed */
         409: {
           headers: {
             [name: string]: unknown;
@@ -4595,6 +8992,8 @@ export interface components {
       phone: string | null;
       accountType: string | null;
       avatar: string | null;
+      /** Format: date-time */
+      emailVerifiedAt: string | null;
       role: string;
     };
     Me: {
@@ -4605,6 +9004,8 @@ export interface components {
       phone: string | null;
       accountType: string | null;
       avatar: string | null;
+      /** Format: date-time */
+      emailVerifiedAt: string | null;
       role: string;
       cartItemCount: number;
     };
@@ -4636,6 +9037,154 @@ export interface components {
       weightGrams: number | null;
       warrantyMonths: number | null;
     };
+    PricedProduct: {
+      id: number;
+      name: string;
+      price: number;
+      image: string | null;
+      detailDesc: string | null;
+      shortDesc: string | null;
+      quantity: number;
+      sold: number | null;
+      factory: string | null;
+      target: string | null;
+      isActive: boolean;
+      cpu: string | null;
+      cpuBrand: string | null;
+      gpu: string | null;
+      gpuBrand: string | null;
+      gpuType: string | null;
+      ramGb: number | null;
+      storageGb: number | null;
+      screenSizeInch: number | null;
+      screenResolution: string | null;
+      resolutionTier: string | null;
+      panelType: string | null;
+      refreshRateHz: number | null;
+      batteryWh: number | null;
+      weightGrams: number | null;
+      warrantyMonths: number | null;
+      salePrice: number;
+      productDiscountAmount: number;
+      promotion: {
+        id: number;
+        name: string;
+        /** Format: date-time */
+        endsAt: string;
+        /** @enum {string} */
+        kind: "AUTOMATIC" | "FLASH_SALE";
+        /** @enum {string} */
+        eligibility: "POTENTIAL" | "EXACT";
+      } | null;
+    };
+    ProductReviewSummary: {
+      averageRating: number | null;
+      totalReviews: number;
+    };
+    CatalogProduct: {
+      id: number;
+      name: string;
+      price: number;
+      image: string | null;
+      detailDesc: string | null;
+      shortDesc: string | null;
+      quantity: number;
+      sold: number | null;
+      factory: string | null;
+      target: string | null;
+      isActive: boolean;
+      cpu: string | null;
+      cpuBrand: string | null;
+      gpu: string | null;
+      gpuBrand: string | null;
+      gpuType: string | null;
+      ramGb: number | null;
+      storageGb: number | null;
+      screenSizeInch: number | null;
+      screenResolution: string | null;
+      resolutionTier: string | null;
+      panelType: string | null;
+      refreshRateHz: number | null;
+      batteryWh: number | null;
+      weightGrams: number | null;
+      warrantyMonths: number | null;
+      salePrice: number;
+      productDiscountAmount: number;
+      promotion: {
+        id: number;
+        name: string;
+        /** Format: date-time */
+        endsAt: string;
+        /** @enum {string} */
+        kind: "AUTOMATIC" | "FLASH_SALE";
+        /** @enum {string} */
+        eligibility: "POTENTIAL" | "EXACT";
+      } | null;
+      reviewSummary: components["schemas"]["ProductReviewSummary"];
+    };
+    /** @enum {string} */
+    PriceAlertMode: "PERCENT_DROP" | "TARGET_PRICE";
+    PriceSnapshot: {
+      productId: number;
+      listPrice: number;
+      stablePrice: number;
+      effectivePrice: number;
+      /** @enum {string} */
+      source: "LIST_PRICE" | "AUTOMATIC" | "FLASH_SALE";
+      promotionId: number | null;
+      pricingVersion: number | null;
+      /** Format: date-time */
+      validUntil: string | null;
+      purchasable: boolean;
+    };
+    WishlistItem: {
+      id: number;
+      productId: number;
+      product: components["schemas"]["PricedProduct"];
+      /** @enum {string|null} */
+      alertMode: "PERCENT_DROP" | "TARGET_PRICE" | null;
+      targetPrice: number | null;
+      referencePrice: number | null;
+      includeFlashSale: boolean;
+      alertVersion: number;
+      priceSnapshot: components["schemas"]["PriceSnapshot"];
+      /** @enum {string|null} */
+      lastAlertMode: "PERCENT_DROP" | "TARGET_PRICE" | null;
+      lastAlertedPrice: number | null;
+      /** Format: date-time */
+      lastAlertedAt: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    WishlistSummary: {
+      itemCount: number;
+    };
+    WishlistStatus: {
+      productId: number;
+      isWishlisted: boolean;
+    };
+    Notification: {
+      id: number;
+      productId: number | null;
+      /** @enum {string} */
+      type: "PRICE_DROP";
+      title: string;
+      message: string;
+      oldPrice: number | null;
+      newPrice: number | null;
+      /** @enum {string|null} */
+      priceSource: "LIST_PRICE" | "AUTOMATIC" | "FLASH_SALE" | null;
+      promotionId: number | null;
+      pricingVersion: number | null;
+      /** Format: date-time */
+      validUntil: string | null;
+      /** Format: date-time */
+      readAt: string | null;
+      /** Format: date-time */
+      createdAt: string;
+    };
     AdvisorRequest: {
       budgetMax: number;
       /** @enum {string} */
@@ -4646,7 +9195,7 @@ export interface components {
       note?: string;
     };
     AdvisorRecommendation: {
-      product: components["schemas"]["Product"];
+      product: components["schemas"]["PricedProduct"];
       matchScore: number;
       highlights: string[];
       reason: string;
@@ -4694,31 +9243,433 @@ export interface components {
       items: {
         id: number;
         quantity: number;
+        listLineTotal: number;
+        productDiscountAmount: number;
         lineTotal: number;
-        product: components["schemas"]["Product"];
+        product: components["schemas"]["PricedProduct"];
+        promotionFallback: {
+          /** @enum {string} */
+          skippedKind: "FLASH_SALE";
+          promotionId: number;
+          /** @enum {string} */
+          reason: "GLOBAL_QUOTA" | "USER_QUOTA" | "GLOBAL_AND_USER_QUOTA";
+          requestedQuantity: number;
+          availableQuantity: number;
+          /** @enum {string|null} */
+          appliedPromotionKind: "AUTOMATIC" | null;
+        } | null;
       }[];
       itemCount: number;
       subtotal: number;
+      productDiscount: number;
+      totalAfterProductDiscount: number;
+    };
+    PricingQuote: {
+      subtotal: number;
+      productDiscount: number;
+      couponEligibleSubtotal: number;
+      couponDiscount: number;
+      total: number;
+      lines: {
+        promotionFallback: {
+          /** @enum {string} */
+          skippedKind: "FLASH_SALE";
+          promotionId: number;
+          /** @enum {string} */
+          reason: "GLOBAL_QUOTA" | "USER_QUOTA" | "GLOBAL_AND_USER_QUOTA";
+          requestedQuantity: number;
+          availableQuantity: number;
+          /** @enum {string|null} */
+          appliedPromotionKind: "AUTOMATIC" | null;
+        } | null;
+      }[];
+      coupon: {
+        id: number;
+        code: string;
+        name: string;
+        /** @enum {boolean} */
+        valid: true;
+      } | null;
+      /** Format: date-time */
+      calculatedAt: string;
+      pricingFingerprint: string;
+    };
+    PublicPromotion: {
+      id: number;
+      name: string;
+      description: string | null;
+      code: string;
+      /** @enum {string} */
+      scope: "ORDER" | "PRODUCT";
+      /** @enum {string} */
+      discountKind: "PERCENT" | "FIXED";
+      discountValue: number;
+      minOrderValue: number;
+      maxDiscount: number | null;
+      /** Format: date-time */
+      startsAt: string;
+      /** Format: date-time */
+      endsAt: string;
+    };
+    FlashSaleAvailability: {
+      productId: number;
+      promotionId: number;
+      name: string;
+      /** @enum {string} */
+      state: "SCHEDULED" | "RUNNING";
+      available: boolean;
+      remainingQuota: number | null;
+      maxUnitsPerUser: number;
+      userRemainingQuota?: number;
+      /** Format: date-time */
+      startsAt: string;
+      /** Format: date-time */
+      endsAt: string;
     };
     Order: {
       id: number;
       /** @enum {string} */
       status: "PENDING" | "SHIPPING" | "COMPLETED" | "CANCELLED";
       totalPrice: number;
+      subtotalPrice: number;
+      productDiscountAmount: number;
+      couponEligibleSubtotal: number;
+      couponDiscountAmount: number;
+      couponCode: string | null;
+      couponName: string | null;
+      paymentRequired: boolean;
       paymentMethod: string;
       paymentStatus: string;
+      /** @enum {string|null} */
+      paymentCancellationBlockedReason: "PAID" | "VERIFYING" | null;
       receiverName: string;
       receiverAddress: string;
       receiverPhone: string;
       /** Format: date-time */
       createdAt: string;
       items: {
+        orderDetailId: number;
         productId: number;
         name: string;
         image: string | null;
         price: number;
         quantity: number;
+        warrantyMonthsSnapshot: number | null;
+        /** Format: date-time */
+        warrantyStartAt: string | null;
+        /** Format: date-time */
+        warrantyEndAt: string | null;
+        /** @enum {string} */
+        warrantyPolicySource:
+          "CHECKOUT_SNAPSHOT" | "CURRENT_PRODUCT_POLICY_BACKFILL" | "UNAVAILABLE";
+        /** @enum {string} */
+        coverage: "IN_WARRANTY" | "OUT_OF_WARRANTY" | "NO_WARRANTY" | "REQUIRES_VERIFICATION";
+        allowedRequestTypes: ("WARRANTY" | "TECHNICAL_SUPPORT")[];
+        productDiscountAmount: number;
+        couponDiscountAmount: number;
+        netLineTotal: number;
+        automaticPromotionId: number | null;
+        automaticPromotionName: string | null;
+        /** @enum {string|null} */
+        promotionKind: "AUTOMATIC" | "FLASH_SALE" | null;
+        flashSaleAllocation: {
+          promotionId: number;
+          quantity: number;
+          discountAmount: number;
+          /** @enum {string} */
+          status: "CLAIMED" | "RELEASED";
+        } | null;
       }[];
+    };
+    CustomerWarrantyVerification: {
+      id: number;
+      /** @enum {string} */
+      decision: "IN_WARRANTY" | "OUT_OF_WARRANTY" | "NO_WARRANTY" | "UNVERIFIABLE";
+      /** Format: date-time */
+      warrantyStartAt: string | null;
+      /** Format: date-time */
+      warrantyEndAt: string | null;
+      /** Format: date-time */
+      verifiedAt: string;
+    };
+    EligibleAfterSalesDevice: {
+      orderDetailId: number;
+      orderId: number;
+      product: {
+        id: number;
+        name: string;
+        image: string | null;
+      };
+      quantity: number;
+      activeCount: number;
+      availableCount: number;
+      warrantyMonthsSnapshot: number | null;
+      /** Format: date-time */
+      warrantyStartAt: string | null;
+      /** Format: date-time */
+      warrantyEndAt: string | null;
+      /** @enum {string} */
+      warrantyPolicySource: "CHECKOUT_SNAPSHOT" | "CURRENT_PRODUCT_POLICY_BACKFILL" | "UNAVAILABLE";
+      /** @enum {string} */
+      coverage: "IN_WARRANTY" | "OUT_OF_WARRANTY" | "NO_WARRANTY" | "REQUIRES_VERIFICATION";
+      warrantyVerification:
+        components["schemas"]["CustomerWarrantyVerification"] | unknown | unknown;
+      allowed: boolean;
+      reason: string | null;
+      allowedRequestTypes: ("WARRANTY" | "TECHNICAL_SUPPORT")[];
+    };
+    CreateServiceRequest: {
+      /** @enum {string} */
+      type: "WARRANTY" | "TECHNICAL_SUPPORT";
+      subject: string;
+      previousRequestId?: number;
+      items: {
+        orderDetailId: number;
+        deviceLabel: string;
+        serialNumber?: string;
+        issueDescription: string;
+      }[];
+    };
+    AdminWarrantyVerification: {
+      id: number;
+      /** @enum {string} */
+      decision: "IN_WARRANTY" | "OUT_OF_WARRANTY" | "NO_WARRANTY" | "UNVERIFIABLE";
+      /** Format: date-time */
+      warrantyStartAt: string | null;
+      /** Format: date-time */
+      warrantyEndAt: string | null;
+      /** Format: date-time */
+      verifiedAt: string;
+      verifiedBy: {
+        id: number;
+        username: string;
+        fullName: string | null;
+      } | null;
+      internalNote: string | null;
+    };
+    ServiceQuoteLine: {
+      id: number;
+      description: string;
+      quantity: number;
+      unitPrice: number;
+      lineTotal: number;
+      position: number;
+    };
+    ServiceQuote: {
+      id: number;
+      version: number;
+      /** @enum {string} */
+      status: "SENT" | "ACCEPTED" | "DECLINED" | "EXPIRED" | "SUPERSEDED";
+      currency: string;
+      subtotal: number;
+      total: number;
+      note: string | null;
+      /** Format: date-time */
+      validUntil: string;
+      /** Format: date-time */
+      respondedAt: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      lines: components["schemas"]["ServiceQuoteLine"][];
+    };
+    ServiceAttachment: {
+      id: number;
+      itemId: number | null;
+      /** Format: uri */
+      url: string;
+      mimeType: string;
+      byteSize: number;
+      width: number;
+      height: number;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    AfterSalesEvent: {
+      id: number;
+      itemId: number | null;
+      kind: string;
+      /** @enum {string} */
+      visibility: "PUBLIC" | "INTERNAL";
+      fromStatus: string | null;
+      toStatus: string | null;
+      body: string | null;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    AdminAfterSalesEvent: {
+      id: number;
+      itemId: number | null;
+      kind: string;
+      /** @enum {string} */
+      visibility: "PUBLIC" | "INTERNAL";
+      fromStatus: string | null;
+      toStatus: string | null;
+      body: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      actor: {
+        id: number;
+        username: string;
+        fullName: string | null;
+      } | null;
+    };
+    AfterSalesItem: {
+      id: number;
+      orderDetailId: number;
+      orderId: number;
+      position: number;
+      productNameSnapshot: string;
+      deviceLabel: string;
+      serialNumber: string | null;
+      issueDescription: string;
+      /** @enum {string} */
+      coverageAtCreation:
+        "IN_WARRANTY" | "OUT_OF_WARRANTY" | "NO_WARRANTY" | "REQUIRES_VERIFICATION";
+      status: string;
+      resolution: string | null;
+      version: number;
+      /** Format: date-time */
+      resolvedAt: string | null;
+      /** Format: date-time */
+      returnedAt: string | null;
+      /** Format: date-time */
+      confirmationDueAt: string | null;
+      /** Format: date-time */
+      customerConfirmedAt: string | null;
+      /** Format: date-time */
+      closedAt: string | null;
+      closeReason: string | null;
+      warrantyVerification:
+        components["schemas"]["CustomerWarrantyVerification"] | unknown | unknown;
+      allowedActions: string[];
+      quotes: components["schemas"]["ServiceQuote"][];
+    };
+    AdminAfterSalesItem: {
+      id: number;
+      orderDetailId: number;
+      orderId: number;
+      position: number;
+      productNameSnapshot: string;
+      deviceLabel: string;
+      serialNumber: string | null;
+      issueDescription: string;
+      /** @enum {string} */
+      coverageAtCreation:
+        "IN_WARRANTY" | "OUT_OF_WARRANTY" | "NO_WARRANTY" | "REQUIRES_VERIFICATION";
+      status: string;
+      resolution: string | null;
+      version: number;
+      /** Format: date-time */
+      resolvedAt: string | null;
+      /** Format: date-time */
+      returnedAt: string | null;
+      /** Format: date-time */
+      confirmationDueAt: string | null;
+      /** Format: date-time */
+      customerConfirmedAt: string | null;
+      /** Format: date-time */
+      closedAt: string | null;
+      closeReason: string | null;
+      warrantyVerification: components["schemas"]["AdminWarrantyVerification"] | unknown | unknown;
+      allowedActions: string[];
+      quotes: components["schemas"]["ServiceQuote"][];
+      allowedTransitions: string[];
+    };
+    AfterSalesRequest: {
+      id: number;
+      code: string;
+      /** @enum {string} */
+      type: "WARRANTY" | "TECHNICAL_SUPPORT";
+      status: string;
+      version: number;
+      subject: string;
+      previousRequestId: number | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      /** Format: date-time */
+      closedAt: string | null;
+      items: components["schemas"]["AfterSalesItem"][];
+      previousRequest: {
+        id: number;
+        code: string;
+        /** @enum {string} */
+        type: "WARRANTY" | "TECHNICAL_SUPPORT";
+        status: string;
+        subject: string;
+        /** Format: date-time */
+        createdAt: string;
+      } | null;
+      followUps: {
+        id: number;
+        code: string;
+        /** @enum {string} */
+        type: "WARRANTY" | "TECHNICAL_SUPPORT";
+        status: string;
+        subject: string;
+        /** Format: date-time */
+        createdAt: string;
+      }[];
+      events: components["schemas"]["AfterSalesEvent"][];
+    };
+    AdminAfterSalesRequest: {
+      id: number;
+      code: string;
+      /** @enum {string} */
+      type: "WARRANTY" | "TECHNICAL_SUPPORT";
+      status: string;
+      version: number;
+      subject: string;
+      previousRequestId: number | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      /** Format: date-time */
+      closedAt: string | null;
+      items: components["schemas"]["AdminAfterSalesItem"][];
+      previousRequest: {
+        id: number;
+        code: string;
+        /** @enum {string} */
+        type: "WARRANTY" | "TECHNICAL_SUPPORT";
+        status: string;
+        subject: string;
+        /** Format: date-time */
+        createdAt: string;
+      } | null;
+      followUps: {
+        id: number;
+        code: string;
+        /** @enum {string} */
+        type: "WARRANTY" | "TECHNICAL_SUPPORT";
+        status: string;
+        subject: string;
+        /** Format: date-time */
+        createdAt: string;
+      }[];
+      events: components["schemas"]["AdminAfterSalesEvent"][];
+      customer: {
+        id: number;
+        username: string;
+        fullName: string | null;
+        phone: string | null;
+        address: string | null;
+      };
+      assignee: {
+        id: number;
+        username: string;
+        fullName: string | null;
+      } | null;
+    };
+    AfterSalesSummary: {
+      total: number;
+      submitted: number;
+      reviewing: number;
+      inProgress: number;
+      awaitingCustomer: number;
+      closed: number;
     };
     Payment: {
       id: string;
@@ -4726,7 +9677,7 @@ export interface components {
       provider: string;
       method: string;
       /** @enum {string} */
-      status: "PENDING" | "SUCCEEDED" | "EXPIRED" | "CANCELLED";
+      status: "PENDING" | "VERIFYING" | "SUCCEEDED" | "EXPIRED" | "CANCELLED" | "REVIEW_REQUIRED";
       amount: number;
       currency: string;
       /** Format: date-time */
@@ -4769,6 +9720,37 @@ export interface components {
       resolvedAt: string | null;
       resolvedById: number | null;
     };
+    PaymentReviewCase: {
+      id: string;
+      paymentId: string;
+      reason: string;
+      /** @enum {string} */
+      status: "OPEN" | "RESOLVED";
+      version: number;
+      /** Format: date-time */
+      openedAt: string;
+      /** Format: date-time */
+      nextReviewAt: string | null;
+      /** Format: date-time */
+      resolvedAt: string | null;
+      resolution: string | null;
+      payment: {
+        id: string;
+        orderId: number;
+        status: string;
+        amount: number;
+        transferCode: string;
+        /** Format: date-time */
+        expiresAt: string;
+        /** Format: date-time */
+        reviewAfter: string;
+        order: {
+          status: string;
+          paymentMethod: string;
+          paymentStatus: string;
+        };
+      };
+    };
     ReviewAuthor: {
       name: string;
       anonymous: boolean;
@@ -4782,6 +9764,26 @@ export interface components {
       width: number;
       height: number;
       position: number;
+    };
+    PublicOfficialReply: {
+      content: string;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    AdminOfficialReply: components["schemas"]["PublicOfficialReply"] & {
+      id: number;
+      createdBy: {
+        id: number;
+        username: string;
+        fullName: string | null;
+      };
+      updatedBy: {
+        id: number;
+        username: string;
+        fullName: string | null;
+      };
     };
     PublicReview: {
       id: number;
@@ -4798,6 +9800,7 @@ export interface components {
       createdAt: string;
       /** Format: date-time */
       updatedAt: string;
+      officialReply: components["schemas"]["PublicOfficialReply"] & unknown;
     };
     ReviewSummary: {
       productId: number;
@@ -4839,7 +9842,7 @@ export interface components {
         | "PAYMENT_NOT_CONFIRMED"
         | "ALREADY_REVIEWED"
         | null;
-      existingReview: components["schemas"]["OwnerReview"] | unknown | unknown;
+      existingReview: components["schemas"]["OwnerReview"] & unknown;
       willRequireModeration: boolean;
     };
     AdminReviewListItem: {
@@ -4883,6 +9886,21 @@ export interface components {
       } | null;
       images: components["schemas"]["ReviewImage"][];
       helpfulCount: number;
+      officialReply: components["schemas"]["AdminOfficialReply"] &
+        (components["schemas"]["PublicOfficialReply"] &
+          ({
+            id: number;
+            createdBy: {
+              id: number;
+              username: string;
+              fullName: string | null;
+            };
+            updatedBy: {
+              id: number;
+              username: string;
+              fullName: string | null;
+            };
+          } | null));
     };
     AdminReviewDetail: {
       id: number;
@@ -4925,6 +9943,21 @@ export interface components {
       } | null;
       images: components["schemas"]["ReviewImage"][];
       helpfulCount: number;
+      officialReply: components["schemas"]["AdminOfficialReply"] &
+        (components["schemas"]["PublicOfficialReply"] &
+          ({
+            id: number;
+            createdBy: {
+              id: number;
+              username: string;
+              fullName: string | null;
+            };
+            updatedBy: {
+              id: number;
+              username: string;
+              fullName: string | null;
+            };
+          } | null));
     };
     AdminReviewSummary: {
       totalReviews: number;
@@ -4946,19 +9979,54 @@ export interface components {
       /** @enum {string} */
       status: "PENDING" | "SHIPPING" | "COMPLETED" | "CANCELLED";
       totalPrice: number;
+      subtotalPrice: number;
+      productDiscountAmount: number;
+      couponEligibleSubtotal: number;
+      couponDiscountAmount: number;
+      couponCode: string | null;
+      couponName: string | null;
+      paymentRequired: boolean;
       paymentMethod: string;
       paymentStatus: string;
+      /** @enum {string|null} */
+      paymentCancellationBlockedReason: "PAID" | "VERIFYING" | null;
       receiverName: string;
       receiverAddress: string;
       receiverPhone: string;
       /** Format: date-time */
       createdAt: string;
       items: {
+        orderDetailId: number;
         productId: number;
         name: string;
         image: string | null;
         price: number;
         quantity: number;
+        warrantyMonthsSnapshot: number | null;
+        /** Format: date-time */
+        warrantyStartAt: string | null;
+        /** Format: date-time */
+        warrantyEndAt: string | null;
+        /** @enum {string} */
+        warrantyPolicySource:
+          "CHECKOUT_SNAPSHOT" | "CURRENT_PRODUCT_POLICY_BACKFILL" | "UNAVAILABLE";
+        /** @enum {string} */
+        coverage: "IN_WARRANTY" | "OUT_OF_WARRANTY" | "NO_WARRANTY" | "REQUIRES_VERIFICATION";
+        allowedRequestTypes: ("WARRANTY" | "TECHNICAL_SUPPORT")[];
+        productDiscountAmount: number;
+        couponDiscountAmount: number;
+        netLineTotal: number;
+        automaticPromotionId: number | null;
+        automaticPromotionName: string | null;
+        /** @enum {string|null} */
+        promotionKind: "AUTOMATIC" | "FLASH_SALE" | null;
+        flashSaleAllocation: {
+          promotionId: number;
+          quantity: number;
+          discountAmount: number;
+          /** @enum {string} */
+          status: "CLAIMED" | "RELEASED";
+        } | null;
       }[];
       /** Format: date-time */
       completedAt: string | null;
@@ -4973,19 +10041,54 @@ export interface components {
       /** @enum {string} */
       status: "PENDING" | "SHIPPING" | "COMPLETED" | "CANCELLED";
       totalPrice: number;
+      subtotalPrice: number;
+      productDiscountAmount: number;
+      couponEligibleSubtotal: number;
+      couponDiscountAmount: number;
+      couponCode: string | null;
+      couponName: string | null;
+      paymentRequired: boolean;
       paymentMethod: string;
       paymentStatus: string;
+      /** @enum {string|null} */
+      paymentCancellationBlockedReason: "PAID" | "VERIFYING" | null;
       receiverName: string;
       receiverAddress: string;
       receiverPhone: string;
       /** Format: date-time */
       createdAt: string;
       items: {
+        orderDetailId: number;
         productId: number;
         name: string;
         image: string | null;
         price: number;
         quantity: number;
+        warrantyMonthsSnapshot: number | null;
+        /** Format: date-time */
+        warrantyStartAt: string | null;
+        /** Format: date-time */
+        warrantyEndAt: string | null;
+        /** @enum {string} */
+        warrantyPolicySource:
+          "CHECKOUT_SNAPSHOT" | "CURRENT_PRODUCT_POLICY_BACKFILL" | "UNAVAILABLE";
+        /** @enum {string} */
+        coverage: "IN_WARRANTY" | "OUT_OF_WARRANTY" | "NO_WARRANTY" | "REQUIRES_VERIFICATION";
+        allowedRequestTypes: ("WARRANTY" | "TECHNICAL_SUPPORT")[];
+        productDiscountAmount: number;
+        couponDiscountAmount: number;
+        netLineTotal: number;
+        automaticPromotionId: number | null;
+        automaticPromotionName: string | null;
+        /** @enum {string|null} */
+        promotionKind: "AUTOMATIC" | "FLASH_SALE" | null;
+        flashSaleAllocation: {
+          promotionId: number;
+          quantity: number;
+          discountAmount: number;
+          /** @enum {string} */
+          status: "CLAIMED" | "RELEASED";
+        } | null;
       }[];
       /** Format: date-time */
       completedAt: string | null;
@@ -5110,6 +10213,137 @@ export interface components {
       } | null;
       items: components["schemas"]["StockReceiptItem"][];
       movements: components["schemas"]["StockMovement"][];
+    };
+    PromotionSummary: {
+      id: number;
+      /** @enum {string} */
+      kind: "COUPON" | "AUTOMATIC" | "FLASH_SALE";
+      /** @enum {string} */
+      state: "DRAFT" | "ACTIVE" | "PAUSED" | "ENDED";
+      /** @enum {string} */
+      effectiveState: "DRAFT" | "ACTIVE" | "PAUSED" | "ENDED" | "SCHEDULED" | "RUNNING" | "EXPIRED";
+      name: string;
+      /** @enum {string} */
+      discountKind: "PERCENT" | "FIXED";
+      discountValue: number;
+      /** Format: date-time */
+      startsAt: string;
+      /** Format: date-time */
+      endsAt: string;
+      coupon: {
+        code: string;
+        /** @enum {string} */
+        scope: "ORDER" | "PRODUCT";
+        maxUses: number | null;
+        usedCount: number;
+        isPublic: boolean;
+      } | null;
+      priority: number | null;
+      redemptionCount: number;
+    };
+    PromotionDetail: components["schemas"]["PromotionSummary"] & {
+      description: string | null;
+      /** Format: date-time */
+      activatedAt: string | null;
+      pricingVersion: number;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      createdBy: {
+        id: number;
+        name: string;
+      } | null;
+      updatedBy: {
+        id: number;
+        name: string;
+      } | null;
+      lockedFields: string[];
+      products: {
+        id: number;
+        name: string;
+        image: string | null;
+      }[];
+      automatic: {
+        priority: number;
+        stackableWithCoupon: boolean;
+        targetProductIds: number[];
+      } | null;
+      flashSale: {
+        priority: number;
+        stackableWithCoupon: boolean;
+        showRemainingQuota: boolean;
+        quotas: {
+          productId: number;
+          totalQuota: number;
+          claimedUnits: number;
+          remainingQuota: number;
+          maxUnitsPerUser: number;
+        }[];
+      } | null;
+    };
+    PromotionRedemption: {
+      id: number;
+      promotionId: number;
+      user: {
+        id: number;
+        username: string;
+        fullName: string | null;
+      };
+      orderId: number;
+      orderStatus: string;
+      orderTotal: number;
+      discountAmount: number;
+      /** @enum {string} */
+      status: "APPLIED" | "REVERSED";
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      reversedAt: string | null;
+      reverseReason: string | null;
+    };
+    PromotionStats: {
+      promotionId: number;
+      /** @enum {string} */
+      kind: "COUPON" | "AUTOMATIC" | "FLASH_SALE";
+      redemptionCount: number;
+      activeUsageCount: number;
+      totalDiscountAmount: number;
+      totalQuota?: number;
+      claimedUnits?: number;
+      remainingUnits?: number;
+      releasedUnits?: number;
+      completedUnits?: number;
+      allocationCount?: number;
+      breakdown?: {
+        [key: string]: number;
+      }[];
+    };
+    FlashSaleAllocation: {
+      id: number;
+      promotionId: number;
+      productId: number;
+      product: {
+        id: number;
+        name: string;
+      };
+      user: {
+        id: number;
+        username: string;
+        fullName: string | null;
+      };
+      orderId: number;
+      orderStatus: string;
+      orderDetailId: number;
+      quantity: number;
+      discountAmount: number;
+      /** @enum {string} */
+      status: "CLAIMED" | "RELEASED";
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      releasedAt: string | null;
+      releaseReason: string | null;
     };
   };
   responses: never;

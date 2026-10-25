@@ -13,6 +13,7 @@ export type AdvisorResult = Omit<Schemas["AdvisorResult"], "recommendations"> & 
 type GeneratedCart = Schemas["Cart"];
 export type CartItem = Omit<GeneratedCart["items"][number], "product"> & { product: Product };
 export type Cart = Omit<GeneratedCart, "items"> & { items: CartItem[] };
+export type PricingQuote = Schemas["PricingQuote"];
 export type Order = Schemas["Order"];
 export type OrderStatus = Order["status"];
 export type StockMovement = Schemas["StockMovement"];
