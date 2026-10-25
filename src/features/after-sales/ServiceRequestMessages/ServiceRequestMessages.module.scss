@@ -1,0 +1,12 @@
+.form {
+  display: grid;
+  gap: .5rem;
+}
+
+.form textarea {
+  min-height: 90px;
+  padding: .65rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font: inherit;
+}

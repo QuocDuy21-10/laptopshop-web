@@ -11,7 +11,12 @@ type Props = { result: AdvisorResult | null; loading: boolean; onEdit: () => voi
 
 export function AdvisorResults({ result, loading, onEdit, headingRef }: Props) {
   if (loading) {
-    return <div className={styles.loading} role="status" aria-live="polite"><Skeleton /><Skeleton /><Skeleton /></div>;
+    return (
+      <div className={styles.loading} role="status" aria-live="polite">
+        <Skeleton /><Skeleton /><Skeleton />
+        <Button variant="secondary" onClick={onEdit}>Hủy và sửa tiêu chí</Button>
+      </div>
+    );
   }
   if (!result) return null;
   if (result.recommendations.length === 0) {
@@ -26,7 +31,7 @@ export function AdvisorResults({ result, loading, onEdit, headingRef }: Props) {
     <section className={styles.results} aria-labelledby="advisor-results-title">
       <h2 id="advisor-results-title" ref={headingRef} tabIndex={-1} className={styles.title}>Laptop phù hợp với bạn</h2>
       <p className={styles.live} role="status" aria-live="polite">Đã tìm thấy {result.recommendations.length} laptop phù hợp.</p>
-      {result.mode === "rule_based" && <Alert tone="info" title="Đề xuất đang dùng chế độ dự phòng">Đề xuất đang được tạo từ tiêu chí và thông số sản phẩm; phần giải thích AI tạm thời không khả dụng.</Alert>}
+      {result.mode === "rule_based" && <Alert tone="info" title="Đề xuất theo tiêu chí hiện tại">Đề xuất được tính từ tiêu chí, thông số và giá hiện hành; phần giải thích AI không được dùng cho kết quả này.</Alert>}
       <div className={styles.grid}>
         {result.recommendations.map((recommendation) => <AdvisorRecommendationCard key={recommendation.product.id} recommendation={recommendation} />)}
       </div>

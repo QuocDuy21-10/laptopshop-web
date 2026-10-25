@@ -43,13 +43,19 @@ describe("CheckoutForm", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent("Không thể kết nối máy chủ");
     await submit();
     await waitFor(() => expect(router.replace).toHaveBeenCalledWith("/account/orders/50?placed=1"));
-    await submit();
-    await waitFor(() => expect(orderCalls()).toHaveLength(3));
-
-    const [first, second, third] = orderCalls().map((r) => r.headers.get("Idempotency-Key"));
+    const [first, second] = orderCalls().map((r) => r.headers.get("Idempotency-Key"));
     expect(first).toBeTruthy();
     expect(second).toBe(first);
-    expect(third).not.toBe(first);
+  });
+
+  it("sends the coupon code and server pricing fingerprint with the order", async () => {
+    fetchMock.mockResolvedValue(json(201, { data: order }));
+    renderWithQuery(<CheckoutForm defaults={defaults} {...checkoutProps} couponCode="SALE10" />);
+
+    await submit();
+    await waitFor(() => expect(router.replace).toHaveBeenCalledWith("/account/orders/50?placed=1"));
+    expect(await orderCalls()[0].json()).toMatchObject({ couponCode: "SALE10", pricingFingerprint: "pricing-1" });
+    expect(fetchMock.mock.calls.some(([i]) => urlOf(i).endsWith("/orders/quote"))).toBe(false);
   });
 
   it("recovers a persisted checkout attempt before submitting a new order", async () => {

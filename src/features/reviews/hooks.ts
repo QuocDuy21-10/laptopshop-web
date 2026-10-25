@@ -5,7 +5,7 @@ import { api } from "@/lib/api/client";
 import { unwrap } from "@/lib/api/errors";
 import { sendMultipart } from "@/lib/api/multipart";
 import { queryKeys } from "@/lib/api/query-keys";
-import type { HelpfulMutation, ProductReviewsQuery, ReviewImage } from "@/lib/api/types";
+import type { HelpfulMutation, PageMeta, ProductReviewsQuery, PublicReview, ReviewImage } from "@/lib/api/types";
 import type { ReviewEligibility } from "@/lib/api/types";
 import type { ReviewInput } from "./schema";
 
@@ -17,9 +17,9 @@ export function useReviewSummary(productId: number) {
 }
 
 export function useProductReviews(productId: number, query: ProductReviewsQuery) {
-  return useQuery({
+  return useQuery<{ data: PublicReview[]; meta: PageMeta }>({
     queryKey: queryKeys.productReviews(productId, query),
-    queryFn: () => unwrap(api.GET("/api/v1/products/{id}/reviews", { params: { path: { id: productId }, query } })),
+    queryFn: async () => (await unwrap(api.GET("/api/v1/products/{id}/reviews", { params: { path: { id: productId }, query } }))) as { data: PublicReview[]; meta: PageMeta },
     placeholderData: keepPreviousData,
   });
 }

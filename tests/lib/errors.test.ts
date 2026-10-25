@@ -57,6 +57,9 @@ describe("errorMessage (admin)", () => {
     expect(errorMessage(new ApiError(409, "USER_HAS_ORDERS", "x"))).toBe("Người dùng đã có đơn hàng nên không thể xoá.");
     expect(errorMessage(new ApiError(409, "CANNOT_DELETE_SELF", "x"))).toBe("Bạn không thể xoá tài khoản của chính mình.");
     expect(errorMessage(new ApiError(403, "FORBIDDEN", "x"))).toBe("Bạn không có quyền thực hiện thao tác này.");
+    expect(errorMessage(new ApiError(409, "PAYMENT_VERIFICATION_IN_PROGRESS", "x"))).toBe(
+      "Thanh toán đang được đối soát. Vui lòng liên hệ cửa hàng nếu cần hỗ trợ.",
+    );
   });
 });
 
@@ -71,5 +74,14 @@ describe("errorMessage (reviews)", () => {
     expect(errorMessage(new ApiError(409, "REVIEW_FULL_NAME_REQUIRED", "x"))).toBe(
       "Hãy cập nhật họ tên trước khi công khai đánh giá.",
     );
+  });
+});
+
+describe("errorMessage (wishlist and notifications)", () => {
+  it("translates private feature error codes", () => {
+    expect(errorMessage(new ApiError(409, "WISHLIST_LIMIT_REACHED", "x"))).toBe("Wishlist đã đạt giới hạn 100 sản phẩm.");
+    expect(errorMessage(new ApiError(404, "WISHLIST_ITEM_NOT_FOUND", "x"))).toBe("Không tìm thấy sản phẩm trong Wishlist.");
+    expect(errorMessage(new ApiError(400, "INVALID_TARGET_PRICE", "x"))).toBe("Giá mục tiêu phải thấp hơn giá hiện tại.");
+    expect(errorMessage(new ApiError(404, "NOTIFICATION_NOT_FOUND", "x"))).toBe("Không tìm thấy thông báo yêu cầu.");
   });
 });

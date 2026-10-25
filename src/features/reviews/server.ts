@@ -13,7 +13,7 @@ export async function getInitialReviews(
         freshServerApi.GET("/api/v1/products/{id}/reviews", {
           params: { path: { id: productId }, query: { page: 1, pageSize: 10, sort: "newest" } },
         }),
-      ),
+      ) as Promise<{ data: PublicReview[]; meta: PageMeta }>,
     ]);
     return { summary: summary.data, page };
   } catch (error) {

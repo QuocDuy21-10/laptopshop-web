@@ -14,9 +14,9 @@ export function CartSummary({
   action,
   title = "Tóm tắt đơn hàng",
   pricing = {
-    productDiscount: cart.productDiscount,
+    productDiscount: cart.productDiscount ?? 0,
     couponDiscount: 0,
-    total: cart.totalAfterProductDiscount,
+    total: cart.totalAfterProductDiscount ?? cart.subtotal,
   },
 }: {
   cart: Cart;

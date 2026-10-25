@@ -1,73 +1,179 @@
 @use "mixins" as *;
 
 .card {
-  position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--space-one);
-  height: 100%;
-  padding: var(--space-four);
-  background: var(--color-surface);
+  background: var(--color-surface-raised);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
+  overflow: hidden;
   transition:
+    border-color var(--duration-fast) var(--ease-out),
     box-shadow var(--duration-fast) var(--ease-out),
     transform var(--duration-fast) var(--ease-out);
 
   &:hover {
-    box-shadow: var(--shadow-1);
+    border-color: var(--color-border-strong);
+    box-shadow: var(--shadow-2);
     transform: translateY(-2px);
   }
-
-  > :first-child {
-    margin-bottom: var(--space-two);
-  }
 }
 
-.maker {
+.mediaWrap {
+  position: relative;
+  padding: var(--space-three) var(--space-three) 0;
+}
+
+.badgeOverlay {
+  position: absolute;
+  top: var(--space-five);
+  left: var(--space-five);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.imageLink {
+  display: block;
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-two);
+  padding: var(--space-four);
+  flex: 1;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-two);
+  min-height: 20px;
+}
+
+.factory {
+  font-size: var(--text-body-sm-size);
+  font-weight: var(--text-label-sm-weight);
   color: var(--color-foreground-muted);
   text-transform: uppercase;
-
-  @include text(label-sm);
+  letter-spacing: 0.06em;
 }
 
-.title {
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: var(--text-body-sm-size);
+  color: var(--color-foreground-muted);
+}
+
+.star {
+  color: var(--color-warning);
+  font-size: var(--text-body-md-size);
+  line-height: 1;
+}
+
+.ratingValue {
+  font-weight: var(--text-label-sm-weight);
+  color: var(--color-foreground);
+}
+
+.ratingCount {
+  color: var(--color-foreground-muted);
+}
+
+.noRating {
+  color: var(--color-foreground-muted);
+  font-size: 0.72rem;
+  font-weight: 400;
+}
+
+.name {
+  font-size: var(--text-body-lg-size);
+  font-weight: var(--text-label-sm-weight);
+  line-height: var(--text-title-md-line);
+  color: var(--color-foreground);
+  min-height: calc(1.35em * 2); // Giữ cố định chiều cao 2 dòng tên máy
   display: -webkit-box;
   overflow: hidden;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-
-  @include text(title-md);
 }
 
-.link {
+.wishlistOverlay {
+  position: absolute;
+  top: var(--space-two);
+  right: var(--space-two);
+  z-index: 2;
+}
+
+.nameLink {
   color: inherit;
   text-decoration: none;
 
-  // whole card is clickable; the add button sits above this layer
-  &::after {
-    position: absolute;
-    inset: 0;
-    content: "";
-    border-radius: var(--radius-lg);
+  &:hover {
+    color: var(--color-primary);
   }
 }
 
-.spec {
-  margin-bottom: var(--space-two);
-  color: var(--color-foreground-muted);
+.specList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+  padding: 0;
+  margin: 2px 0 var(--space-two);
+  min-height: 26px;
+}
 
-  @include text(body-sm);
+.specListPlaceholder {
+  min-height: 26px;
+  margin: 2px 0 var(--space-two);
+}
+
+.specPill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-muted);
+  border: 1px solid var(--color-border);
+  color: var(--color-foreground-muted);
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.4;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .footer {
-  position: relative;
+  margin-top: auto;
+  padding-top: var(--space-three);
+  border-top: 1px solid var(--color-border);
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: var(--space-two);
+}
+
+.priceRow {
+  display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-two);
-  margin-top: auto;
-  padding-top: var(--space-three);
-  z-index: 1;
+}
+
+.actionRow {
+  display: flex;
+  align-items: center;
+
+  // Mở rộng nút Thêm vào giỏ full-width dưới đáy card để dễ bấm trên cả Desktop & Mobile
+  > * {
+    width: 100%;
+  }
 }

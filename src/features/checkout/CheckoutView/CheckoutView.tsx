@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Alert } from "@/components/ui/Alert/Alert";
 import { Price } from "@/components/ui/Price/Price";
 import { Skeleton } from "@/components/ui/Skeleton/Skeleton";
@@ -11,6 +11,7 @@ import { useCart } from "@/features/cart/hooks";
 import { usePaymentMethods } from "@/features/payments/hooks";
 import { errorMessage } from "@/lib/api/errors";
 import { CheckoutForm } from "../CheckoutForm/CheckoutForm";
+import { CouponInput } from "../CouponInput/CouponInput";
 import { useCheckoutQuote } from "../useCheckoutQuote";
 import styles from "./CheckoutView.module.scss";
 
@@ -27,7 +28,8 @@ export function CheckoutView() {
   const me = useMe();
   const cart = useCart();
   const paymentMethods = usePaymentMethods();
-  const quote = useCheckoutQuote();
+  const [couponCode, setCouponCode] = useState("");
+  const quote = useCheckoutQuote(couponCode || undefined);
   const empty = cart.data?.items.length === 0;
   const quoteData = quote.data;
   const quoteTotals = new Map(
@@ -60,6 +62,7 @@ export function CheckoutView() {
           paymentMethod: "COD",
         }}
         availableMethods={(paymentMethods.data ?? [{ code: "COD", enabled: true }]).filter((method) => method.enabled).map((method) => method.code)}
+        couponCode={couponCode || undefined}
         pricingFingerprint={quote.data?.pricingFingerprint ?? ""}
         pricingReady={pricingReady}
         onPricingConflict={async () => {
@@ -94,6 +97,7 @@ export function CheckoutView() {
           title={quote.isError ? "Không thể cập nhật giá và ưu đãi. Vui lòng thử lại trước khi đặt hàng." : "Đang xác nhận giá và ưu đãi."}
         />
       )}
+      <CouponInput value={couponCode} onApply={setCouponCode} error={quote.isError ? quote.error : undefined} />
     </div>
   );
 }

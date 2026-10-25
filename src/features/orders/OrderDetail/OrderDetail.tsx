@@ -3,6 +3,7 @@
 import { PackageX } from "lucide-react";
 import Link from "next/link";
 import { Alert } from "@/components/ui/Alert/Alert";
+import { Badge } from "@/components/ui/Badge/Badge";
 import { buttonClassName } from "@/components/ui/Button/Button";
 import { EmptyState } from "@/components/ui/EmptyState/EmptyState";
 import { Price } from "@/components/ui/Price/Price";
@@ -62,7 +63,10 @@ export function OrderDetail({ id, placed }: { id: number; placed: boolean }) {
               <span className={styles.qty}>
                 <Price value={item.price} size="sm" /> × {item.quantity}
               </span>
+              {item.promotionKind === "FLASH_SALE" && <Badge tone="warning">Flash Sale</Badge>}
               {o.status === "COMPLETED" && o.paymentStatus === "PAYMENT_SUCCESS" && <ReviewAction productId={item.productId} productName={item.name} />}
+              {o.status === "COMPLETED" && o.paymentStatus === "PAYMENT_SUCCESS" && item.allowedRequestTypes?.includes("WARRANTY") && <Link href={`/account/after-sales/new?type=WARRANTY&orderDetailId=${item.orderDetailId}`} className={styles.afterSalesAction}>Yêu cầu bảo hành</Link>}
+              {o.status === "COMPLETED" && o.paymentStatus === "PAYMENT_SUCCESS" && item.allowedRequestTypes?.includes("TECHNICAL_SUPPORT") && <Link href={`/account/after-sales/new?type=TECHNICAL_SUPPORT&orderDetailId=${item.orderDetailId}`} className={styles.afterSalesAction}>Hỗ trợ kỹ thuật</Link>}
             </li>
           ))}
         </ul>
@@ -83,9 +87,15 @@ export function OrderDetail({ id, placed }: { id: number; placed: boolean }) {
         {o.paymentMethod === "BANK_TRANSFER" && o.paymentStatus !== "PAYMENT_SUCCESS" && o.status !== "CANCELLED" && (
           <Link href={`/account/orders/${o.id}/payment`}>Xem hướng dẫn thanh toán</Link>
         )}
+        {o.paymentCancellationBlockedReason === "PAID" && (
+          <Alert tone="warning" title="Đơn hàng đã thanh toán. Vui lòng liên hệ cửa hàng để được hỗ trợ hủy và hoàn tiền." />
+        )}
+        {o.paymentCancellationBlockedReason === "VERIFYING" && (
+          <Alert tone="warning" title="Thanh toán đang được đối soát. Vui lòng không chuyển khoản thêm và liên hệ cửa hàng nếu cần hỗ trợ." />
+        )}
       </section>
 
-      {o.status === "PENDING" && (
+      {o.status === "PENDING" && !o.paymentCancellationBlockedReason && (
         <div className={styles.actions}>
           <CancelOrderDialog orderId={o.id} />
         </div>

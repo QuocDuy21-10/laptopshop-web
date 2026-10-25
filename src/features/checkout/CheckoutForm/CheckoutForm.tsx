@@ -19,6 +19,7 @@ type Problem = { message: string; backToCart: boolean } | null;
 type CheckoutFormProps = {
   defaults: Omit<ReceiverInput, "paymentMethod"> & Partial<Pick<ReceiverInput, "paymentMethod">>;
   availableMethods?: PaymentMethod[];
+  couponCode?: string;
   pricingFingerprint: string;
   pricingReady: boolean;
   onPricingConflict: () => Promise<void>;
@@ -33,6 +34,7 @@ const isPricingConflict = (error: unknown) =>
 export function CheckoutForm({
   defaults,
   availableMethods = ["COD", "BANK_TRANSFER"],
+  couponCode,
   pricingFingerprint,
   pricingReady,
   onPricingConflict,
@@ -92,7 +94,7 @@ export function CheckoutForm({
     if (!pricingReady || !pricingFingerprint || isRecoveringAttempt || isRepricing) return;
     setProblem(null);
     try {
-      const body = await placeOrder.mutateAsync({ key: idempotencyKey, receiver, pricingFingerprint });
+      const body = await placeOrder.mutateAsync({ key: idempotencyKey, receiver, couponCode, pricingFingerprint });
       window.sessionStorage.removeItem(IDEMPOTENCY_STORAGE_KEY);
       const nextKey = crypto.randomUUID();
       window.sessionStorage.setItem(IDEMPOTENCY_STORAGE_KEY, nextKey);

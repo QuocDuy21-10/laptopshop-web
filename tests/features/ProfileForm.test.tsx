@@ -17,6 +17,7 @@ const me: Me = {
   phone: null,
   accountType: "SYSTEM",
   avatar: null,
+  emailVerifiedAt: null,
   role: "USER",
   cartItemCount: 0,
 };

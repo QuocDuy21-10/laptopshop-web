@@ -16,10 +16,15 @@ export function toFormData(
 }
 
 // multipart goes through authFetch directly so the browser sets the boundary header
-export async function sendMultipart<T = unknown>(path: string, method: "POST" | "PATCH", form: FormData): Promise<T> {
+export async function sendMultipart<T = unknown>(
+  path: string,
+  method: "POST" | "PATCH",
+  form: FormData,
+  headers?: HeadersInit,
+): Promise<T> {
   let res: Response;
   try {
-    res = await authFetch(new Request(apiUrl(path), { method, body: form }));
+    res = await authFetch(new Request(apiUrl(path), { method, body: form, headers }));
   } catch {
     throw new ApiError(0, "NETWORK_ERROR", "Network error");
   }

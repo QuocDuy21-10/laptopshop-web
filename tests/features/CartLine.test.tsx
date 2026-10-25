@@ -8,7 +8,10 @@ import { json, lastRequest, mockFetch, renderWithQuery } from "../utils";
 const line: CartItem = {
   id: 7,
   quantity: 2,
+  listLineTotal: 200,
+  productDiscountAmount: 0,
   lineTotal: 200,
+  promotionFallback: null,
   product: {
     id: 3,
     name: "Dell Inspiron 15",

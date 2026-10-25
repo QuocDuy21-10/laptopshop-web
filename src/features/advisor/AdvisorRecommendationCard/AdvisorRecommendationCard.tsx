@@ -9,6 +9,7 @@ export function AdvisorRecommendationCard({ recommendation }: { recommendation: 
         <h3 id={`advisor-recommendation-${recommendation.product.id}`} className={styles.title}>
           Phù hợp {recommendation.matchScore}/100
         </h3>
+        <p className={styles.scoreHelp}>Điểm tham khảo từ tiêu chí và thông số, không phải benchmark tuyệt đối.</p>
         <div className={styles.highlights}>
           {recommendation.highlights.map((highlight) => <span key={highlight}>{highlight}</span>)}
         </div>

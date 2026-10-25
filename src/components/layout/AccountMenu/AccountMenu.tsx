@@ -1,7 +1,7 @@
 "use client";
 
 import * as Menu from "@radix-ui/react-dropdown-menu";
-import { ChevronDown, LayoutDashboard, LogOut, Package, User } from "lucide-react";
+import { Bell, ChevronDown, Heart, LayoutDashboard, LogOut, Package, User, Wrench } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/Skeleton/Skeleton";
@@ -44,6 +44,15 @@ export function AccountMenu() {
             <Link href="/account/orders">
               <Package size={18} aria-hidden="true" /> Đơn hàng
             </Link>
+          </Menu.Item>
+          <Menu.Item asChild className={styles.item}>
+            <Link href="/account/after-sales"><Wrench size={18} aria-hidden="true" /> Bảo hành & Hậu mãi</Link>
+          </Menu.Item>
+          <Menu.Item asChild className={styles.item}>
+            <Link href="/wishlist"><Heart size={18} aria-hidden="true" /> Sản phẩm yêu thích</Link>
+          </Menu.Item>
+          <Menu.Item asChild className={styles.item}>
+            <Link href="/account/notifications"><Bell size={18} aria-hidden="true" /> Thông báo</Link>
           </Menu.Item>
           {me.role === "ADMIN" && (
             <Menu.Item asChild className={styles.item}>

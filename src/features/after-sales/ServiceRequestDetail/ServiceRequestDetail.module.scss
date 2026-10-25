@@ -1,0 +1,23 @@
+.detail {
+  display: grid;
+  gap: 1rem;
+}
+
+.code {
+  color: var(--color-muted);
+  font-weight: 600;
+}
+
+.detail h1 { margin: .2rem 0; }
+
+.items {
+  display: grid;
+  gap: .75rem;
+}
+
+.skeleton { min-height: 12rem; }
+
+.detail nav {
+  display: grid;
+  gap: .4rem;
+}

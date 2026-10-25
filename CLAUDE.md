@@ -4,11 +4,11 @@ Guidance for Claude Code in this repository.
 
 ## Commands
 
-- `npm install`; copy `.env.example` to `.env.local` (`API_ORIGIN`, default `http://localhost:8080`).
-- `npm run dev` (Next on :3000; `/api/v1/*` and `/images/*` are rewritten to `API_ORIGIN`). The API (`../nodejs-pro`) must be running for real data.
-- `npm run lint`, `npm run lint:css` (Stylelint: no hex/named colours outside `src/styles/_tokens.scss`), `npm run typecheck` (`next typegen && tsc --noEmit`), `npm test` (Vitest + Testing Library, `fetch` mocked), `npm run build`.
-- `npm run e2e`: Playwright against the real API, local only (see README).
-- `npm run gen:api`: regenerate `src/lib/api/schema.d.ts` from the API OpenAPI document (`OPENAPI_URL`, default `http://localhost:8080/api-docs.json`; the API needs `ENABLE_DOCS=true`). Commit the result.
+- `pnpm install`; copy `.env.example` to `.env.local` (`API_ORIGIN`, default `http://localhost:8080`).
+- `pnpm dev` (Next on :3000; `/api/v1/*` and `/images/*` are rewritten to `API_ORIGIN`). The API (`../nodejs-pro`) must be running for real data.
+- `pnpm lint`, `pnpm lint:css` (Stylelint: no hex/named colours outside `src/styles/_tokens.scss`), `pnpm typecheck` (`next typegen && tsc --noEmit`), `pnpm test` (Vitest + Testing Library, `fetch` mocked), `pnpm build`.
+- `pnpm e2e`: Playwright against the real API, local only (see README).
+- `pnpm gen:api`: regenerate `src/lib/api/schema.d.ts` from the API OpenAPI document (`OPENAPI_URL`, default `http://localhost:8080/api-docs.json`; the API needs `ENABLE_DOCS=true`). Commit the result.
 
 ## Architecture
 
