@@ -58,6 +58,7 @@ export const queryKeys = {
   adminPromotion: (id: number) => ["admin", "promotion", id] as const,
   adminPromotionRedemptions: (id: number, query: object) =>
     ["admin", "promotion", id, "redemptions", query] as const,
+  adminPromotionSummary: (id: number) => ["admin", "promotion", id, "summary"] as const,
   adminPromotionAllocations: (id: number, query: object) =>
     ["admin", "promotion-allocations", id, query] as const,
   adminReview: (id: number) => ["admin", "review", id] as const,

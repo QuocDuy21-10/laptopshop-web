@@ -5,14 +5,28 @@ export function FlashSaleAllocations({
   allocations,
   meta,
   onPage,
+  status,
+  onStatus,
 }: {
   allocations: FlashSaleAllocation[];
   meta: PageMeta;
   onPage: (page: number) => void;
+  status?: "CLAIMED" | "RELEASED";
+  onStatus?: (status: "CLAIMED" | "RELEASED" | undefined) => void;
 }) {
   return (
     <section className={styles.panel} aria-label="Lịch sử allocation Flash Sale">
       <h3>Lịch sử allocation</h3>
+      {onStatus && (
+        <label>
+          Trạng thái
+          <select aria-label="Trạng thái allocation" value={status ?? ""} onChange={(event) => onStatus((event.target.value || undefined) as "CLAIMED" | "RELEASED" | undefined)}>
+            <option value="">Tất cả</option>
+            <option value="CLAIMED">CLAIMED</option>
+            <option value="RELEASED">RELEASED</option>
+          </select>
+        </label>
+      )}
       <div className={styles.tableWrap}>
         <table>
           <thead><tr><th>Sản phẩm</th><th>User</th><th>Đơn</th><th>Units</th><th>Trạng thái</th><th>Lý do</th></tr></thead>
