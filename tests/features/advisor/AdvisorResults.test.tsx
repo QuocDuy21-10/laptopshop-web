@@ -48,6 +48,7 @@ describe("AdvisorResults", () => {
   it("shows loading status without stale results", () => {
     renderWithQuery(<AdvisorResults loading result={result()} onEdit={vi.fn()} />);
     expect(screen.getByRole("status")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Hủy và sửa tiêu chí" })).toBeInTheDocument();
     expect(screen.queryByText("86/100")).not.toBeInTheDocument();
   });
 

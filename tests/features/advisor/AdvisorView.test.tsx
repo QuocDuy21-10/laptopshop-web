@@ -33,6 +33,36 @@ const product = {
 beforeEach(() => localStorage.clear());
 
 describe("AdvisorView", () => {
+  it("cancels a pending request before editing criteria", async () => {
+    const fetchMock = mockFetch();
+    let resolveAdvisor!: (response: Response) => void;
+    fetchMock.mockImplementation(async (input) => {
+      const url = input instanceof Request ? input.url : String(input);
+      if (url.includes("/api/v1/advisor/recommend")) {
+        return new Promise<Response>((resolve) => {
+          resolveAdvisor = resolve;
+        });
+      }
+      return json(200, { data: null });
+    });
+    renderWithQuery(<AdvisorView />);
+    await userEvent.type(screen.getByLabelText(/Ngân sách tối đa/), "20000000");
+    await userEvent.click(screen.getByLabelText("Lập trình / CNTT"));
+    await userEvent.click(screen.getByRole("button", { name: "Tiếp tục" }));
+    await userEvent.click(screen.getByRole("button", { name: "Tiếp tục" }));
+    await userEvent.click(screen.getByRole("button", { name: "Tiếp tục" }));
+    await userEvent.click(screen.getByRole("button", { name: "Nhận tư vấn" }));
+    const pendingRequest = (fetchMock.mock.calls.find(([input]) => {
+      const url = input instanceof Request ? input.url : String(input);
+      return url.includes("/api/v1/advisor/recommend");
+    })?.[0] as Request);
+    await screen.findByRole("button", { name: "Hủy và sửa tiêu chí" });
+    await userEvent.click(screen.getByRole("button", { name: "Hủy và sửa tiêu chí" }));
+    expect(pendingRequest.signal.aborted).toBe(true);
+    expect(screen.getByText("Bước 1/4")).toBeInTheDocument();
+    resolveAdvisor(json(200, { data: { mode: "rule_based", recommendations: [], suggestions: [] } }));
+  });
+
   it("submits the wizard and focuses the results heading", async () => {
     const fetchMock = mockFetch();
     fetchMock.mockResolvedValue(

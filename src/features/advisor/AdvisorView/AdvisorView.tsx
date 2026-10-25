@@ -14,25 +14,50 @@ export function AdvisorView() {
   const [lastInput, setLastInput] = useState<AdvisorFormInput | null>(null);
   const [formKey, setFormKey] = useState(0);
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const requestSeq = useRef(0);
+  const controllerRef = useRef<AbortController | null>(null);
+  const submittingRef = useRef(false);
 
   useEffect(() => {
     if (result) headingRef.current?.focus();
   }, [result]);
 
+  useEffect(() => () => {
+    requestSeq.current += 1;
+    controllerRef.current?.abort();
+  }, []);
+
   const submit = async (input: AdvisorFormInput) => {
+    if (submittingRef.current) return;
+    submittingRef.current = true;
+    const seq = ++requestSeq.current;
+    const controller = new AbortController();
+    controllerRef.current?.abort();
+    controllerRef.current = controller;
     setLastInput(input);
+    setResult(null);
     try {
       const body = advisorFormSchema.parse(input);
-      const response = await advisor.mutateAsync(body);
-      setResult(response.data);
+      const response = await advisor.mutateAsync({ input: body, signal: controller.signal });
+      if (seq === requestSeq.current && !controller.signal.aborted) setResult(response.data);
     } catch {
-      // TanStack Query owns the error state; keeping the form mounted preserves the user's input.
+      if (controller.signal.aborted && seq === requestSeq.current) advisor.reset();
+      // TanStack Query owns non-abort error state; keeping the form mounted preserves the user's input.
+    } finally {
+      if (controllerRef.current === controller) {
+        controllerRef.current = null;
+        submittingRef.current = false;
+      }
     }
   };
   const retry = () => {
     if (lastInput) void submit(lastInput);
   };
   const edit = () => {
+    requestSeq.current += 1;
+    controllerRef.current?.abort();
+    controllerRef.current = null;
+    submittingRef.current = false;
     advisor.reset();
     setResult(null);
     setLastInput(null);

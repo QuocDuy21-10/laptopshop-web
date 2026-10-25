@@ -11,7 +11,12 @@ type Props = { result: AdvisorResult | null; loading: boolean; onEdit: () => voi
 
 export function AdvisorResults({ result, loading, onEdit, headingRef }: Props) {
   if (loading) {
-    return <div className={styles.loading} role="status" aria-live="polite"><Skeleton /><Skeleton /><Skeleton /></div>;
+    return (
+      <div className={styles.loading} role="status" aria-live="polite">
+        <Skeleton /><Skeleton /><Skeleton />
+        <Button variant="secondary" onClick={onEdit}>Hủy và sửa tiêu chí</Button>
+      </div>
+    );
   }
   if (!result) return null;
   if (result.recommendations.length === 0) {
