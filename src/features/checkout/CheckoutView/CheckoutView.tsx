@@ -11,14 +11,33 @@ import { useCart } from "@/features/cart/hooks";
 import { usePaymentMethods } from "@/features/payments/hooks";
 import { errorMessage } from "@/lib/api/errors";
 import { CheckoutForm } from "../CheckoutForm/CheckoutForm";
+import { useCheckoutQuote } from "../useCheckoutQuote";
 import styles from "./CheckoutView.module.scss";
+
+type QuoteLinePricing = { productId: number; netLineTotal: number };
+
+const quoteLinePricing = (line: unknown): QuoteLinePricing | null => {
+  if (!line || typeof line !== "object") return null;
+  const { productId, netLineTotal } = line as Record<string, unknown>;
+  return typeof productId === "number" && typeof netLineTotal === "number" ? { productId, netLineTotal } : null;
+};
 
 export function CheckoutView() {
   const router = useRouter();
   const me = useMe();
   const cart = useCart();
   const paymentMethods = usePaymentMethods();
+  const quote = useCheckoutQuote();
   const empty = cart.data?.items.length === 0;
+  const quoteTotals = new Map(
+    (quote.data?.lines ?? []).flatMap((line) => {
+      const pricing = quoteLinePricing(line);
+      return pricing ? [[pricing.productId, pricing.netLineTotal] as const] : [];
+    }),
+  );
+  const hasPricingForCart =
+    Boolean(quote.data?.pricingFingerprint) && (cart.data?.items.every((line) => quoteTotals.has(line.product.id)) ?? false);
+  const pricingReady = hasPricingForCart && !quote.isPending && !quote.isFetching && !quote.isError;
 
   useEffect(() => {
     if (empty) router.replace("/cart");
@@ -39,10 +58,25 @@ export function CheckoutView() {
           paymentMethod: "COD",
         }}
         availableMethods={(paymentMethods.data ?? [{ code: "COD", enabled: true }]).filter((method) => method.enabled).map((method) => method.code)}
+        pricingFingerprint={quote.data?.pricingFingerprint ?? ""}
+        pricingReady={pricingReady}
+        onPricingConflict={async () => {
+          await quote.refetch();
+        }}
       />
+      {quote.isError && <Alert tone="warning" title="Không thể cập nhật giá và ưu đãi. Vui lòng thử lại trước khi đặt hàng." />}
       <CartSummary
         cart={cart.data}
         title="Đơn hàng của bạn"
+        pricing={
+          quote.data
+            ? {
+                productDiscount: quote.data.productDiscount,
+                couponDiscount: quote.data.couponDiscount,
+                total: quote.data.total,
+              }
+            : undefined
+        }
         action={
           <ul role="list" className={styles.items}>
             {cart.data.items.map((line) => (
@@ -50,7 +84,13 @@ export function CheckoutView() {
                 <span>
                   {line.product.name} × {line.quantity}
                 </span>
-                <Price value={line.lineTotal} size="sm" />
+                {quote.data && quoteTotals.has(line.product.id) ? (
+                  <Price value={quoteTotals.get(line.product.id)!} size="sm" />
+                ) : quote.data ? (
+                  <span>Đang cập nhật</span>
+                ) : (
+                  <Price value={line.lineTotal} size="sm" />
+                )}
               </li>
             ))}
           </ul>
