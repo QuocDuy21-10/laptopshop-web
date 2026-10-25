@@ -278,7 +278,9 @@ async function completeAdvisor(page: import("@playwright/test").Page) {
 test("public advisor recommends three laptops and reuses compare", async ({ page }) => {
   await completeAdvisor(page);
   await expect(page.getByRole("article")).toHaveCount(3);
-  await expect(page.getByRole("article").first()).toContainText(/\d+\/100/);
+  const firstRecommendation = page.locator("section").filter({ has: page.getByRole("heading", { name: /Phù hợp \d+\/100/ }) }).first();
+  await expect(firstRecommendation.getByRole("heading", { name: /Phù hợp \d+\/100/ })).toBeVisible();
+  await expect(firstRecommendation.getByRole("article")).toBeVisible();
   const cards = page.getByRole("article");
   await cards.nth(0).getByRole("button", { name: /^So sánh / }).click();
   await cards.nth(1).getByRole("button", { name: /^So sánh / }).click();
