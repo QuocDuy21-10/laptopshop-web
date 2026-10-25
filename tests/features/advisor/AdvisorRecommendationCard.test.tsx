@@ -13,7 +13,7 @@ const recommendation: AdvisorRecommendation = {
     price: 23_000_000,
     salePrice: 19_000_000,
     productDiscountAmount: 4_000_000,
-    promotion: { id: 1, name: "Sale", endsAt: "2026-11-01T00:00:00.000Z" },
+    promotion: { id: 1, name: "Sale", endsAt: "2026-11-01T00:00:00.000Z", kind: "AUTOMATIC", eligibility: "EXACT" },
     image: null,
     detailDesc: null,
     shortDesc: null,

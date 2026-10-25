@@ -1,6 +1,7 @@
 export const queryKeys = {
   me: ["me"] as const,
   cart: ["cart"] as const,
+  checkoutQuote: (couponCode?: string) => ["checkout-quote", couponCode ?? null] as const,
   wishlistAll: (userId: number) => ["wishlist", userId] as const,
   wishlist: (userId: number, page: number) => ["wishlist", userId, "list", page] as const,
   wishlistSummary: (userId: number) => ["wishlist", userId, "summary"] as const,
@@ -16,7 +17,6 @@ export const queryKeys = {
   payment: (orderId: number) => ["payment", orderId] as const,
   paymentMethods: ["payment-methods"] as const,
   promotionsAvailable: ["promotions", "available"] as const,
-  checkoutQuote: (couponCode?: string) => ["checkout-quote", couponCode ?? null] as const,
   flashSaleAvailability: (productIds: number[]) =>
     ["promotions", "flash-sale-availability", productIds] as const,
   productFilters: ["product-filters"] as const,
@@ -58,6 +58,7 @@ export const queryKeys = {
   adminPromotion: (id: number) => ["admin", "promotion", id] as const,
   adminPromotionRedemptions: (id: number, query: object) =>
     ["admin", "promotion", id, "redemptions", query] as const,
+  adminPromotionSummary: (id: number) => ["admin", "promotion", id, "summary"] as const,
   adminPromotionAllocations: (id: number, query: object) =>
     ["admin", "promotion-allocations", id, query] as const,
   adminReview: (id: number) => ["admin", "review", id] as const,

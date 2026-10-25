@@ -9,6 +9,7 @@ import { AddToCart } from "@/features/products/AddToCart/AddToCart";
 import { optionName } from "@/features/products/labels";
 import { ProductImage } from "@/features/products/ProductImage/ProductImage";
 import { ReviewSection } from "@/features/reviews/ReviewSection/ReviewSection";
+import { FlashSaleAvailability } from "@/features/promotions/FlashSaleAvailability";
 import { PromotionPrice } from "@/features/promotions/PromotionPrice/PromotionPrice";
 import { getFilterOptions, getProduct } from "@/features/products/server";
 import { getInitialReviews } from "@/features/reviews/server";
@@ -53,6 +54,7 @@ export default async function ProductPage({ params }: Props) {
           )}
           {product.shortDesc && <p className={styles.highlight}>{product.shortDesc}</p>}
           <PromotionPrice product={product} size="lg" />
+          <FlashSaleAvailability productIds={[product.id]} />
           <Badge tone={inStock ? "success" : "error"}>{inStock ? "Còn hàng" : "Hết hàng"}</Badge>
           <AddToCart productId={product.id} stock={product.quantity} />
           <WishlistToggle productId={product.id} productName={product.name} />

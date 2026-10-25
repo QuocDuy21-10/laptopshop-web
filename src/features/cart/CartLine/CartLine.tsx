@@ -11,6 +11,20 @@ import type { CartItem } from "@/lib/api/types";
 import { useRemoveCartItem, useUpdateCartItem } from "../hooks";
 import styles from "./CartLine.module.scss";
 
+const FALLBACK_PRICE = { AUTOMATIC: "giá khuyến mãi", null: "giá niêm yết" } as const;
+
+function fallbackNote(fallback: NonNullable<CartItem["promotionFallback"]>) {
+  const { availableQuantity, reason, appliedPromotionKind } = fallback;
+  const price = FALLBACK_PRICE[appliedPromotionKind ?? "null"];
+  if (availableQuantity > 0) {
+    const limit = reason === "USER_QUOTA" ? "Bạn chỉ được mua" : "Chỉ còn";
+    return `${limit} ${availableQuantity} suất Flash Sale. Giảm số lượng xuống ${availableQuantity} để nhận giá Flash Sale, hoặc giữ nguyên để tính theo ${price}.`;
+  }
+  return reason === "USER_QUOTA"
+    ? `Bạn đã dùng hết suất Flash Sale của mình, dòng này được tính theo ${price}.`
+    : `Suất Flash Sale đã hết, dòng này được tính theo ${price}.`;
+}
+
 export function CartLine({ line }: { line: CartItem }) {
   const update = useUpdateCartItem();
   const remove = useRemoveCartItem();
@@ -28,6 +42,11 @@ export function CartLine({ line }: { line: CartItem }) {
           {line.product.name}
         </Link>
         <Price value={line.product.salePrice ?? line.product.price} size="sm" />
+        {line.promotionFallback && (
+          <p className={styles.note} role="status">
+            {fallbackNote(line.promotionFallback)}
+          </p>
+        )}
         {unavailable && <Badge tone="neutral">Ngừng kinh doanh</Badge>}
         {error && (
           <p className={styles.error} role="alert">

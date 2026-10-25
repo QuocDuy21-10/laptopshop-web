@@ -70,3 +70,9 @@
     color: var(--color-error);
   }
 }
+
+.note {
+  color: var(--color-foreground-muted);
+
+  @include text(body-sm);
+}

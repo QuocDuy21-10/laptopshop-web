@@ -3,7 +3,27 @@ import { Price } from "@/components/ui/Price/Price";
 import type { Cart } from "@/lib/api/types";
 import styles from "./CartSummary.module.scss";
 
-export function CartSummary({ cart, action, title = "Tóm tắt đơn hàng", coupon = 0 }: { cart: Cart; action?: ReactNode; title?: string; coupon?: number }) {
+export type SummaryPricing = {
+  productDiscount: number;
+  couponDiscount: number;
+  total: number;
+};
+
+export function CartSummary({
+  cart,
+  action,
+  title = "Tóm tắt đơn hàng",
+  pricing = {
+    productDiscount: cart.productDiscount ?? 0,
+    couponDiscount: 0,
+    total: cart.totalAfterProductDiscount ?? cart.subtotal,
+  },
+}: {
+  cart: Cart;
+  action?: ReactNode;
+  title?: string;
+  pricing?: SummaryPricing;
+}) {
   return (
     <section className={styles.summary} aria-labelledby="summary-title">
       <h2 id="summary-title" className={styles.title}>
@@ -18,22 +38,22 @@ export function CartSummary({ cart, action, title = "Tóm tắt đơn hàng", co
           <dt>Thanh toán</dt>
           <dd>Khi nhận hàng (COD)</dd>
         </div>
-        {(cart.productDiscount ?? 0) > 0 && (
+        {pricing.productDiscount > 0 && (
           <div className={styles.row}>
-            <dt>Giảm giá sản phẩm</dt>
-            <dd><Price value={cart.productDiscount ?? 0} size="sm" /></dd>
+            <dt>Ưu đãi sản phẩm</dt>
+            <dd>-<Price value={pricing.productDiscount} size="sm" /></dd>
           </div>
         )}
-        {coupon > 0 && (
+        {pricing.couponDiscount > 0 && (
           <div className={styles.row}>
-            <dt>Giảm giá coupon</dt>
-            <dd><Price value={coupon} size="sm" /></dd>
+            <dt>Giảm giá mã ưu đãi</dt>
+            <dd>-<Price value={pricing.couponDiscount} size="sm" /></dd>
           </div>
         )}
         <div className={styles.total}>
           <dt>Tổng cộng</dt>
           <dd>
-            <Price value={cart.totalAfterProductDiscount ?? cart.subtotal} size="lg" />
+            <Price value={pricing.total} size="lg" />
           </dd>
         </div>
       </dl>

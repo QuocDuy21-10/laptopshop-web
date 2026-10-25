@@ -9071,6 +9071,10 @@ export interface components {
         name: string;
         /** Format: date-time */
         endsAt: string;
+        /** @enum {string} */
+        kind: "AUTOMATIC" | "FLASH_SALE";
+        /** @enum {string} */
+        eligibility: "POTENTIAL" | "EXACT";
       } | null;
     };
     ProductReviewSummary: {
@@ -9111,6 +9115,10 @@ export interface components {
         name: string;
         /** Format: date-time */
         endsAt: string;
+        /** @enum {string} */
+        kind: "AUTOMATIC" | "FLASH_SALE";
+        /** @enum {string} */
+        eligibility: "POTENTIAL" | "EXACT";
       } | null;
       reviewSummary: components["schemas"]["ProductReviewSummary"];
     };
@@ -9239,6 +9247,17 @@ export interface components {
         productDiscountAmount: number;
         lineTotal: number;
         product: components["schemas"]["PricedProduct"];
+        promotionFallback: {
+          /** @enum {string} */
+          skippedKind: "FLASH_SALE";
+          promotionId: number;
+          /** @enum {string} */
+          reason: "GLOBAL_QUOTA" | "USER_QUOTA" | "GLOBAL_AND_USER_QUOTA";
+          requestedQuantity: number;
+          availableQuantity: number;
+          /** @enum {string|null} */
+          appliedPromotionKind: "AUTOMATIC" | null;
+        } | null;
       }[];
       itemCount: number;
       subtotal: number;
@@ -9252,7 +9271,17 @@ export interface components {
       couponDiscount: number;
       total: number;
       lines: {
-        [key: string]: unknown;
+        promotionFallback: {
+          /** @enum {string} */
+          skippedKind: "FLASH_SALE";
+          promotionId: number;
+          /** @enum {string} */
+          reason: "GLOBAL_QUOTA" | "USER_QUOTA" | "GLOBAL_AND_USER_QUOTA";
+          requestedQuantity: number;
+          availableQuantity: number;
+          /** @enum {string|null} */
+          appliedPromotionKind: "AUTOMATIC" | null;
+        } | null;
       }[];
       coupon: {
         id: number;

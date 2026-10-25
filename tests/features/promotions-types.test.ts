@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import type { components } from "@/lib/api/schema";
+import type { Cart } from "@/lib/api/types";
 import type { PricingQuote, PricedProduct, PromotionDetail, PublicPromotion } from "@/lib/api/types";
 import { queryKeys } from "@/lib/api/query-keys";
 import type { FlashSaleAllocation, FlashSaleAvailability, PromotionStats } from "@/lib/api/types";
@@ -32,5 +34,26 @@ describe("promotion API contracts", () => {
     expect(queryKeys.adminPromotionAllocations(42, { page: 1 })).toEqual(["admin", "promotion-allocations", 42, { page: 1 }]);
     expect(errorMessage(new ApiError(409, "FLASH_SALE_QUOTA_EXCEEDED", "x"))).toContain("quota");
     expect(errorMessage(new ApiError(409, "FLASH_SALE_USER_LIMIT", "x"))).toContain("giới hạn");
+  });
+});
+
+describe("promotion fallback contract", () => {
+  it("keeps flash-sale eligibility and combined quota fallback types available", () => {
+    const promotion: NonNullable<components["schemas"]["PricedProduct"]["promotion"]> = {
+      id: 4,
+      name: "Flash Sale",
+      endsAt: "2026-10-25T00:00:00.000Z",
+      kind: "FLASH_SALE",
+      eligibility: "POTENTIAL",
+    };
+    const promotionFallback: NonNullable<Cart["items"][number]["promotionFallback"]> = {
+      skippedKind: "FLASH_SALE",
+      promotionId: 4,
+      reason: "GLOBAL_AND_USER_QUOTA",
+      requestedQuantity: 2,
+      availableQuantity: 0,
+      appliedPromotionKind: "AUTOMATIC",
+    };
+    expect([promotion.eligibility, promotionFallback.reason]).toEqual(["POTENTIAL", "GLOBAL_AND_USER_QUOTA"]);
   });
 });
