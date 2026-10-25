@@ -171,6 +171,17 @@ describe("CheckoutForm", () => {
     expect(orderCalls()).toHaveLength(0);
   });
 
+  it("keeps submission locked and offers recovery retry after a transient attempt lookup failure", async () => {
+    window.sessionStorage.setItem("laptopshop.checkout.idempotency-key", "recover-key");
+    fetchMock.mockRejectedValue(new TypeError("Failed to fetch"));
+    renderWithQuery(<CheckoutForm defaults={defaults} {...checkoutProps} />);
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("Không thể xác minh trạng thái đơn hàng trước đó");
+    expect(screen.getByRole("button", { name: "Xác nhận đặt hàng" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Thử lại" })).toBeEnabled();
+    expect(orderCalls()).toHaveLength(0);
+  });
+
   it("does not submit or quote without a pricing fingerprint", async () => {
     renderWithQuery(<CheckoutForm defaults={defaults} {...checkoutProps} pricingFingerprint="" pricingReady={false} />);
 

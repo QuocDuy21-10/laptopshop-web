@@ -29,15 +29,17 @@ export function CheckoutView() {
   const paymentMethods = usePaymentMethods();
   const quote = useCheckoutQuote();
   const empty = cart.data?.items.length === 0;
+  const quoteData = quote.data;
   const quoteTotals = new Map(
-    (quote.data?.lines ?? []).flatMap((line) => {
+    (quoteData?.lines ?? []).flatMap((line) => {
       const pricing = quoteLinePricing(line);
       return pricing ? [[pricing.productId, pricing.netLineTotal] as const] : [];
     }),
   );
   const hasPricingForCart =
-    Boolean(quote.data?.pricingFingerprint) && (cart.data?.items.every((line) => quoteTotals.has(line.product.id)) ?? false);
-  const pricingReady = hasPricingForCart && !quote.isPending && !quote.isFetching && !quote.isError;
+    Boolean(quoteData?.pricingFingerprint) && (cart.data?.items.every((line) => quoteTotals.has(line.product.id)) ?? false);
+  const validQuote = hasPricingForCart && !quote.isPending && !quote.isFetching && !quote.isError && quoteData ? quoteData : null;
+  const pricingReady = Boolean(validQuote);
 
   useEffect(() => {
     if (empty) router.replace("/cart");
@@ -64,38 +66,34 @@ export function CheckoutView() {
           await quote.refetch();
         }}
       />
-      {quote.isError && <Alert tone="warning" title="Không thể cập nhật giá và ưu đãi. Vui lòng thử lại trước khi đặt hàng." />}
-      <CartSummary
-        cart={cart.data}
-        title="Đơn hàng của bạn"
-        pricing={
-          quote.data
-            ? {
-                productDiscount: quote.data.productDiscount,
-                couponDiscount: quote.data.couponDiscount,
-                total: quote.data.total,
-              }
-            : undefined
-        }
-        action={
-          <ul role="list" className={styles.items}>
-            {cart.data.items.map((line) => (
-              <li key={line.id} className={styles.item}>
-                <span>
-                  {line.product.name} × {line.quantity}
-                </span>
-                {quote.data && quoteTotals.has(line.product.id) ? (
+      {validQuote ? (
+        <CartSummary
+          cart={cart.data}
+          title="Đơn hàng của bạn"
+          pricing={{
+            productDiscount: validQuote.productDiscount,
+            couponDiscount: validQuote.couponDiscount,
+            total: validQuote.total,
+          }}
+          action={
+            <ul role="list" className={styles.items}>
+              {cart.data.items.map((line) => (
+                <li key={line.id} className={styles.item}>
+                  <span>
+                    {line.product.name} × {line.quantity}
+                  </span>
                   <Price value={quoteTotals.get(line.product.id)!} size="sm" />
-                ) : quote.data ? (
-                  <span>Đang cập nhật</span>
-                ) : (
-                  <Price value={line.lineTotal} size="sm" />
-                )}
-              </li>
-            ))}
-          </ul>
-        }
-      />
+                </li>
+              ))}
+            </ul>
+          }
+        />
+      ) : (
+        <Alert
+          tone="warning"
+          title={quote.isError ? "Không thể cập nhật giá và ưu đãi. Vui lòng thử lại trước khi đặt hàng." : "Đang xác nhận giá và ưu đãi."}
+        />
+      )}
     </div>
   );
 }

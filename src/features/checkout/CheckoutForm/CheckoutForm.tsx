@@ -50,6 +50,8 @@ export function CheckoutForm({
   });
   const [problem, setProblem] = useState<Problem>(null);
   const [isRecoveringAttempt, setIsRecoveringAttempt] = useState(Boolean(storedAttemptKey));
+  const [recoveryError, setRecoveryError] = useState<string | null>(null);
+  const [recoveryAttempt, setRecoveryAttempt] = useState(0);
   const [isRepricing, setIsRepricing] = useState(false);
   const { register, handleSubmit, setError, formState } = useForm<ReceiverInput>({
     resolver: zodResolver(receiverSchema),
@@ -66,18 +68,25 @@ export function CheckoutForm({
     let active = true;
     void unwrap(api.GET("/api/v1/orders/checkout-attempt", { params: { header: { "Idempotency-Key": key } } }))
       .then(({ data }) => {
-        if (!data?.id) return;
+        if (!data?.id) {
+          if (active) setRecoveryError("Không thể xác minh trạng thái đơn hàng trước đó. Vui lòng thử lại.");
+          return;
+        }
         window.sessionStorage.removeItem(IDEMPOTENCY_STORAGE_KEY);
         router.replace(data.paymentMethod === "BANK_TRANSFER" ? `/account/orders/${data.id}/payment` : `/account/orders/${data.id}?placed=1`);
       })
-      .catch(() => undefined)
-      .finally(() => {
-        if (active) setIsRecoveringAttempt(false);
+      .catch((error: unknown) => {
+        if (!active) return;
+        if (isApiError(error, "CHECKOUT_ATTEMPT_NOT_FOUND")) {
+          setIsRecoveringAttempt(false);
+          return;
+        }
+        setRecoveryError("Không thể xác minh trạng thái đơn hàng trước đó. Vui lòng thử lại.");
       });
     return () => {
       active = false;
     };
-  }, [router, storedAttemptKey]);
+  }, [recoveryAttempt, router, storedAttemptKey]);
 
   const onSubmit = handleSubmit(async (receiver) => {
     if (!pricingReady || !pricingFingerprint || isRecoveringAttempt || isRepricing) return;
@@ -118,6 +127,16 @@ export function CheckoutForm({
       {placeOrder.isPaused && (
         // TanStack Query pauses mutations while the browser is offline and resumes them with the same key
         <Alert tone="warning" title="Mất kết nối mạng. Đơn hàng sẽ được gửi khi có mạng trở lại." />
+      )}
+      {isRecoveringAttempt && recoveryError && (
+        <Alert tone="error" title={recoveryError}>
+          <Button variant="secondary" size="sm" onClick={() => {
+            setRecoveryError(null);
+            setRecoveryAttempt((attempt) => attempt + 1);
+          }}>
+            Thử lại
+          </Button>
+        </Alert>
       )}
       {!pricingReady && !isRecoveringAttempt && (
         <Alert tone="warning" title="Đang cập nhật giá và ưu đãi. Vui lòng chờ trước khi đặt hàng." />
