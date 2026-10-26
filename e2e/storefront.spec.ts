@@ -189,16 +189,26 @@ test("verified product review lifecycle", async ({ browser, request }) => {
   await customerPage.getByRole("radio", { name: "5 sao" }).check();
   await customerPage.getByLabel("Nội dung").fill("Nội dung review E2E đủ dài.");
   await customerPage.getByRole("radio", { name: /Ẩn danh/ }).check();
-  await customerPage.getByLabel("Chọn ảnh").setInputFiles({
-    name: "laptop.png",
-    mimeType: "image/png",
-    buffer: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=", "base64"),
+  await customerPage.getByLabel("Chọn ảnh").setInputFiles([
+    { name: "laptop-1.png", mimeType: "image/png", buffer: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=", "base64") },
+    { name: "laptop-2.png", mimeType: "image/png", buffer: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=", "base64") },
+    { name: "laptop-3.png", mimeType: "image/png", buffer: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=", "base64") },
+  ]);
+  let droppedSyncResponse = false;
+  await customerPage.route(/\/api\/v1\/reviews\/\d+\/images\/sync$/, async (route) => {
+    if (route.request().method() === "PUT" && !droppedSyncResponse) {
+      droppedSyncResponse = true;
+      await route.fetch();
+      await route.abort();
+      return;
+    }
+    await route.continue();
   });
   await customerPage.getByRole("button", { name: "Gửi đánh giá" }).click();
 
   await customerPage.goto(`/products/${setup.productId}#reviews`);
   await expect(customerPage.getByText("****")).toBeVisible();
-  await expect(customerPage.getByRole("img", { name: /Ảnh review/ })).toHaveCount(1);
+  await expect(customerPage.getByRole("img", { name: /Ảnh review/ })).toHaveCount(3);
   const authorReview = customerPage.getByRole("article").filter({ hasText: "Nội dung review E2E đủ dài." });
   await expect(authorReview.getByRole("button", { name: "Không thể đánh dấu hữu ích" })).toBeDisabled();
 
@@ -245,7 +255,7 @@ test("verified product review lifecycle", async ({ browser, request }) => {
   await adminPage.getByRole("button", { name: "Khôi phục" }).click();
   await customerPage.goto(`/products/${setup.productId}#reviews`);
   await expect(customerPage.getByText("Nội dung review E2E đã chỉnh sửa đủ dài.")).toBeVisible();
-  await expect(customerPage.getByRole("img", { name: /Ảnh review/ })).toHaveCount(1);
+  await expect(customerPage.getByRole("img", { name: /Ảnh review/ })).toHaveCount(3);
 
   await customerPage.goto(`/account/orders/${setup.orderId}`);
   await customerPage.getByRole("button", { name: "Sửa đánh giá của tôi" }).click();
