@@ -8,22 +8,25 @@ import { useMe } from "@/features/account/useMe";
 import type { ReviewEligibility } from "@/lib/api/types";
 import { useAddReviewImages, useCreateReview, useDeleteReview, useDeleteReviewImage, useReorderReviewImages, useUpdateReview } from "../hooks";
 import { ReviewForm } from "../ReviewForm/ReviewForm";
-import type { ReviewImagesState } from "../ReviewImagesEditor/ReviewImagesEditor";
+import type { DraftImage, ReviewImagesState } from "../ReviewImagesEditor/ReviewImagesEditor";
 import type { ReviewInput } from "../schema";
 
 type Props = { productId: number; productName: string; eligibility: ReviewEligibility; open: boolean; onOpenChange: (open: boolean) => void };
+
+const draftImages = (review: ReviewEligibility["existingReview"]): ReviewImagesState =>
+  review?.images.map((image) => ({ kind: "existing", clientId: `existing-${image.id}`, image })) ?? [];
 
 export function ReviewDialog({ productId, productName, eligibility, open, onOpenChange }: Props) {
   const me = useMe();
   const existing = eligibility.existingReview;
   const [activeReview, setActiveReview] = useState(existing);
-  const [imageState, setImageState] = useState<ReviewImagesState>({ existingIds: existing?.images.map((image) => image.id) ?? [], newFiles: [] });
+  const [imageState, setImageState] = useState<ReviewImagesState>(() => draftImages(existing));
   const [imageError, setImageError] = useState<string | null>(null);
   useEffect(() => {
     // The dialog receives a new owner review after a successful create/rewrite; reset the editor only when its external eligibility changes.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setActiveReview(existing);
-    setImageState({ existingIds: existing?.images.map((image) => image.id) ?? [], newFiles: [] });
+    setImageState(draftImages(existing));
     setImageError(null);
   }, [existing]);
   const create = useCreateReview(productId, me.data?.id);
@@ -39,15 +42,17 @@ export function ReviewDialog({ productId, productName, eligibility, open, onOpen
     const saved = response.data;
     setActiveReview(saved);
     try {
+      const existingIds = imageState.filter((item): item is Extract<DraftImage, { kind: "existing" }> => item.kind === "existing").map((item) => item.image.id);
+      const newFiles = imageState.filter((item): item is Extract<DraftImage, { kind: "new" }> => item.kind === "new").map((item) => item.file);
       const originalIds = activeReview?.images.map((image) => image.id) ?? [];
-      const removedIds = originalIds.filter((id) => !imageState.existingIds.includes(id));
+      const removedIds = originalIds.filter((id) => !existingIds.includes(id));
       for (const imageId of removedIds) await deleteImage.mutateAsync(imageId);
-      const added = imageState.newFiles.length ? await addImages.mutateAsync(imageState.newFiles) : [];
-      const orderedIds = [...imageState.existingIds, ...added.map((image) => image.id)];
+      const added = newFiles.length ? await addImages.mutateAsync(newFiles) : [];
+      const orderedIds = [...existingIds, ...added.map((image) => image.id)];
       const reorderResponse = orderedIds.length ? await reorderImages.mutateAsync(orderedIds) : { data: [] };
       const finalImages = reorderResponse.data.length ? reorderResponse.data : saved.images.filter((image) => orderedIds.includes(image.id)).concat(added);
       setActiveReview({ ...saved, images: finalImages });
-      setImageState({ existingIds: finalImages.map((image) => image.id), newFiles: [] });
+      setImageState(finalImages.map((image) => ({ kind: "existing", clientId: `existing-${image.id}`, image })));
       onOpenChange(false);
     } catch {
       setImageError("Đánh giá đã được lưu nhưng ảnh chưa tải lên");

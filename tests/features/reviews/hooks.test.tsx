@@ -1,7 +1,8 @@
 import { describe, expect, it, beforeEach } from "vitest";
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useReviewEligibility, useProductReviews, useCreateReview, useAddReviewImages, useReorderReviewImages, useDeleteReviewImage, useHelpfulReviewIds, useToggleHelpful } from "@/features/reviews/hooks";
+import { useReviewEligibility, useProductReviews, useCreateReview, useAddReviewImages, useReorderReviewImages, useDeleteReviewImage, useHelpfulReviewIds, useToggleHelpful, useSyncReviewImages } from "@/features/reviews/hooks";
+import type { DraftImage } from "@/features/reviews/ReviewImagesEditor/ReviewImagesEditor";
 import { queryKeys } from "@/lib/api/query-keys";
 import { json, lastRequest, mockFetch, renderWithQuery, urlOf } from "../../utils";
 
@@ -76,6 +77,26 @@ describe("review query hooks", () => {
     const request = lastRequest(fetchMock);
     expect(new URL(request.url).pathname).toBe("/api/v1/reviews/18/images");
     expect(request.headers.get("content-type")).toContain("multipart/form-data");
+  });
+
+  it("syncs one ordered draft through the saved review ID and idempotency key", async () => {
+    const fetchMock = mockFetch();
+    fetchMock.mockResolvedValue(json(200, { data: { reviewId: 18, imageVersion: 1, replayed: false, images: [] } }));
+    const items: DraftImage[] = [
+      { kind: "existing", clientId: "existing-21", image: { id: 21, url: "https://signed.test/21.webp", urlExpiresAt: "2026-10-21T03:15:00.000Z", mimeType: "image/webp", width: 10, height: 10, position: 0 } },
+      { kind: "new", clientId: "new-c", file: new File(["new"], "new.png", { type: "image/png" }), url: "blob:new" },
+    ];
+    function Harness() {
+      const mutation = useSyncReviewImages(12, 7);
+      return <button type="button" onClick={() => mutation.mutate({ reviewId: 18, expectedVersion: 0, idempotencyKey: "sync-key", items })}>Sync</button>;
+    }
+    renderWithQuery(<Harness />);
+    await userEvent.click(screen.getByRole("button", { name: "Sync" }));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    const request = lastRequest(fetchMock);
+    expect(request.method).toBe("PUT");
+    expect(new URL(request.url).pathname).toBe("/api/v1/reviews/18/images/sync");
+    expect(request.headers.get("Idempotency-Key")).toBe("sync-key");
   });
 
   it("uses generated JSON routes for reorder and image delete", async () => {

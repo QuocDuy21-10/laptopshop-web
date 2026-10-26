@@ -15,7 +15,9 @@ describe("ReviewImagesEditor", () => {
 
     expect(screen.getByRole("group")).toHaveTextContent("1/3 ảnh");
     expect(screen.getByRole("img", { name: "Ảnh xem trước laptop.png" })).toBeInTheDocument();
-    expect(onChange).toHaveBeenLastCalledWith({ existingIds: [], newFiles: [expect.any(File)] });
+    expect(onChange).toHaveBeenLastCalledWith([
+      expect.objectContaining({ kind: "new", clientId: expect.any(String), file: expect.any(File) }),
+    ]);
 
     await userEvent.click(screen.getByRole("button", { name: "Xóa ảnh laptop.png" }));
     expect(screen.getByRole("group")).toHaveTextContent("0/3 ảnh");
@@ -35,7 +37,10 @@ describe("ReviewImagesEditor", () => {
 
     expect(screen.getByRole("group")).toHaveTextContent("2/3 ảnh");
     await userEvent.click(screen.getByRole("button", { name: "Sang phải ảnh 21" }));
-    expect(onChange).toHaveBeenLastCalledWith({ existingIds: [22, 21], newFiles: [] });
+    expect(onChange).toHaveBeenLastCalledWith([
+      expect.objectContaining({ kind: "existing", clientId: "existing-22", image: expect.objectContaining({ id: 22 }) }),
+      expect.objectContaining({ kind: "existing", clientId: "existing-21", image: expect.objectContaining({ id: 21 }) }),
+    ]);
     expect(screen.getByRole("button", { name: "Sang trái ảnh 21" })).toHaveAttribute("aria-label");
   });
 });
