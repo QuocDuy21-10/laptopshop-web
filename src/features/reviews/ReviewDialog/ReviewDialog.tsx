@@ -9,7 +9,7 @@ import type { ReviewEligibility, ReviewImage, ReviewImageSyncResult } from "@/li
 import { clearPendingImageSync, savePendingImageSync, toPendingImageSync } from "../pending-image-sync";
 import { useCreateReview, useDeleteReview, useReviewImageSyncStatus, useSyncReviewImages, useUpdateReview } from "../hooks";
 import { ReviewForm } from "../ReviewForm/ReviewForm";
-import type { DraftImage, ReviewImagesState } from "../ReviewImagesEditor/ReviewImagesEditor";
+import type { ReviewImagesState } from "../ReviewImagesEditor/ReviewImagesEditor";
 import type { ReviewInput } from "../schema";
 
 type Props = { productId: number; productName: string; eligibility: ReviewEligibility; open: boolean; onOpenChange: (open: boolean) => void };
@@ -19,7 +19,7 @@ const newKey = () => (typeof crypto.randomUUID === "function" ? crypto.randomUUI
 const draftImages = (review: ReviewEligibility["existingReview"]): ReviewImagesState =>
   review?.images.map((image) => ({ kind: "existing", clientId: `existing-${image.id}`, image })) ?? [];
 const resultImages = (result: ReviewImageSyncResult): ReviewImage[] =>
-  result.images.map(({ clientId: _clientId, ...image }) => image);
+  result.images.map(({ clientId, ...image }) => { void clientId; return image; });
 
 export function ReviewDialog({ productId, productName, eligibility, open, onOpenChange }: Props) {
   const me = useMe();
@@ -50,6 +50,7 @@ export function ReviewDialog({ productId, productName, eligibility, open, onOpen
   useEffect(() => {
     if (phase !== "RECONCILING") return;
     if (syncStatus.data?.status === "SUCCEEDED" && syncStatus.data.result) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setActiveReview((current) => current ? { ...current, imageVersion: syncStatus.data!.result!.imageVersion, images: resultImages(syncStatus.data!.result!) } : current);
       setImageState(syncStatus.data.result.images.map((image) => ({ kind: "existing", clientId: `existing-${image.id}`, image })));
       clearPendingImageSync();
