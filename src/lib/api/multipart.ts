@@ -18,7 +18,7 @@ export function toFormData(
 // multipart goes through authFetch directly so the browser sets the boundary header
 export async function sendMultipart<T = unknown>(
   path: string,
-  method: "POST" | "PATCH",
+  method: "POST" | "PATCH" | "PUT",
   form: FormData,
   headers?: HeadersInit,
 ): Promise<T> {

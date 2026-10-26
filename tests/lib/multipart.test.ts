@@ -34,6 +34,20 @@ describe("sendMultipart", () => {
     expect(new URL(request.url).pathname).toBe("/api/v1/admin/products");
   });
 
+  it("sends PUT multipart requests without overriding the browser boundary", async () => {
+    const fetchMock = mockFetch();
+    fetchMock.mockResolvedValue(json(200, { data: { imageVersion: 1 } }));
+    await expect(
+      sendMultipart("/api/v1/reviews/18/images/sync", "PUT", toFormData({ manifest: "{}" }), {
+        "Idempotency-Key": "sync-key",
+      }),
+    ).resolves.toEqual({ data: { imageVersion: 1 } });
+    const request = lastRequest(fetchMock);
+    expect(request.method).toBe("PUT");
+    expect(request.headers.get("Idempotency-Key")).toBe("sync-key");
+    expect(request.headers.get("content-type")).toContain("multipart/form-data");
+  });
+
   it("throws the API error", async () => {
     mockFetch().mockResolvedValue(json(409, { error: { code: "PRODUCT_IN_USE", message: "x" } }));
     await expect(sendMultipart("/api/v1/admin/products/1", "PATCH", new FormData())).rejects.toMatchObject({

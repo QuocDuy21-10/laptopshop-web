@@ -2618,7 +2618,10 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** Add images to my review */
+    /**
+     * Add images to my review
+     * @deprecated
+     */
     post: {
       parameters: {
         query?: never;
@@ -2700,6 +2703,163 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/reviews/{id}/images/sync": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get the status of my review image sync operation */
+    get: {
+      parameters: {
+        query?: never;
+        header: {
+          "Idempotency-Key": string;
+        };
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["ReviewImageSyncStatus"];
+            };
+          };
+        };
+        /** @description Missing idempotency key */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Sync operation not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    /** Synchronize the complete desired image set for my review */
+    put: {
+      parameters: {
+        query?: never;
+        header: {
+          "Idempotency-Key": string;
+        };
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: {
+        content: {
+          "multipart/form-data": {
+            /** @description JSON-encoded ReviewImageSyncManifest */
+            manifest: string;
+            files?: string[];
+          };
+        };
+      };
+      responses: {
+        /** @description Synchronized */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["ReviewImageSyncResult"];
+            };
+          };
+        };
+        /** @description Missing idempotency key or invalid manifest */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Review not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Idempotency, lease, image-set, or version conflict */
+        409: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Image too large */
+        413: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Storage unavailable */
+        503: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/reviews/{id}/images/order": {
     parameters: {
       query?: never;
@@ -2713,7 +2873,10 @@ export interface paths {
     delete?: never;
     options?: never;
     head?: never;
-    /** Reorder my review images */
+    /**
+     * Reorder my review images
+     * @deprecated
+     */
     patch: {
       parameters: {
         query?: never;
@@ -2783,7 +2946,10 @@ export interface paths {
     get?: never;
     put?: never;
     post?: never;
-    /** Delete one of my review images */
+    /**
+     * Delete one of my review images
+     * @deprecated
+     */
     delete: {
       parameters: {
         query?: never;
@@ -9759,11 +9925,47 @@ export interface components {
       id: number;
       /** Format: uri */
       url: string;
+      /** Format: date-time */
+      urlExpiresAt: string;
       /** @enum {string} */
       mimeType: "image/webp";
       width: number;
       height: number;
       position: number;
+    };
+    ReviewImageSyncResult: {
+      reviewId: number;
+      imageVersion: number;
+      replayed: boolean;
+      images: {
+        clientId: string;
+        id: number;
+        /** Format: uri */
+        url: string;
+        /** Format: date-time */
+        urlExpiresAt: string;
+        /** @enum {string} */
+        mimeType: "image/webp";
+        width: number;
+        height: number;
+        position: number;
+      }[];
+    };
+    ReviewImageSyncStatus: {
+      reviewId: number;
+      /** @enum {string} */
+      status: "PROCESSING" | "WAITING_RETRY" | "SUCCEEDED" | "FAILED";
+      expectedVersion: number;
+      retryable: boolean;
+      retryAfterMs?: number;
+      result?: components["schemas"]["ReviewImageSyncResult"];
+      error?: {
+        code: string;
+        message: string;
+        details?: unknown;
+      };
+      /** Format: date-time */
+      updatedAt: string;
     };
     PublicOfficialReply: {
       content: string;
@@ -9825,6 +10027,7 @@ export interface components {
       status: "PUBLISHED" | "HIDDEN";
       /** Format: date-time */
       deletedAt: string | null;
+      imageVersion: number;
       /** @enum {boolean} */
       verifiedPurchase: true;
       images: components["schemas"]["ReviewImage"][];

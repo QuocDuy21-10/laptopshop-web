@@ -8,6 +8,7 @@ import { renderWithQuery } from "../../utils";
 const image = (id: number, position: number): ReviewImage => ({
   id,
   url: `https://signed.test/${id}.webp`,
+  urlExpiresAt: "2026-10-21T03:15:00.000Z",
   mimeType: "image/webp",
   width: 800,
   height: 600,

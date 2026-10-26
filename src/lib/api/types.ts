@@ -145,6 +145,8 @@ export type PublicReview = Omit<Schemas["PublicReview"], "officialReply"> & {
   officialReply: PublicOfficialReply | null;
 };
 export type ReviewImage = Schemas["ReviewImage"];
+export type ReviewImageSyncResult = Schemas["ReviewImageSyncResult"];
+export type ReviewImageSyncStatus = Schemas["ReviewImageSyncStatus"];
 export type ReviewSummary = Schemas["ReviewSummary"];
 export type OwnerReview = Schemas["OwnerReview"];
 export type ReviewEligibility = Omit<Schemas["ReviewEligibility"], "existingReview"> & {

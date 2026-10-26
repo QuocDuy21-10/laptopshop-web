@@ -24,7 +24,7 @@ describe("ReviewForm", () => {
     renderWithQuery(
       <ReviewForm
         fullName="Nguyễn Văn A"
-        review={{ id: 1, productId: 12, rating: 4, title: "Cũ", content: "Nội dung cũ đủ dài.", isAnonymous: false, status: "HIDDEN", deletedAt: null, verifiedPurchase: true, images: [], createdAt: "2026-10-21T03:00:00.000Z", updatedAt: "2026-10-21T03:00:00.000Z" }}
+        review={{ id: 1, productId: 12, rating: 4, title: "Cũ", content: "Nội dung cũ đủ dài.", isAnonymous: false, status: "HIDDEN", deletedAt: null, imageVersion: 0, verifiedPurchase: true, images: [], createdAt: "2026-10-21T03:00:00.000Z", updatedAt: "2026-10-21T03:00:00.000Z" }}
         onSubmit={vi.fn()}
       />,
     );
