@@ -62,7 +62,7 @@ export function ReviewSection({ productId, initialSummary, initialPage }: Props)
           </select>
         </label>
       </div>
-      <ReviewList reviews={pageData.data} productId={productId} reviewIds={visibleReviewIds} helpfulIds={helpfulState.data ?? []} userId={me.data?.id} selfReviewId={eligibility.data?.existingReview?.id} isPending={reviewsQuery.isPending && initialPage.data.length > 0} isError={reviewsQuery.isError} onRetry={() => void reviewsQuery.refetch()} page={pageData.meta.page} totalPages={pageData.meta.totalPages} onPage={setPage} />
+      <ReviewList reviews={pageData.data} productId={productId} reviewIds={visibleReviewIds} helpfulIds={helpfulState.data ?? []} userId={me.data?.id} selfReviewId={eligibility.data?.existingReview?.id} isPending={reviewsQuery.isPending && initialPage.data.length > 0} isError={reviewsQuery.isError} onRetry={() => void reviewsQuery.refetch()} onImageError={() => void reviewsQuery.refetch()} page={pageData.meta.page} totalPages={pageData.meta.totalPages} onPage={setPage} />
       {eligibility.data && <ReviewDialog productId={productId} productName="sản phẩm này" eligibility={eligibility.data} open={dialogOpen} onOpenChange={setDialogOpen} />}
     </section>
   );

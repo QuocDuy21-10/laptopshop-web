@@ -5,7 +5,7 @@ import { HelpfulButton } from "../HelpfulButton/HelpfulButton";
 import styles from "./ReviewCard.module.scss";
 import { OfficialReply } from "../OfficialReply/OfficialReply";
 
-export function ReviewCard({ review, productId, reviewIds, userId, helpful, selfVoteDisabled }: { review: PublicReview; productId: number; reviewIds: number[]; userId?: number; helpful: boolean; selfVoteDisabled?: boolean }) {
+export function ReviewCard({ review, productId, reviewIds, userId, helpful, selfVoteDisabled, onImageError }: { review: PublicReview; productId: number; reviewIds: number[]; userId?: number; helpful: boolean; selfVoteDisabled?: boolean; onImageError?: () => void }) {
   return (
     <article className={styles.card}>
       <header className={styles.header}>
@@ -18,7 +18,7 @@ export function ReviewCard({ review, productId, reviewIds, userId, helpful, self
       {review.title && <h3 className={styles.title}>{review.title}</h3>}
       <p className={styles.content}>{review.content}</p>
       <OfficialReply reply={review.officialReply} />
-      <ReviewGallery images={review.images} />
+      <ReviewGallery images={review.images} onImageError={onImageError} />
       <HelpfulButton productId={productId} reviewId={review.id} reviewIds={reviewIds} userId={userId} count={review.helpfulCount} helpful={helpful} selfVoteDisabled={selfVoteDisabled} />
     </article>
   );
