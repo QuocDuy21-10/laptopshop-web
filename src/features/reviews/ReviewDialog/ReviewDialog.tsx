@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/Button/Button";
 import { Dialog } from "@/components/ui/Dialog/Dialog";
 import { useMe } from "@/features/account/useMe";
 import type { ReviewEligibility, ReviewImage, ReviewImageSyncResult } from "@/lib/api/types";
-import { clearPendingImageSync, savePendingImageSync, toPendingImageSync } from "../pending-image-sync";
+import { clearPendingImageSync, readPendingImageSync, savePendingImageSync, toPendingImageSync } from "../pending-image-sync";
 import { useCreateReview, useDeleteReview, useReviewImageSyncStatus, useSyncReviewImages, useUpdateReview } from "../hooks";
 import { ReviewForm } from "../ReviewForm/ReviewForm";
 import type { ReviewImagesState } from "../ReviewImagesEditor/ReviewImagesEditor";
@@ -39,13 +39,23 @@ export function ReviewDialog({ productId, productName, eligibility, open, onOpen
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   useEffect(() => {
-    if (!open || phase !== "IDLE" || lastTargetRef.current === existing?.id) return;
-    lastTargetRef.current = existing?.id ?? null;
-    setActiveReview(existing);
-    setImageState(draftImages(existing));
-    setImageError(null);
-    setSyncKey(null);
-  }, [existing, open, phase]);
+    if (!open || phase !== "IDLE") return;
+    if (lastTargetRef.current !== existing?.id) {
+      lastTargetRef.current = existing?.id ?? null;
+      setActiveReview(existing);
+      setImageState(draftImages(existing));
+      setImageError(null);
+      setSyncKey(null);
+    }
+    if (existing?.id) {
+      const pending = readPendingImageSync(productId, existing.id);
+      if (pending) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setSyncKey(pending.idempotencyKey);
+        setPhase("RECONCILING");
+      }
+    }
+  }, [existing, open, phase, productId]);
 
   useEffect(() => {
     if (phase !== "RECONCILING") return;
