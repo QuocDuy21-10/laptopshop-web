@@ -65,6 +65,15 @@ describe("StockAdjustModal", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
+  it("rejects a negative restock instead of silently turning it into +1", async () => {
+    renderAdmin(<StockAdjustModal product={product} onClose={() => {}} />);
+    await userEvent.type(screen.getByLabelText("Số lượng thay đổi"), "-9");
+    await userEvent.type(screen.getByLabelText("Ghi chú"), "Nhập NCC");
+    await userEvent.click(screen.getByRole("button", { name: "Xác nhận" }));
+    expect(await screen.findByText("Nhập hàng phải là số dương, tối đa 10.000")).toBeInTheDocument();
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
   it("reuses a key on retry and changes it when the payload changes", async () => {
     fetchMock.mockReset();
     fetchMock

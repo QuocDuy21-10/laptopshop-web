@@ -4,7 +4,7 @@ import { App, Button, Divider, Form, Input, InputNumber, Select, Space, Upload, 
 import { ImageUp } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { SPEC_ROWS } from "@/features/compare/specs";
 import { errorMessage } from "@/lib/api/errors";
 import { toFormData } from "@/lib/api/multipart";
@@ -42,6 +42,8 @@ export type ProductFormValues = {
 };
 
 const SPEC_KEYS = SPEC_ROWS.map((r) => r.key);
+// the API stores price and quantity in MySQL INT columns
+const MAX_DB_INT = 2_147_483_647;
 const NORMALIZED_SPEC_KEYS = ["cpuBrand", "gpuBrand", "gpuType", "panelType"] as const;
 
 const facetOptions = (options: FilterOptions | undefined, key: string) =>
@@ -65,9 +67,16 @@ export function ProductForm({ product }: { product?: Product }) {
   const { data: options } = useProductFilterOptions();
   const save = useSaveProduct(product?.id);
   const [adjusting, setAdjusting] = useState(false);
+  // antd calls onFinish after async validation, so a double click reaches it twice before isPending re-renders
+  const submitting = useRef(false);
 
-  const onFinish = (values: ProductFormValues) =>
+  const onFinish = (values: ProductFormValues) => {
+    if (submitting.current) return;
+    submitting.current = true;
     save.mutate(toProductFormData(values), {
+      onSettled: () => {
+        submitting.current = false;
+      },
       onSuccess: () => {
         message.success(product ? "Đã lưu sản phẩm" : "Đã thêm sản phẩm");
         router.push("/admin/products");
@@ -77,6 +86,7 @@ export function ProductForm({ product }: { product?: Product }) {
         message.error(errorMessage(e));
       },
     });
+  };
 
   return (
     <>
@@ -125,9 +135,9 @@ export function ProductForm({ product }: { product?: Product }) {
           <Form.Item
             name="price"
             label="Giá (₫)"
-            rules={[{ required: true, message: "Nhập giá" }, { type: "integer", min: 1, message: "Giá phải là số nguyên lớn hơn 0" }]}
+            rules={[{ required: true, message: "Nhập giá" }, { type: "integer", min: 1, max: MAX_DB_INT, message: "Giá phải là số nguyên lớn hơn 0 và không quá 2.147.483.647" }]}
           >
-            <InputNumber min={1} precision={0} className={styles.full} />
+            <InputNumber precision={0} className={styles.full} />
           </Form.Item>
           {product ? (
             <Form.Item label="Số lượng" extra="Thay đổi tồn kho qua điều chỉnh để có nhật ký.">
@@ -141,9 +151,9 @@ export function ProductForm({ product }: { product?: Product }) {
             <Form.Item
               name="quantity"
               label="Số lượng"
-              rules={[{ required: true, message: "Nhập số lượng" }, { type: "integer", min: 0, message: "Số lượng phải là số nguyên từ 0" }]}
+              rules={[{ required: true, message: "Nhập số lượng" }, { type: "integer", min: 0, max: MAX_DB_INT, message: "Số lượng phải là số nguyên từ 0 đến 2.147.483.647" }]}
             >
-              <InputNumber min={0} precision={0} className={styles.full} />
+              <InputNumber precision={0} className={styles.full} />
             </Form.Item>
           )}
           <Form.Item name="factory" label="Hãng" rules={[{ required: true, message: "Chọn hãng" }]}>
