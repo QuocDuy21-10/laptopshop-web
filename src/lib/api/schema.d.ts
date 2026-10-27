@@ -9286,6 +9286,7 @@ export interface components {
         /** @enum {string} */
         eligibility: "POTENTIAL" | "EXACT";
       } | null;
+      effectiveCatalogPrice: number;
       reviewSummary: components["schemas"]["ProductReviewSummary"];
     };
     /** @enum {string} */
@@ -9374,7 +9375,25 @@ export interface components {
       suggestions: string[];
     };
     FacetDefinition: {
-      key: string;
+      /** @enum {string} */
+      key:
+        | "factory"
+        | "target"
+        | "price"
+        | "cpuBrand"
+        | "gpuBrand"
+        | "gpuType"
+        | "ramGb"
+        | "storageGb"
+        | "screenSize"
+        | "resolutionTier"
+        | "panelType"
+        | "minRefreshHz"
+        | "minBatteryWh"
+        | "maxWeightGrams"
+        | "minWarrantyMonths"
+        | "minRating"
+        | "inStock";
       name: string;
       /** @enum {string} */
       mode: "MULTI" | "SINGLE_MIN" | "SINGLE_MAX" | "BOOLEAN";
@@ -9384,6 +9403,7 @@ export interface components {
         name: string;
         value: string;
       }[];
+      maxSelections?: number;
     };
     ProductFilterCatalog: {
       factoryOptions: {

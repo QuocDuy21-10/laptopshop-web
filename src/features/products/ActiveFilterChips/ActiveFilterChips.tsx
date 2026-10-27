@@ -2,7 +2,7 @@ import { X } from "lucide-react";
 import Link from "next/link";
 import type { FilterOptions } from "@/lib/api/types";
 import { formatFacetValue, optionName, PRICE_RANGE_OPTIONS } from "../labels";
-import { activeFilterCount, toQueryString, type ProductFilters } from "../search-params";
+import { activeFilterCount, clearProductFacets, toQueryString, type ProductFilters } from "../search-params";
 import styles from "./ActiveFilterChips.module.scss";
 
 export function ActiveFilterChips({ options, filters }: { options: FilterOptions; filters: ProductFilters }) {
@@ -39,7 +39,7 @@ export function ActiveFilterChips({ options, filters }: { options: FilterOptions
         </li>
       ))}
       <li>
-        <Link href={`/products${toQueryString({ factory: [], target: [], price: [], cpuBrand: [], gpuBrand: [], gpuType: [], ramGb: [], storageGb: [], screenSize: [], resolutionTier: [], panelType: [], q: filters.q, sort: filters.sort, page: 1 })}`} className={styles.clear}>
+        <Link href={`/products${toQueryString(clearProductFacets(filters))}`} className={styles.clear}>
           Xoá bộ lọc
         </Link>
       </li>

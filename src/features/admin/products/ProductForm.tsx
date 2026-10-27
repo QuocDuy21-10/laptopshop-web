@@ -43,6 +43,7 @@ export type ProductFormValues = {
 
 const SPEC_KEYS = SPEC_ROWS.map((r) => r.key);
 const NORMALIZED_SPEC_KEYS = ["cpuBrand", "gpuBrand", "gpuType", "panelType"] as const;
+const FORM_KEYS = ["name", "price", "factory", "target", "shortDesc", "detailDesc", "cpu", "cpuBrand", "gpu", "gpuBrand", "gpuType", "ramGb", "storageGb", "screenSizeInch", "screenResolution", "panelType", "refreshRateHz", "batteryWh", "weightGrams", "warrantyMonths", "image"] as const;
 
 const facetOptions = (options: FilterOptions | undefined, key: string) =>
   options?.facetDefinitions?.find((definition) => definition.key === key)?.options?.map((o) => ({ value: o.value, label: o.name }));
@@ -58,6 +59,27 @@ export const toProductFormData = ({ image, ...fields }: ProductFormValues) => {
   return toFormData({ ...fields, ...specs }, { image: image?.[0]?.originFileObj });
 };
 
+export const toProductPatchFormData = (
+  values: ProductFormValues,
+  touched: Partial<Record<keyof ProductFormValues, boolean>>,
+) => {
+  const fields: Record<string, unknown> = {};
+  for (const key of FORM_KEYS) {
+    if (touched[key]) fields[key] = values[key] ?? "";
+  }
+  const specs = Object.fromEntries(
+    [...SPEC_KEYS, ...NORMALIZED_SPEC_KEYS]
+      .filter((key) => touched[key])
+      .map((key) => {
+        const value = values[key];
+        return [key, typeof value === "string" ? value.trim() : (value ?? "")];
+      }),
+  );
+  return toFormData({ ...fields, ...specs } as Record<string, string | number | null | undefined>, {
+    image: touched.image ? values.image?.[0]?.originFileObj : undefined,
+  });
+};
+
 export function ProductForm({ product }: { product?: Product }) {
   const { message } = App.useApp();
   const router = useRouter();
@@ -66,8 +88,9 @@ export function ProductForm({ product }: { product?: Product }) {
   const save = useSaveProduct(product?.id);
   const [adjusting, setAdjusting] = useState(false);
 
-  const onFinish = (values: ProductFormValues) =>
-    save.mutate(toProductFormData(values), {
+  const onFinish = (values: ProductFormValues) => {
+    const touched = Object.fromEntries(FORM_KEYS.map((key) => [key, form.isFieldTouched(key)])) as Partial<Record<keyof ProductFormValues, boolean>>;
+    save.mutate(product ? toProductPatchFormData(values, touched) : toProductFormData(values), {
       onSuccess: () => {
         message.success(product ? "Đã lưu sản phẩm" : "Đã thêm sản phẩm");
         router.push("/admin/products");
@@ -77,6 +100,7 @@ export function ProductForm({ product }: { product?: Product }) {
         message.error(errorMessage(e));
       },
     });
+  };
 
   return (
     <>

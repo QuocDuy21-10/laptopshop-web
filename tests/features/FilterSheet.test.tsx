@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { FilterSheet } from "@/features/products/FilterSheet/FilterSheet";
 import type { ProductFilters } from "@/features/products/search-params";
+import type { FacetDefinition } from "@/lib/api/types";
 
 const router = vi.hoisted(() => ({ push: vi.fn() }));
 const getFacets = vi.hoisted(() => vi.fn());
@@ -18,13 +19,13 @@ vi.mock("@/components/ui/Dialog/Dialog", () => ({
   ),
 }));
 
-const options = {
+const options: { factoryOptions: never[]; targetOptions: never[]; facetDefinitions: FacetDefinition[] } = {
   factoryOptions: [],
   targetOptions: [],
   facetDefinitions: [
     { key: "cpuBrand", name: "CPU", mode: "MULTI" as const, kind: "categorical" as const, options: [{ value: "INTEL", name: "Intel" }, { value: "AMD", name: "AMD" }] },
     { key: "minRating", name: "Đánh giá tối thiểu", mode: "SINGLE_MIN" as const, kind: "bucket" as const, options: [{ value: "4", name: "Từ 4 sao" }, { value: "3", name: "Từ 3 sao" }] },
-  ],
+  ] as FacetDefinition[],
 };
 const filters: ProductFilters = {
   factory: [], target: [], price: [], cpuBrand: [], gpuBrand: [], gpuType: [], ramGb: [], storageGb: [],

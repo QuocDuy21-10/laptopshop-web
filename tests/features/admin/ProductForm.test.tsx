@@ -2,7 +2,7 @@ import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { UploadFile } from "antd";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { ProductForm, toProductFormData } from "@/features/admin/products/ProductForm";
+import { ProductForm, toProductFormData, toProductPatchFormData } from "@/features/admin/products/ProductForm";
 import { renderAdmin } from "../../utils";
 
 const mocks = vi.hoisted(() => ({ push: vi.fn(), mutate: vi.fn() }));
@@ -62,6 +62,23 @@ describe("toProductFormData", () => {
   });
 });
 
+describe("toProductPatchFormData", () => {
+  it("sends only touched fields and preserves explicit clears", () => {
+    const form = toProductPatchFormData(
+      {
+        name: "A", price: 200, factory: "DELL", target: "DOANH-NHAN", shortDesc: "s", detailDesc: "d",
+        cpu: "Intel Core i5", cpuBrand: "INTEL", ramGb: null,
+      },
+      { price: true, ramGb: true },
+    );
+    expect([...form.keys()].sort()).toEqual(["price", "ramGb"]);
+    expect(form.get("price")).toBe("200");
+    expect(form.get("ramGb")).toBe("");
+    expect(form.has("cpu")).toBe(false);
+    expect(form.has("cpuBrand")).toBe(false);
+  });
+});
+
 describe("ProductForm", () => {
   it("validates required fields before sending", async () => {
     renderAdmin(<ProductForm />);
@@ -72,12 +89,14 @@ describe("ProductForm", () => {
 
   it("saves an edited product without re-sending the image", async () => {
     renderAdmin(<ProductForm product={PRODUCT} />);
+    await userEvent.clear(screen.getByLabelText("Giá (₫)"));
+    await userEvent.type(screen.getByLabelText("Giá (₫)"), "30000000");
     await userEvent.click(screen.getByRole("button", { name: "Lưu thay đổi" }));
     await waitFor(() => expect(mocks.mutate).toHaveBeenCalled());
     const form = mocks.mutate.mock.calls[0][0] as FormData;
-    expect(form.get("name")).toBe("Dell XPS");
+    expect(form.get("name")).toBe(null);
     expect(form.get("price")).toBe("30000000");
-    expect(form.get("factory")).toBe("DELL");
+    expect(form.get("factory")).toBe(null);
     expect(form.has("image")).toBe(false);
   });
 
@@ -89,7 +108,7 @@ describe("ProductForm", () => {
     await userEvent.click(screen.getByRole("button", { name: "Lưu thay đổi" }));
     await waitFor(() => expect(mocks.mutate).toHaveBeenCalled());
     const form = mocks.mutate.mock.calls[0][0] as FormData;
-    expect(form.get("cpu")).toBe("Intel Core i7");
+    expect(form.get("cpu")).toBe(null);
     expect(form.get("ramGb")).toBe("");
   });
 
