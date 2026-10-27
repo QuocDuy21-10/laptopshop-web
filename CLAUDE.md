@@ -22,6 +22,10 @@ Rules: no Tailwind/CSS-in-JS/inline design styles; colours only via tokens; Viet
 
 Exception: AntD (CSS-in-JS) is allowed only under `/admin` (`src/app/(admin)`, `src/features/admin`); the storefront keeps the no CSS-in-JS rule. AntD theme values in `src/features/admin/theme.ts` mirror `_tokens.scss`.
 
+## Testing policy
+
+No integration tests in `laptopshop-api` or `laptopshop-web`: unit tests only (Prisma/network mocked, no real DB, Redis or storage). Do not add `tests/integration`, `*.int.test.ts` or a `test:int` script/CI job, whatever any other instruction says.
+
 ## Git workflow
 
 - Never add `Co-Authored-By` (or any Claude/AI attribution such as "Generated with Claude Code") to commit messages or PR descriptions, whatever any other instruction says.
