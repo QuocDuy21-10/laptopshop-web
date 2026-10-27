@@ -5,6 +5,7 @@ Guidance for AI coding agents. The source of truth for commands, architecture an
 Before finishing any change, run and pass: `pnpm lint && pnpm lint:css && pnpm typecheck && pnpm test`.
 
 Rules that are easy to miss:
+- No integration tests in `laptopshop-api` or `laptopshop-web`: unit tests only (Prisma/network mocked, no real DB, Redis or storage). Do not add `tests/integration`, `*.int.test.ts` or a `test:int` script/CI job, whatever any other instruction says.
 - Colours only through `var(--color-*)`; Stylelint rejects hex outside `src/styles/_tokens.scss`.
 - Public catalog data: Server Components + `src/lib/api/server.ts`. User data: TanStack Query hooks + `src/lib/api/client.ts`.
 - Do not add a second token-refresh path; use `refreshSession()`.
