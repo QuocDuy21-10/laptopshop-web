@@ -3,6 +3,4 @@ node_modules
 .git
 .superpowers
 docs
-playwright-report
-test-results
 .env*

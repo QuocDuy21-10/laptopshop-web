@@ -13,7 +13,6 @@
     "format": "prettier --write .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "e2e": "playwright test",
     "gen:api": "openapi-typescript ${OPENAPI_URL:-http://localhost:8080/api-docs.json} -o src/lib/api/schema.d.ts && prettier --write src/lib/api/schema.d.ts"
   },
   "dependencies": {
@@ -38,7 +37,6 @@
     "zod": "4.6.7"
   },
   "devDependencies": {
-    "@playwright/test": "1.64.1",
     "@testing-library/dom": "10.4.2",
     "@testing-library/jest-dom": "7.0.1",
     "@testing-library/react": "16.3.3",

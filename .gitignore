@@ -11,9 +11,6 @@ npm-debug.log*
 .DS_Store
 .superpowers/
 docs/superpowers/
-playwright-report/
-test-results/
-blob-report/
 docs-local/
 .claude/
 .codex/

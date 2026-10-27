@@ -66,9 +66,6 @@ importers:
         specifier: 4.6.7
         version: 4.6.7
     devDependencies:
-      '@playwright/test':
-        specifier: 1.64.1
-        version: 1.64.1
       '@testing-library/dom':
         specifier: 10.4.2
         version: 10.4.2
@@ -4605,6 +4602,7 @@ snapshots:
   '@playwright/test@1.64.1':
     dependencies:
       playwright: 1.64.1
+    optional: true
 
   '@radix-ui/primitive@1.2.0': {}
 
@@ -7133,11 +7131,13 @@ snapshots:
 
   picomatch@4.0.7: {}
 
-  playwright-core@1.64.1: {}
+  playwright-core@1.64.1:
+    optional: true
 
   playwright@1.64.1:
     dependencies:
       playwright-core: 1.64.1
+    optional: true
 
   pluralize@8.0.0: {}
 
