@@ -1,0 +1,71 @@
+.panel {
+  display: grid;
+  gap: var(--space-three);
+  padding: var(--space-four);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-three);
+}
+
+.row label {
+  display: grid;
+  gap: var(--space-one);
+}
+
+.row input {
+  min-height: 44px;
+  padding: var(--space-two);
+}
+
+.panel p { color: var(--color-error); }
+
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-three);
+}
+
+.kpis dt { color: var(--color-foreground-muted); }
+
+.kpis dd {
+  margin: var(--space-one) 0 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.tableWrap { overflow-x: auto; }
+
+.tableWrap table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: collapse;
+}
+
+.tableWrap th,
+.tableWrap td {
+  padding: var(--space-two);
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-two);
+}
+
+.pagination button {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+@media (width <= 40rem) {
+  .row, .kpis { grid-template-columns: 1fr; }
+}

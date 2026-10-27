@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Container } from "@/components/layout/Container/Container";
+import { Page } from "@/components/app/Page/Page";
 import { AdvisorView } from "@/features/advisor/AdvisorView/AdvisorView";
 
 export const metadata: Metadata = {
@@ -9,12 +9,12 @@ export const metadata: Metadata = {
 
 export default function AdvisorPage() {
   return (
-    <Container>
-      <section aria-labelledby="advisor-title">
-        <h1 id="advisor-title">Tư vấn chọn laptop</h1>
-        <p>Trả lời vài câu hỏi để tìm những mẫu laptop phù hợp với nhu cầu của bạn.</p>
-      </section>
+    <Page
+      title="Tư vấn chọn laptop"
+      titleId="advisor-title"
+      description="Trả lời vài câu hỏi để tìm những mẫu laptop phù hợp với nhu cầu của bạn."
+    >
       <AdvisorView />
-    </Container>
+    </Page>
   );
 }

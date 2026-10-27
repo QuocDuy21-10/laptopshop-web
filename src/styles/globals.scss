@@ -2,6 +2,20 @@
 @use "reset";
 @use "mixins" as *;
 
+// height of the sticky storefront header: one row on small screens, two from 1024px
+:root {
+  --header-h: var(--header-main-h);
+
+  @include up(lg) {
+    --header-h: calc(var(--header-main-h) + var(--header-nav-h) + 1px);
+  }
+}
+
+// keeps anchored and focused content clear of the sticky header (WCAG 2.4.11)
+html {
+  scroll-padding-top: calc(var(--header-h) + var(--space-four));
+}
+
 body {
   font-family: var(--font-sans);
   background: var(--color-background);

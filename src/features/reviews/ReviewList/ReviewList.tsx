@@ -18,9 +18,10 @@ type Props = {
   helpfulIds: number[];
   userId?: number;
   selfReviewId?: number;
+  onImageError?: () => void;
 };
 
-export function ReviewList({ reviews, isPending, isError, onRetry, page, totalPages, onPage, productId, reviewIds, helpfulIds, userId, selfReviewId }: Props) {
+export function ReviewList({ reviews, isPending, isError, onRetry, page, totalPages, onPage, productId, reviewIds, helpfulIds, userId, selfReviewId, onImageError }: Props) {
   if (isError) {
     return <Alert tone="error" title="Không thể tải đánh giá"><Button variant="secondary" onClick={onRetry}>Thử lại</Button></Alert>;
   }
@@ -28,7 +29,7 @@ export function ReviewList({ reviews, isPending, isError, onRetry, page, totalPa
   if (reviews.length === 0) return <p className={styles.empty}>Chưa có đánh giá nào</p>;
   return (
     <div className={styles.list}>
-      {reviews.map((review) => <ReviewCard key={review.id} review={review} productId={productId} reviewIds={reviewIds} userId={userId} helpful={helpfulIds.includes(review.id)} selfVoteDisabled={review.id === selfReviewId} />)}
+      {reviews.map((review) => <ReviewCard key={review.id} review={review} productId={productId} reviewIds={reviewIds} userId={userId} helpful={helpfulIds.includes(review.id)} selfVoteDisabled={review.id === selfReviewId} onImageError={onImageError} />)}
       {totalPages > 1 && (
         <nav className={styles.pagination} aria-label="Phân trang đánh giá">
           <Button variant="secondary" size="sm" disabled={page <= 1} onClick={() => onPage(page - 1)}>Trang trước</Button>

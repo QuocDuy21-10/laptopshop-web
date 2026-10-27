@@ -1,7 +1,7 @@
 import type { FilterOptions, ProductFacetsQuery, ProductQuery } from "@/lib/api/types";
 import { PRICE_RANGE_OPTIONS } from "./labels";
 
-export type ProductSort = "price_asc" | "price_desc";
+export type ProductSort = "price_asc" | "price_desc" | "rating_desc";
 export type ProductFilters = {
   factory: string[];
   target: string[];
@@ -18,6 +18,7 @@ export type ProductFilters = {
   minBatteryWh?: number;
   maxWeightGrams?: number;
   minWarrantyMonths?: number;
+  minRating?: 3 | 4;
   inStock?: boolean;
   sort?: ProductSort;
   q?: string;
@@ -62,7 +63,7 @@ const WARRANTY_MINIMUMS = [12, 24, 36] as const;
 
 // unknown values are dropped: the API answers 400 for them
 export function parseFilters(raw: Raw, options: FilterOptions): ProductFilters {
-  const sort = raw.sort === "price_asc" || raw.sort === "price_desc" ? raw.sort : undefined;
+  const sort = raw.sort === "price_asc" || raw.sort === "price_desc" || raw.sort === "rating_desc" ? raw.sort : undefined;
   const q = typeof raw.q === "string" && raw.q.trim() ? raw.q.trim().slice(0, 100) : undefined;
   const page = Math.trunc(Number(raw.page));
   return {
@@ -81,6 +82,7 @@ export function parseFilters(raw: Raw, options: FilterOptions): ProductFilters {
     minBatteryWh: threshold(raw.minBatteryWh, BATTERY_MINIMUMS),
     maxWeightGrams: threshold(raw.maxWeightGrams, WEIGHT_MAXIMUMS),
     minWarrantyMonths: threshold(raw.minWarrantyMonths, WARRANTY_MINIMUMS),
+    minRating: threshold(raw.minRating, [3, 4]) as 3 | 4 | undefined,
     inStock: raw.inStock === "true" ? true : undefined,
     sort,
     q,
@@ -105,6 +107,7 @@ export function toQueryString(f: ProductFilters): string {
   if (f.minBatteryWh !== undefined) params.set("minBatteryWh", String(f.minBatteryWh));
   if (f.maxWeightGrams !== undefined) params.set("maxWeightGrams", String(f.maxWeightGrams));
   if (f.minWarrantyMonths !== undefined) params.set("minWarrantyMonths", String(f.minWarrantyMonths));
+  if (f.minRating !== undefined) params.set("minRating", String(f.minRating));
   if (f.inStock) params.set("inStock", "true");
   if (f.sort) params.set("sort", f.sort);
   if (f.q) params.set("q", f.q);
@@ -132,6 +135,7 @@ export function toApiQuery(f: ProductFilters): ProductQuery {
     ...(f.minBatteryWh !== undefined ? { minBatteryWh: f.minBatteryWh } : {}),
     ...(f.maxWeightGrams !== undefined ? { maxWeightGrams: f.maxWeightGrams } : {}),
     ...(f.minWarrantyMonths !== undefined ? { minWarrantyMonths: f.minWarrantyMonths } : {}),
+    ...(f.minRating !== undefined ? { minRating: f.minRating } : {}),
     ...(f.inStock ? { inStock: true } : {}),
     ...(f.sort ? { sort: f.sort } : {}),
     ...(f.q ? { q: f.q } : {}),
@@ -151,4 +155,5 @@ export const activeFilterCount = (f: ProductFilters) =>
   f.factory.length + f.target.length + f.price.length + f.cpuBrand.length + f.gpuBrand.length + f.gpuType.length +
   f.ramGb.length + f.storageGb.length + f.screenSize.length + f.resolutionTier.length + f.panelType.length +
   (f.minRefreshHz === undefined ? 0 : 1) + (f.minBatteryWh === undefined ? 0 : 1) +
-  (f.maxWeightGrams === undefined ? 0 : 1) + (f.minWarrantyMonths === undefined ? 0 : 1) + (f.inStock ? 1 : 0);
+  (f.maxWeightGrams === undefined ? 0 : 1) + (f.minWarrantyMonths === undefined ? 0 : 1) +
+  (f.minRating === undefined ? 0 : 1) + (f.inStock ? 1 : 0);

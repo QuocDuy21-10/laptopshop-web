@@ -20,6 +20,7 @@ export function ActiveFilterChips({ options, filters }: { options: FilterOptions
     ...(filters.minBatteryWh === undefined ? [] : [{ key: "minBatteryWh" as const, v: String(filters.minBatteryWh), name: formatFacetValue("minBatteryWh", String(filters.minBatteryWh)) }]),
     ...(filters.maxWeightGrams === undefined ? [] : [{ key: "maxWeightGrams" as const, v: String(filters.maxWeightGrams), name: formatFacetValue("maxWeightGrams", String(filters.maxWeightGrams)) }]),
     ...(filters.minWarrantyMonths === undefined ? [] : [{ key: "minWarrantyMonths" as const, v: String(filters.minWarrantyMonths), name: formatFacetValue("minWarrantyMonths", String(filters.minWarrantyMonths)) }]),
+    ...(filters.minRating === undefined ? [] : [{ key: "minRating" as const, v: String(filters.minRating), name: formatFacetValue("minRating", String(filters.minRating)) }]),
     ...(filters.inStock ? [{ key: "inStock" as const, v: "true", name: formatFacetValue("inStock", "true") }] : []),
   ];
   const without = (key: string, v: string) => {

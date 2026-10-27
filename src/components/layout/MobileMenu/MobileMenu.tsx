@@ -37,6 +37,9 @@ export function MobileMenu({ targets }: { targets: FilterOption[] }) {
             {t.name}
           </Link>
         ))}
+        <Link href="/promotions" onClick={close}>
+          Khuyến mãi
+        </Link>
       </nav>
     </Dialog>
   );

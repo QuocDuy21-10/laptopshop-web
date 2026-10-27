@@ -15,7 +15,7 @@ const clearFacets = (filters: ProductFilters): ProductFilters => ({
   ...filters,
   factory: [], target: [], price: [], cpuBrand: [], gpuBrand: [], gpuType: [], ramGb: [], storageGb: [],
   screenSize: [], resolutionTier: [], panelType: [], minRefreshHz: undefined, minBatteryWh: undefined,
-  maxWeightGrams: undefined, minWarrantyMonths: undefined, inStock: undefined, page: 1,
+  maxWeightGrams: undefined, minWarrantyMonths: undefined, minRating: undefined, inStock: undefined, page: 1,
 });
 
 export function FilterSheet({ options, filters, facets }: { options: FilterOptions; filters: ProductFilters; facets?: ProductFacets | null }) {

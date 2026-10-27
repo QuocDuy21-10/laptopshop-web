@@ -1,0 +1,22 @@
+.list {
+  display: grid;
+  gap: .5rem;
+}
+
+.row {
+  display: flex;
+  gap: .75rem;
+  align-items: center;
+  min-height: 44px;
+  padding: .65rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.row span {
+  display: grid;
+  gap: .15rem;
+}
+
+.row small { color: var(--color-foreground-muted); }

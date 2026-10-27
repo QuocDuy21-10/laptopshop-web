@@ -48,6 +48,7 @@ describe("AdvisorResults", () => {
   it("shows loading status without stale results", () => {
     renderWithQuery(<AdvisorResults loading result={result()} onEdit={vi.fn()} />);
     expect(screen.getByRole("status")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Hủy và sửa tiêu chí" })).toBeInTheDocument();
     expect(screen.queryByText("86/100")).not.toBeInTheDocument();
   });
 
@@ -61,7 +62,7 @@ describe("AdvisorResults", () => {
 
   it("shows mode notice, explanation and existing commerce actions", () => {
     renderWithQuery(<AdvisorResults loading={false} result={result()} onEdit={vi.fn()} />);
-    expect(screen.getByText(/phần giải thích AI tạm thời không khả dụng/)).toBeInTheDocument();
+    expect(screen.getByText(/tiêu chí, thông số và giá hiện hành/)).toBeInTheDocument();
     expect(screen.getByText(/86\/100/)).toBeInTheDocument();
     expect(screen.getByText("Phù hợp với nhu cầu lập trình.")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: product.name })).toHaveAttribute("href", "/products/3");

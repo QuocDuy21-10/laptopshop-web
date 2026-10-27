@@ -15,7 +15,7 @@ describe("parseFilters", () => {
       { factory: "ASUS,NOKIA", target: ["GAMING"], price: "under-10m,cheap", sort: "price_desc", q: "  tuf ", page: "2" },
       options,
     );
-    expect(f).toEqual({ factory: ["ASUS"], target: ["GAMING"], price: ["under-10m"], cpuBrand: [], gpuBrand: [], gpuType: [], ramGb: [], storageGb: [], screenSize: [], resolutionTier: [], panelType: [], minRefreshHz: undefined, minBatteryWh: undefined, maxWeightGrams: undefined, minWarrantyMonths: undefined, inStock: undefined, sort: "price_desc", q: "tuf", page: 2 });
+    expect(f).toEqual({ factory: ["ASUS"], target: ["GAMING"], price: ["under-10m"], cpuBrand: [], gpuBrand: [], gpuType: [], ramGb: [], storageGb: [], screenSize: [], resolutionTier: [], panelType: [], minRefreshHz: undefined, minBatteryWh: undefined, maxWeightGrams: undefined, minWarrantyMonths: undefined, minRating: undefined, inStock: undefined, sort: "price_desc", q: "tuf", page: 2 });
   });
 
   it("defaults sensibly", () => {
@@ -24,7 +24,7 @@ describe("parseFilters", () => {
       target: [],
       price: [],
       cpuBrand: [], gpuBrand: [], gpuType: [], ramGb: [], storageGb: [], screenSize: [], resolutionTier: [], panelType: [],
-      minRefreshHz: undefined, minBatteryWh: undefined, maxWeightGrams: undefined, minWarrantyMonths: undefined, inStock: undefined,
+      minRefreshHz: undefined, minBatteryWh: undefined, maxWeightGrams: undefined, minWarrantyMonths: undefined, minRating: undefined, inStock: undefined,
       sort: undefined,
       q: undefined,
       page: 1,
@@ -70,7 +70,8 @@ describe("toApiQuery", () => {
         minBatteryWh: "50",
         maxWeightGrams: "2000",
         minWarrantyMonths: "24",
-        inStock: "true",
+      inStock: "true",
+        minRating: "4",
         sort: "price_asc",
         q: "  tuf ",
         page: "2",
@@ -82,11 +83,21 @@ describe("toApiQuery", () => {
       gpuBrand: ["NVIDIA"], gpuType: ["DEDICATED"], ramGb: [24], storageGb: [1000],
       screenSize: ["standard", "large"], resolutionTier: ["FHD"], panelType: ["IPS"],
       minRefreshHz: 144, minBatteryWh: 50, maxWeightGrams: 2000, minWarrantyMonths: 24,
-      inStock: true, sort: "price_asc", q: "tuf", page: 2,
+      inStock: true, minRating: 4, sort: "price_asc", q: "tuf", page: 2,
     });
     expect(toQueryString(f)).toBe(
-      "?factory=ASUS&target=GAMING&price=under-10m&cpuBrand=INTEL%2CAMD&gpuBrand=NVIDIA&gpuType=DEDICATED&ramGb=24&storageGb=1000&screenSize=standard%2Clarge&resolutionTier=FHD&panelType=IPS&minRefreshHz=144&minBatteryWh=50&maxWeightGrams=2000&minWarrantyMonths=24&inStock=true&sort=price_asc&q=tuf&page=2",
+      "?factory=ASUS&target=GAMING&price=under-10m&cpuBrand=INTEL%2CAMD&gpuBrand=NVIDIA&gpuType=DEDICATED&ramGb=24&storageGb=1000&screenSize=standard%2Clarge&resolutionTier=FHD&panelType=IPS&minRefreshHz=144&minBatteryWh=50&maxWeightGrams=2000&minWarrantyMonths=24&minRating=4&inStock=true&sort=price_asc&q=tuf&page=2",
     );
     expect(toFacetsApiQuery(f)).toMatchObject({ ramGb: "24", storageGb: "1000", inStock: true, q: "tuf" });
+  });
+
+  it("canonicalizes rating thresholds and rating sorting", () => {
+    const f = parseFilters({ minRating: ["3", "4"], sort: "rating_desc", page: "9" }, options);
+    expect(f.minRating).toBeUndefined();
+    expect(f.sort).toBe("rating_desc");
+    const four = parseFilters({ minRating: "4", sort: "rating_desc", page: "9" }, options);
+    expect(toQueryString(four)).toBe("?minRating=4&sort=rating_desc&page=9");
+    expect(toFacetsApiQuery(four)).toMatchObject({ minRating: 4 });
+    expect(parseFilters({ minRating: "5" }, options).minRating).toBeUndefined();
   });
 });

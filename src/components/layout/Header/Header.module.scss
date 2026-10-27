@@ -3,63 +3,175 @@
 .header {
   position: sticky;
   top: 0;
+  z-index: var(--z-sticky);
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
-  z-index: var(--z-sticky);
 }
 
-.inner {
+.main {
   display: flex;
   align-items: center;
-  gap: var(--space-four);
-  min-height: 64px;
+  gap: var(--space-three);
+  min-height: var(--header-main-h);
+
+  @include up(md) {
+    gap: var(--space-six);
+  }
+}
+
+.start {
+  display: flex;
+  align-items: center;
+  gap: var(--space-one);
+  flex-shrink: 0;
 }
 
 .brand {
-  color: var(--color-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-two);
+  min-height: var(--control-md);
+  color: var(--color-foreground);
   text-decoration: none;
-  white-space: nowrap;
+  letter-spacing: -0.02em;
 
-  @include text(title-lg);
-}
+  @include text(title-md);
 
-.nav {
-  display: none;
-  gap: var(--space-five);
-
-  a {
-    color: var(--color-foreground-muted);
-    text-decoration: none;
-    white-space: nowrap;
-
-    @include text(label-md);
-
-    &:hover {
-      color: var(--color-primary);
-    }
-  }
-
-  @include up(xl) {
-    display: flex;
+  &:hover {
+    color: var(--color-primary);
   }
 }
 
+// very narrow phones keep the logo mark only; the name stays available to screen readers
+.brandText {
+  @media (width < 400px) {
+    @include visually-hidden;
+  }
+}
+
+.brandIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+// the search field takes the free space between brand and actions; below 768px it moves into the menu
 .search {
   display: none;
-  flex: 1;
 
-  @include up(lg) {
-    display: flex;
+  @include up(md) {
+    display: block;
+    flex: 1;
+    min-width: 0;
+    max-width: 560px;
   }
 }
 
 .actions {
   display: flex;
   align-items: center;
-  gap: var(--space-two);
-  margin-left: auto;
+  gap: var(--space-one);
+  margin-inline-start: auto;
+  flex-shrink: 0;
+}
+
+.wideOnly {
+  display: none;
+
+  @include up(sm) {
+    display: contents;
+  }
+}
+
+.navRow {
+  display: none;
+  border-top: 1px solid var(--color-border);
 
   @include up(lg) {
-    margin-left: 0;
+    display: block;
+  }
+}
+
+.navInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-four);
+  min-height: var(--header-nav-h);
+}
+
+// scrolls sideways instead of running under the advisor link when labels are long (e.g. 1024px)
+.nav {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.navList {
+  display: flex;
+  align-items: center;
+  gap: var(--space-one);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding-inline: var(--space-two);
+  border-radius: var(--radius-sm);
+  color: var(--color-foreground-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+
+  @include text(label-md);
+
+  &:hover {
+    color: var(--color-foreground);
+    background: var(--color-surface-hover);
+  }
+
+  @include up(xl) {
+    padding-inline: var(--space-three);
+  }
+}
+
+// 1024–1279px: the pill reads "Tư vấn" so every category fits; the full name stays for screen readers
+.advisorMore {
+  @include down(xl) {
+    @include visually-hidden;
+  }
+}
+
+.advisorLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-two);
+  flex-shrink: 0;
+  min-height: 36px;
+  padding-inline: var(--space-three);
+  border-radius: var(--radius-full);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-hover);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color var(--duration-fast) var(--ease-out);
+
+  @include text(label-md);
+
+  &:hover {
+    background: var(--color-selected);
+    color: var(--color-primary-pressed);
   }
 }

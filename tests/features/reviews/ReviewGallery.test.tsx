@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ReviewGallery } from "@/features/reviews/ReviewGallery/ReviewGallery";
 import type { ReviewImage } from "@/lib/api/types";
@@ -8,6 +8,7 @@ import { renderWithQuery } from "../../utils";
 const image = (id: number, position: number): ReviewImage => ({
   id,
   url: `https://signed.test/${id}.webp`,
+  urlExpiresAt: "2026-10-21T03:15:00.000Z",
   mimeType: "image/webp",
   width: 800,
   height: 600,
@@ -35,5 +36,14 @@ describe("ReviewGallery", () => {
   it("renders nothing for an empty gallery", () => {
     const { container } = renderWithQuery(<ReviewGallery images={[]} />);
     expect(container.querySelector("[data-testid='review-gallery']")).toBeNull();
+  });
+
+  it("requests one signed URL refresh after an image load error", () => {
+    const onImageError = vi.fn();
+    renderWithQuery(<ReviewGallery images={[image(1, 0)]} onImageError={onImageError} />);
+    const img = screen.getByRole("img", { name: "Ảnh review 1" });
+    fireEvent.error(img);
+    fireEvent.error(img);
+    expect(onImageError).toHaveBeenCalledTimes(1);
   });
 });

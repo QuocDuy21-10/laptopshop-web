@@ -24,6 +24,7 @@ const review: PublicReview = {
   helpfulCount: 0,
   createdAt: "2026-10-21T03:00:00.000Z",
   updatedAt: "2026-10-21T03:00:00.000Z",
+  officialReply: { content: "Phản hồi chính thức", createdAt: "2026-10-21T03:00:00.000Z", updatedAt: "2026-10-21T03:00:00.000Z" },
 };
 
 const initialPage = { data: [review], meta: { page: 1, pageSize: 10, total: 1, totalPages: 1 } };

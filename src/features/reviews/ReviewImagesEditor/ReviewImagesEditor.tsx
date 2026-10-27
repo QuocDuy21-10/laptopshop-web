@@ -5,11 +5,10 @@ import type { ReviewImage } from "@/lib/api/types";
 import { Button } from "@/components/ui/Button/Button";
 import styles from "./ReviewImagesEditor.module.scss";
 
-export type ReviewImagesState = { existingIds: number[]; newFiles: File[] };
-
-type NewItem = { kind: "new"; file: File; url: string };
-type ExistingItem = { kind: "existing"; image: ReviewImage };
-type Item = NewItem | ExistingItem;
+export type DraftImage =
+  | { kind: "new"; clientId: string; file: File; url: string }
+  | { kind: "existing"; clientId: string; image: ReviewImage };
+export type ReviewImagesState = DraftImage[];
 
 type Props = {
   images: ReviewImage[];
@@ -18,39 +17,58 @@ type Props = {
 
 const previewUrl = (file: File) =>
   typeof URL.createObjectURL === "function" ? URL.createObjectURL(file) : "";
+const draftClientId = () =>
+  typeof crypto.randomUUID === "function" ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`;
 
 export function ReviewImagesEditor({ images, onChange }: Props) {
-  const [items, setItems] = useState<Item[]>(() => images.map((image) => ({ kind: "existing", image })));
+  const [items, setItems] = useState<DraftImage[]>(() => images.map((image) => ({ kind: "existing", clientId: `existing-${image.id}`, image })));
   const inputRef = useRef<HTMLInputElement>(null);
   const urlsRef = useRef(new Set<string>());
-  const imageSignature = images.map((image) => image.id).join(",");
+  const [fileError, setFileError] = useState<string | null>(null);
+  const imageSignature = images.map((image) => `${image.id}:${image.position}`).join(",");
   const signatureRef = useRef(imageSignature);
 
   useEffect(() => {
     if (signatureRef.current === imageSignature) return;
     signatureRef.current = imageSignature;
-    setItems(images.map((image) => ({ kind: "existing", image })));
+    setItems(images.map((image) => ({ kind: "existing", clientId: `existing-${image.id}`, image })));
   }, [imageSignature, images]);
 
   useEffect(() => () => {
     for (const url of urlsRef.current) URL.revokeObjectURL(url);
   }, []);
 
-  const update = (next: Item[]) => {
+  const update = (next: DraftImage[]) => {
     setItems(next);
-    onChange({
-      existingIds: next.filter((item): item is ExistingItem => item.kind === "existing").map((item) => item.image.id),
-      newFiles: next.filter((item): item is NewItem => item.kind === "new").map((item) => item.file),
-    });
+    onChange(next);
   };
 
   const addFiles = (files: FileList | null) => {
     if (!files) return;
-    const available = Array.from(files).filter((file) => ["image/jpeg", "image/png", "image/webp"].includes(file.type));
+    setFileError(null);
+    const selected = Array.from(files);
+    const invalidType = selected.find((file) => !["image/jpeg", "image/png", "image/webp"].includes(file.type));
+    if (invalidType) {
+      setFileError(`Định dạng ảnh không được hỗ trợ: ${invalidType.name}`);
+      if (inputRef.current) inputRef.current.value = "";
+      return;
+    }
+    const tooLarge = selected.find((file) => file.size > 3 * 1024 * 1024);
+    if (tooLarge) {
+      setFileError(`Ảnh vượt quá 3 MB: ${tooLarge.name}`);
+      if (inputRef.current) inputRef.current.value = "";
+      return;
+    }
+    const available = selected;
+    if (available.length > 3 - items.length) {
+      setFileError("Review chỉ được tối đa 3 ảnh.");
+      if (inputRef.current) inputRef.current.value = "";
+      return;
+    }
     const additions = available.slice(0, 3 - items.length).map((file) => {
       const url = previewUrl(file);
       if (url.startsWith("blob:")) urlsRef.current.add(url);
-      return { kind: "new" as const, file, url };
+      return { kind: "new" as const, clientId: draftClientId(), file, url };
     });
     if (additions.length) update([...items, ...additions]);
     if (inputRef.current) inputRef.current.value = "";
@@ -86,12 +104,13 @@ export function ReviewImagesEditor({ images, onChange }: Props) {
         multiple
         onChange={(event) => addFiles(event.target.files)}
       />
+      {fileError && <p className={styles.error}>{fileError}</p>}
       <div className={styles.grid}>
         {items.map((item, index) => {
           const url = item.kind === "existing" ? item.image.url : item.url;
           const name = item.kind === "existing" ? `ảnh ${item.image.id}` : item.file.name;
           return (
-            <figure className={styles.item} key={item.kind === "existing" ? item.image.id : `${item.file.name}-${index}`}>
+            <figure className={styles.item} key={item.clientId}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={url} alt={item.kind === "new" ? `Ảnh xem trước ${item.file.name}` : `Ảnh review ${item.image.id}`} width={item.kind === "existing" ? item.image.width : 160} height={item.kind === "existing" ? item.image.height : 120} />
               <figcaption>{name}</figcaption>

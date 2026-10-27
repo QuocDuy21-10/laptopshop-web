@@ -1,7 +1,23 @@
 "use client";
 
-import { Button, Drawer, Grid, Layout, Menu } from "antd";
-import { Banknote, LayoutDashboard, LogOut, Menu as MenuIcon, MessageSquareQuote, Package, ShoppingBag, Store, Users, Warehouse } from "lucide-react";
+import { Button, Drawer, Grid, Layout, Menu, type MenuProps } from "antd";
+import {
+  BellRing,
+  Banknote,
+  ExternalLink,
+  LayoutDashboard,
+  LogOut,
+  Menu as MenuIcon,
+  MessageSquareQuote,
+  Package,
+  PanelLeftClose,
+  PanelLeftOpen,
+  ShoppingBag,
+  Tag as TagIcon,
+  Users,
+  Warehouse,
+  Wrench,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
@@ -9,17 +25,71 @@ import { useMe } from "@/features/account/useMe";
 import { useLogout } from "@/features/auth/hooks";
 import styles from "./AdminShell.module.scss";
 
-const NAV = [
-  { href: "/admin", label: "Tổng quan", icon: LayoutDashboard },
-  { href: "/admin/products", label: "Sản phẩm", icon: Package },
-  { href: "/admin/orders", label: "Đơn hàng", icon: ShoppingBag },
-  { href: "/admin/inventory", label: "Kho hàng", icon: Warehouse },
-  { href: "/admin/payments", label: "Đối soát thanh toán", icon: Banknote },
-  { href: "/admin/reviews", label: "Đánh giá", icon: MessageSquareQuote },
-  { href: "/admin/users", label: "Người dùng", icon: Users },
+type NavItem = { href: string; label: string; icon: typeof Package };
+
+// grouped by job; routes are unchanged
+const NAV_GROUPS: { title: string; items: NavItem[] }[] = [
+  { title: "", items: [{ href: "/admin", label: "Tổng quan", icon: LayoutDashboard }] },
+  {
+    title: "Bán hàng",
+    items: [
+      { href: "/admin/orders", label: "Đơn hàng", icon: ShoppingBag },
+      { href: "/admin/payments", label: "Đối soát thanh toán", icon: Banknote },
+      { href: "/admin/promotions", label: "Khuyến mãi", icon: TagIcon },
+    ],
+  },
+  {
+    title: "Danh mục",
+    items: [
+      { href: "/admin/products", label: "Sản phẩm", icon: Package },
+      { href: "/admin/inventory", label: "Kho hàng", icon: Warehouse },
+    ],
+  },
+  {
+    title: "Khách hàng",
+    items: [
+      { href: "/admin/users", label: "Người dùng", icon: Users },
+      { href: "/admin/reviews", label: "Đánh giá", icon: MessageSquareQuote },
+      { href: "/admin/after-sales", label: "Bảo hành & Hậu mãi", icon: Wrench },
+    ],
+  },
+  { title: "Hệ thống", items: [{ href: "/admin/notifications", label: "Thông báo", icon: BellRing }] },
 ];
 
-const activeKey = (pathname: string) => NAV.slice(1).find((n) => pathname.startsWith(n.href))?.href ?? "/admin";
+const NAV = NAV_GROUPS.flatMap((group) => group.items);
+
+const activeKey = (pathname: string) =>
+  NAV.filter((n) => n.href !== "/admin").find((n) => pathname.startsWith(n.href))?.href ?? "/admin";
+
+const toItem = ({ href, label, icon: Icon }: NavItem) => ({
+  key: href,
+  icon: <Icon size={18} aria-hidden="true" />,
+  label: <Link href={href}>{label}</Link>,
+});
+
+const MENU_ITEMS: MenuProps["items"] = NAV_GROUPS.map((group) =>
+  group.title
+    ? { type: "group" as const, key: group.title, label: group.title, children: group.items.map(toItem) }
+    : toItem(group.items[0]),
+);
+
+function Brand({ compact }: { compact?: boolean }) {
+  return (
+    <Link href="/admin" className={styles.brand} aria-label="LaptopShop quản trị">
+      <span className={styles.brandIcon} aria-hidden>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="4" width="18" height="12" rx="2" ry="2" />
+          <line x1="2" y1="20" x2="22" y2="20" />
+        </svg>
+      </span>
+      {!compact && (
+        <span className={styles.brandText}>
+          LaptopShop<small>Quản trị</small>
+        </span>
+      )}
+    </Link>
+  );
+}
 
 export function AdminShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -27,6 +97,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
   // before the first measurement (SSR) lg is undefined: render the desktop layout
   const desktop = Grid.useBreakpoint().lg !== false;
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   const { data: me } = useMe();
   const logout = useLogout();
 
@@ -35,37 +106,57 @@ export function AdminShell({ children }: { children: ReactNode }) {
       mode="inline"
       selectedKeys={[activeKey(pathname)]}
       onClick={() => setDrawerOpen(false)}
-      items={NAV.map(({ href, label, icon: Icon }) => ({
-        key: href,
-        icon: <Icon size={18} aria-hidden="true" />,
-        label: <Link href={href}>{label}</Link>,
-      }))}
+      items={MENU_ITEMS}
+      className={styles.menu}
     />
   );
 
   return (
     <Layout className={styles.shell}>
       {desktop && (
-        <Layout.Sider collapsible theme="light" width={232} className={styles.sider}>
-          <div className={styles.brand}>LaptopShop</div>
-          {menu}
+        <Layout.Sider
+          width={240}
+          collapsedWidth={72}
+          collapsed={collapsed}
+          trigger={null}
+          className={styles.sider}
+          aria-label="Điều hướng quản trị"
+        >
+          <div className={styles.siderTop}>
+            <Brand compact={collapsed} />
+          </div>
+          <nav aria-label="Điều hướng quản trị" className={styles.siderNav}>
+            {menu}
+          </nav>
         </Layout.Sider>
       )}
-      <Layout>
+      <Layout className={styles.body}>
         <Layout.Header className={styles.header}>
-          {!desktop && (
+          {desktop ? (
             <Button
               type="text"
-              aria-label="Mở menu"
-              icon={<MenuIcon size={20} aria-hidden="true" />}
-              onClick={() => setDrawerOpen(true)}
+              aria-label={collapsed ? "Mở rộng thanh điều hướng" : "Thu gọn thanh điều hướng"}
+              aria-expanded={!collapsed}
+              icon={collapsed ? <PanelLeftOpen size={20} aria-hidden="true" /> : <PanelLeftClose size={20} aria-hidden="true" />}
+              onClick={() => setCollapsed((value) => !value)}
             />
+          ) : (
+            <>
+              <Button
+                type="text"
+                aria-label="Mở menu"
+                icon={<MenuIcon size={20} aria-hidden="true" />}
+                onClick={() => setDrawerOpen(true)}
+              />
+              <Brand />
+            </>
           )}
           <span className={styles.spacer} />
           <Link href="/" className={styles.headerLink}>
-            <Store size={18} aria-hidden="true" /> Cửa hàng
+            <ExternalLink size={16} aria-hidden="true" />
+            <span>Xem cửa hàng</span>
           </Link>
-          <span className={styles.user}>{me?.fullName ?? me?.username}</span>
+          {me ? <span className={styles.user}>{me.fullName ?? me.username}</span> : null}
           <Button
             icon={<LogOut size={16} aria-hidden="true" />}
             loading={logout.isPending}
@@ -86,8 +177,15 @@ export function AdminShell({ children }: { children: ReactNode }) {
           {children}
         </Layout.Content>
       </Layout>
-      <Drawer open={!desktop && drawerOpen} onClose={() => setDrawerOpen(false)} placement="left" title="LaptopShop">
-        {menu}
+      <Drawer
+        open={!desktop && drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        placement="left"
+        size={280}
+        title={<Brand />}
+        styles={{ body: { padding: 8 } }}
+      >
+        <nav aria-label="Điều hướng quản trị">{menu}</nav>
       </Drawer>
     </Layout>
   );

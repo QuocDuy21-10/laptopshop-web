@@ -57,9 +57,24 @@ describe("OrderDetail review actions", () => {
     fetchMock.mockResolvedValue(json(200, { data: {
       id: 50, status: "COMPLETED", paymentStatus: "PAYMENT_SUCCESS", paymentMethod: "COD", totalPrice: 2000,
       receiverName: "R", receiverPhone: "0900000000", receiverAddress: "Addr", createdAt: "2026-10-21T03:00:00.000Z",
-      items: [{ productId: 1, name: "A", image: null, price: 1000, quantity: 1 }, { productId: 2, name: "B", image: null, price: 1000, quantity: 1 }],
+      items: [{ productId: 1, orderDetailId: 31, name: "A", image: null, price: 1000, quantity: 1, allowedRequestTypes: ["WARRANTY", "TECHNICAL_SUPPORT"] }, { productId: 2, orderDetailId: 32, name: "B", image: null, price: 1000, quantity: 1, allowedRequestTypes: ["TECHNICAL_SUPPORT"] }],
     } }));
     renderWithQuery(<OrderDetail id={50} placed={false} />);
     expect(await screen.findAllByRole("button", { name: "Đánh giá sản phẩm" })).toHaveLength(2);
+    expect(screen.getByRole("link", { name: "Yêu cầu bảo hành" })).toHaveAttribute("href", "/account/after-sales/new?type=WARRANTY&orderDetailId=31");
+  });
+
+  it.each([
+    ["PAYMENT_SUCCESS", "PAID", "Đơn hàng đã thanh toán"],
+    ["PAYMENT_UNPAID", "VERIFYING", "đang được đối soát"],
+  ] as const)("hides customer cancellation for %s/%s", async (paymentStatus, blockedReason, message) => {
+    fetchMock.mockResolvedValue(json(200, { data: {
+      id: 50, status: "PENDING", paymentStatus, paymentMethod: "BANK_TRANSFER", paymentCancellationBlockedReason: blockedReason, totalPrice: 2000,
+      receiverName: "R", receiverPhone: "0900000000", receiverAddress: "Addr", createdAt: "2026-10-21T03:00:00.000Z",
+      items: [],
+    } }));
+    renderWithQuery(<OrderDetail id={50} placed={false} />);
+    expect(await screen.findByText(new RegExp(message))).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Huỷ đơn" })).not.toBeInTheDocument();
   });
 });

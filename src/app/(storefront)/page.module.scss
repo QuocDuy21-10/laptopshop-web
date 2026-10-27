@@ -3,115 +3,382 @@
 .page {
   display: flex;
   flex-direction: column;
-  gap: var(--space-ten);
+  gap: var(--section-gap);
   padding-top: var(--space-six);
 
   @include up(lg) {
-    gap: var(--space-twelve);
     padding-top: var(--space-eight);
   }
 }
 
+// ==========================================
+// HERO SECTION
+// ==========================================
 .hero {
   display: grid;
   gap: var(--space-six);
-  align-items: center;
   padding: var(--space-six);
-  background: var(--color-surface);
+  background: var(--color-surface-raised);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
+  align-items: stretch;
 
-  @include up(md) {
-    grid-template-columns: 1.3fr 1fr;
+  @include up(lg) {
+    grid-template-columns: 1.25fr 0.95fr;
     padding: var(--space-ten);
+    gap: var(--space-ten);
   }
 }
 
-.eyebrow {
-  display: inline-block;
-  margin-bottom: var(--space-three);
-  padding: var(--space-one) var(--space-three);
-  background: var(--color-primary-soft);
-  border-radius: var(--radius-full);
-  color: var(--color-primary);
+.heroCopy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--space-four);
+}
 
-  @include text(label-sm);
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-two);
+  padding: var(--space-one) var(--space-three);
+  border-radius: var(--radius-full);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: var(--text-label-sm-size);
+  font-weight: var(--text-label-sm-weight);
+}
+
+.eyebrowDot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
 }
 
 .heroTitle {
-  font-size: clamp(28px, 5vw, var(--text-display-size));
-  font-weight: var(--text-display-weight);
-  line-height: var(--text-display-line);
-  letter-spacing: var(--text-display-tracking);
+  font-size: var(--text-headline-md-size);
+  font-weight: var(--text-headline-md-weight);
+  line-height: var(--text-headline-md-line);
+  letter-spacing: -0.025em;
+  color: var(--color-foreground);
+  max-width: 18ch;
+
+  @include up(md) {
+    font-size: var(--text-headline-lg-size);
+  }
 }
 
-.lead {
-  max-width: 50ch;
-  margin-top: var(--space-three);
+.heroLead {
   color: var(--color-foreground-muted);
-
-  @include text(body-lg);
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-line);
+  max-width: 54ch;
 }
 
 .heroActions {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-three);
-  margin-top: var(--space-six);
+  margin-top: var(--space-two);
 }
 
-.heroArt {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  aspect-ratio: 4 / 3;
-  background: var(--color-surface-muted);
-  border-radius: var(--radius-md);
-  color: var(--color-primary);
+// ==========================================
+// HERO INTERACTIVE CARD (RIGHT SIDE)
+// ==========================================
+.heroCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-five);
+  padding: var(--space-six);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-1);
+}
 
-  @include up(md) {
-    display: flex;
+.heroCardHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-one);
+}
+
+.heroCardBadge {
+  align-self: flex-start;
+  font-size: 0.7rem;
+  font-weight: var(--text-label-sm-weight);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-primary);
+}
+
+.heroCardTitle {
+  font-size: var(--text-title-md-size);
+  font-weight: var(--text-headline-md-weight);
+  color: var(--color-foreground);
+}
+
+.heroCardSub {
+  font-size: var(--text-label-sm-size);
+  color: var(--color-foreground-muted);
+}
+
+// one column on narrow phones so "Dưới 15 triệu" stays on one line
+.budgetGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+  gap: var(--space-two);
+}
+
+.budgetPill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-three);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-size: var(--text-body-md-size);
+  font-weight: 500;
+  text-decoration: none;
+  transition: all var(--duration-fast) var(--ease-out);
+
+  &:hover {
+    border-color: var(--color-primary);
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+    transform: translateY(-1px);
   }
 }
 
+.budgetArrow {
+  color: var(--color-foreground-muted);
+  font-size: var(--text-label-sm-size);
+  transition: transform var(--duration-fast) var(--ease-out);
+
+  .budgetPill:hover & {
+    color: var(--color-primary);
+    transform: translateX(2px);
+  }
+}
+
+.heroCardFooter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-three);
+  padding: var(--space-four);
+  border-radius: var(--radius-md);
+  background: var(--color-primary-soft);
+}
+
+.advisorPromo {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-three);
+
+  strong {
+    display: block;
+    font-size: var(--text-label-sm-size);
+    font-weight: var(--text-label-sm-weight);
+    color: var(--color-foreground);
+  }
+
+  p {
+    font-size: 0.75rem;
+    color: var(--color-foreground-muted);
+    margin-top: 2px;
+  }
+}
+
+.advisorPromoIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  flex-shrink: 0;
+}
+
+.advisorLink {
+  align-self: flex-start;
+  font-size: var(--text-label-sm-size);
+  font-weight: var(--text-label-sm-weight);
+  color: var(--color-primary);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// ==========================================
+// SECTIONS & TARGET CARDS
+// ==========================================
 .section {
   display: flex;
   flex-direction: column;
-  gap: var(--space-four);
+  gap: var(--space-five);
 }
 
-.sectionHead {
+.sectionHeader {
   display: flex;
-  align-items: baseline;
+  align-items: flex-end;
   justify-content: space-between;
   gap: var(--space-four);
+  flex-wrap: wrap;
 }
 
 .sectionTitle {
-  @include text(headline-sm);
-}
-
-.needs {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: var(--space-three);
-}
-
-.need {
-  display: flex;
-  align-items: center;
-  min-height: 64px;
-  padding: var(--space-four);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  font-size: var(--text-headline-sm-size);
+  font-weight: var(--text-headline-sm-weight);
+  letter-spacing: -0.015em;
   color: var(--color-foreground);
+}
+
+.sectionSubtitle {
+  font-size: var(--text-body-md-size);
+  color: var(--color-foreground-muted);
+  margin-top: 2px;
+}
+
+.sectionLink {
+  font-size: var(--text-body-md-size);
+  font-weight: var(--text-label-sm-weight);
+  color: var(--color-primary);
   text-decoration: none;
 
-  @include text(label-md);
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.targetGrid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: var(--space-three);
+
+  @include up(sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include up(md) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @include up(lg) {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+.targetCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-three);
+  padding: var(--space-four);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  min-height: 124px; // Đảm bảo 5 cột cao bằng nhau tuyệt đối
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+
+  &:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-2);
+  }
+}
+
+.targetIconWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+
+  .targetCard:hover & {
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+  }
+}
+
+.targetContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.targetName {
+  font-size: var(--text-body-lg-size);
+  font-weight: var(--text-label-sm-weight);
+  color: var(--color-foreground);
+  line-height: var(--text-title-md-line);
+}
+
+.targetDesc {
+  font-size: var(--text-label-sm-size);
+  color: var(--color-foreground-muted);
+  line-height: 1.35;
+}
+
+// ==========================================
+// BRAND QUICK-FILTER STRIP
+// ==========================================
+.brandStrip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-two);
+  overflow-x: auto;
+  padding-bottom: var(--space-one);
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.brandPill {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-one) var(--space-three);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-raised);
+  color: var(--color-foreground-muted);
+  font-size: var(--text-label-sm-size);
+  font-weight: 500;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: all var(--duration-fast) var(--ease-out);
 
   &:hover {
     border-color: var(--color-primary);
     color: var(--color-primary);
+  }
+}
+
+.brandPillActive {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+
+  &:hover {
+    color: var(--color-on-primary);
   }
 }

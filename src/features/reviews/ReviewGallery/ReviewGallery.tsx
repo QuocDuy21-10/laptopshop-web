@@ -6,11 +6,12 @@ import { Button } from "@/components/ui/Button/Button";
 import { Dialog } from "@/components/ui/Dialog/Dialog";
 import styles from "./ReviewGallery.module.scss";
 
-export function ReviewGallery({ images = [] }: { images?: ReviewImage[] }) {
+export function ReviewGallery({ images = [], onImageError }: { images?: ReviewImage[]; onImageError?: () => void }) {
   const ordered = useMemo(() => [...images].sort((a, b) => a.position - b.position), [images]);
   const [selected, setSelected] = useState<number | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const selectedIdRef = useRef<number | null>(null);
+  const refreshedRef = useRef(false);
   if (!ordered.length) return null;
 
   return (
@@ -19,7 +20,7 @@ export function ReviewGallery({ images = [] }: { images?: ReviewImage[] }) {
         {ordered.map((image) => (
           <Button key={image.id} className={styles.trigger} variant="ghost" aria-label={`Mở ảnh review ${image.id}`} onClick={(event) => { triggerRef.current = event.currentTarget; selectedIdRef.current = image.id; setSelected(image.id); }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={image.url} alt={`Ảnh review ${image.id}`} width={image.width} height={image.height} loading="lazy" />
+            <img src={image.url} alt={`Ảnh review ${image.id}`} width={image.width} height={image.height} loading="lazy" onError={() => { if (!refreshedRef.current) { refreshedRef.current = true; onImageError?.(); } }} />
           </Button>
         ))}
       </div>

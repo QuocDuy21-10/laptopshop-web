@@ -1,0 +1,20 @@
+.timeline {
+  display: grid;
+  gap: .8rem;
+  padding-left: 1.25rem;
+}
+
+.timeline li {
+  display: grid;
+  gap: .2rem;
+}
+
+.timeline time {
+  color: var(--color-foreground-muted);
+  font-size: .85rem;
+}
+
+.timeline p {
+  margin: 0;
+  white-space: pre-wrap;
+}

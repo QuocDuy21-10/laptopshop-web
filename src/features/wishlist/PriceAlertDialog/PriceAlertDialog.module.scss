@@ -1,0 +1,37 @@
+.form {
+  display: grid;
+  gap: var(--space-three);
+}
+
+.modes {
+  display: grid;
+  gap: var(--space-two);
+  padding: 0;
+  border: 0;
+}
+
+.modes label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-two);
+  min-height: 44px;
+}
+
+.note {
+  color: var(--color-foreground-muted);
+  font-size: 0.875rem;
+}
+
+.flashSale {
+  display: flex;
+  align-items: center;
+  gap: var(--space-two);
+  min-height: 44px;
+  font-weight: 600;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-two);
+}

@@ -5,9 +5,10 @@ import { api } from "@/lib/api/client";
 import { unwrap } from "@/lib/api/errors";
 import { sendMultipart } from "@/lib/api/multipart";
 import { queryKeys } from "@/lib/api/query-keys";
-import type { HelpfulMutation, ProductReviewsQuery, ReviewImage } from "@/lib/api/types";
+import type { HelpfulMutation, PageMeta, ProductReviewsQuery, PublicReview, ReviewImage, ReviewImageSyncResult, ReviewImageSyncStatus } from "@/lib/api/types";
 import type { ReviewEligibility } from "@/lib/api/types";
 import type { ReviewInput } from "./schema";
+import type { DraftImage } from "./ReviewImagesEditor/ReviewImagesEditor";
 
 export function useReviewSummary(productId: number) {
   return useQuery({
@@ -17,9 +18,9 @@ export function useReviewSummary(productId: number) {
 }
 
 export function useProductReviews(productId: number, query: ProductReviewsQuery) {
-  return useQuery({
+  return useQuery<{ data: PublicReview[]; meta: PageMeta }>({
     queryKey: queryKeys.productReviews(productId, query),
-    queryFn: () => unwrap(api.GET("/api/v1/products/{id}/reviews", { params: { path: { id: productId }, query } })),
+    queryFn: async () => (await unwrap(api.GET("/api/v1/products/{id}/reviews", { params: { path: { id: productId }, query } }))) as { data: PublicReview[]; meta: PageMeta },
     placeholderData: keepPreviousData,
   });
 }
@@ -91,6 +92,51 @@ export function useDeleteReviewImage(productId: number, reviewId: number, userId
     mutationFn: (imageId: number) =>
       unwrap(api.DELETE("/api/v1/reviews/{id}/images/{imageId}", { params: { path: { id: reviewId, imageId } } })),
     onSuccess: () => invalidateReviewQueries(queryClient, productId, userId, reviewId),
+  });
+}
+
+export type SyncReviewImagesInput = {
+  reviewId: number;
+  expectedVersion: number;
+  idempotencyKey: string;
+  items: readonly DraftImage[];
+};
+
+const syncManifest = (items: readonly DraftImage[]) => {
+  let fileIndex = 0;
+  return items.map((item) => {
+    if (item.kind === "existing") return { kind: "existing" as const, clientId: item.clientId, imageId: item.image.id };
+    return { kind: "new" as const, clientId: item.clientId, fileIndex: fileIndex++ };
+  });
+};
+
+export function useSyncReviewImages(productId: number, userId?: number) {
+  const queryClient = useQueryClient();
+  return useMutation<ReviewImageSyncResult, Error, SyncReviewImagesInput>({
+    mutationFn: async ({ reviewId, expectedVersion, idempotencyKey, items }) => {
+      const form = new FormData();
+      form.set("manifest", JSON.stringify({ expectedVersion, items: syncManifest(items) }));
+      for (const item of items) if (item.kind === "new") form.append("files", item.file);
+      const response = await sendMultipart<{ data: ReviewImageSyncResult }>(
+        `/api/v1/reviews/${reviewId}/images/sync`,
+        "PUT",
+        form,
+        { "Idempotency-Key": idempotencyKey },
+      );
+      return response.data;
+    },
+    onSuccess: (result) => invalidateReviewQueries(queryClient, productId, userId, result.reviewId),
+  });
+}
+
+export function useReviewImageSyncStatus(reviewId: number, idempotencyKey?: string, enabled = true) {
+  return useQuery<ReviewImageSyncStatus>({
+    queryKey: queryKeys.reviewImageSync(reviewId, idempotencyKey ?? ""),
+    enabled: Boolean(idempotencyKey) && enabled,
+    queryFn: async () =>
+      (await unwrap(api.GET("/api/v1/reviews/{id}/images/sync", {
+        params: { path: { id: reviewId }, header: { "Idempotency-Key": idempotencyKey! } },
+      }))).data,
   });
 }
 
