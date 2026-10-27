@@ -10,6 +10,7 @@ import styles from "../admin.module.scss";
 import { useListParams } from "../useListParams";
 import { InventoryNav } from "./InventoryNav";
 import { type ReceiptQuery, useReceipts } from "./hooks";
+import { paginationItemRender } from "../pagination";
 
 const DAY = "YYYY-MM-DD";
 const STATUS_LABEL: Record<StockReceiptSummary["status"], string> = {
@@ -92,6 +93,7 @@ export function ReceiptList() {
         scroll={{ x: "max-content" }}
         locale={{ emptyText: "Chưa có phiếu nhập" }}
         pagination={{
+          itemRender: paginationItemRender,
           current: page,
           pageSize: 10,
           total: data?.meta.total,

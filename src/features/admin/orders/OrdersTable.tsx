@@ -9,6 +9,7 @@ import styles from "../admin.module.scss";
 import { OrderStatusTag, PaymentStatusTag } from "../StatusTags";
 import { ADMIN_PAGE_SIZE } from "../useListParams";
 import { type AdminOrderQuery, useAdminOrders } from "./hooks";
+import { paginationItemRender } from "../pagination";
 
 const columns: TableProps<AdminOrder>["columns"] = [
   { title: "Mã đơn", dataIndex: "id", render: (_, o) => <Link href={`/admin/orders/${o.id}`}>#{o.id}</Link> },
@@ -35,6 +36,7 @@ export function OrdersTable({ query, onPage }: { query: Query; onPage: (page: nu
         scroll={{ x: "max-content" }}
         locale={{ emptyText: "Không có đơn hàng" }}
         pagination={{
+          itemRender: paginationItemRender,
           current: query.page,
           pageSize: ADMIN_PAGE_SIZE,
           total: data?.meta.total,

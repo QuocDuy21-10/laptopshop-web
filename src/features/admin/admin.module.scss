@@ -25,6 +25,17 @@
   margin-block-end: var(--space-four);
 }
 
+// lets a wide control (e.g. a status Segmented) scroll on its own instead of widening the page
+.scrollX {
+  max-width: 100%;
+  overflow-x: auto;
+  margin-block-end: var(--space-two);
+}
+
+.srOnly {
+  @include visually-hidden;
+}
+
 .select {
   min-width: 160px;
 }

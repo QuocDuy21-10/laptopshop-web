@@ -12,6 +12,7 @@ import { Thumb } from "../Thumb/Thumb";
 import { ADMIN_PAGE_SIZE, useListParams } from "../useListParams";
 import { useAdminUsers, useDeleteUser, useRoles } from "./hooks";
 import { UserFormModal } from "./UserFormModal";
+import { paginationItemRender } from "../pagination";
 
 export function UserList() {
   const { message } = App.useApp();
@@ -97,6 +98,7 @@ export function UserList() {
         scroll={{ x: "max-content" }}
         locale={{ emptyText: "Chưa có người dùng" }}
         pagination={{
+          itemRender: paginationItemRender,
           current: page,
           pageSize: ADMIN_PAGE_SIZE,
           total: data?.meta.total,

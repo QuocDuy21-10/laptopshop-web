@@ -15,6 +15,7 @@ import { Thumb } from "../Thumb/Thumb";
 import { ADMIN_PAGE_SIZE, useListParams } from "../useListParams";
 import { type AdminProductQuery, useAdminProducts, useDeleteProduct, useProductFilterOptions, useSetProductActive } from "./hooks";
 import { labelOf, toOptions } from "./options";
+import { paginationItemRender } from "../pagination";
 
 const SORT_OPTIONS = [
   { value: "price_asc", label: "Giá tăng dần" },
@@ -175,6 +176,7 @@ export function ProductList() {
         scroll={{ x: "max-content" }}
         locale={{ emptyText: "Không có sản phẩm phù hợp" }}
         pagination={{
+          itemRender: paginationItemRender,
           current: page,
           pageSize: ADMIN_PAGE_SIZE,
           total: data?.meta.total,

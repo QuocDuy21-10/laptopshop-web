@@ -26,8 +26,10 @@ export function OrderList() {
         <h1 className={styles.title}>Đơn hàng</h1>
         <ExportCsvButton path="/api/v1/admin/orders/export.csv" query={{ status, q: get("q"), from, to }} />
       </div>
-      <Space wrap className={styles.filters}>
+      <div className={styles.scrollX}>
         <Segmented options={FILTER_OPTIONS} value={status ?? ""} onChange={(v) => set({ status: String(v) })} />
+      </div>
+      <Space wrap className={styles.filters}>
         <Input.Search
           key={get("q")}
           placeholder="Mã đơn, tên hoặc SĐT người nhận"

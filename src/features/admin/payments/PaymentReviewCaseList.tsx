@@ -11,6 +11,7 @@ import {
   usePaymentReviewCases,
   useReleasePaymentReviewCase,
 } from "./hooks";
+import { paginationItemRender } from "../pagination";
 
 export function PaymentReviewCaseList() {
   const [page, setPage] = useState(1);
@@ -64,7 +65,7 @@ export function PaymentReviewCaseList() {
     <section>
       <div className={styles.head}><h2 className={styles.title}>Đơn chờ xác minh</h2></div>
       {error && <Alert type="error" showIcon title={errorMessage(error)} className={styles.filters} />}
-      <Table rowKey="id" columns={columns} dataSource={data?.data} loading={isFetching} scroll={{ x: "max-content" }} pagination={{ current: page, pageSize: 10, total: data?.meta.total, showSizeChanger: false, onChange: setPage }} />
+      <Table rowKey="id" columns={columns} dataSource={data?.data} loading={isFetching} scroll={{ x: "max-content" }} pagination={{ itemRender: paginationItemRender, current: page, pageSize: 10, total: data?.meta.total, showSizeChanger: false, onChange: setPage }} />
       <Modal
         open={Boolean(selected && action)}
         title={action === "release" ? "Giải phóng tồn kho chưa xác minh" : "Gia hạn giữ hàng"}
