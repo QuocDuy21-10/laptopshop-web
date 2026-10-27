@@ -33,7 +33,10 @@ export async function createCompletedReviewOrder(request: APIRequestContext): Pr
   const product = products.find((item) => item.quantity > 0);
   expect(product, "need one in-stock product").toBeTruthy();
   expect((await request.post(`${API}/api/v1/cart/items`, { data: { productId: product!.id, quantity: 1 } })).ok()).toBeTruthy();
-  const order = await request.post(`${API}/api/v1/orders`, { headers: { "Idempotency-Key": crypto.randomUUID() }, data: { receiverName: "E2E Buyer", receiverPhone: "0900000000", receiverAddress: "1 Lê Lợi, Quận 1" } });
+  const quote = await request.post(`${API}/api/v1/orders/quote`, { data: {} });
+  expect(quote.ok()).toBeTruthy();
+  const pricingFingerprint = (await quote.json()).data.pricingFingerprint as string;
+  const order = await request.post(`${API}/api/v1/orders`, { headers: { "Idempotency-Key": crypto.randomUUID() }, data: { receiverName: "E2E Buyer", receiverPhone: "0900000000", receiverAddress: "1 Lê Lợi, Quận 1", paymentMethod: "COD", pricingFingerprint } });
   expect(order.ok()).toBeTruthy();
   return { api: API, username, orderId: (await order.json()).data.id, productId: product!.id, productName: product!.name };
 }
