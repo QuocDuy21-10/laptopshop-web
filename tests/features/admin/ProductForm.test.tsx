@@ -104,6 +104,23 @@ describe("ProductForm", () => {
     expect(form.get("gpuType")).toBe("");
   });
 
+  it("submits once when the save button is double-clicked", async () => {
+    renderAdmin(<ProductForm product={PRODUCT} />);
+    await userEvent.dblClick(screen.getByRole("button", { name: "Lưu thay đổi" }));
+    await waitFor(() => expect(mocks.mutate).toHaveBeenCalled());
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    expect(mocks.mutate).toHaveBeenCalledTimes(1);
+  });
+
+  it("rejects a negative price instead of silently clamping it", async () => {
+    renderAdmin(<ProductForm product={PRODUCT} />);
+    await userEvent.clear(screen.getByLabelText("Giá (₫)"));
+    await userEvent.type(screen.getByLabelText("Giá (₫)"), "-5");
+    await userEvent.click(screen.getByRole("button", { name: "Lưu thay đổi" }));
+    expect(await screen.findByText("Giá phải là số nguyên lớn hơn 0 và không quá 2.147.483.647")).toBeInTheDocument();
+    expect(mocks.mutate).not.toHaveBeenCalled();
+  });
+
   it("shows stock read-only when editing and does not send it", async () => {
     renderAdmin(<ProductForm product={PRODUCT} />);
     expect(screen.getByRole("button", { name: "Điều chỉnh kho" })).toBeInTheDocument();

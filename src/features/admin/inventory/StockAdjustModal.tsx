@@ -83,14 +83,14 @@ export function StockAdjustModal({ product, onClose }: { product: Product; onClo
                   : Promise.reject(
                       new Error(
                         reason === "RESTOCK"
-                          ? "Nhập hàng phải là số dương"
+                          ? "Nhập hàng phải là số dương, tối đa 10.000"
                           : "Số lượng khác 0, tối đa 10.000",
                       ),
                     ),
             },
           ]}
         >
-          <InputNumber precision={0} min={reason === "RESTOCK" ? 1 : -10000} max={10000} />
+          <InputNumber precision={0} />
         </Form.Item>
         <Form.Item
           name="note"

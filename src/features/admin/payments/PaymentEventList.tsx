@@ -8,6 +8,7 @@ import { formatDate } from "@/lib/format";
 import styles from "../admin.module.scss";
 import { useListParams } from "../useListParams";
 import { type PaymentEventQuery, usePaymentEvents, useResolvePaymentEvent } from "./hooks";
+import { paginationItemRender } from "../pagination";
 
 const columns = (onResolve: (event: PaymentEvent) => void): TableProps<PaymentEvent>["columns"] => [
   { title: "Thời gian", dataIndex: "receivedAt", render: (_, e) => formatDate(e.receivedAt) },
@@ -35,7 +36,7 @@ export function PaymentEventList() {
       <Input aria-label="Lọc lý do" placeholder="Review reason" value={reason} onChange={(e) => set({ reason: e.target.value })} />
     </Space>
     {error && <Alert type="error" showIcon title={errorMessage(error)} className={styles.filters} />}
-    <Table rowKey="id" columns={columns((event) => { setSelected(event); setNote(""); })} dataSource={data?.data} loading={isFetching} scroll={{ x: "max-content" }} pagination={{ current: page, pageSize: 10, total: data?.meta.total, showSizeChanger: false, onChange: (p) => set({ page: p }) }} />
+    <Table rowKey="id" columns={columns((event) => { setSelected(event); setNote(""); })} dataSource={data?.data} loading={isFetching} scroll={{ x: "max-content" }} pagination={{ itemRender: paginationItemRender, current: page, pageSize: 10, total: data?.meta.total, showSizeChanger: false, onChange: (p) => set({ page: p }) }} />
     <Modal open={Boolean(selected)} title="Đánh dấu sự kiện đã xử lý" okText="Lưu" cancelText="Huỷ" confirmLoading={resolve.isPending} okButtonProps={{ disabled: !note.trim() }} onCancel={() => setSelected(null)} onOk={() => selected && resolve.mutate(note, { onSuccess: () => setSelected(null) })}>
       <p>{selected?.providerTransactionKey}</p><Input.TextArea value={note} maxLength={500} onChange={(e) => setNote(e.target.value)} placeholder="Ghi chú xử lý ngoài hệ thống" rows={4} />
     </Modal>

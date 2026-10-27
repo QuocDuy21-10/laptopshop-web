@@ -68,6 +68,7 @@ export function SalesSection() {
             columns={topColumns}
             dataSource={data.topProducts}
             pagination={false}
+            scroll={{ x: "max-content" }}
             locale={{ emptyText: "Chưa có đơn hoàn thành trong khoảng này" }}
           />
         </>

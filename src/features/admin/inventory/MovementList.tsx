@@ -12,6 +12,7 @@ import { useListParams } from "../useListParams";
 import { InventoryNav } from "./InventoryNav";
 import { type MovementQuery, useStockMovements } from "./hooks";
 import { REASON_LABEL } from "./labels";
+import { paginationItemRender } from "../pagination";
 
 const DAY = "YYYY-MM-DD";
 const REASONS = Object.keys(REASON_LABEL);
@@ -115,6 +116,7 @@ export function MovementList() {
         scroll={{ x: "max-content" }}
         locale={{ emptyText: "Chưa có biến động kho" }}
         pagination={{
+          itemRender: paginationItemRender,
           current: page,
           pageSize: 10,
           total: data?.meta.total,

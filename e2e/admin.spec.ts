@@ -21,12 +21,17 @@ async function placeOrderViaApi(request: APIRequestContext) {
       })
     ).ok(),
   ).toBeTruthy();
+  // checkout rejects orders whose price was not quoted first
+  const quote = await request.post(`${API}/api/v1/orders/quote`, { data: {} });
+  expect(quote.ok()).toBeTruthy();
   const res = await request.post(`${API}/api/v1/orders`, {
     headers: { "Idempotency-Key": crypto.randomUUID() },
     data: {
       receiverName: "E2E Buyer",
       receiverPhone: "0900000000",
       receiverAddress: "1 Lê Lợi, Quận 1",
+      paymentMethod: "COD",
+      pricingFingerprint: (await quote.json()).data.pricingFingerprint,
     },
   });
   expect(res.ok()).toBeTruthy();
@@ -57,7 +62,7 @@ test("admin creates a product and ships an order", async ({ page, request }) => 
   await page.getByLabel("Tên sản phẩm").fill(name);
   await page.getByLabel("Giá (₫)").fill("15000000");
   await page.getByLabel("Số lượng").fill("5");
-  await page.getByLabel("Hãng").click();
+  await page.getByLabel("Hãng", { exact: true }).click();
   await page.keyboard.press("Enter");
   await page.getByLabel("Nhu cầu").click();
   await page.keyboard.press("Enter");
@@ -163,7 +168,8 @@ test("admin creates and posts a stock receipt exactly once", async ({ page }) =>
   await page.goto("/admin/inventory/receipts/new");
   await page.getByLabel("Nhà cung cấp").fill("Nhà cung cấp E2E");
   await page.getByLabel("Ghi chú").fill("Kiểm thử phiếu nhập");
-  await page.getByLabel("Sản phẩm 1").click();
+  // the option list is virtualized, so type to bring the new product into view
+  await page.getByLabel("Sản phẩm 1").fill(name);
   await page.getByText(name, { exact: true }).click();
   await page.getByLabel("Số lượng 1").fill("2");
   await page.getByLabel("Giá nhập 1").fill("12000000");

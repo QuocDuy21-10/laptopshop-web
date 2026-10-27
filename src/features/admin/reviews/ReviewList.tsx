@@ -9,6 +9,7 @@ import styles from "../admin.module.scss";
 import { useListParams } from "../useListParams";
 import { ReviewStatusTag } from "./ReviewStatusTag";
 import { useAdminReviewSummary, useAdminReviews } from "./hooks";
+import { paginationItemRender } from "../pagination";
 
 export function ReviewList() {
   const { get, page, set } = useListParams();
@@ -37,6 +38,6 @@ export function ReviewList() {
       <Select aria-label="Lọc trạng thái xoá" placeholder="Đã xoá?" allowClear value={query.deleted} options={[{ value: "true", label: "Đã xoá" }, { value: "false", label: "Đang hoạt động" }]} onChange={(value) => set({ deleted: value })} />
     </Space>
     {reviews.error && <Alert type="error" showIcon title={errorMessage(reviews.error)} />}
-    <Table rowKey="id" columns={columns} dataSource={reviews.data?.data} loading={reviews.isFetching} scroll={{ x: "max-content" }} pagination={{ current: page, pageSize: 10, total: reviews.data?.meta.total, showSizeChanger: false, onChange: (nextPage) => set({ page: nextPage }) }} />
+    <Table rowKey="id" columns={columns} dataSource={reviews.data?.data} loading={reviews.isFetching} scroll={{ x: "max-content" }} pagination={{ itemRender: paginationItemRender, current: page, pageSize: 10, total: reviews.data?.meta.total, showSizeChanger: false, onChange: (nextPage) => set({ page: nextPage }) }} />
   </>;
 }
