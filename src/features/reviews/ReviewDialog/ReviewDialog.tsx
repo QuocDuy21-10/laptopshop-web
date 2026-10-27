@@ -29,6 +29,7 @@ export function ReviewDialog({ productId, productName, eligibility, open, onOpen
   const [imageError, setImageError] = useState<string | null>(null);
   const [phase, setPhase] = useState<SavePhase>("IDLE");
   const [syncKey, setSyncKey] = useState<string | null>(null);
+  const pendingSyncRef = useRef<ReturnType<typeof toPendingImageSync> | null>(null);
   const lastTargetRef = useRef<number | null>(existing?.id ?? null);
   const create = useCreateReview(productId, me.data?.id);
   const update = useUpdateReview(productId, activeReview?.id ?? 0, me.data?.id);
@@ -50,6 +51,7 @@ export function ReviewDialog({ productId, productName, eligibility, open, onOpen
     if (existing?.id) {
       const pending = readPendingImageSync(productId, existing.id);
       if (pending) {
+        pendingSyncRef.current = pending;
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setSyncKey(pending.idempotencyKey);
         setPhase("RECONCILING");
@@ -64,6 +66,7 @@ export function ReviewDialog({ productId, productName, eligibility, open, onOpen
       setActiveReview((current) => current ? { ...current, imageVersion: syncStatus.data!.result!.imageVersion, images: resultImages(syncStatus.data!.result!) } : current);
       setImageState(syncStatus.data.result.images.map((image) => ({ kind: "existing", clientId: `existing-${image.id}`, image })));
       clearPendingImageSync();
+      pendingSyncRef.current = null;
       setPhase("COMPLETED");
       onOpenChange(false);
     } else if (syncStatus.data?.status === "WAITING_RETRY") {
@@ -76,8 +79,18 @@ export function ReviewDialog({ productId, productName, eligibility, open, onOpen
   }, [onOpenChange, phase, syncStatus.data, syncStatus.isError]);
 
   const handleDraftChange = (next: ReviewImagesState) => {
-    setImageState(next);
-    if (phase === "PARTIAL_SUCCESS" || phase === "CONFLICT") setSyncKey(null);
+    const normalized = phase === "PARTIAL_SUCCESS" && pendingSyncRef.current
+      ? next.map((item) => {
+          if (item.kind !== "new") return item;
+          const pendingNew = pendingSyncRef.current!.items.filter((candidate) => candidate.kind === "new")[next.filter((candidate) => candidate.kind === "new").indexOf(item)];
+          return pendingNew ? { ...item, clientId: pendingNew.clientId } : item;
+        })
+      : next;
+    setImageState(normalized);
+    if (phase === "CONFLICT") {
+      setSyncKey(null);
+      pendingSyncRef.current = null;
+    }
   };
 
   const submit = async (input: ReviewInput) => {
@@ -96,13 +109,16 @@ export function ReviewDialog({ productId, productName, eligibility, open, onOpen
       }
       const key = syncKey ?? newKey();
       setSyncKey(key);
-      savePendingImageSync(toPendingImageSync(productId, saved.id, saved.imageVersion, key, imageState));
+      const pending = toPendingImageSync(productId, saved.id, saved.imageVersion, key, imageState);
+      pendingSyncRef.current = pending;
+      savePendingImageSync(pending);
       setPhase("SYNCING_IMAGES");
       syncStarted = true;
       const result = await sync.mutateAsync({ reviewId: saved.id, expectedVersion: saved.imageVersion, idempotencyKey: key, items: imageState });
       setActiveReview({ ...saved, imageVersion: result.imageVersion, images: resultImages(result) });
       setImageState(result.images.map((image) => ({ kind: "existing", clientId: `existing-${image.id}`, image })));
       clearPendingImageSync();
+      pendingSyncRef.current = null;
       setPhase("COMPLETED");
       onOpenChange(false);
     } catch (error) {
