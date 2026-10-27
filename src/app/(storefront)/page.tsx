@@ -4,7 +4,7 @@ import { Container } from "@/components/layout/Container/Container";
 import { Alert } from "@/components/ui/Alert/Alert";
 import { buttonClassName } from "@/components/ui/Button/Button";
 import { EmptyState } from "@/components/ui/EmptyState/EmptyState";
-import { optionName } from "@/features/products/labels";
+import { optionName, targetName } from "@/features/products/labels";
 import { ProductGrid } from "@/features/products/ProductGrid/ProductGrid";
 import { getFilterOptions, listProducts } from "@/features/products/server";
 import type { CatalogProduct, FilterOptions } from "@/lib/api/types";
@@ -153,7 +153,7 @@ export default async function HomePage() {
         <div className={styles.heroCopy}>
           <span className={styles.eyebrow}>
             <span className={styles.eyebrowDot} aria-hidden />
-            Chính hãng 100% · Thanh toán khi nhận hàng
+            Thanh toán khi nhận hàng hoặc chuyển khoản
           </span>
           <h1 className={styles.heroTitle}>Chọn đúng laptop cho công việc và giải trí</h1>
           <p className={styles.heroLead}>
@@ -167,23 +167,6 @@ export default async function HomePage() {
             <Link href="/advisor" className={buttonClassName({ variant: "secondary", size: "lg" })}>
               Tư vấn chọn laptop
             </Link>
-          </div>
-
-          <div className={styles.trustStrip}>
-            <div className={styles.trustItem}>
-              <strong>Bảo hành chính hãng</strong>
-              <span>12 – 24 tháng toàn quốc</span>
-            </div>
-            <div className={styles.trustDivider} aria-hidden />
-            <div className={styles.trustItem}>
-              <strong>1 đổi 1 trong 15 ngày</strong>
-              <span>Nếu phát sinh lỗi NSX</span>
-            </div>
-            <div className={styles.trustDivider} aria-hidden />
-            <div className={styles.trustItem}>
-              <strong>Miễn phí giao hàng</strong>
-              <span>Kiểm tra hàng trước khi trả</span>
-            </div>
           </div>
         </div>
 
@@ -253,7 +236,7 @@ export default async function HomePage() {
                 {icon}
               </div>
               <div className={styles.targetContent}>
-                <span className={styles.targetName}>{optionName(options?.targetOptions ?? [], key) || key}</span>
+                <span className={styles.targetName}>{targetName(options?.targetOptions ?? [], key)}</span>
                 <span className={styles.targetDesc}>{desc}</span>
               </div>
             </Link>
@@ -273,7 +256,7 @@ export default async function HomePage() {
             </p>
           </div>
           <Link href="/products" className={styles.sectionLink}>
-            Xem tất cả ({products.length > 0 ? "Tất cả mẫu" : "Danh mục"}) →
+            Xem toàn bộ danh mục <span aria-hidden>→</span>
           </Link>
         </div>
 

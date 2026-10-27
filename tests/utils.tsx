@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render } from "@testing-library/react";
 import { App } from "antd";
 import type { ReactElement } from "react";
+import { formatVnd } from "@/lib/format";
 import { vi, type Mock } from "vitest";
 
 export function renderWithQuery(ui: ReactElement) {
@@ -34,3 +35,7 @@ export const lastRequest = (fetchMock: Mock) => {
 
 // admin components read message/modal from antd's <App> context
 export const renderAdmin = (ui: ReactElement) => renderWithQuery(<App>{ui}</App>);
+
+// formatVnd joins amount and ₫ with a non-breaking space; Testing Library normalises page text to plain
+// spaces but not the query string, so price queries use this form
+export const priceText = (value: number) => formatVnd(value).replace(/ /g, " ");

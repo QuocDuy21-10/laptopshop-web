@@ -5,6 +5,7 @@ const dateTime = new Intl.DateTimeFormat("vi-VN", {
   timeZone: "Asia/Ho_Chi_Minh",
 });
 
-export const formatVnd = (value: number) => `${vnd.format(value)} ₫`;
+// non-breaking space keeps the amount and the đồng sign on one line
+export const formatVnd = (value: number) => `${vnd.format(value)}\u00a0₫`;
 
 export const formatDate = (iso: string) => dateTime.format(new Date(iso));

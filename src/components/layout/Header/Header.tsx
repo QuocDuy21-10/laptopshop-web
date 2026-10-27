@@ -1,3 +1,4 @@
+import { Sparkles } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AccountMenu } from "@/components/layout/AccountMenu/AccountMenu";
@@ -5,28 +6,30 @@ import { CartLink } from "@/components/layout/CartLink/CartLink";
 import { Container } from "@/components/layout/Container/Container";
 import { MobileMenu } from "@/components/layout/MobileMenu/MobileMenu";
 import { SearchForm } from "@/components/layout/SearchForm/SearchForm";
+import { NotificationBell } from "@/features/notifications/NotificationBell/NotificationBell";
+import { TARGET_LABEL, targetName } from "@/features/products/labels";
 import { getFilterOptions } from "@/features/products/server";
 import type { FilterOption } from "@/lib/api/types";
 import { WishlistLink } from "../WishlistLink/WishlistLink";
-import { NotificationBell } from "@/features/notifications/NotificationBell/NotificationBell";
 import styles from "./Header.module.scss";
 
-const TARGET_LINKS = [
-  { href: "/products?target=GAMING", label: "Gaming" },
-  { href: "/products?target=SINHVIEN_VANPHONG", label: "Sinh viên - Văn phòng" },
-  { href: "/products?target=THIET_KE_DO_HOA", label: "Thiết kế đồ họa" },
-  { href: "/products?target=MONG_NHE", label: "Mỏng nhẹ" },
-] as const;
+const TARGET_KEYS = Object.keys(TARGET_LABEL);
 
+/**
+ * Two rows on desktop: brand, search and account actions on top; categories underneath, so long
+ * Vietnamese labels never compete with the search field for space. Below 1024px only the top row
+ * shows and categories live in the mobile menu.
+ */
 export async function Header() {
-  const targets: FilterOption[] = await getFilterOptions()
+  const apiTargets: FilterOption[] = await getFilterOptions()
     .then((options) => options.targetOptions)
     .catch(() => []);
+  const targets = TARGET_KEYS.map((value) => ({ value, name: targetName(apiTargets, value) }));
 
   return (
     <header className={styles.header}>
-      <Container className={styles.inner}>
-        <div className={styles.left}>
+      <Container className={styles.main}>
+        <div className={styles.start}>
           <MobileMenu targets={targets} />
           <Link href="/" className={styles.brand}>
             <span className={styles.brandIcon} aria-hidden>
@@ -44,52 +47,58 @@ export async function Header() {
                 <line x1="2" y1="20" x2="22" y2="20" />
               </svg>
             </span>
-            <span>LaptopShop</span>
+            <span className={styles.brandText}>LaptopShop</span>
           </Link>
-
-          <nav className={styles.nav} aria-label="Danh mục chính">
-            <Link href="/advisor" className={styles.advisorLink}>
-              <svg
-                viewBox="0 0 24 24"
-                width="14"
-                height="14"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden
-              >
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-              <span>Tư vấn chọn laptop</span>
-            </Link>
-            <Link href="/promotions" className={styles.navLink}>Khuyến mãi</Link>
-
-            <span className={styles.navDivider} aria-hidden />
-
-            {TARGET_LINKS.map((item) => (
-              <Link key={item.href} href={item.href} className={styles.navLink}>
-                {item.label}
-              </Link>
-            ))}
-          </nav>
         </div>
 
-        <div className={styles.right}>
-          <div className={styles.searchWrap}>
-            <Suspense fallback={null}>
-              <SearchForm />
-            </Suspense>
-          </div>
-          <div className={styles.actions}>
+        <div className={styles.search}>
+          <Suspense fallback={null}>
+            <SearchForm />
+          </Suspense>
+        </div>
+
+        <div className={styles.actions}>
+          {/* on phones the wishlist stays reachable from the account menu */}
+          <span className={styles.wideOnly}>
             <WishlistLink />
-            <NotificationBell />
-            <CartLink />
-            <AccountMenu />
-          </div>
+          </span>
+          <NotificationBell />
+          <CartLink />
+          <AccountMenu />
         </div>
       </Container>
+
+      <div className={styles.navRow}>
+        <Container className={styles.navInner}>
+          <nav className={styles.nav} aria-label="Danh mục chính">
+            <ul className={styles.navList}>
+              <li>
+                <Link href="/products" className={styles.navLink}>
+                  Tất cả laptop
+                </Link>
+              </li>
+              {targets.map((t) => (
+                <li key={t.value}>
+                  <Link href={`/products?target=${t.value}`} className={styles.navLink}>
+                    {t.name}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link href="/promotions" className={styles.navLink}>
+                  Khuyến mãi
+                </Link>
+              </li>
+            </ul>
+          </nav>
+          <Link href="/advisor" className={styles.advisorLink} aria-label="Tư vấn chọn laptop">
+            <Sparkles size={16} aria-hidden="true" />
+            <span>
+              Tư vấn<span className={styles.advisorMore}> chọn laptop</span>
+            </span>
+          </Link>
+        </Container>
+      </div>
     </header>
   );
 }

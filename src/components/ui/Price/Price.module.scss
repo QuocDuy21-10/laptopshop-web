@@ -15,4 +15,7 @@
 
 .lg {
   @include text(price);
+
+  // a parent may shrink the price to fit a narrow container (e.g. 2-column product grid on phones)
+  font-size: var(--price-font-size, var(--text-price-size));
 }

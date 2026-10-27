@@ -2,9 +2,9 @@ import { describe, expect, it } from "vitest";
 import { formatDate, formatVnd } from "@/lib/format";
 
 describe("formatVnd", () => {
-  it("uses Vietnamese grouping and the đồng sign", () => {
-    expect(formatVnd(17_490_000)).toBe("17.490.000 ₫");
-    expect(formatVnd(0)).toBe("0 ₫");
+  it("uses Vietnamese grouping and the đồng sign, joined by a non-breaking space", () => {
+    expect(formatVnd(17_490_000)).toBe("17.490.000\u00a0₫");
+    expect(formatVnd(0)).toBe("0\u00a0₫");
   });
 });
 

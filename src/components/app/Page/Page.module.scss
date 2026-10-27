@@ -1,0 +1,12 @@
+@use "mixins" as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-six);
+  padding-top: var(--space-six);
+
+  @include up(lg) {
+    padding-top: var(--space-eight);
+  }
+}

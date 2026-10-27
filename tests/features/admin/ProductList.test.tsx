@@ -2,8 +2,7 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ProductList } from "@/features/admin/products/ProductList";
-import { formatVnd } from "@/lib/format";
-import { json, mockFetch, renderAdmin } from "../../utils";
+import { json, mockFetch, priceText, renderAdmin } from "../../utils";
 
 const nav = vi.hoisted(() => ({ push: vi.fn(), search: "" }));
 vi.mock("next/navigation", () => ({
@@ -36,7 +35,7 @@ describe("ProductList", () => {
   it("lists products with price, stock state and factory label", async () => {
     renderAdmin(<ProductList />);
     expect(await screen.findByText("Dell XPS")).toBeInTheDocument();
-    expect(screen.getAllByText(formatVnd(30000000))).toHaveLength(2);
+    expect(screen.getAllByText(priceText(30000000))).toHaveLength(2);
     expect(screen.getByText("Hết hàng")).toBeInTheDocument();
     expect(await screen.findAllByText("Dell")).not.toHaveLength(0);
   });

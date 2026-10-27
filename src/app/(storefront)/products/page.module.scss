@@ -30,7 +30,7 @@
   gap: var(--space-six);
 
   @include up(lg) {
-    grid-template-columns: 240px 1fr;
+    grid-template-columns: 260px minmax(0, 1fr);
   }
 }
 
@@ -42,10 +42,14 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
 
+  // scrolls on its own when the filter list is taller than the viewport
   @include up(lg) {
     position: sticky;
-    top: calc(64px + var(--space-four));
+    top: calc(var(--header-h) + var(--space-four));
     display: block;
+    max-height: calc(100dvh - var(--header-h) - var(--space-eight));
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 }
 

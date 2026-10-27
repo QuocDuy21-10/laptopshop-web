@@ -5,39 +5,47 @@
   top: 0;
   z-index: var(--z-sticky);
   background: var(--color-surface);
-  backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--color-border);
 }
 
-.inner {
+.main {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-four);
-  min-height: 68px;
-  padding-block: var(--space-two);
+  gap: var(--space-three);
+  min-height: var(--header-main-h);
+
+  @include up(md) {
+    gap: var(--space-six);
+  }
 }
 
-.left {
+.start {
   display: flex;
   align-items: center;
-  gap: var(--space-five);
-  min-width: 0;
+  gap: var(--space-one);
+  flex-shrink: 0;
 }
 
 .brand {
   display: inline-flex;
   align-items: center;
   gap: var(--space-two);
-  font-size: var(--text-title-md-size);
-  font-weight: var(--text-headline-md-weight);
+  min-height: var(--control-md);
   color: var(--color-foreground);
   text-decoration: none;
   letter-spacing: -0.02em;
-  flex-shrink: 0;
+
+  @include text(title-md);
 
   &:hover {
     color: var(--color-primary);
+  }
+}
+
+// very narrow phones keep the logo mark only; the name stays available to screen readers
+.brandText {
+  @media (width < 400px) {
+    @include visually-hidden;
   }
 }
 
@@ -52,50 +60,74 @@
   color: var(--color-on-primary);
 }
 
-.nav {
+// the search field takes the free space between brand and actions; below 768px it moves into the menu
+.search {
   display: none;
 
-  @include up(lg) {
-    display: flex;
-    align-items: center;
-    gap: var(--space-one);
+  @include up(md) {
+    display: block;
+    flex: 1;
+    min-width: 0;
+    max-width: 560px;
   }
 }
 
-.advisorLink {
-  display: inline-flex;
+.actions {
+  display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px var(--space-three);
-  border-radius: var(--radius-full);
-  background: var(--color-primary-soft);
-  color: var(--color-primary);
-  font-size: var(--text-body-sm-size);
-  font-weight: var(--text-label-sm-weight);
-  text-decoration: none;
-  white-space: nowrap;
-  transition:
-    background-color var(--duration-fast) var(--ease-out),
-    transform var(--duration-fast) var(--ease-out);
+  gap: var(--space-one);
+  margin-inline-start: auto;
+  flex-shrink: 0;
+}
 
-  &:hover {
-    background: var(--color-primary-soft);
-    transform: translateY(-1px);
+.wideOnly {
+  display: none;
+
+  @include up(sm) {
+    display: contents;
   }
 }
 
-.navDivider {
-  width: 1px;
-  height: 18px;
-  background: var(--color-border);
-  margin-inline: var(--space-two);
+.navRow {
+  display: none;
+  border-top: 1px solid var(--color-border);
+
+  @include up(lg) {
+    display: block;
+  }
+}
+
+.navInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-four);
+  min-height: var(--header-nav-h);
+}
+
+// scrolls sideways instead of running under the advisor link when labels are long (e.g. 1024px)
+.nav {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.navList {
+  display: flex;
+  align-items: center;
+  gap: var(--space-one);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .navLink {
-  padding: var(--space-two) 10px;
-  border-radius: var(--radius-md);
-  font-size: var(--text-body-md-size);
-  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding-inline: var(--space-two);
+  border-radius: var(--radius-sm);
   color: var(--color-foreground-muted);
   text-decoration: none;
   white-space: nowrap;
@@ -103,37 +135,43 @@
     color var(--duration-fast) var(--ease-out),
     background-color var(--duration-fast) var(--ease-out);
 
+  @include text(label-md);
+
   &:hover {
     color: var(--color-foreground);
-    background: var(--color-surface-muted);
-  }
-}
-
-.right {
-  display: flex;
-  align-items: center;
-  gap: var(--space-three);
-  flex: 1;
-  justify-content: flex-end;
-}
-
-.searchWrap {
-  display: none;
-
-  @include up(md) {
-    display: block;
-    width: 100%;
-    max-width: 280px;
+    background: var(--color-surface-hover);
   }
 
   @include up(xl) {
-    max-width: 320px;
+    padding-inline: var(--space-three);
   }
 }
 
-.actions {
-  display: flex;
+// 1024–1279px: the pill reads "Tư vấn" so every category fits; the full name stays for screen readers
+.advisorMore {
+  @include down(xl) {
+    @include visually-hidden;
+  }
+}
+
+.advisorLink {
+  display: inline-flex;
   align-items: center;
   gap: var(--space-two);
   flex-shrink: 0;
+  min-height: 36px;
+  padding-inline: var(--space-three);
+  border-radius: var(--radius-full);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-hover);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color var(--duration-fast) var(--ease-out);
+
+  @include text(label-md);
+
+  &:hover {
+    background: var(--color-selected);
+    color: var(--color-primary-pressed);
+  }
 }

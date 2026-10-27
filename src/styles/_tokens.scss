@@ -15,6 +15,7 @@
   --color-foreground-muted: #475569;
   --color-border: #d9e4dc;
   --color-border-strong: #91aa99;
+  --color-border-input: #7a9483;
   --color-focus-ring: #166534;
   --color-link: #166534;
   --color-success: #166534;
@@ -36,17 +37,22 @@
   --color-dark-primary: #86efac;
   --color-dark-on-primary: #052e16;
 
+  // implementation aliases (no new values): neutral hover and selected surfaces
+  --color-surface-hover: var(--color-surface-muted);
+  --color-selected: var(--color-primary-soft);
+
   --font-sans: var(--font-be-vietnam-pro), system-ui, sans-serif;
 
-  --text-display-size: 48px;
+  // responsive scale from DESIGN.md: YAML sizes are the maxima
+  --text-display-size: clamp(32px, 4vw + 1rem, 48px);
   --text-display-weight: 700;
   --text-display-line: 1.15;
   --text-display-tracking: -0.03em;
-  --text-headline-lg-size: 36px;
+  --text-headline-lg-size: clamp(28px, 3vw + 1rem, 36px);
   --text-headline-lg-weight: 700;
   --text-headline-lg-line: 1.2;
   --text-headline-lg-tracking: -0.025em;
-  --text-headline-md-size: 28px;
+  --text-headline-md-size: clamp(24px, 2vw + 1rem, 28px);
 
   // DESIGN.md says 650; Be Vietnam Pro ships static 600/700, so 600 is the closest loaded weight
   --text-headline-md-weight: 600;
@@ -122,6 +128,10 @@
   --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
 
   --container-max: 1280px;
+  --header-main-h: 64px;
+  --header-nav-h: 44px;
+  --admin-sider-w: 240px;
+  --section-gap: clamp(32px, 5vw, 64px);
   --control-sm: 36px;
   --control-md: 44px;
   --control-lg: 48px;
