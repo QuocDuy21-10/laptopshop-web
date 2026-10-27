@@ -33,7 +33,7 @@ export function Dashboard() {
         </Card>
         <Card>
           <Statistic title="Sắp hết hàng" value={data.lowStockCount} />
-          <Link href="/admin/products?stock=low">Xem sản phẩm sắp hết</Link>
+          <Link href="/admin/products?stock=low&isActive=true">Xem sản phẩm sắp hết</Link>
         </Card>
       </div>
       <Card title="Đơn theo trạng thái" className={styles.panel}>

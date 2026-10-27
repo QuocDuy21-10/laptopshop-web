@@ -41,6 +41,12 @@ describe("ProductList", () => {
     expect(await screen.findAllByText("Dell")).not.toHaveLength(0);
   });
 
+  it("names the pagination arrows for screen readers", async () => {
+    renderAdmin(<ProductList />);
+    expect(await screen.findByRole("button", { name: "Trang trước" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Trang sau" })).toBeInTheDocument();
+  });
+
   it("puts the search in the URL", async () => {
     renderAdmin(<ProductList />);
     await userEvent.type(screen.getByPlaceholderText("Tìm theo tên"), "xps{Enter}");
@@ -81,7 +87,7 @@ describe("ProductList", () => {
     await userEvent.click(screen.getAllByRole("button", { name: "Xoá" })[0]);
     await userEvent.click(await screen.findByRole("button", { name: "Xác nhận xoá" }));
     expect(
-      await screen.findByText("Sản phẩm đã có trong đơn hàng nên không thể xoá. Hãy ẩn sản phẩm."),
+      await screen.findByText("Sản phẩm đã có lịch sử đơn hàng hoặc kho nên không thể xoá. Hãy ẩn sản phẩm."),
     ).toBeInTheDocument();
   });
 });

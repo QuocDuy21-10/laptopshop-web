@@ -15,7 +15,7 @@ describe("Dashboard", () => {
     expect(await screen.findByText("12")).toBeInTheDocument();
     expect(screen.getByText("34")).toBeInTheDocument();
     expect(screen.getByText("7")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Xem sản phẩm sắp hết" })).toHaveAttribute("href", "/admin/products?stock=low");
+    expect(screen.getByRole("link", { name: "Xem sản phẩm sắp hết" })).toHaveAttribute("href", "/admin/products?stock=low&isActive=true");
     expect(screen.getByText(formatVnd(1500000))).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Chờ xác nhận/ })).toHaveAttribute("href", "/admin/orders?status=PENDING");
     expect(screen.getByRole("link", { name: /Hoàn thành/ })).toHaveAttribute("href", "/admin/orders?status=COMPLETED");
