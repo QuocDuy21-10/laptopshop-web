@@ -67,7 +67,7 @@ export function ReviewDialog({ productId, productName, eligibility, open, onOpen
       setImageState(syncStatus.data.result.images.map((image) => ({ kind: "existing", clientId: `existing-${image.id}`, image })));
       clearPendingImageSync();
       pendingSyncRef.current = null;
-      setPhase("COMPLETED");
+      setPhase("IDLE");
       onOpenChange(false);
     } else if (syncStatus.data?.status === "WAITING_RETRY") {
       setPhase("PARTIAL_SUCCESS");
@@ -103,7 +103,7 @@ export function ReviewDialog({ productId, productName, eligibility, open, onOpen
       setActiveReview(saved);
       if (!imageState.length && !saved.images.length) {
         clearPendingImageSync();
-        setPhase("COMPLETED");
+        setPhase("IDLE");
         onOpenChange(false);
         return;
       }
@@ -119,7 +119,7 @@ export function ReviewDialog({ productId, productName, eligibility, open, onOpen
       setImageState(result.images.map((image) => ({ kind: "existing", clientId: `existing-${image.id}`, image })));
       clearPendingImageSync();
       pendingSyncRef.current = null;
-      setPhase("COMPLETED");
+      setPhase("IDLE");
       onOpenChange(false);
     } catch (error) {
       if (syncStarted) {
