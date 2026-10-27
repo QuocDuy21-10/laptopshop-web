@@ -4,6 +4,7 @@ import type { FacetDefinition } from "@/lib/api/types";
 import { Checkbox } from "@/components/ui/Checkbox/Checkbox";
 import { formatFacetValue } from "../labels";
 import type { ProductFilters } from "../search-params";
+import { updateProductFacet } from "../filter-updates";
 import { FilterGroup } from "./FilterGroup";
 import styles from "./FilterControls.module.scss";
 
@@ -21,30 +22,32 @@ type Props = {
 };
 
 const arrayValue = (filters: ProductFilters, key: string): string[] => {
-  const value = (filters as unknown as Record<string, unknown>)[key];
-  return Array.isArray(value) ? value.map(String) : [];
+  if (key === "factory") return filters.factory;
+  if (key === "target") return filters.target;
+  if (key === "price") return filters.price;
+  if (key === "cpuBrand") return filters.cpuBrand;
+  if (key === "gpuBrand") return filters.gpuBrand;
+  if (key === "gpuType") return filters.gpuType;
+  if (key === "screenSize") return filters.screenSize;
+  if (key === "resolutionTier") return filters.resolutionTier;
+  if (key === "panelType") return filters.panelType;
+  if (key === "ramGb") return filters.ramGb.map(String);
+  if (key === "storageGb") return filters.storageGb.map(String);
+  return [];
 };
 
 const scalarValue = (filters: ProductFilters, key: string): string | undefined => {
-  const value = (filters as unknown as Record<string, unknown>)[key];
-  return value === undefined ? undefined : String(value);
+  if (key === "minRefreshHz") return filters.minRefreshHz?.toString();
+  if (key === "minBatteryWh") return filters.minBatteryWh?.toString();
+  if (key === "maxWeightGrams") return filters.maxWeightGrams?.toString();
+  if (key === "minWarrantyMonths") return filters.minWarrantyMonths?.toString();
+  if (key === "minRating") return filters.minRating?.toString();
+  if (key === "inStock") return filters.inStock ? "true" : undefined;
+  return undefined;
 };
 
 export function FilterControls({ definitions, counts, filters, onChange, idPrefix, busy, countsAvailable = true }: Props) {
-  const update = (key: string, value: string, mode: FacetDefinition["mode"]) => {
-    const next = { ...filters } as ProductFilters & Record<string, unknown>;
-    if (mode === "MULTI") {
-      const current = arrayValue(filters, key);
-      const values = current.includes(value) ? current.filter((item) => item !== value) : [...current, value];
-      next[key] = key === "ramGb" || key === "storageGb" ? values.map(Number) : values;
-    } else if (mode === "BOOLEAN") {
-      next[key] = scalarValue(filters, key) === value ? undefined : value === "true";
-    } else {
-      next[key] = scalarValue(filters, key) === value ? undefined : Number(value);
-    }
-    next.page = 1;
-    onChange(next);
-  };
+  const update = (definition: FacetDefinition, value: string | undefined) => onChange(updateProductFacet(filters, definition, value));
 
   return (
     <div className={styles.controls} aria-busy={busy || undefined}>
@@ -58,19 +61,32 @@ export function FilterControls({ definitions, counts, filters, onChange, idPrefi
           definition.mode === "MULTI" ? arrayValue(filters, definition.key).includes(value) : scalarValue(filters, definition.key) === value;
         return (
           <FilterGroup key={definition.key} title={definition.name} open={index < 5}>
+            {definition.mode === "SINGLE_MIN" || definition.mode === "SINGLE_MAX" ? (
+              <label className={styles.radioRow} htmlFor={`${idPrefix}-${definition.key}-all`}>
+                <input
+                  id={`${idPrefix}-${definition.key}-all`}
+                  type="radio"
+                  name={`${idPrefix}-${definition.key}`}
+                  checked={scalarValue(filters, definition.key) === undefined}
+                  onChange={() => update(definition, undefined)}
+                />
+                <span>Tất cả</span>
+              </label>
+            ) : null}
             {options.map((option) => {
               const count = countFor(option.value);
               const label = countsAvailable && count !== undefined ? `${option.name} (${count})` : option.name;
-              const disabled = countsAvailable && count === 0 && !selected(option.value);
+              const atLimit = definition.mode === "MULTI" && definition.maxSelections !== undefined && arrayValue(filters, definition.key).length >= definition.maxSelections;
+              const disabled = (countsAvailable && count === 0 && !selected(option.value)) || (atLimit && !selected(option.value));
               const id = `${idPrefix}-${definition.key}-${option.value}`;
               if (definition.mode === "MULTI" || definition.mode === "BOOLEAN") {
                 return (
-                  <Checkbox key={option.value} id={id} label={label} checked={selected(option.value)} disabled={disabled} onCheckedChange={() => update(definition.key, option.value, definition.mode)} />
+                  <Checkbox key={option.value} id={id} label={label} checked={selected(option.value)} disabled={disabled} onCheckedChange={() => update(definition, option.value)} />
                 );
               }
               return (
                 <label key={option.value} className={styles.radioRow} htmlFor={id}>
-                  <input id={id} type="radio" name={`${idPrefix}-${definition.key}`} checked={selected(option.value)} disabled={disabled} onChange={() => update(definition.key, option.value, definition.mode)} />
+                  <input id={id} type="radio" name={`${idPrefix}-${definition.key}`} checked={selected(option.value)} disabled={disabled} onChange={() => update(definition, option.value)} />
                   <span>{label}</span>
                 </label>
               );

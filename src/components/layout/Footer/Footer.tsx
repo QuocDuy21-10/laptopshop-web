@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Container } from "@/components/layout/Container/Container";
+import { TARGET_LABEL } from "@/features/products/labels";
 import styles from "./Footer.module.scss";
 
 export function Footer() {
@@ -52,18 +53,11 @@ export function Footer() {
               <li>
                 <Link href="/products">Sản phẩm</Link>
               </li>
-              <li>
-                <Link href="/products?target=GAMING">Laptop Gaming</Link>
-              </li>
-              <li>
-                <Link href="/products?target=SINHVIEN_VANPHONG">Sinh viên – Văn phòng</Link>
-              </li>
-              <li>
-                <Link href="/products?target=THIET_KE_DO_HOA">Thiết kế đồ họa</Link>
-              </li>
-              <li>
-                <Link href="/products?target=MONG_NHE">Cao cấp – Mỏng nhẹ</Link>
-              </li>
+              {Object.entries(TARGET_LABEL).map(([value, name]) => (
+                <li key={value}>
+                  <Link href={`/products?target=${value}`}>{name}</Link>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -85,25 +79,6 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/account">Tài khoản cá nhân</Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* CỘT 4: CAM KẾT DỊCH VỤ */}
-          <div className={styles.linkCol}>
-            <h3 className={styles.colTitle}>Chính sách & Bảo hành</h3>
-            <ul className={styles.policyList}>
-              <li>
-                <strong>Bảo hành chính hãng 100%</strong>
-                <span>Từ 12 – 24 tháng tại TTBH các hãng toàn quốc</span>
-              </li>
-              <li>
-                <strong>Đổi mới trong 15 ngày</strong>
-                <span>Áp dụng nếu phát sinh lỗi phần cứng từ NSX</span>
-              </li>
-              <li>
-                <strong>Đồng kiểm khi nhận hàng</strong>
-                <span>Kiểm tra ngoại quan & cấu hình trước khi thanh toán</span>
               </li>
             </ul>
           </div>

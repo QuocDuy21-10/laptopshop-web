@@ -3,8 +3,9 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { FilterControls } from "@/features/products/FilterControls/FilterControls";
 import type { ProductFilters } from "@/features/products/search-params";
+import type { FacetDefinition } from "@/lib/api/types";
 
-const definitions = [
+const definitions: FacetDefinition[] = [
   { key: "cpuBrand", name: "CPU", mode: "MULTI" as const, kind: "categorical" as const, options: [{ value: "INTEL", name: "Intel" }, { value: "AMD", name: "AMD" }] },
   { key: "ramGb", name: "RAM", mode: "MULTI" as const, kind: "exact" as const },
   { key: "minRefreshHz", name: "Tần số quét tối thiểu", mode: "SINGLE_MIN" as const, kind: "bucket" as const, options: [{ value: "144", name: "144 Hz" }] },
@@ -54,5 +55,21 @@ describe("FilterControls", () => {
     expect(screen.getByRole("radio", { name: "Từ 4 sao (2)" })).toBeInTheDocument();
     await userEvent.click(screen.getByRole("radio", { name: "Từ 4 sao (2)" }));
     expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ minRating: 4, page: 1 }));
+  });
+
+  it("renders Tất cả for thresholds and clears a selected threshold", async () => {
+    const onChange = vi.fn();
+    render(<FilterControls definitions={definitions} counts={{ minRefreshHz: [{ value: "144", count: 1 }] }} filters={{ ...filters, minRefreshHz: 144 }} onChange={onChange} idPrefix="sheet" />);
+    const all = screen.getAllByRole("radio", { name: "Tất cả" })[0];
+    expect(all).not.toBeChecked();
+    await userEvent.click(all);
+    expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ minRefreshHz: undefined, page: 1 }));
+  });
+
+  it("disables unselected multi values once maxSelections is reached", () => {
+    const many = Array.from({ length: 10 }, (_, index) => ({ value: String(index + 1), name: String(index + 1) }));
+    render(<FilterControls definitions={[{ key: "ramGb", name: "RAM", mode: "MULTI", kind: "exact", maxSelections: 10, options: [...many, { value: "11", name: "11" }] }]} counts={{}} filters={{ ...filters, ramGb: many.map((item) => Number(item.value)) }} onChange={vi.fn()} idPrefix="sheet" />);
+    expect(screen.getByRole("checkbox", { name: "11" })).toBeDisabled();
+    expect(screen.getByRole("checkbox", { name: "1" })).toBeEnabled();
   });
 });

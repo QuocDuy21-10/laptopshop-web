@@ -6,6 +6,7 @@ import { errorMessage } from "@/lib/api/errors";
 import type { PaymentReviewCase } from "@/lib/api/types";
 import { formatDate } from "@/lib/format";
 import styles from "../admin.module.scss";
+import { PAYMENT_CASE_STATUS, reviewReasonLabel, statusTag } from "./labels";
 import {
   useExtendPaymentReviewCase,
   usePaymentReviewCases,
@@ -36,8 +37,8 @@ export function PaymentReviewCaseList() {
     { title: "Mở lúc", dataIndex: "openedAt", render: (value) => formatDate(value) },
     { title: "Đơn hàng", render: (_, item) => `#${item.payment.orderId}` },
     { title: "Mã thanh toán", render: (_, item) => item.payment.transferCode },
-    { title: "Lý do", dataIndex: "reason", render: (value) => <Tag color="orange">{value}</Tag> },
-    { title: "Trạng thái", dataIndex: "status" },
+    { title: "Lý do", dataIndex: "reason", render: (value) => <Tag color="warning">{reviewReasonLabel(value)}</Tag> },
+    { title: "Trạng thái", dataIndex: "status", render: (value: string) => { const tag = statusTag(PAYMENT_CASE_STATUS, value); return <Tag color={tag.color}>{tag.label}</Tag>; } },
     {
       title: "Thao tác",
       render: (_, item) => (

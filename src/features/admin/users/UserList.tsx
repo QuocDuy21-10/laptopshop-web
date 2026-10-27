@@ -11,6 +11,7 @@ import styles from "../admin.module.scss";
 import { Thumb } from "../Thumb/Thumb";
 import { ADMIN_PAGE_SIZE, useListParams } from "../useListParams";
 import { useAdminUsers, useDeleteUser, useRoles } from "./hooks";
+import { roleLabel } from "./roles";
 import { UserFormModal } from "./UserFormModal";
 import { paginationItemRender } from "../pagination";
 
@@ -34,7 +35,7 @@ export function UserList() {
     { title: "Email", dataIndex: "username", render: (_, u) => <Link href={`/admin/users/${u.id}`}>{u.username}</Link> },
     { title: "Họ tên", dataIndex: "fullName", render: (_, u) => u.fullName ?? "—" },
     { title: "Số điện thoại", dataIndex: "phone", render: (_, u) => u.phone ?? "—" },
-    { title: "Vai trò", dataIndex: "role", render: (_, u) => <Tag color={u.role === "ADMIN" ? "green" : "default"}>{u.role}</Tag> },
+    { title: "Vai trò", dataIndex: "role", render: (_, u) => <Tag color={u.role === "ADMIN" ? "success" : "default"}>{roleLabel(roles, u.role)}</Tag> },
     {
       title: "Thao tác",
       key: "actions",
@@ -85,7 +86,7 @@ export function UserList() {
           aria-label="Lọc theo vai trò"
           className={styles.select}
           value={get("role")}
-          options={roles?.map((r) => ({ value: r.name, label: r.description ?? r.name }))}
+          options={roles?.map((r) => ({ value: r.name, label: roleLabel(roles, r.name) }))}
           onChange={(v?: string) => set({ role: v })}
         />
       </Space>

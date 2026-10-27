@@ -18,6 +18,7 @@ colors:
   foreground-muted: "#475569"
   border: "#D9E4DC"
   border-strong: "#91AA99"
+  border-input: "#7A9483"
   focus-ring: "#166534"
   link: "#166534"
   success: "#166534"
@@ -208,6 +209,7 @@ components:
 Evergreen green is the **brand/action color**, not a blanket fill. Use deep forest green (`{colors.primary}`) for primary buttons, selected controls, high-priority interactive icons, and active navigation. Use `{colors.primary-hover}` and `{colors.primary-pressed}` only on appropriate interaction states. On-green text uses `{colors.on-primary}`.
 
 - **Canvas / structure:** `{colors.background}` for the page, `{colors.surface}` for cards and panels, `{colors.surface-muted}` for subtle grouping. Borders rely on `{colors.border}`, not strong shadows everywhere.
+- **Control boundaries:** text fields, selects, checkboxes, radios and switches use `{colors.border-input}` (3.29:1 on `{colors.surface}`) so their edges meet the 3:1 non-text contrast target. `{colors.border}` (1.31:1) is for decorative dividers and card outlines only; `{colors.border-strong}` is for hover emphasis on cards.
 - **Typography:** `{colors.foreground}` for headings and essential values, `{colors.foreground-muted}` for descriptions and metadata.
 - **Brand tint:** `{colors.primary-soft}` for light highlights, category backgrounds, and opt-in informational brand accents; never as the primary text color.
 - **Commerce:** Show final prices in strong foreground, sale/discount information in `{colors.sale}` when genuinely applicable, and prior prices with muted strikethrough. A sale must not be represented only by color.
@@ -222,6 +224,8 @@ Evergreen green is the **brand/action color**, not a blanket fill. Use deep fore
 Use **Be Vietnam Pro** throughout customer and admin UIs for legible Vietnamese accents and consistent technical presentation. Bundle via `next/font/google` or a licensed self-hosted version; provide a `system-ui, sans-serif` fallback. Avoid more than two prominent font weights within a single component.
 
 - Display/headlines: `{typography.display}`, `{typography.headline-lg}`, `{typography.headline-md}` for editorial banners, category headings, and page titles. Scale with `clamp()` on responsive pages rather than overflowing small screens.
+- Responsive scale (YAML sizes are the maxima): display `clamp(32px, 4vw + 1rem, 48px)`, headline-lg `clamp(28px, 3vw + 1rem, 36px)`, headline-md `clamp(24px, 2vw + 1rem, 28px)`. Other roles keep fixed sizes.
+- Weight note: Be Vietnam Pro ships static 400/600/700 only, so `headline-md` weight 650 renders as 600 in implementation.
 - Card titles: `{typography.title-md}`; usually clamp to two lines without losing essential product identifiers.
 - Body: `{typography.body-lg}` for description-rich pages, `{typography.body-md}` for standard UI, `{typography.body-sm}` for secondary metadata (not critical pricing or legal conditions).
 - UI labels: `{typography.label-md}` and `{typography.label-sm}`; descriptive, sentence case, no unnecessary all-caps.
@@ -316,6 +320,20 @@ src/
   features/products/components/ProductCard/ProductCard.tsx
   features/products/components/ProductCard/ProductCard.module.scss
 ```
+
+## Content & Terminology
+
+All customer and admin UI copy is Vietnamese. Never render an API enum key (for example `SINHVIEN_VANPHONG`, `APPROVED`, `RESOLVED`) to users; map every enum through a label table, and show a neutral fallback ("Không xác định") for unknown values. Service promises (warranty length, free shipping, exchange windows, hotline, invoices) appear only when they come from a confirmed business source or backend data; never hardcode them in marketing copy.
+
+| Avoid | Use |
+| --- | --- |
+| Wishlist | Yêu thích |
+| In-App | Trong ứng dụng |
+| Web Push | Thông báo trình duyệt |
+| Price Alert | Cảnh báo giá |
+| Notification Operations | Vận hành thông báo |
+| Choose File | Chọn ảnh / Chọn tệp |
+| Review reason | Lý do cần xem xét |
 
 ## Do's and Don'ts
 

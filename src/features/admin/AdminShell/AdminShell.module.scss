@@ -4,25 +4,95 @@
   min-height: 100dvh;
 }
 
+// the sider stays in view while long tables scroll
 .sider {
+  position: sticky !important;
+  top: 0;
+  height: 100dvh;
+  overflow: auto;
   border-inline-end: 1px solid var(--color-border);
 }
 
+.siderTop {
+  display: flex;
+  align-items: center;
+  height: 56px;
+  padding-inline: var(--space-four);
+  border-block-end: 1px solid var(--color-border);
+}
+
+.siderNav {
+  padding-block: var(--space-two);
+}
+
+.menu {
+  border-inline-end: 0 !important;
+}
+
 .brand {
-  padding: var(--space-four) var(--space-five);
-  font-weight: 700;
-  color: var(--color-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-two);
+  min-width: 0;
+  color: var(--color-foreground);
+  text-decoration: none;
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.brandIcon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.brandText {
+  display: grid;
+
+  // the mobile header keeps the logo mark only on very narrow phones
+  .header & {
+    @media (width < 400px) {
+      @include visually-hidden;
+    }
+  }
+
+  line-height: 1.2;
   white-space: nowrap;
-  overflow: hidden;
+
+  @include text(label-md);
+
+  small {
+    color: var(--color-foreground-muted);
+    font-weight: 400;
+
+    @include text(body-sm);
+  }
+}
+
+.body {
+  min-width: 0;
 }
 
 .header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
   display: flex;
   gap: var(--space-three);
   align-items: center;
-  padding-inline: var(--space-four);
-  background: var(--color-surface);
   border-block-end: 1px solid var(--color-border);
+
+  @include down(md) {
+    padding-inline: var(--space-three) !important;
+  }
 }
 
 .spacer {
@@ -33,17 +103,35 @@
   display: inline-flex;
   gap: var(--space-two);
   align-items: center;
+  min-height: 36px;
+  padding-inline: var(--space-two);
+  border-radius: var(--radius-sm);
   color: var(--color-foreground);
+  text-decoration: none;
+
+  @include text(label-md);
+
+  &:hover {
+    background: var(--color-surface-hover);
+  }
 
   &:focus-visible {
     @include focus-ring;
+  }
+
+  span {
+    @include down(sm) {
+      @include visually-hidden;
+    }
   }
 }
 
 .user {
   color: var(--color-foreground-muted);
 
-  @include down(sm) {
+  @include text(body-md);
+
+  @include down(md) {
     display: none;
   }
 }

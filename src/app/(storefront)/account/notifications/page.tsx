@@ -5,6 +5,7 @@ import { useMe } from "@/features/account/useMe";
 import { useNotifications, useUnreadNotificationCount } from "@/features/notifications/hooks";
 import { NotificationEmptyState } from "@/features/notifications/NotificationEmptyState/NotificationEmptyState";
 import { NotificationList } from "@/features/notifications/NotificationList/NotificationList";
+import { Page } from "@/components/app/Page/Page";
 import { Alert } from "@/components/ui/Alert/Alert";
 import { Skeleton } from "@/components/ui/Skeleton/Skeleton";
 import { errorMessage } from "@/lib/api/errors";
@@ -17,15 +18,14 @@ export default function NotificationsPage() {
       : Math.max(1, Number(new URLSearchParams(window.location.search).get("page") ?? 1));
   const list = useNotifications(me.data?.id, page);
   const count = useUnreadNotificationCount(me.data?.id);
-  if (me.isPending || list.isPending || count.isPending) return <Skeleton />;
-  if (me.isError || list.isError || count.isError)
-    return <Alert tone="error" title={errorMessage(me.error ?? list.error ?? count.error)} />;
-  if (!list.data || list.data.data.length === 0) return <NotificationEmptyState />;
-  return (
-    <>
-      <p>
-        <Link href="/account/notifications/settings">Cài đặt thông báo</Link>
-      </p>
+  const settingsLink = <Link href="/account/notifications/settings">Cài đặt thông báo</Link>;
+  let content;
+  if (me.isPending || list.isPending || count.isPending) content = <Skeleton />;
+  else if (me.isError || list.isError || count.isError)
+    content = <Alert tone="error" title={errorMessage(me.error ?? list.error ?? count.error)} />;
+  else if (!list.data || list.data.data.length === 0) content = <NotificationEmptyState />;
+  else
+    content = (
       <NotificationList
         userId={me.data!.id}
         items={list.data.data}
@@ -33,6 +33,10 @@ export default function NotificationsPage() {
         page={list.data.meta.page}
         totalPages={list.data.meta.totalPages}
       />
-    </>
+    );
+  return (
+    <Page title="Thông báo" actions={settingsLink}>
+      {content}
+    </Page>
   );
 }

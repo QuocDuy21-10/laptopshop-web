@@ -6,6 +6,7 @@ import { errorMessage } from "@/lib/api/errors";
 import styles from "../admin.module.scss";
 import { OrdersTable } from "../orders/OrdersTable";
 import { useAdminUser } from "./hooks";
+import { roleLabel } from "./roles";
 
 export function UserDetail({ id }: { id: number }) {
   const { data: user, isPending, error } = useAdminUser(id);
@@ -25,7 +26,7 @@ export function UserDetail({ id }: { id: number }) {
             { key: "email", label: "Email", children: user.username },
             { key: "phone", label: "Số điện thoại", children: user.phone ?? "—" },
             { key: "address", label: "Địa chỉ", children: user.address ?? "—" },
-            { key: "role", label: "Vai trò", children: user.role },
+            { key: "role", label: "Vai trò", children: roleLabel(undefined, user.role) },
           ]}
         />
       </Card>

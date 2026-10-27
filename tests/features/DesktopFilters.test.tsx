@@ -4,11 +4,12 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DesktopFilters } from "@/features/products/DesktopFilters/DesktopFilters";
 import { ActiveFilterChips } from "@/features/products/ActiveFilterChips/ActiveFilterChips";
 import type { ProductFilters } from "@/features/products/search-params";
+import type { FacetDefinition } from "@/lib/api/types";
 
 const router = vi.hoisted(() => ({ push: vi.fn() }));
 vi.mock("next/navigation", () => ({ useRouter: () => router }));
 
-const definitions = [
+const definitions: FacetDefinition[] = [
   { key: "cpuBrand", name: "CPU", mode: "MULTI" as const, kind: "categorical" as const, options: [{ value: "INTEL", name: "Intel" }, { value: "AMD", name: "AMD" }] },
   { key: "minRefreshHz", name: "Tần số quét tối thiểu", mode: "SINGLE_MIN" as const, kind: "bucket" as const, options: [{ value: "144", name: "144 Hz" }] },
   { key: "minRating", name: "Đánh giá tối thiểu", mode: "SINGLE_MIN" as const, kind: "bucket" as const, options: [{ value: "4", name: "Từ 4 sao" }, { value: "3", name: "Từ 3 sao" }] },
@@ -35,6 +36,14 @@ describe("DesktopFilters and active chips", () => {
     await user.click(screen.getByRole("checkbox", { name: "Intel (2)" }));
     await user.click(screen.getByRole("checkbox", { name: "AMD (2)" }));
     expect(router.push).toHaveBeenLastCalledWith("/products?cpuBrand=INTEL%2CAMD&sort=price_desc&q=tuf", { scroll: false });
+  });
+
+  it("treats committed Back navigation props as authoritative", async () => {
+    const view = render(<DesktopFilters definitions={definitions} counts={{ cpuBrand: [{ value: "INTEL", count: 2 }] }} filters={filters} />);
+    await userEvent.click(screen.getByRole("checkbox", { name: "Intel (2)" }));
+    view.rerender(<DesktopFilters definitions={definitions} counts={{ cpuBrand: [{ value: "INTEL", count: 2 }] }} filters={{ ...filters, cpuBrand: ["INTEL"], page: 1 }} />);
+    view.rerender(<DesktopFilters definitions={definitions} counts={{ cpuBrand: [{ value: "INTEL", count: 2 }] }} filters={filters} />);
+    expect(screen.getByRole("checkbox", { name: "Intel (2)" })).not.toBeChecked();
   });
 
   it("renders and removes advanced scalar and toggle chips", async () => {

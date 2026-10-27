@@ -29,17 +29,17 @@ export const PAGE_SIZE = 12;
 
 export type Raw = Record<string, string | string[] | undefined>;
 
-const list = (value: string | string[] | undefined, allowed: readonly string[]) =>
+const list = (value: string | string[] | undefined, allowed: readonly string[], maxItems = 10) =>
   [...new Set((Array.isArray(value) ? value : value ? [value] : [])
     .flatMap((v) => v.split(","))
     .map((v) => v.trim())
-    .filter((v) => allowed.includes(v)))];
+    .filter((v) => allowed.includes(v)))].slice(0, maxItems);
 
 const numericList = (value: string | string[] | undefined, min: number, max: number) =>
   [...new Set((Array.isArray(value) ? value : value ? [value] : [])
     .flatMap((v) => v.split(","))
     .map((v) => Number(v.trim()))
-    .filter((v) => Number.isInteger(v) && v >= min && v <= max))];
+    .filter((v) => Number.isInteger(v) && v >= min && v <= max))].slice(0, 10);
 
 const threshold = (value: string | string[] | undefined, allowed: readonly number[]) => {
   const rawValue = Array.isArray(value) ? undefined : value;
@@ -49,6 +49,9 @@ const threshold = (value: string | string[] | undefined, allowed: readonly numbe
 
 const valuesFor = (options: FilterOptions, key: string, fallback: readonly string[]) =>
   options.facetDefinitions?.find((definition) => definition.key === key)?.options?.map((o) => o.value) ?? fallback;
+
+const maxSelectionsFor = (options: FilterOptions, key: string) =>
+  options.facetDefinitions?.find((definition) => definition.key === key)?.maxSelections ?? 10;
 
 const CPU_BRANDS = ["INTEL", "AMD", "APPLE", "QUALCOMM"] as const;
 const GPU_BRANDS = ["NVIDIA", "AMD", "INTEL", "APPLE", "QUALCOMM"] as const;
@@ -70,14 +73,14 @@ export function parseFilters(raw: Raw, options: FilterOptions): ProductFilters {
     factory: list(raw.factory, options.factoryOptions.map((o) => o.value)),
     target: list(raw.target, options.targetOptions.map((o) => o.value)),
     price: list(raw.price, PRICE_RANGE_OPTIONS.map((o) => o.value)),
-    cpuBrand: list(raw.cpuBrand, valuesFor(options, "cpuBrand", CPU_BRANDS)),
-    gpuBrand: list(raw.gpuBrand, valuesFor(options, "gpuBrand", GPU_BRANDS)),
-    gpuType: list(raw.gpuType, valuesFor(options, "gpuType", GPU_TYPES)),
+    cpuBrand: list(raw.cpuBrand, valuesFor(options, "cpuBrand", CPU_BRANDS), maxSelectionsFor(options, "cpuBrand")),
+    gpuBrand: list(raw.gpuBrand, valuesFor(options, "gpuBrand", GPU_BRANDS), maxSelectionsFor(options, "gpuBrand")),
+    gpuType: list(raw.gpuType, valuesFor(options, "gpuType", GPU_TYPES), maxSelectionsFor(options, "gpuType")),
     ramGb: numericList(raw.ramGb, 1, 256),
     storageGb: numericList(raw.storageGb, 1, 16_384),
-    screenSize: list(raw.screenSize, valuesFor(options, "screenSize", SCREEN_SIZES)),
-    resolutionTier: list(raw.resolutionTier, valuesFor(options, "resolutionTier", RESOLUTION_TIERS)),
-    panelType: list(raw.panelType, valuesFor(options, "panelType", PANEL_TYPES)),
+    screenSize: list(raw.screenSize, valuesFor(options, "screenSize", SCREEN_SIZES), maxSelectionsFor(options, "screenSize")),
+    resolutionTier: list(raw.resolutionTier, valuesFor(options, "resolutionTier", RESOLUTION_TIERS), maxSelectionsFor(options, "resolutionTier")),
+    panelType: list(raw.panelType, valuesFor(options, "panelType", PANEL_TYPES), maxSelectionsFor(options, "panelType")),
     minRefreshHz: threshold(raw.minRefreshHz, REFRESH_RATE_MINIMUMS),
     minBatteryWh: threshold(raw.minBatteryWh, BATTERY_MINIMUMS),
     maxWeightGrams: threshold(raw.maxWeightGrams, WEIGHT_MAXIMUMS),
@@ -157,3 +160,10 @@ export const activeFilterCount = (f: ProductFilters) =>
   (f.minRefreshHz === undefined ? 0 : 1) + (f.minBatteryWh === undefined ? 0 : 1) +
   (f.maxWeightGrams === undefined ? 0 : 1) + (f.minWarrantyMonths === undefined ? 0 : 1) +
   (f.minRating === undefined ? 0 : 1) + (f.inStock ? 1 : 0);
+
+export const clearProductFacets = (filters: ProductFilters): ProductFilters => ({
+  ...filters,
+  factory: [], target: [], price: [], cpuBrand: [], gpuBrand: [], gpuType: [], ramGb: [], storageGb: [],
+  screenSize: [], resolutionTier: [], panelType: [], minRefreshHz: undefined, minBatteryWh: undefined,
+  maxWeightGrams: undefined, minWarrantyMonths: undefined, minRating: undefined, inStock: undefined, page: 1,
+});

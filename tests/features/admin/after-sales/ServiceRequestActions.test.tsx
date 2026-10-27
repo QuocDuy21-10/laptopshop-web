@@ -9,7 +9,9 @@ describe("Admin ServiceRequestActions", () => {
   it("renders status control and internal-note action", () => {
     renderAdmin(<ServiceRequestActions requestId={90} item={{ id: 1, deviceLabel: "Thiết bị 1", status: "DIAGNOSING", version: 2 }} />);
     expect(screen.getByRole("combobox", { name: "Trạng thái Thiết bị 1" })).toBeInTheDocument();
-    expect(screen.getByText("DIAGNOSING")).toBeInTheDocument();
+    // the status control shows the Vietnamese label, never the raw API enum
+    expect(screen.getByText("Đang kiểm tra")).toBeInTheDocument();
+    expect(screen.queryByText("DIAGNOSING")).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Ghi chú nội bộ" })).toBeEnabled();
   });
 });

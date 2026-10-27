@@ -12,10 +12,17 @@
     box-shadow var(--duration-fast) var(--ease-out),
     transform var(--duration-fast) var(--ease-out);
 
+  // DESIGN.md: hover cards use elevation level 1
   &:hover {
     border-color: var(--color-border-strong);
-    box-shadow: var(--shadow-2);
+    box-shadow: var(--shadow-1);
     transform: translateY(-2px);
+  }
+
+  @include reduced-motion {
+    &:hover {
+      transform: none;
+    }
   }
 }
 
@@ -40,6 +47,7 @@
 }
 
 .body {
+  container-type: inline-size;
   display: flex;
   flex-direction: column;
   gap: var(--space-two);
@@ -162,10 +170,15 @@
 }
 
 .priceRow {
+  // 16px in a 2-column phone grid, up to the 24px price token on wider cards
+  --price-font-size: clamp(16px, 11cqi, var(--text-price-size));
+
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-two);
+  min-width: 0;
 }
 
 .actionRow {

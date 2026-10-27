@@ -1,0 +1,43 @@
+@use "mixins" as *;
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-four);
+}
+
+.text {
+  display: grid;
+  gap: var(--space-two);
+  min-width: 0;
+  max-width: 72ch;
+}
+
+.eyebrow {
+  color: var(--color-foreground-muted);
+
+  @include text(body-sm);
+}
+
+.title {
+  margin: 0;
+  color: var(--color-foreground);
+  overflow-wrap: anywhere;
+
+  @include text(headline-md);
+}
+
+.description {
+  margin: 0;
+  color: var(--color-foreground-muted);
+
+  @include text(body-lg);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-three);
+}

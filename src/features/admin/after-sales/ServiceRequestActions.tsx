@@ -2,6 +2,8 @@
 
 import { Button, Form, Input, Modal, Select } from "antd";
 import { useState } from "react";
+import { AFTER_SALES_ITEM_STATUS_LABEL } from "@/features/after-sales/labels";
+import { labelOf } from "@/lib/labels";
 import { useAdminAfterSalesNote, useAdminAfterSalesStatus, type AdminStatusBody } from "./hooks";
 
 export function ServiceRequestActions({ requestId, item }: { requestId: number; item: { id: number; deviceLabel: string; status: string; version: number; allowedTransitions?: string[] } }) {
@@ -20,5 +22,5 @@ export function ServiceRequestActions({ requestId, item }: { requestId: number; 
     setPendingTo(null);
     setReason("");
   };
-  return <div><Select aria-label={`Trạng thái ${item.deviceLabel}`} value={item.status} options={transitions.map((value) => ({ value, label: value }))} onChange={(value) => { if (value === item.status) return; if (["REJECTED", "CLOSED", "RESOLVED", "READY_FOR_RETURN"].includes(value)) setPendingTo(value); else status.mutate({ to: value as AdminStatusBody["to"], expectedVersion: item.version }); }} /><Button onClick={() => setNoteOpen(!noteOpen)}>Ghi chú nội bộ</Button>{noteOpen && <Form onFinish={() => { if (body.trim()) { note.mutate({ itemId: item.id, body: body.trim() }); setBody(""); } }}><Input.TextArea value={body} onChange={(event) => setBody(event.target.value)} /><Button htmlType="submit">Lưu ghi chú</Button></Form>}<Modal open={Boolean(pendingTo)} title="Xác nhận chuyển trạng thái" onCancel={() => setPendingTo(null)} onOk={submitTransition} okButtonProps={{ disabled: Boolean((requiresReason || requiresResolution) && !reason.trim()) }}><Input.TextArea aria-label={requiresResolution ? "Kết quả xử lý" : "Lý do"} value={reason} onChange={(event) => setReason(event.target.value)} placeholder={requiresResolution ? "Nhập kết quả xử lý" : "Nhập lý do"} /></Modal></div>;
+  return <div><Select aria-label={`Trạng thái ${item.deviceLabel}`} value={item.status} options={transitions.map((value) => ({ value, label: labelOf(AFTER_SALES_ITEM_STATUS_LABEL, value) }))} onChange={(value) => { if (value === item.status) return; if (["REJECTED", "CLOSED", "RESOLVED", "READY_FOR_RETURN"].includes(value)) setPendingTo(value); else status.mutate({ to: value as AdminStatusBody["to"], expectedVersion: item.version }); }} /><Button onClick={() => setNoteOpen(!noteOpen)}>Ghi chú nội bộ</Button>{noteOpen && <Form onFinish={() => { if (body.trim()) { note.mutate({ itemId: item.id, body: body.trim() }); setBody(""); } }}><Input.TextArea value={body} onChange={(event) => setBody(event.target.value)} /><Button htmlType="submit">Lưu ghi chú</Button></Form>}<Modal open={Boolean(pendingTo)} title="Xác nhận chuyển trạng thái" onCancel={() => setPendingTo(null)} onOk={submitTransition} okButtonProps={{ disabled: Boolean((requiresReason || requiresResolution) && !reason.trim()) }}><Input.TextArea aria-label={requiresResolution ? "Kết quả xử lý" : "Lý do"} value={reason} onChange={(event) => setReason(event.target.value)} placeholder={requiresResolution ? "Nhập kết quả xử lý" : "Nhập lý do"} /></Modal></div>;
 }

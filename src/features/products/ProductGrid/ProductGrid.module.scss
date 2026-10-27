@@ -1,20 +1,22 @@
 @use "mixins" as *;
 
+// Columns follow the width actually available (with or without the filter sidebar), capped at 4:
+// 1 column at 320px, 2 on phones, 3 on tablets and 1024px with filters, 4 on wide desktops.
+// The minimums let long card content shrink instead of pushing the grid wider than the page.
 .grid {
+  --grid-gap: var(--space-three);
+
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 160px), 1fr));
-  gap: var(--space-three);
+  gap: var(--grid-gap);
 
   @include up(sm) {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-four);
+    --grid-gap: var(--space-four);
+
+    grid-template-columns: repeat(auto-fill, minmax(max(200px, calc((100% - 3 * var(--grid-gap)) / 4)), 1fr));
   }
 
-  @include up(md) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  @include up(xl) {
-    grid-template-columns: repeat(4, 1fr);
+  > * {
+    min-width: 0;
   }
 }
