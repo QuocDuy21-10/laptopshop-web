@@ -21,6 +21,7 @@ export function PaymentScreen({ orderId }: { orderId: number }) {
   const paymentQuery = usePaymentStatus(orderId);
   const [now, setNow] = useState(() => Date.now());
   const [serverOffset, setServerOffset] = useState(0);
+  const [qrFailed, setQrFailed] = useState(false);
   const notified = useRef<string | null>(null);
   const payment = paymentQuery.data;
   const serverTime = payment?.serverTime;
@@ -105,15 +106,25 @@ export function PaymentScreen({ orderId }: { orderId: number }) {
       </header>
       {instructions && seconds > 0 && (
         <section className={styles.card} aria-label="Thông tin thanh toán">
-          <p>Quét mã QR bằng ứng dụng ngân hàng.</p>
-          <Image
-            className={styles.qr}
-            src={instructions.qrImageUrl}
-            alt={`Mã QR thanh toán đơn hàng ${orderId}`}
-            width={280}
-            height={280}
-            unoptimized
-          />
+          {qrFailed ? (
+            <Alert
+              tone="warning"
+              title="Không tải được mã QR. Vui lòng chuyển khoản theo thông tin bên dưới."
+            />
+          ) : (
+            <>
+              <p>Quét mã QR bằng ứng dụng ngân hàng.</p>
+              <Image
+                className={styles.qr}
+                src={instructions.qrImageUrl}
+                alt={`Mã QR thanh toán đơn hàng ${orderId}`}
+                width={280}
+                height={280}
+                unoptimized
+                onError={() => setQrFailed(true)}
+              />
+            </>
+          )}
           <div className={styles.amount}>
             <span>Số tiền cần chuyển</span>
             <Price value={payment.amount} size="lg" />

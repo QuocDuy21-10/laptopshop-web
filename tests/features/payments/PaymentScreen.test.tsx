@@ -1,4 +1,4 @@
-import { act, screen, render } from "@testing-library/react";
+import { act, fireEvent, screen, render } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { PaymentScreen } from "@/features/payments/PaymentScreen";
 import { renderWithQuery } from "../../utils";
@@ -54,5 +54,14 @@ describe("PaymentScreen", () => {
     expect(screen.getByText("Đang xác minh thanh toán")).toBeInTheDocument();
     expect(screen.queryByRole("img", { name: /Mã QR/ })).not.toBeInTheDocument();
     expect(screen.getByText(/không thanh toán thêm lần nữa/)).toBeInTheDocument();
+  });
+
+  it("falls back to manual transfer details when the QR image fails to load", () => {
+    renderWithQuery(<PaymentScreen orderId={50} />);
+    fireEvent.error(screen.getByRole("img", { name: /Mã QR/ }));
+    expect(screen.queryByRole("img", { name: /Mã QR/ })).not.toBeInTheDocument();
+    expect(screen.getByText(/Không tải được mã QR/)).toBeInTheDocument();
+    expect(screen.getByText("0123456789")).toBeInTheDocument();
+    expect(screen.getByText("LSABC12345678")).toBeInTheDocument();
   });
 });
