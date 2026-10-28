@@ -51,6 +51,20 @@ describe("ReceiptForm", () => {
     });
   });
 
+  it("ignores a second submit while the first is still in flight", async () => {
+    const fetchMock = mockFetch();
+    fetchMock.mockResolvedValue(json(200, products));
+    let finish!: () => void;
+    const onSubmit = vi.fn(() => new Promise<void>((resolve) => (finish = resolve)));
+    renderAdmin(<ReceiptForm onSubmit={onSubmit} submitting={false} />);
+    await screen.findByLabelText("Sản phẩm 1");
+    await userEvent.click(screen.getByLabelText("Sản phẩm 1"));
+    await userEvent.click(screen.getByText("ASUS TUF"));
+    await userEvent.dblClick(screen.getByRole("button", { name: "Lưu bản nháp" }));
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1));
+    finish();
+  });
+
   it("searches products on the server and keeps names of picked products", async () => {
     const fetchMock = mockFetch();
     fetchMock.mockResolvedValue(json(200, products));

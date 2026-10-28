@@ -1,4 +1,6 @@
+import { QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, screen, waitFor } from "@testing-library/react";
+import { App } from "antd";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ReceiptList } from "@/features/admin/inventory/ReceiptList";
 import { json, mockFetch, renderAdmin } from "../../utils";
@@ -61,6 +63,26 @@ describe("ReceiptList", () => {
       "/admin/inventory/receipts?status=DRAFT&q=PN-2026&page=1",
     );
     expect(nav.push).not.toHaveBeenCalled();
+  });
+
+  it("shows the q from the URL after back/forward", async () => {
+    nav.search = "q=old";
+    const view = renderAdmin(<ReceiptList />);
+    const input = screen.getByLabelText("Tìm phiếu nhập");
+    expect(input).toHaveValue("old");
+    nav.search = "q=older";
+    view.rerender(
+      <QueryClientProvider client={view.client}>
+        <App>
+          <ReceiptList />
+        </App>
+      </QueryClientProvider>,
+    );
+    try {
+      await waitFor(() => expect(screen.getByLabelText("Tìm phiếu nhập")).toHaveValue("older"));
+    } finally {
+      nav.search = "status=DRAFT";
+    }
   });
 
   it("renders receipt links, suppliers, item counts and statuses", async () => {

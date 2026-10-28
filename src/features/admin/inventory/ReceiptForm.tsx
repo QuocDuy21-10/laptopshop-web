@@ -2,7 +2,7 @@
 
 import { App, Button, Form, Input, InputNumber, Select, Space } from "antd";
 import { Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { errorMessage } from "@/lib/api/errors";
 import { formatVnd } from "@/lib/format";
 import { useDebouncedValue } from "@/lib/useDebouncedValue";
@@ -48,7 +48,12 @@ export function ReceiptForm({ initialValue, onSubmit, submitting, onDirtyChange,
     0,
   );
 
+  // a double-click fires before `submitting` re-renders the form disabled, so guard here; a saved
+  // form is replaced (create navigates away, detail remounts on the new version), so only a failure re-arms it
+  const inFlight = useRef(false);
   const submit = async (input: ReceiptFormValues) => {
+    if (inFlight.current) return;
+    inFlight.current = true;
     const body: ReceiptCreateBody = {
       ...(input.supplierName?.trim() ? { supplierName: input.supplierName.trim() } : {}),
       ...(input.note?.trim() ? { note: input.note.trim() } : {}),
@@ -63,6 +68,7 @@ export function ReceiptForm({ initialValue, onSubmit, submitting, onDirtyChange,
     } catch (error) {
       setServerErrors(form, error);
       message.error(errorMessage(error));
+      inFlight.current = false;
     }
   };
 
@@ -151,7 +157,7 @@ export function ReceiptForm({ initialValue, onSubmit, submitting, onDirtyChange,
           </div>
         )}
       </Form.List>
-      <Space direction="vertical" className={styles.totals}>
+      <Space orientation="vertical" className={styles.totals}>
         <span>Tổng số lượng: {totalQuantity}</span>
         <span>Tổng giá trị tham khảo: {formatVnd(totalValue)}</span>
       </Space>
