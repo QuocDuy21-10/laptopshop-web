@@ -50,4 +50,29 @@ describe("ReceiptForm", () => {
       items: [{ productId: 1, quantity: 2, unitCost: undefined }],
     });
   });
+
+  it("searches products on the server and keeps names of picked products", async () => {
+    const fetchMock = mockFetch();
+    fetchMock.mockResolvedValue(json(200, products));
+    renderAdmin(
+      <ReceiptForm
+        onSubmit={vi.fn()}
+        submitting={false}
+        productNames={{ 9: "Lenovo Legion" }}
+        initialValue={{ items: [{ productId: 9, quantity: 1 }] }}
+      />,
+    );
+    expect(await screen.findByText("Lenovo Legion")).toBeInTheDocument();
+    await userEvent.type(screen.getByLabelText("Sản phẩm 1"), "Dell");
+    await waitFor(() =>
+      expect(
+        fetchMock.mock.calls.some(
+          ([input]) => new URL((input as Request).url).searchParams.get("q") === "Dell",
+        ),
+      ).toBe(true),
+    );
+    const url = new URL((fetchMock.mock.calls.at(-1)![0] as Request).url);
+    expect(url.searchParams.get("pageSize")).toBe("20");
+    expect(url.searchParams.get("isActive")).toBe("true");
+  });
 });

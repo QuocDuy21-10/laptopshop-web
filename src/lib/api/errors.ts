@@ -30,6 +30,7 @@ const MESSAGES: Record<string, string> = {
   CART_EMPTY: "Giỏ hàng đang trống.",
   INVALID_STATUS_TRANSITION: "Không thể thực hiện thao tác ở trạng thái hiện tại của đơn hàng.",
   NOT_FOUND: "Không tìm thấy dữ liệu yêu cầu.",
+  RECEIPT_VERSION_CONFLICT: "Phiếu đã được người khác cập nhật. Đã tải lại bản mới nhất.",
   FORBIDDEN_ORIGIN: "Yêu cầu bị từ chối.",
   INVALID_FILE: "Chỉ chấp nhận ảnh JPEG hoặc PNG.",
   PRODUCT_IN_USE: "Sản phẩm đã có lịch sử đơn hàng hoặc kho nên không thể xoá. Hãy ẩn sản phẩm.",

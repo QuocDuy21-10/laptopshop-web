@@ -35,6 +35,9 @@ export function Dashboard() {
           <Statistic title="Sắp hết hàng" value={data.lowStockCount} />
           <Link href="/admin/products?stock=low&isActive=true">Xem sản phẩm sắp hết</Link>
         </Card>
+        <Card>
+          <Statistic title="Hết hàng" value={data.outOfStockCount} />
+        </Card>
       </div>
       <Card title="Đơn theo trạng thái" className={styles.panel}>
         <ul className={styles.statusList}>

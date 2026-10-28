@@ -8593,7 +8593,7 @@ export interface paths {
         };
       };
       responses: {
-        /** @description Replayed adjustment */
+        /** @description Replayed adjustment (movement is the original; product.quantity is the current stock) */
         200: {
           headers: {
             [name: string]: unknown;
@@ -8986,6 +8986,7 @@ export interface paths {
               quantity: number;
               unitCost?: number | null;
             }[];
+            version: number;
           };
         };
       };
@@ -9037,7 +9038,7 @@ export interface paths {
             "application/json": components["schemas"]["Error"];
           };
         };
-        /** @description Receipt is not a draft or product unavailable */
+        /** @description Receipt is not a draft, was modified, or product unavailable */
         409: {
           headers: {
             [name: string]: unknown;
@@ -9069,7 +9070,13 @@ export interface paths {
         };
         cookie?: never;
       };
-      requestBody?: never;
+      requestBody: {
+        content: {
+          "application/json": {
+            version: number;
+          };
+        };
+      };
       responses: {
         /** @description Posted or replayed */
         200: {
@@ -9086,7 +9093,7 @@ export interface paths {
             };
           };
         };
-        /** @description Receipt is empty */
+        /** @description Invalid input or receipt is empty */
         400: {
           headers: {
             [name: string]: unknown;
@@ -9122,7 +9129,7 @@ export interface paths {
             "application/json": components["schemas"]["Error"];
           };
         };
-        /** @description Invalid status or product unavailable */
+        /** @description Invalid status, version conflict or product unavailable */
         409: {
           headers: {
             [name: string]: unknown;
@@ -10345,6 +10352,7 @@ export interface components {
         [key: string]: number;
       };
       lowStockCount: number;
+      outOfStockCount: number;
     };
     SalesReport: {
       daily: {
@@ -10404,6 +10412,7 @@ export interface components {
       createdAt: string;
       /** Format: date-time */
       postedAt: string | null;
+      version: number;
       createdBy: {
         id: number;
         name: string;
@@ -10426,6 +10435,7 @@ export interface components {
       createdAt: string;
       /** Format: date-time */
       postedAt: string | null;
+      version: number;
       createdBy: {
         id: number;
         name: string;
