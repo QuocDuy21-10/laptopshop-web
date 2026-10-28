@@ -48,7 +48,8 @@ export function ReceiptForm({ initialValue, onSubmit, submitting, onDirtyChange,
     0,
   );
 
-  // a double-click fires before `submitting` re-renders the form disabled, so guard here
+  // a double-click fires before `submitting` re-renders the form disabled, so guard here; a saved
+  // form is replaced (create navigates away, detail remounts on the new version), so only a failure re-arms it
   const inFlight = useRef(false);
   const submit = async (input: ReceiptFormValues) => {
     if (inFlight.current) return;
@@ -67,7 +68,6 @@ export function ReceiptForm({ initialValue, onSubmit, submitting, onDirtyChange,
     } catch (error) {
       setServerErrors(form, error);
       message.error(errorMessage(error));
-    } finally {
       inFlight.current = false;
     }
   };
