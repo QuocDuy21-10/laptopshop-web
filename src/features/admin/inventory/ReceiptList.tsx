@@ -3,11 +3,13 @@
 import { Alert, DatePicker, Input, Select, Space, Table, Tag, type TableProps } from "antd";
 import dayjs from "dayjs";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { errorMessage } from "@/lib/api/errors";
 import type { StockReceiptSummary } from "@/lib/api/types";
 import { formatDate } from "@/lib/format";
+import { useDebouncedValue } from "@/lib/useDebouncedValue";
 import styles from "../admin.module.scss";
-import { useListParams } from "../useListParams";
+import { ADMIN_PAGE_SIZE, useListParams } from "../useListParams";
 import { InventoryNav } from "./InventoryNav";
 import { type ReceiptQuery, useReceipts } from "./hooks";
 import { paginationItemRender } from "../pagination";
@@ -43,6 +45,13 @@ export function ReceiptList() {
   const { get, page, set } = useListParams();
   const status = (get("status") as ReceiptQuery["status"]) || undefined;
   const q = get("q") || undefined;
+  const [text, setText] = useState(q ?? "");
+  const debounced = useDebouncedValue(text.trim());
+  // only react to typing: q also changes on back/forward navigation
+  useEffect(() => {
+    if (debounced !== (q ?? "")) set({ q: debounced || undefined, page: 1 }, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debounced]);
   const from = get("from") || undefined;
   const to = get("to") || undefined;
   const range = from && to ? ([dayjs(from, DAY), dayjs(to, DAY)] as const) : null;
@@ -62,8 +71,8 @@ export function ReceiptList() {
           allowClear
           placeholder="Tìm mã hoặc nhà cung cấp"
           aria-label="Tìm phiếu nhập"
-          value={q}
-          onChange={(event) => set({ q: event.target.value || undefined, page: 1 })}
+          value={text}
+          onChange={(event) => setText(event.target.value)}
         />
         <Select
           allowClear
@@ -95,7 +104,7 @@ export function ReceiptList() {
         pagination={{
           itemRender: paginationItemRender,
           current: page,
-          pageSize: 10,
+          pageSize: ADMIN_PAGE_SIZE,
           total: data?.meta.total,
           showSizeChanger: false,
           onChange: (nextPage) => set({ page: nextPage }),

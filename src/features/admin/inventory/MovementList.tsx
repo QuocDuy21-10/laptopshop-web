@@ -8,7 +8,7 @@ import type { StockMovement } from "@/lib/api/types";
 import { formatDate } from "@/lib/format";
 import styles from "../admin.module.scss";
 import { ExportCsvButton } from "../ExportCsvButton";
-import { useListParams } from "../useListParams";
+import { ADMIN_PAGE_SIZE, useListParams } from "../useListParams";
 import { InventoryNav } from "./InventoryNav";
 import { type MovementQuery, useStockMovements } from "./hooks";
 import { REASON_LABEL } from "./labels";
@@ -118,7 +118,7 @@ export function MovementList() {
         pagination={{
           itemRender: paginationItemRender,
           current: page,
-          pageSize: 10,
+          pageSize: ADMIN_PAGE_SIZE,
           total: data?.meta.total,
           showSizeChanger: false,
           onChange: (p) => set({ page: p }),

@@ -1,17 +1,19 @@
-import { screen } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ReceiptList } from "@/features/admin/inventory/ReceiptList";
 import { json, mockFetch, renderAdmin } from "../../utils";
 
-const nav = vi.hoisted(() => ({ search: "status=DRAFT" }));
+const nav = vi.hoisted(() => ({ search: "status=DRAFT", push: vi.fn(), replace: vi.fn() }));
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push: vi.fn() }),
+  useRouter: () => ({ push: nav.push, replace: nav.replace }),
   usePathname: () => "/admin/inventory/receipts",
   useSearchParams: () => new URLSearchParams(nav.search),
 }));
 
 let fetchMock: ReturnType<typeof mockFetch>;
 beforeEach(() => {
+  nav.push.mockClear();
+  nav.replace.mockClear();
   fetchMock = mockFetch();
   fetchMock.mockResolvedValue(
     json(200, {
@@ -47,6 +49,20 @@ beforeEach(() => {
 });
 
 describe("ReceiptList", () => {
+  it("debounces the search and replaces history once", async () => {
+    renderAdmin(<ReceiptList />);
+    const input = screen.getByLabelText("Tìm phiếu nhập");
+    fireEvent.change(input, { target: { value: "P" } });
+    fireEvent.change(input, { target: { value: "PN" } });
+    fireEvent.change(input, { target: { value: "PN-2026" } });
+    expect(input).toHaveValue("PN-2026");
+    await waitFor(() => expect(nav.replace).toHaveBeenCalledTimes(1));
+    expect(nav.replace).toHaveBeenCalledWith(
+      "/admin/inventory/receipts?status=DRAFT&q=PN-2026&page=1",
+    );
+    expect(nav.push).not.toHaveBeenCalled();
+  });
+
   it("renders receipt links, suppliers, item counts and statuses", async () => {
     renderAdmin(<ReceiptList />);
     expect(await screen.findByRole("link", { name: "PN-20261020-ABCDEF12" })).toHaveAttribute(

@@ -2,14 +2,17 @@ import { act, renderHook } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useListParams } from "@/features/admin/useListParams";
 
-const nav = vi.hoisted(() => ({ push: vi.fn(), search: "" }));
+const nav = vi.hoisted(() => ({ push: vi.fn(), replace: vi.fn(), search: "" }));
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push: nav.push }),
+  useRouter: () => ({ push: nav.push, replace: nav.replace }),
   usePathname: () => "/admin/products",
   useSearchParams: () => new URLSearchParams(nav.search),
 }));
 
-beforeEach(() => nav.push.mockClear());
+beforeEach(() => {
+  nav.push.mockClear();
+  nav.replace.mockClear();
+});
 
 describe("useListParams", () => {
   it("reads the page, falling back to 1", () => {
@@ -31,5 +34,13 @@ describe("useListParams", () => {
     const { result } = renderHook(() => useListParams());
     act(() => result.current.set({ page: 2 }));
     expect(nav.push).toHaveBeenCalledWith("/admin/products?q=dell&page=2");
+  });
+
+  it("replaces history instead of pushing when asked", () => {
+    nav.search = "status=DRAFT";
+    const { result } = renderHook(() => useListParams());
+    act(() => result.current.set({ q: "abc", page: 1 }, { replace: true }));
+    expect(nav.replace).toHaveBeenCalledWith("/admin/products?status=DRAFT&q=abc&page=1");
+    expect(nav.push).not.toHaveBeenCalled();
   });
 });
