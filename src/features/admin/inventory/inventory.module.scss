@@ -34,6 +34,7 @@
 
 .items {
   display: grid;
+
   // minmax(0, ...) lets a long product name shrink instead of widening the page
   grid-template-columns: minmax(0, 1fr);
   gap: var(--space-three);
