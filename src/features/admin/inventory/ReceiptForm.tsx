@@ -2,8 +2,10 @@
 
 import { App, Button, Form, Input, InputNumber, Select, Space } from "antd";
 import { Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
 import { errorMessage } from "@/lib/api/errors";
 import { formatVnd } from "@/lib/format";
+import { useDebouncedValue } from "@/lib/useDebouncedValue";
 import { setServerErrors } from "../form-errors";
 import { useAdminProducts } from "../products/hooks";
 import type { ReceiptCreateBody } from "./hooks";
@@ -29,7 +31,16 @@ export function ReceiptForm({ initialValue, onSubmit, submitting, onDirtyChange,
   const { message } = App.useApp();
   const [form] = Form.useForm<ReceiptFormValues>();
   const values = Form.useWatch([], form) ?? { items: [] };
-  const products = useAdminProducts({ page: 1, pageSize: 50, isActive: true });
+  const [search, setSearch] = useState("");
+  const q = useDebouncedValue(search.trim());
+  const products = useAdminProducts({ page: 1, pageSize: 20, isActive: true, q: q || undefined });
+  // labels survive a new search: keep what was picked, then the current results
+  const [picked, setPicked] = useState<Record<number, string>>({});
+  const names: Record<number, string> = {
+    ...productNames,
+    ...picked,
+    ...Object.fromEntries((products.data?.data ?? []).map((product) => [product.id, product.name])),
+  };
   const items = values.items ?? [];
   const totalQuantity = items.reduce((sum, item) => sum + (item.quantity ?? 0), 0);
   const totalValue = items.reduce(
@@ -87,13 +98,18 @@ export function ReceiptForm({ initialValue, onSubmit, submitting, onDirtyChange,
                   >
                     <Select
                       showSearch
-                      optionFilterProp="label"
-                      options={products.data?.data.map((product) => ({
-                        value: product.id,
-                        label: product.name,
+                      filterOption={false}
+                      placeholder="Tìm sản phẩm"
+                      onSearch={setSearch}
+                      onChange={(productId: number) =>
+                        setPicked((known) => ({ ...known, [productId]: names[productId] }))
+                      }
+                      options={Object.entries(names).map(([id, label]) => ({
+                        value: Number(id),
+                        label,
                         disabled:
-                          selectedIds.includes(product.id) &&
-                          product.id !== items[index]?.productId,
+                          selectedIds.includes(Number(id)) &&
+                          Number(id) !== items[index]?.productId,
                       }))}
                     />
                   </Form.Item>

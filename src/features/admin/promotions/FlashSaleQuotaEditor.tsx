@@ -1,8 +1,9 @@
 "use client";
 
 import { Button, Select } from "antd";
-import { useEffect, useState, type ChangeEvent } from "react";
+import { useState, type ChangeEvent } from "react";
 import { useAdminProducts } from "@/features/admin/products/hooks";
+import { useDebouncedValue } from "@/lib/useDebouncedValue";
 import styles from "./FlashSaleAdmin.module.scss";
 
 export type FlashSaleQuotaItem = { productId: number; totalQuota: number; maxUnitsPerUser: number };
@@ -23,15 +24,6 @@ export function validateQuotaItems(items: FlashSaleQuotaItem[], minTotals: Recor
   return null;
 }
 
-function useDebounced<T>(value: T, delayMs = 300) {
-  const [debounced, setDebounced] = useState(value);
-  useEffect(() => {
-    const timer = window.setTimeout(() => setDebounced(value), delayMs);
-    return () => window.clearTimeout(timer);
-  }, [value, delayMs]);
-  return debounced;
-}
-
 export function FlashSaleQuotaEditor({
   value,
   onChange,
@@ -48,7 +40,7 @@ export function FlashSaleQuotaEditor({
   minTotals?: Record<number, number>;
 }) {
   const [search, setSearch] = useState("");
-  const q = useDebounced(search.trim());
+  const q = useDebouncedValue(search.trim());
   const products = useAdminProducts({ page: 1, pageSize: 20, q: q || undefined, isActive: true });
   const found = products.data?.data;
   // labels survive a new search: keep what was picked, then the current results
