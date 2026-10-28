@@ -58,6 +58,19 @@ describe("AdvisorForm", () => {
     });
   });
 
+  it("does not submit when advancing from step three to step four", async () => {
+    renderWithQuery(<AdvisorForm onSubmit={onSubmit} pending={false} />);
+    await fillStepOne();
+    await userEvent.click(screen.getByRole("button", { name: "Tiếp tục" }));
+    await userEvent.click(screen.getByRole("radio", { name: "16 GB" }));
+    const stepThreeButton = screen.getByRole("button", { name: "Tiếp tục" });
+    await userEvent.click(screen.getByRole("button", { name: "Tiếp tục" }));
+
+    expect(screen.getByText("Bước 4/4")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Nhận tư vấn" })).not.toBe(stepThreeButton);
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
   it("applies server field errors and keeps the form usable", async () => {
     renderWithQuery(
       <AdvisorForm

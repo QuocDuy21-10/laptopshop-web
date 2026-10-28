@@ -176,9 +176,9 @@ export function AdvisorForm({ onSubmit, onRetry, pending, serverError }: Props) 
       <div className={styles.actions}>
         {step > 1 && <Button type="button" variant="secondary" onClick={() => setStep((current) => current - 1)} disabled={pending}>Quay lại</Button>}
         {step < 4 ? (
-          <Button type="button" onClick={() => void next()} disabled={pending}>Tiếp tục</Button>
+          <Button key={step} type="button" onClick={() => void next()} disabled={pending}>Tiếp tục</Button>
         ) : (
-          <Button type="submit" loading={pending}>Nhận tư vấn</Button>
+          <Button key={step} type="submit" loading={pending}>Nhận tư vấn</Button>
         )}
       </div>
     </form>
