@@ -2,7 +2,6 @@
 
 import { App, Button, Form, Input, InputNumber, Select, Space } from "antd";
 import { Plus, Trash2 } from "lucide-react";
-import { useEffect } from "react";
 import { errorMessage } from "@/lib/api/errors";
 import { formatVnd } from "@/lib/format";
 import { setServerErrors } from "../form-errors";
@@ -20,9 +19,13 @@ type ReceiptFormProps = {
   initialValue?: Partial<ReceiptFormValues>;
   onSubmit: (body: ReceiptCreateBody) => Promise<void> | void;
   submitting: boolean;
+  /** Called on the first user edit, so the parent can hold actions that would use stale saved data. */
+  onDirtyChange?: (dirty: boolean) => void;
+  /** Names of products already on the receipt, shown even when the search results miss them. */
+  productNames?: Record<number, string>;
 };
 
-export function ReceiptForm({ initialValue, onSubmit, submitting }: ReceiptFormProps) {
+export function ReceiptForm({ initialValue, onSubmit, submitting, onDirtyChange, productNames }: ReceiptFormProps) {
   const { message } = App.useApp();
   const [form] = Form.useForm<ReceiptFormValues>();
   const values = Form.useWatch([], form) ?? { items: [] };
@@ -33,10 +36,6 @@ export function ReceiptForm({ initialValue, onSubmit, submitting }: ReceiptFormP
     (sum, item) => sum + (item.quantity ?? 0) * (item.unitCost ?? 0),
     0,
   );
-
-  useEffect(() => {
-    if (initialValue) form.setFieldsValue(initialValue);
-  }, [form, initialValue]);
 
   const submit = async (input: ReceiptFormValues) => {
     const body: ReceiptCreateBody = {
@@ -64,6 +63,7 @@ export function ReceiptForm({ initialValue, onSubmit, submitting }: ReceiptFormP
       initialValues={{ items: [{ quantity: 1 }], ...initialValue }}
       disabled={submitting}
       onFinish={submit}
+      onValuesChange={() => onDirtyChange?.(true)}
     >
       <Form.Item name="supplierName" label="Nhà cung cấp">
         <Input maxLength={255} />

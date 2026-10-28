@@ -2,15 +2,17 @@
 
 import { Alert, App, Button, Descriptions, Modal, Result, Spin, Table, Tag } from "antd";
 import { useState } from "react";
-import { errorMessage } from "@/lib/api/errors";
+import { errorMessage, isApiError } from "@/lib/api/errors";
 import { formatDate } from "@/lib/format";
 import { ReceiptForm } from "./ReceiptForm";
 import { InventoryNav } from "./InventoryNav";
-import { usePostReceipt, useReceipt, useUpdateReceipt } from "./hooks";
+import { type ReceiptCreateBody, usePostReceipt, useReceipt, useUpdateReceipt } from "./hooks";
 
 export function ReceiptDetail({ id }: { id: string }) {
   const { message } = App.useApp();
   const [confirmOpen, setConfirmOpen] = useState(false);
+  // the version the admin started editing; a newer version from the server clears it
+  const [editedVersion, setEditedVersion] = useState<number | null>(null);
   const { data, error, isLoading, refetch } = useReceipt(id);
   const update = useUpdateReceipt(id);
   const post = usePostReceipt(id);
@@ -32,29 +34,42 @@ export function ReceiptDetail({ id }: { id: string }) {
     })),
   };
 
-  const submitUpdate = async (body: Parameters<typeof update.mutateAsync>[0]) => {
-    await update.mutateAsync(body);
+  const dirty = editedVersion === receipt.version;
+  const productNames = Object.fromEntries(
+    receipt.items.map((item) => [item.productId, item.productName]),
+  );
+  const reloadOnConflict = async (error: unknown) => {
+    if (
+      !isApiError(error, "RECEIPT_VERSION_CONFLICT") &&
+      !isApiError(error, "INVALID_RECEIPT_STATUS")
+    ) {
+      return false;
+    }
+    await refetch();
+    message.error(errorMessage(error));
+    return true;
+  };
+
+  const submitUpdate = async (body: ReceiptCreateBody) => {
+    try {
+      await update.mutateAsync({ ...body, version: receipt.version });
+    } catch (error) {
+      if (await reloadOnConflict(error)) return;
+      throw error;
+    }
     message.success("Đã cập nhật phiếu nhập");
     await refetch();
   };
 
   const submitPost = async () => {
     try {
-      const result = await post.mutateAsync();
+      const result = await post.mutateAsync(receipt.version);
       setConfirmOpen(false);
       message.success(result.data.created ? "Đã xác nhận nhập kho" : "Phiếu đã được nhập kho");
       await refetch();
     } catch (postError) {
       setConfirmOpen(false);
-      if (
-        typeof postError === "object" &&
-        postError &&
-        "code" in postError &&
-        postError.code === "INVALID_RECEIPT_STATUS"
-      ) {
-        await refetch();
-      }
-      message.error(errorMessage(postError));
+      if (!(await reloadOnConflict(postError))) message.error(errorMessage(postError));
     }
   };
 
@@ -106,11 +121,20 @@ export function ReceiptDetail({ id }: { id: string }) {
       ) : (
         <>
           <ReceiptForm
+            key={`${receipt.id}:${receipt.version}`}
             initialValue={initialValue}
+            productNames={productNames}
+            onDirtyChange={() => setEditedVersion(receipt.version)}
             onSubmit={submitUpdate}
             submitting={update.isPending}
           />
-          <Button type="primary" onClick={() => setConfirmOpen(true)} loading={post.isPending}>
+          {dirty && <Alert type="info" showIcon title="Lưu bản nháp trước khi xác nhận" />}
+          <Button
+            type="primary"
+            disabled={dirty}
+            onClick={() => setConfirmOpen(true)}
+            loading={post.isPending}
+          >
             Xác nhận nhập kho
           </Button>
         </>

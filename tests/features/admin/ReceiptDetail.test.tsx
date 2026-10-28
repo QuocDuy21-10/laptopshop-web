@@ -13,6 +13,7 @@ const draft = {
   note: "Nhập hàng",
   createdAt: "2026-10-20T03:00:00Z",
   postedAt: null,
+  version: 2,
   createdBy: { id: 99, name: "Admin" },
   postedBy: null,
   items: [
@@ -63,7 +64,49 @@ beforeEach(() => {
   });
 });
 
+const postRequest = () =>
+  fetchMock.mock.calls
+    .map(([input]) => input)
+    .find((input): input is Request => input instanceof Request && input.method === "POST");
+
 describe("ReceiptDetail", () => {
+  it("keeps unsaved edits across re-renders and blocks posting until saved", async () => {
+    renderAdmin(<ReceiptDetail id={id} />);
+    await userEvent.type(await screen.findByDisplayValue("ABC"), "XYZ");
+    expect(screen.getByDisplayValue("ABCXYZ")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Xác nhận nhập kho" })).toBeDisabled();
+    expect(screen.getByText("Lưu bản nháp trước khi xác nhận")).toBeInTheDocument();
+  });
+
+  it("posts the version that was loaded", async () => {
+    renderAdmin(<ReceiptDetail id={id} />);
+    await screen.findByDisplayValue("ABC");
+    await userEvent.click(screen.getByRole("button", { name: "Xác nhận nhập kho" }));
+    fetchMock.mockResolvedValueOnce(
+      json(200, { data: { receipt: posted, movements: posted.movements, created: true } }),
+    );
+    await userEvent.click(screen.getAllByRole("button", { name: "Xác nhận nhập kho" }).at(-1)!);
+    await waitFor(() => expect(postRequest()).toBeDefined());
+    expect(await postRequest()!.json()).toEqual({ version: 2 });
+  });
+
+  it("reloads the receipt on a version conflict", async () => {
+    renderAdmin(<ReceiptDetail id={id} />);
+    await screen.findByDisplayValue("ABC");
+    await userEvent.click(screen.getByRole("button", { name: "Xác nhận nhập kho" }));
+    fetchMock.mockResolvedValueOnce(
+      json(409, {
+        error: { code: "RECEIPT_VERSION_CONFLICT", message: "Stock receipt was modified" },
+      }),
+    );
+    const before = fetchMock.mock.calls.length;
+    await userEvent.click(screen.getAllByRole("button", { name: "Xác nhận nhập kho" }).at(-1)!);
+    await waitFor(() => expect(fetchMock.mock.calls.length).toBeGreaterThan(before + 1));
+    expect(
+      await screen.findByText("Phiếu đã được người khác cập nhật. Đã tải lại bản mới nhất."),
+    ).toBeInTheDocument();
+  });
+
   it("renders draft editing and confirms post with totals", async () => {
     renderAdmin(<ReceiptDetail id={id} />);
     expect(await screen.findByDisplayValue("ABC")).toBeInTheDocument();

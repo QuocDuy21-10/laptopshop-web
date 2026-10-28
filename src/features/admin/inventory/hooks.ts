@@ -97,8 +97,13 @@ export function useUpdateReceipt(id: string) {
 export function usePostReceipt(id: string) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: () =>
-      unwrap(api.POST("/api/v1/admin/inventory/receipts/{id}/post", { params: { path: { id } } })),
+    mutationFn: (version: number) =>
+      unwrap(
+        api.POST("/api/v1/admin/inventory/receipts/{id}/post", {
+          params: { path: { id } },
+          body: { version },
+        }),
+      ),
     onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.adminAll }),
   });
 }
