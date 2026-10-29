@@ -1,9 +1,18 @@
 import Link from "next/link";
 import { Container } from "@/components/layout/Container/Container";
 import { TARGET_LABEL } from "@/features/products/labels";
+import { getStoreInfo } from "@/features/store-info/server";
 import styles from "./Footer.module.scss";
 
-export function Footer() {
+const PAYMENT_LABEL: Record<string, string> = { COD: "Thanh toán COD", BANK_TRANSFER: "Chuyển khoản QR" };
+
+export async function Footer() {
+  const info = await getStoreInfo();
+  const hotline = info?.hotline ? [info.hotline, info.supportHours].filter(Boolean).join(" · ") : null;
+  const badges = [
+    ...(info?.paymentMethods ?? []).flatMap((code) => (PAYMENT_LABEL[code] ? [PAYMENT_LABEL[code]] : [])),
+    ...(info?.vatInvoice ? ["Hóa đơn VAT"] : []),
+  ];
   const currentYear = new Date().getFullYear();
 
   return (
@@ -31,19 +40,24 @@ export function Footer() {
               <span>LaptopShop</span>
             </Link>
             <p className={styles.tagline}>
-              Hệ thống bán lẻ laptop chính hãng. Tra cứu cấu hình minh bạch, so sánh trực quan và
-              thanh toán an toàn khi nhận hàng (COD).
+              Hệ thống bán lẻ laptop. Tra cứu cấu hình minh bạch và so sánh trực quan.
             </p>
-            <div className={styles.contactBox}>
-              <div className={styles.contactItem}>
-                <span className={styles.contactLabel}>Hotline tư vấn:</span>
-                <strong>1900 6868 (08:00 – 21:00)</strong>
+            {(hotline || info?.supportEmail) && (
+              <div className={styles.contactBox}>
+                {hotline && (
+                  <div className={styles.contactItem}>
+                    <span className={styles.contactLabel}>Hotline tư vấn:</span>
+                    <strong>{hotline}</strong>
+                  </div>
+                )}
+                {info?.supportEmail && (
+                  <div className={styles.contactItem}>
+                    <span className={styles.contactLabel}>Email hỗ trợ:</span>
+                    <span>{info.supportEmail}</span>
+                  </div>
+                )}
               </div>
-              <div className={styles.contactItem}>
-                <span className={styles.contactLabel}>Email hỗ trợ:</span>
-                <span>support@laptopshop.vn</span>
-              </div>
-            </div>
+            )}
           </div>
 
           {/* CỘT 2: DANH MỤC SẢN PHẨM */}
@@ -86,11 +100,15 @@ export function Footer() {
 
         <div className={styles.bottomBar}>
           <p className={styles.copyright}>© {currentYear} LaptopShop. Bảo lưu mọi quyền.</p>
-          <div className={styles.paymentBadges}>
-            <span className={styles.paymentBadge}>Thanh toán COD</span>
-            <span className={styles.paymentBadge}>Chuyển khoản QR</span>
-            <span className={styles.paymentBadge}>Hóa đơn VAT</span>
-          </div>
+          {badges.length > 0 && (
+            <div className={styles.paymentBadges}>
+              {badges.map((label) => (
+                <span key={label} className={styles.paymentBadge}>
+                  {label}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </Container>
     </footer>

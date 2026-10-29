@@ -10,6 +10,7 @@ vi.mock("@/features/products/server", () => ({
   getFilterOptions: vi.fn().mockResolvedValue({ targetOptions: [{ name: "Gaming", value: "GAMING" }] }),
   listProducts: vi.fn().mockResolvedValue({ data: [], meta: { page: 1, pageSize: 8, total: 0, totalPages: 0 } }),
 }));
+vi.mock("@/features/store-info/server", () => ({ getStoreInfo: vi.fn().mockResolvedValue(null) }));
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn(), replace: vi.fn() }), usePathname: () => "/" }));
 
 describe("advisor navigation", () => {

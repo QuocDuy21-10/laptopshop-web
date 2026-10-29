@@ -1,6 +1,11 @@
 import "@testing-library/jest-dom/vitest";
 import { cleanup } from "@testing-library/react";
-import { afterEach, vi } from "vitest";
+import { afterEach, beforeEach, vi } from "vitest";
+
+// the API's session hint cookie: tests that fetch /users/me model a signed-in browser unless they clear it
+beforeEach(() => {
+  if (typeof document !== "undefined") document.cookie = "logged_in=1; Path=/";
+});
 
 afterEach(() => {
   cleanup();
