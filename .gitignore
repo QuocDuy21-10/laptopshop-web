@@ -18,3 +18,4 @@ docs-local/
 .claude/
 .codex/
 screenshots/
+.agents/
