@@ -47,7 +47,7 @@ export function OrderList({ page }: { page: number }) {
               </div>
               <div className={styles.badges}>
                 <OrderStatusBadge status={order.status} />
-                <PaymentStatusBadge status={order.paymentStatus} />
+                <PaymentStatusBadge status={order.paymentStatus} orderStatus={order.status} />
               </div>
               <Price value={order.totalPrice} />
             </Link>

@@ -48,7 +48,7 @@ export function OrderDetail({ id, placed }: { id: number; placed: boolean }) {
         </div>
         <div className={styles.badges}>
           <OrderStatusBadge status={o.status} />
-          <PaymentStatusBadge status={o.paymentStatus} />
+          <PaymentStatusBadge status={o.paymentStatus} orderStatus={o.status} />
         </div>
       </header>
 
@@ -70,10 +70,30 @@ export function OrderDetail({ id, placed }: { id: number; placed: boolean }) {
             </li>
           ))}
         </ul>
-        <div className={styles.total}>
-          <span>Tổng cộng</span>
-          <Price value={o.totalPrice} size="lg" />
-        </div>
+        <dl className={styles.summary}>
+          {(o.productDiscountAmount ?? 0) > 0 && (
+            <div className={styles.summaryRow}>
+              <dt>Tạm tính</dt>
+              <dd><Price value={o.subtotalPrice ?? o.totalPrice} size="sm" /></dd>
+            </div>
+          )}
+          {(o.productDiscountAmount ?? 0) > 0 && (
+            <div className={styles.summaryRow}>
+              <dt>Ưu đãi sản phẩm</dt>
+              <dd>-<Price value={o.productDiscountAmount!} size="sm" /></dd>
+            </div>
+          )}
+          {(o.couponDiscountAmount ?? 0) > 0 && (
+            <div className={styles.summaryRow}>
+              <dt>Mã giảm giá{o.couponCode ? ` ${o.couponCode}` : ""}</dt>
+              <dd>-<Price value={o.couponDiscountAmount!} size="sm" /></dd>
+            </div>
+          )}
+          <div className={styles.total}>
+            <dt>Tổng cộng</dt>
+            <dd><Price value={o.totalPrice} size="lg" /></dd>
+          </div>
+        </dl>
       </section>
 
       <section className={styles.card} aria-labelledby="receiver-title">
