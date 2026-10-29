@@ -39,6 +39,25 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-one);
+  min-width: 0; // flex item: let the native file input shrink instead of widening the card
+
+  input[type="file"] {
+    max-width: 100%;
+
+    @include text(body-sm);
+  }
+
+  input[type="file"]::file-selector-button {
+    min-height: var(--control-sm);
+    margin-right: var(--space-two);
+    padding: 0 var(--space-three);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-primary);
+    font: inherit;
+    cursor: pointer;
+  }
 }
 
 .label {

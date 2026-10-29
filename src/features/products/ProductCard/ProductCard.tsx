@@ -59,10 +59,11 @@ export function ProductCard({ product, factoryName }: ProductCardProps) {
             alt={product.name}
             sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
           />
-          <div className={styles.wishlistOverlay}>
-            <WishlistToggle productId={product.id} productName={product.name} />
-          </div>
         </Link>
+        {/* sibling of the link: a button nested in <a> also triggers the link navigation */}
+        <div className={styles.wishlistOverlay}>
+          <WishlistToggle productId={product.id} productName={product.name} />
+        </div>
       </div>
 
       <div className={styles.body}>

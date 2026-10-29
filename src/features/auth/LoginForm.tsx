@@ -2,21 +2,26 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { useForm } from "react-hook-form";
 import { Alert } from "@/components/ui/Alert/Alert";
 import { Button } from "@/components/ui/Button/Button";
 import { TextField } from "@/components/ui/TextField/TextField";
 import { errorMessage } from "@/lib/api/errors";
+import { readPendingCartIntent } from "@/features/cart/intent";
 import { applyFieldErrors } from "@/lib/forms";
 import { useLogin } from "./hooks";
 import { loginSchema, type LoginInput } from "./schemas";
 import styles from "./AuthForm.module.scss";
 
+const noopSubscribe = () => () => {};
+
 export function LoginForm({ next }: { next: string }) {
   const router = useRouter();
   const login = useLogin();
   const [formError, setFormError] = useState<string | null>(null);
+  // sessionStorage is client-only: the server snapshot is false, so hydration stays consistent
+  const hasCartIntent = useSyncExternalStore(noopSubscribe, () => readPendingCartIntent() !== null, () => false);
   const { register, handleSubmit, setError, formState } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
     defaultValues: { username: "", password: "" },
@@ -35,6 +40,7 @@ export function LoginForm({ next }: { next: string }) {
 
   return (
     <form className={styles.form} onSubmit={onSubmit} noValidate>
+      {hasCartIntent && <Alert tone="info" title="Đăng nhập để thêm sản phẩm vào giỏ hàng." />}
       {formError && <Alert tone="error" title={formError} />}
       <TextField
         label="Email"

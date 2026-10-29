@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { toast } from "sonner";
 import { useAddToCartAction } from "@/features/cart/useAddToCartAction";
+import { readPendingCartIntent } from "@/features/cart/intent";
 import { json, mockFetch, urlOf } from "../utils";
 
 const router = vi.hoisted(() => ({ push: vi.fn() }));
@@ -18,6 +19,7 @@ const wrapper = ({ children }: { children: ReactNode }) => (
 
 let fetchMock: ReturnType<typeof mockFetch>;
 beforeEach(() => {
+  window.sessionStorage.clear();
   fetchMock = mockFetch();
   vi.clearAllMocks();
 });
@@ -28,6 +30,7 @@ describe("useAddToCartAction", () => {
     const { result } = renderHook(() => useAddToCartAction(), { wrapper });
     await result.current.add(3, 1);
     expect(router.push).toHaveBeenCalledWith("/login?next=%2Fproducts%2F3");
+    expect(readPendingCartIntent()).toMatchObject({ productId: 3, quantity: 1, goToCart: false });
   });
 
   it("toasts the stock error", async () => {
