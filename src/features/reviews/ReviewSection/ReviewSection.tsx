@@ -31,6 +31,8 @@ export function ReviewSection({ productId, initialSummary, initialPage }: Props)
   const eligibility = useReviewEligibility(productId, me.data?.id);
   const summary = summaryQuery.data ?? initialSummary;
   const pageData = reviewsQuery.data ?? (page === 1 && !rating && sort === "newest" ? initialPage : { data: [], meta: { page, pageSize: 10, total: 0, totalPages: 0 } });
+  // nothing to chart, filter or sort until the first review exists
+  const hasReviews = summary.totalReviews > 0;
   const visibleReviewIds = pageData.data.map((review) => review.id);
   const helpfulState = useHelpfulReviewIds(visibleReviewIds, me.data?.id);
   const eligibilityMessage = eligibility.data?.reason === "NOT_PURCHASED"
@@ -49,8 +51,8 @@ export function ReviewSection({ productId, initialSummary, initialPage }: Props)
           {!me.data ? <Link className={buttonClassName({ variant: "secondary" })} href={loginHref(`/products/${productId}#reviews`)}>Đăng nhập để đánh giá</Link> : eligibility.data?.existingReview ? <Button variant="secondary" onClick={() => setDialogOpen(true)}>Sửa đánh giá của tôi</Button> : eligibility.data?.eligible ? <Button onClick={() => setDialogOpen(true)}>Viết đánh giá</Button> : eligibilityMessage ? <p className={styles.eligibility}>{eligibilityMessage}</p> : null}
         </div>
       </div>
-      {summaryQuery.isError ? <Alert tone="warning" title="Chưa thể tải thống kê đánh giá" /> : <ReviewSummary summary={summary} />}
-      <div className={styles.toolbar}>
+      {summaryQuery.isError ? <Alert tone="warning" title="Chưa thể tải thống kê đánh giá" /> : hasReviews && <ReviewSummary summary={summary} />}
+      {hasReviews && <div className={styles.toolbar}>
         <label> Lọc theo số sao
           <select aria-label="Lọc theo số sao" value={rating ?? ""} onChange={(event) => { setRating(event.target.value ? Number(event.target.value) : undefined); setPage(1); }}>
             <option value="">Tất cả</option><option value="5">5 sao</option><option value="4">4 sao</option><option value="3">3 sao</option><option value="2">2 sao</option><option value="1">1 sao</option>
@@ -61,7 +63,7 @@ export function ReviewSection({ productId, initialSummary, initialPage }: Props)
             <option value="newest">Mới nhất</option><option value="highest">Cao nhất</option><option value="lowest">Thấp nhất</option>
           </select>
         </label>
-      </div>
+      </div>}
       <ReviewList reviews={pageData.data} productId={productId} reviewIds={visibleReviewIds} helpfulIds={helpfulState.data ?? []} userId={me.data?.id} selfReviewId={eligibility.data?.existingReview?.id} isPending={reviewsQuery.isPending && initialPage.data.length > 0} isError={reviewsQuery.isError} onRetry={() => void reviewsQuery.refetch()} onImageError={() => void reviewsQuery.refetch()} page={pageData.meta.page} totalPages={pageData.meta.totalPages} onPage={setPage} />
       {eligibility.data && <ReviewDialog productId={productId} productName="sản phẩm này" eligibility={eligibility.data} open={dialogOpen} onOpenChange={setDialogOpen} />}
     </section>

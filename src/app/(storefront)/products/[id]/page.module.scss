@@ -60,6 +60,12 @@
   @include text(body-lg);
 }
 
+.secondaryActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-two);
+}
+
 .note {
   color: var(--color-foreground-muted);
 
