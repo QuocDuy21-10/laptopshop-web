@@ -7,6 +7,7 @@ import { NotificationEmptyState } from "../NotificationEmptyState/NotificationEm
 import { NotificationList } from "../NotificationList/NotificationList";
 import { Page } from "@/components/app/Page/Page";
 import { Alert } from "@/components/ui/Alert/Alert";
+import { Button } from "@/components/ui/Button/Button";
 import { Skeleton } from "@/components/ui/Skeleton/Skeleton";
 import { errorMessage } from "@/lib/api/errors";
 
@@ -22,7 +23,21 @@ export function NotificationsView() {
   let content;
   if (me.isPending || list.isPending || count.isPending) content = <Skeleton />;
   else if (me.isError || list.isError || count.isError)
-    content = <Alert tone="error" title={errorMessage(me.error ?? list.error ?? count.error)} />;
+    content = (
+      <Alert tone="error" title={errorMessage(me.error ?? list.error ?? count.error)}>
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={() => {
+            void me.refetch();
+            void list.refetch();
+            void count.refetch();
+          }}
+        >
+          Thử lại
+        </Button>
+      </Alert>
+    );
   else if (!list.data || list.data.data.length === 0) content = <NotificationEmptyState />;
   else
     content = (

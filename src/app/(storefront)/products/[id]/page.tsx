@@ -57,8 +57,10 @@ export default async function ProductPage({ params }: Props) {
           <FlashSaleAvailability productIds={[product.id]} />
           <Badge tone={inStock ? "success" : "error"}>{inStock ? "Còn hàng" : "Hết hàng"}</Badge>
           <AddToCart productId={product.id} stock={product.quantity} />
-          <WishlistToggle productId={product.id} productName={product.name} />
-          <CompareToggle product={product} />
+          <div className={styles.secondaryActions}>
+            <WishlistToggle productId={product.id} productName={product.name} />
+            <CompareToggle product={product} />
+          </div>
           <p className={styles.note}>Thanh toán khi nhận hàng (COD).</p>
         </div>
       </div>

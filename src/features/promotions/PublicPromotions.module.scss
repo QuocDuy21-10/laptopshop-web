@@ -26,6 +26,28 @@
   margin-top: 12px !important;
 }
 
+.conditions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-one) var(--space-four);
+  margin: var(--space-two) 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--color-foreground-muted);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-two);
+  margin-top: var(--space-three);
+}
+
+.hint {
+  margin-top: var(--space-two) !important;
+  font-size: var(--text-body-sm-size);
+}
+
 .discount {
   color: var(--color-sale) !important;
   font-weight: 700;

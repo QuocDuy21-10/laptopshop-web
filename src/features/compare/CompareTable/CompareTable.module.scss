@@ -8,6 +8,17 @@
   border-radius: var(--radius-lg);
 }
 
+.scrollHint {
+  margin-bottom: var(--space-two);
+  color: var(--color-foreground-muted);
+
+  @include text(body-sm);
+
+  @include up(sm) {
+    display: none;
+  }
+}
+
 .table {
   width: 100%;
   border-collapse: collapse;

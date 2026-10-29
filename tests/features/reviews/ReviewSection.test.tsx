@@ -48,12 +48,22 @@ describe("ReviewSection", () => {
 
   it("sends allow-listed rating and sort filters", async () => {
     const fetchMock = mockFetch();
-    fetchMock.mockResolvedValue(json(200, { data: [], meta: { page: 1, pageSize: 10, total: 0, totalPages: 0 } }));
-    renderWithQuery(<ReviewSection productId={12} initialSummary={emptySummary} initialPage={{ ...initialPage, data: [] }} />);
+    const withReviews = { ...emptySummary, averageRating: 4.5, totalReviews: 2, distribution: { "4": 1, "5": 1 } };
+    fetchMock.mockImplementation(async (input) =>
+      urlOf(input).includes("/summary") ? json(200, { data: withReviews }) : json(200, { data: [], meta: { page: 1, pageSize: 10, total: 0, totalPages: 0 } }),
+    );
+    renderWithQuery(<ReviewSection productId={12} initialSummary={{ ...emptySummary, averageRating: 4.5, totalReviews: 2, distribution: { "4": 1, "5": 1 } }} initialPage={{ ...initialPage, data: [] }} />);
     await userEvent.selectOptions(screen.getByLabelText("Lọc theo số sao"), "5");
     await userEvent.selectOptions(screen.getByLabelText("Sắp xếp"), "highest");
     await waitFor(() => expect(urlOf(lastRequest(fetchMock))).toContain("rating=5"));
     expect(urlOf(lastRequest(fetchMock))).toContain("sort=highest");
+  });
+
+  it("hides the chart and the filters until the first review exists", () => {
+    renderWithQuery(<ReviewSection productId={12} initialSummary={emptySummary} initialPage={{ ...initialPage, data: [] }} />);
+    expect(screen.queryByLabelText("Lọc theo số sao")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Phân bố số sao")).not.toBeInTheDocument();
+    expect(screen.getByText("Chưa có đánh giá nào")).toBeInTheDocument();
   });
 
   it("shows retry for a public list error", async () => {
