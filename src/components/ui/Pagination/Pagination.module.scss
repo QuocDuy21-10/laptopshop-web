@@ -21,6 +21,11 @@
   text-decoration: none;
   font-variant-numeric: tabular-nums;
 
+  @include touch {
+    min-width: var(--control-md);
+    height: var(--control-md);
+  }
+
   &:hover {
     border-color: var(--color-border-strong);
   }

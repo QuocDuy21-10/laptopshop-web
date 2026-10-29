@@ -12,5 +12,5 @@ export function WishlistLink({ userId }: { userId?: number }) {
   const query = useWishlistSummary(effectiveUserId);
   if (effectiveUserId === undefined) return null;
   const count = query.data?.itemCount ?? 0;
-  return <Link href="/wishlist" className={styles.link} aria-label={`Wishlist${count ? ` (${count})` : ""}`}><Heart size={20} aria-hidden="true" />{count > 0 && <span className={styles.badge}>{count > 99 ? "99+" : count}</span>}</Link>;
+  return <Link href="/wishlist" className={styles.link} aria-label={`Yêu thích${count ? ` (${count})` : ""}`}><Heart size={20} aria-hidden="true" />{count > 0 && <span className={styles.badge}>{count > 99 ? "99+" : count}</span>}</Link>;
 }

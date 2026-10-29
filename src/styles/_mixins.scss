@@ -13,6 +13,13 @@ $breakpoints: (
   }
 }
 
+// phones and any coarse pointer: primary controls must reach the 44px touch target
+@mixin touch {
+  @media (width < #{map.get($breakpoints, sm)}), (pointer: coarse) {
+    @content;
+  }
+}
+
 @mixin down($bp) {
   @media (width < #{map.get($breakpoints, $bp)}) {
     @content;

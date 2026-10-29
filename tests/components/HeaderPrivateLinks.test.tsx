@@ -15,7 +15,7 @@ vi.mock("next/navigation", () => ({ useRouter: () => ({ replace: vi.fn() }), use
 describe("private header links", () => {
   it("surfaces wishlist and notification counts with accessible labels", () => {
     renderWithQuery(<><WishlistLink userId={7} /><NotificationBell userId={7} /></>);
-    expect(screen.getByRole("link", { name: /Wishlist.*3/i })).toHaveAttribute("href", "/wishlist");
+    expect(screen.getByRole("link", { name: /Yêu thích.*3/i })).toHaveAttribute("href", "/wishlist");
     expect(screen.getByRole("link", { name: /Thông báo.*2/i })).toHaveAttribute("href", "/account/notifications");
   });
 

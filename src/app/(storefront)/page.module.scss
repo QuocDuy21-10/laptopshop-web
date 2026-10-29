@@ -212,6 +212,12 @@
   color: var(--color-primary);
   text-decoration: none;
 
+  @include touch {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--control-md);
+  }
+
   &:hover {
     text-decoration: underline;
   }
@@ -252,6 +258,12 @@
   font-weight: var(--text-label-sm-weight);
   color: var(--color-primary);
   text-decoration: none;
+
+  @include touch {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--control-md);
+  }
 
   &:hover {
     text-decoration: underline;
@@ -366,6 +378,10 @@
   white-space: nowrap;
   text-decoration: none;
   transition: all var(--duration-fast) var(--ease-out);
+
+  @include touch {
+    min-height: var(--control-md);
+  }
 
   &:hover {
     border-color: var(--color-primary);

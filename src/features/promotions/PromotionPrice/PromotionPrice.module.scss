@@ -5,6 +5,30 @@
   flex-wrap: wrap;
 }
 
+// cards: "old price  -10%" on one line, the final price below it
+.wrap[data-size="md"] {
+  display: inline-grid;
+  grid-template-columns: max-content max-content;
+  justify-content: start;
+  align-items: baseline;
+  column-gap: 8px;
+
+  > :not(.listPrice, .badge) {
+    grid-row: 2;
+    grid-column: 1 / -1;
+  }
+
+  .listPrice {
+    grid-row: 1;
+    grid-column: 1;
+  }
+
+  .badge {
+    grid-row: 1;
+    grid-column: 2;
+  }
+}
+
 .listPrice {
   color: var(--color-foreground-muted);
   text-decoration: line-through;

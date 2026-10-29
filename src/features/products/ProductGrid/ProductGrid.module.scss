@@ -1,13 +1,13 @@
 @use "mixins" as *;
 
 // Columns follow the width actually available (with or without the filter sidebar), capped at 4:
-// 1 column at 320px, 2 on phones, 3 on tablets and 1024px with filters, 4 on wide desktops.
+// 1 column at 320px, 2 on phones (148px min: two columns fit a 360px phone's 328px of content), 3 on tablets and 1024px with filters, 4 on wide desktops.
 // The minimums let long card content shrink instead of pushing the grid wider than the page.
 .grid {
   --grid-gap: var(--space-three);
 
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 160px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 148px), 1fr));
   gap: var(--grid-gap);
 
   @include up(sm) {
@@ -18,5 +18,10 @@
 
   > * {
     min-width: 0;
+  }
+
+  // cards in a row share one height (a discounted price adds a line)
+  > li {
+    display: flex;
   }
 }

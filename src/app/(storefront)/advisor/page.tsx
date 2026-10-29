@@ -3,7 +3,7 @@ import { Page } from "@/components/app/Page/Page";
 import { AdvisorView } from "@/features/advisor/AdvisorView/AdvisorView";
 
 export const metadata: Metadata = {
-  title: "Tư vấn chọn laptop | LaptopShop",
+  title: "Tư vấn chọn laptop",
   description: "Tìm laptop phù hợp với ngân sách, nhu cầu và cách bạn sử dụng máy.",
 };
 

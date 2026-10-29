@@ -21,6 +21,10 @@
   @include text(headline-md);
 }
 
+.srOnly {
+  @include visually-hidden;
+}
+
 .count {
   color: var(--color-foreground-muted);
 }

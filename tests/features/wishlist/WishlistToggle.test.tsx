@@ -33,7 +33,7 @@ beforeEach(() => {
 describe("WishlistToggle", () => {
   it("renders an accessible unpressed heart and adds for authenticated users", async () => {
     renderWithQuery(<WishlistToggle productId={3} productName="Dell XPS" />);
-    const button = screen.getByRole("button", { name: "Thêm Dell XPS vào Wishlist" });
+    const button = screen.getByRole("button", { name: "Thêm Dell XPS vào danh sách yêu thích" });
     expect(button).toHaveAttribute("aria-pressed", "false");
     expect(button.className).toContain("touchTarget");
     await userEvent.click(button);
@@ -43,7 +43,7 @@ describe("WishlistToggle", () => {
   it("removes an authenticated wishlisted product", async () => {
     mocks.status.mockReturnValue({ data: [{ productId: 3, isWishlisted: true }], isPending: false });
     renderWithQuery(<WishlistToggle productId={3} productName="Dell XPS" />);
-    const button = screen.getByRole("button", { name: "Bỏ Dell XPS khỏi Wishlist" });
+    const button = screen.getByRole("button", { name: "Bỏ Dell XPS khỏi danh sách yêu thích" });
     expect(button).toHaveAttribute("aria-pressed", "true");
     await userEvent.click(button);
     expect(mocks.remove).toHaveBeenCalledWith(3);
@@ -54,7 +54,7 @@ describe("WishlistToggle", () => {
     // a disabled query reports isPending=true forever, but isLoading=false
     mocks.status.mockReturnValue({ data: undefined, isPending: true, isLoading: false });
     renderWithQuery(<WishlistToggle productId={3} productName="Dell XPS" />);
-    await userEvent.click(screen.getByRole("button", { name: "Thêm Dell XPS vào Wishlist" }));
+    await userEvent.click(screen.getByRole("button", { name: "Thêm Dell XPS vào danh sách yêu thích" }));
     expect(mocks.push).toHaveBeenCalledWith("/login?next=%2Fproducts%3Fq%3Ddell");
     expect(JSON.parse(window.sessionStorage.getItem("laptopshop.wishlist.intent")!)).toMatchObject({ productId: 3 });
     expect(mocks.add).not.toHaveBeenCalled();

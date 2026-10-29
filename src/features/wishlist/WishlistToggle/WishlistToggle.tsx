@@ -26,7 +26,7 @@ export function WishlistToggle({ productId, productName }: { productId: number; 
   const hydrated = useSyncExternalStore(noopSubscribe, () => true, () => false);
   const add = useAddWishlistItem(me.data?.id);
   const remove = useRemoveWishlistItem(me.data?.id);
-  const label = status ? `Bỏ ${productName} khỏi Wishlist` : `Thêm ${productName} vào Wishlist`;
+  const label = status ? `Bỏ ${productName} khỏi danh sách yêu thích` : `Thêm ${productName} vào danh sách yêu thích`;
   const onClick = () => {
     if (!me.data) {
       const returnTo = `${pathname}${typeof window !== "undefined" ? window.location.search : ""}`;
