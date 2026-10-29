@@ -14,6 +14,7 @@ export function AdvisorRecommendationCard({ recommendation }: { recommendation: 
           {recommendation.highlights.map((highlight) => <span key={highlight}>{highlight}</span>)}
         </div>
       </div>
+      <ProductCard product={recommendation.product} />
       <p className={styles.reason}>{recommendation.reason}</p>
       {recommendation.tradeoffs.length > 0 && (
         <div className={styles.tradeoffs}>
@@ -23,7 +24,6 @@ export function AdvisorRecommendationCard({ recommendation }: { recommendation: 
           </ul>
         </div>
       )}
-      <ProductCard product={recommendation.product} />
     </section>
   );
 }

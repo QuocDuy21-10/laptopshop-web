@@ -41,6 +41,20 @@ export function MobileMenu({ targets }: { targets: FilterOption[] }) {
           Khuyến mãi
         </Link>
       </nav>
+      <nav aria-label="Tài khoản và mua sắm" className={styles.nav}>
+        <Link href="/wishlist" onClick={close}>
+          Yêu thích
+        </Link>
+        <Link href="/compare" onClick={close}>
+          So sánh
+        </Link>
+        <Link href="/account/orders" onClick={close}>
+          Đơn hàng của tôi
+        </Link>
+        <Link href="/account" onClick={close}>
+          Tài khoản
+        </Link>
+      </nav>
     </Dialog>
   );
 }

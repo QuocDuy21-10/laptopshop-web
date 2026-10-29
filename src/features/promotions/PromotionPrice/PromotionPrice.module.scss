@@ -36,7 +36,7 @@
 
 .badge {
   color: var(--color-sale);
-  font-size: 12px;
+  font-size: var(--text-label-sm-size);
   font-weight: 600;
 }
 
@@ -45,7 +45,7 @@
   flex-basis: 100%;
   flex-direction: column;
   color: var(--color-sale);
-  font-size: 12px;
+  font-size: var(--text-label-sm-size);
   font-weight: 600;
 
   small {

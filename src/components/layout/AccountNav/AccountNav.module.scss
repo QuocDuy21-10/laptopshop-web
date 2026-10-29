@@ -1,0 +1,50 @@
+@use "mixins" as *;
+
+.wrap {
+  padding-top: var(--space-four);
+}
+
+// the list scrolls inside its own box so five tabs never widen the page at 320px
+.nav {
+  overflow-x: auto;
+  border-bottom: 1px solid var(--color-border);
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.list {
+  display: flex;
+  gap: var(--space-two);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-md);
+  padding: 0 var(--space-three);
+  border-bottom: 2px solid transparent;
+  color: var(--color-foreground-muted);
+  text-decoration: none;
+  white-space: nowrap;
+
+  @include text(label-md);
+
+  &:hover {
+    color: var(--color-foreground);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.active {
+  border-bottom-color: var(--color-primary);
+  color: var(--color-primary);
+}

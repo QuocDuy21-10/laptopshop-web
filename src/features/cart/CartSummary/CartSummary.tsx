@@ -34,10 +34,6 @@ export function CartSummary({
           <dt>Số lượng</dt>
           <dd>{cart.itemCount} sản phẩm</dd>
         </div>
-        <div className={styles.row}>
-          <dt>Thanh toán</dt>
-          <dd>Khi nhận hàng (COD)</dd>
-        </div>
         {pricing.productDiscount > 0 && (
           <div className={styles.row}>
             <dt>Ưu đãi sản phẩm</dt>

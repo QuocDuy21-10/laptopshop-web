@@ -98,7 +98,7 @@
 
 .noRating {
   color: var(--color-foreground-muted);
-  font-size: 0.72rem;
+  font-size: var(--text-label-sm-size);
   font-weight: 400;
 }
 
@@ -153,7 +153,7 @@
   background: var(--color-surface-muted);
   border: 1px solid var(--color-border);
   color: var(--color-foreground-muted);
-  font-size: 0.72rem;
+  font-size: var(--text-label-sm-size);
   font-weight: 500;
   line-height: 1.4;
   max-width: 100%;

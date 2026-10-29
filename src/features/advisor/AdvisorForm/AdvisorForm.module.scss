@@ -43,6 +43,11 @@
   @include text(label-md);
 }
 
+// <legend> is not a grid item, so the fieldset gap does not separate it from the choices
+.legend {
+  padding: 0 0 var(--space-three);
+}
+
 .choiceGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
