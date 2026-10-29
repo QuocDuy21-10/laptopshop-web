@@ -2,15 +2,13 @@
 
 import { Heart } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
-import { useSyncExternalStore } from "react";
 import { useMe } from "@/features/account/useMe";
 import { useAddWishlistItem, useRemoveWishlistItem, useWishlistStatus } from "@/features/wishlist/hooks";
 import { savePendingWishlistIntent } from "@/features/wishlist/intent";
 import { loginHref } from "@/lib/safe-next";
+import { useHydrated } from "@/lib/useHydrated";
 import { useWishlistStatusContext } from "../WishlistStatusProvider/WishlistStatusProvider";
 import styles from "./WishlistToggle.module.scss";
-
-const noopSubscribe = () => () => {};
 
 export function WishlistToggle({ productId, productName }: { productId: number; productName: string }) {
   const me = useMe();
@@ -23,7 +21,7 @@ export function WishlistToggle({ productId, productName }: { productId: number; 
   const isPending = me.isPending || context?.isPending || fallback.isLoading;
   // The server always renders the query as pending; React never patches a mismatched `disabled` during hydration,
   // so only reflect the loading state after hydration (the server snapshot is false).
-  const hydrated = useSyncExternalStore(noopSubscribe, () => true, () => false);
+  const hydrated = useHydrated();
   const add = useAddWishlistItem(me.data?.id);
   const remove = useRemoveWishlistItem(me.data?.id);
   const label = status ? `Bỏ ${productName} khỏi Wishlist` : `Thêm ${productName} vào Wishlist`;

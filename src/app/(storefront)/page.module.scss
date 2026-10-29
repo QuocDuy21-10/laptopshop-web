@@ -107,7 +107,7 @@
 
 .heroCardBadge {
   align-self: flex-start;
-  font-size: 0.7rem;
+  font-size: var(--text-label-sm-size);
   font-weight: var(--text-label-sm-weight);
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -187,7 +187,7 @@
   }
 
   p {
-    font-size: 0.75rem;
+    font-size: var(--text-label-sm-size);
     color: var(--color-foreground-muted);
     margin-top: 2px;
   }

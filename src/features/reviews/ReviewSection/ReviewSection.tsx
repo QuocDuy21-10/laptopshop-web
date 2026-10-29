@@ -6,6 +6,7 @@ import { Button, buttonClassName } from "@/components/ui/Button/Button";
 import Link from "next/link";
 import { useMe } from "@/features/account/useMe";
 import { loginHref } from "@/lib/safe-next";
+import { useHydrated } from "@/lib/useHydrated";
 import type { ProductReviewsQuery, PublicReview, ReviewSummary as ReviewSummaryData } from "@/lib/api/types";
 import { useHelpfulReviewIds, useProductReviews, useReviewEligibility, useReviewSummary } from "../hooks";
 import { ReviewDialog } from "../ReviewDialog/ReviewDialog";
@@ -28,6 +29,7 @@ export function ReviewSection({ productId, initialSummary, initialPage }: Props)
   const summaryQuery = useReviewSummary(productId);
   const reviewsQuery = useProductReviews(productId, query);
   const me = useMe();
+  const hydrated = useHydrated();
   const eligibility = useReviewEligibility(productId, me.data?.id);
   const summary = summaryQuery.data ?? initialSummary;
   const pageData = reviewsQuery.data ?? (page === 1 && !rating && sort === "newest" ? initialPage : { data: [], meta: { page, pageSize: 10, total: 0, totalPages: 0 } });
@@ -46,7 +48,7 @@ export function ReviewSection({ productId, initialSummary, initialPage }: Props)
       <div className={styles.heading}>
         <div><h2 id="reviews-title">Đánh giá từ khách hàng</h2><p>Chỉ hiển thị nhận xét từ đơn hàng đã hoàn tất.</p></div>
         <div className={styles.action}>
-          {!me.data ? <Link className={buttonClassName({ variant: "secondary" })} href={loginHref(`/products/${productId}#reviews`)}>Đăng nhập để đánh giá</Link> : eligibility.data?.existingReview ? <Button variant="secondary" onClick={() => setDialogOpen(true)}>Sửa đánh giá của tôi</Button> : eligibility.data?.eligible ? <Button onClick={() => setDialogOpen(true)}>Viết đánh giá</Button> : eligibilityMessage ? <p className={styles.eligibility}>{eligibilityMessage}</p> : null}
+          {!hydrated || me.isPending ? null : !me.data ? <Link className={buttonClassName({ variant: "secondary" })} href={loginHref(`/products/${productId}#reviews`)}>Đăng nhập để đánh giá</Link> : eligibility.data?.existingReview ? <Button variant="secondary" onClick={() => setDialogOpen(true)}>Sửa đánh giá của tôi</Button> : eligibility.data?.eligible ? <Button onClick={() => setDialogOpen(true)}>Viết đánh giá</Button> : eligibilityMessage ? <p className={styles.eligibility}>{eligibilityMessage}</p> : null}
         </div>
       </div>
       {summaryQuery.isError ? <Alert tone="warning" title="Chưa thể tải thống kê đánh giá" /> : <ReviewSummary summary={summary} />}

@@ -1,13 +1,10 @@
 @use "mixins" as *;
 
+// no outer box: the product card inside already is one (a card in a card read as noise)
 .card {
   display: flex;
   flex-direction: column;
   gap: var(--space-three);
-  padding: var(--space-four);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
 }
 
 .heading {
