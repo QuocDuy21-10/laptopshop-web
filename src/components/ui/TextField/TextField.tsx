@@ -17,7 +17,7 @@ export function TextField({ label, error, hint, id, required, className, reveala
   const autoId = useId();
   const [revealed, setRevealed] = useState(false);
   const inputId = id ?? autoId;
-  const hintId = hint ? `${inputId}-hint` : undefined;
+  const hintId = hint && !error ? `${inputId}-hint` : undefined;
   const errorId = error ? `${inputId}-error` : undefined;
   const describedBy = [hintId, errorId].filter(Boolean).join(" ") || undefined;
 
@@ -55,7 +55,7 @@ export function TextField({ label, error, hint, id, required, className, reveala
           </button>
         )}
       </div>
-      {hint && (
+      {hintId && (
         <p id={hintId} className={styles.hint}>
           {hint}
         </p>

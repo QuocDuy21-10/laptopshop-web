@@ -3,11 +3,17 @@ import { describe, expect, it } from "vitest";
 import { TextField } from "@/components/ui/TextField/TextField";
 
 describe("TextField", () => {
-  it("links the label, hint and error to the input", () => {
+  it("shows the hint when there is no error", () => {
+    render(<TextField label="Email" hint="Dùng để đăng nhập" />);
+    expect(screen.getByLabelText("Email")).toHaveAccessibleDescription("Dùng để đăng nhập");
+  });
+
+  it("replaces the hint with the error", () => {
     render(<TextField label="Email" hint="Dùng để đăng nhập" error="Email không hợp lệ" />);
     const input = screen.getByLabelText("Email");
     expect(input).toHaveAttribute("aria-invalid", "true");
-    expect(input).toHaveAccessibleDescription("Dùng để đăng nhập Email không hợp lệ");
+    expect(input).toHaveAccessibleDescription("Email không hợp lệ");
+    expect(screen.queryByText("Dùng để đăng nhập")).not.toBeInTheDocument();
   });
 
   it("is valid without an error", () => {
