@@ -57,50 +57,56 @@ export function CheckoutView() {
 
   return (
     <div className={styles.layout}>
-      <CheckoutForm
-        defaults={{
-          receiverName: me.data?.fullName ?? "",
-          receiverPhone: me.data?.phone ?? "",
-          receiverAddress: me.data?.address ?? "",
-          paymentMethod: "COD",
-        }}
-        availableMethods={(paymentMethods.data ?? [{ code: "COD", enabled: true }]).filter((method) => method.enabled).map((method) => method.code)}
-        couponCode={couponCode || undefined}
-        pricingFingerprint={quote.data?.pricingFingerprint ?? ""}
-        pricingReady={pricingReady}
-        onPricingConflict={async () => {
-          await quote.refetch();
-        }}
-      />
-      {validQuote ? (
-        <CartSummary
-          cart={cart.data}
-          title="Đơn hàng của bạn"
-          pricing={{
-            productDiscount: validQuote.productDiscount,
-            couponDiscount: validQuote.couponDiscount,
-            total: validQuote.total,
+      <div className={styles.formArea}>
+        <CheckoutForm
+          defaults={{
+            receiverName: me.data?.fullName ?? "",
+            receiverPhone: me.data?.phone ?? "",
+            receiverAddress: me.data?.address ?? "",
+            paymentMethod: "COD",
           }}
-          action={
-            <ul role="list" className={styles.items}>
-              {cart.data.items.map((line) => (
-                <li key={line.id} className={styles.item}>
-                  <span>
-                    {line.product.name} × {line.quantity}
-                  </span>
-                  <Price value={quoteTotals.get(line.product.id)!} size="sm" />
-                </li>
-              ))}
-            </ul>
-          }
+          availableMethods={(paymentMethods.data ?? [{ code: "COD", enabled: true }]).filter((method) => method.enabled).map((method) => method.code)}
+          couponCode={couponCode || undefined}
+          pricingFingerprint={quote.data?.pricingFingerprint ?? ""}
+          pricingReady={pricingReady}
+          onPricingConflict={async () => {
+            await quote.refetch();
+          }}
         />
-      ) : (
-        <Alert
-          tone="warning"
-          title={quote.isError ? "Không thể cập nhật giá và ưu đãi. Vui lòng thử lại trước khi đặt hàng." : "Đang xác nhận giá và ưu đãi."}
-        />
-      )}
-      <CouponInput value={couponCode} onApply={setCouponCode} error={quote.isError ? quote.error : undefined} />
+      </div>
+      <div className={styles.summaryArea}>
+        {validQuote ? (
+          <CartSummary
+            cart={cart.data}
+            title="Đơn hàng của bạn"
+            pricing={{
+              productDiscount: validQuote.productDiscount,
+              couponDiscount: validQuote.couponDiscount,
+              total: validQuote.total,
+            }}
+            action={
+              <ul role="list" className={styles.items}>
+                {cart.data.items.map((line) => (
+                  <li key={line.id} className={styles.item}>
+                    <span>
+                      {line.product.name} × {line.quantity}
+                    </span>
+                    <Price value={quoteTotals.get(line.product.id)!} size="sm" />
+                  </li>
+                ))}
+              </ul>
+            }
+          />
+        ) : (
+          <Alert
+            tone="warning"
+            title={quote.isError ? "Không thể cập nhật giá và ưu đãi. Vui lòng thử lại trước khi đặt hàng." : "Đang xác nhận giá và ưu đãi."}
+          />
+        )}
+      </div>
+      <div className={styles.couponArea}>
+        <CouponInput value={couponCode} onApply={setCouponCode} error={quote.isError ? quote.error : undefined} />
+      </div>
     </div>
   );
 }

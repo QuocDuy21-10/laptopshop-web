@@ -11,6 +11,8 @@ import { DesktopFilters } from "@/features/products/DesktopFilters/DesktopFilter
 import { ProductGrid } from "@/features/products/ProductGrid/ProductGrid";
 import { parseFilters, toApiQuery, toFacetsApiQuery, toQueryString } from "@/features/products/search-params";
 import { getFilterOptions, getProductFacets, listProducts } from "@/features/products/server";
+import { brandForQuery } from "@/features/products/brandSearch";
+import { Alert } from "@/components/ui/Alert/Alert";
 import { productsMetadata } from "@/features/products/metadata";
 import { SortSelect } from "@/features/products/SortSelect/SortSelect";
 import styles from "./page.module.scss";
@@ -32,6 +34,8 @@ export default async function ProductsPage({ searchParams }: Props) {
     getProductFacets(toFacetsApiQuery(filters)).catch(() => null),
   ]);
 
+  const brand = filters.factory.length ? undefined : brandForQuery(filters.q, options.factoryOptions);
+
   return (
     <Container className={styles.page}>
       <div className={styles.head}>
@@ -48,6 +52,13 @@ export default async function ProductsPage({ searchParams }: Props) {
             <SortSelect filters={filters} />
           </div>
           <ActiveFilterChips options={options} filters={filters} />
+          {brand && (
+            <Alert tone="info" title={`Tìm theo tên chỉ khớp một phần máy ${brand.name}.`}>
+              <Link href={`/products${toQueryString({ ...filters, q: undefined, factory: [brand.value], page: 1 })}`}>
+                Xem tất cả laptop {brand.name}
+              </Link>
+            </Alert>
+          )}
           <h2 className={styles.srOnly}>Danh sách laptop</h2>
           {result.data.length === 0 ? (
             <EmptyState

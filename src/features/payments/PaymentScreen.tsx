@@ -8,7 +8,7 @@ import { Alert } from "@/components/ui/Alert/Alert";
 import { Button } from "@/components/ui/Button/Button";
 import { Price } from "@/components/ui/Price/Price";
 import { Skeleton } from "@/components/ui/Skeleton/Skeleton";
-import { errorMessage } from "@/lib/api/errors";
+import { errorMessage, isApiError } from "@/lib/api/errors";
 import { usePaymentStatus } from "./hooks";
 import styles from "./PaymentScreen.module.scss";
 
@@ -59,6 +59,16 @@ export function PaymentScreen({ orderId }: { orderId: number }) {
 
   if (paymentQuery.isPending) return <Skeleton className={styles.skeleton} />;
   if (paymentQuery.isError && !payment) {
+    // no payment record: a COD order has nothing to pay online, and retrying cannot create one
+    if (isApiError(paymentQuery.error) && paymentQuery.error.status === 404) {
+      return (
+        <section className={styles.state}>
+          <h1>Thanh toán đơn hàng #{orderId}</h1>
+          <p>Không có thông tin thanh toán trực tuyến cho đơn hàng này. Đơn thanh toán khi nhận hàng (COD) không cần thanh toán trước.</p>
+          <Link href={`/account/orders/${orderId}`}>Xem chi tiết đơn hàng</Link>
+        </section>
+      );
+    }
     return (
       <section className={styles.state}>
         <Alert tone="error" title={errorMessage(paymentQuery.error)} />

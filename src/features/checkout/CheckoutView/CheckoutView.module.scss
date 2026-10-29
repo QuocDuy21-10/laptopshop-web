@@ -1,13 +1,33 @@
 @use "mixins" as *;
 
+// phones: total, coupon, then the form, so the confirm button is the last thing a buyer reaches
 .layout {
   display: grid;
   gap: var(--space-six);
   align-items: start;
+  grid-template-areas:
+    "summary"
+    "coupon"
+    "form";
 
   @include up(lg) {
-    grid-template-columns: 1fr 380px;
+    grid-template: "form summary" auto "form coupon" 1fr / 1fr 380px;
   }
+}
+
+.formArea {
+  grid-area: form;
+  min-width: 0;
+}
+
+.summaryArea {
+  grid-area: summary;
+  min-width: 0;
+}
+
+.couponArea {
+  grid-area: coupon;
+  min-width: 0;
 }
 
 .items {

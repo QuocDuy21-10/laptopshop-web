@@ -74,13 +74,36 @@
   color: var(--color-primary) !important;
 }
 
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-two);
+  padding-top: var(--space-three);
+  border-top: 1px solid var(--color-border);
+}
+
+.summaryRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  color: var(--color-foreground-muted);
+
+  dd {
+    margin: 0;
+  }
+}
+
 .total {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  padding-top: var(--space-three);
+  padding-top: var(--space-two);
 
   @include text(label-md);
+
+  dd {
+    margin: 0;
+  }
 }
 
 .actions {
