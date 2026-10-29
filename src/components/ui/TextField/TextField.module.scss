@@ -14,6 +14,12 @@
   color: var(--color-error);
 }
 
+.control {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
 .input {
   min-height: var(--control-md);
   padding: 0 var(--space-three);
@@ -34,6 +40,32 @@
   &:disabled {
     background: var(--color-disabled);
     color: var(--color-on-disabled);
+  }
+}
+
+.revealable {
+  padding-right: var(--control-md);
+}
+
+.toggle {
+  position: absolute;
+  inset-block: 0;
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-md);
+  background: transparent;
+  border: 0;
+  color: var(--color-foreground-muted);
+  border-radius: var(--radius-sm);
+
+  &:hover {
+    color: var(--color-foreground);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
   }
 }
 

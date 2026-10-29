@@ -26,4 +26,17 @@ describe("AdminShell", () => {
     );
     expect(screen.getByText("Thông báo")).toBeInTheDocument();
   });
+
+  it("uses the shared LaptopShop logo assets in the admin brand", () => {
+    const { container } = renderAdmin(
+      <AdminShell>
+        <main>Content</main>
+      </AdminShell>,
+    );
+    const brand = screen.getByRole("link", { name: "LaptopShop quản trị" });
+
+    expect(brand.querySelector('img[src="/brand/logo-horizontal.svg"]')).toBeInTheDocument();
+    expect(brand.querySelector('img[src="/brand/icon.svg"]')).toBeInTheDocument();
+    expect(container.querySelectorAll('img[src^="/brand/"]')).toHaveLength(2);
+  });
 });

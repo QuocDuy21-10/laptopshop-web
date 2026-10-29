@@ -21,6 +21,7 @@ import {
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
+import { BrandLogo } from "@/components/brand/BrandLogo/BrandLogo";
 import { useMe } from "@/features/account/useMe";
 import { useLogout } from "@/features/auth/hooks";
 import styles from "./AdminShell.module.scss";
@@ -76,17 +77,8 @@ const MENU_ITEMS: MenuProps["items"] = NAV_GROUPS.map((group) =>
 function Brand({ compact }: { compact?: boolean }) {
   return (
     <Link href="/admin" className={styles.brand} aria-label="LaptopShop quản trị">
-      <span className={styles.brandIcon} aria-hidden>
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="3" y="4" width="18" height="12" rx="2" ry="2" />
-          <line x1="2" y1="20" x2="22" y2="20" />
-        </svg>
-      </span>
-      {!compact && (
-        <span className={styles.brandText}>
-          LaptopShop<small>Quản trị</small>
-        </span>
-      )}
+      <BrandLogo compact={compact} />
+      {!compact && <span className={styles.brandLabel}>Quản trị</span>}
     </Link>
   );
 }

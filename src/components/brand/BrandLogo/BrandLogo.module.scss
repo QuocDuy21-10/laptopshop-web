@@ -1,0 +1,39 @@
+.logo {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.horizontal {
+  display: block;
+  width: 156px;
+  height: auto;
+}
+
+.mark {
+  display: none;
+  width: 36px;
+  height: 36px;
+}
+
+.compact {
+  .horizontal {
+    display: none;
+  }
+
+  .mark {
+    display: block;
+  }
+}
+
+@media (width < 400px) {
+  .logo:not(.compact) {
+    .horizontal {
+      display: none;
+    }
+
+    .mark {
+      display: block;
+    }
+  }
+}
