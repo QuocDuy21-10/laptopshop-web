@@ -1,0 +1,390 @@
+@use "mixins" as *;
+
+.sliderWrap {
+  position: relative;
+  width: 100%;
+}
+
+.sliderBox {
+  position: relative;
+  width: 100%;
+  min-height: 440px;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-2);
+  background: var(--color-surface-raised);
+  overflow: hidden;
+
+  @include up(lg) {
+    min-height: 480px;
+  }
+}
+
+// Background Ambient Mesh Gradient
+.ambientBackground {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 75% 50%, var(--color-ambient-emerald) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 85% 30%, var(--color-ambient-teal) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 40% at 20% 80%, var(--color-ambient-sky) 0%, transparent 70%),
+    linear-gradient(135deg, var(--color-surface-raised) 0%, var(--color-surface-muted) 100%);
+}
+
+.ambientOrb {
+  position: absolute;
+  top: 50%;
+  right: 20%;
+  width: 320px;
+  height: 320px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-soft);
+  opacity: 0.55;
+  filter: blur(60px);
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 1;
+
+  @include up(lg) {
+    width: 420px;
+    height: 420px;
+  }
+}
+
+// Slide Layout
+.slideContent {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  gap: var(--space-six);
+  padding: var(--space-six);
+  min-height: 440px;
+
+  @include up(md) {
+    grid-template-columns: 1.15fr 0.85fr;
+    padding: var(--space-eight) var(--space-ten);
+    min-height: 480px;
+  }
+
+  @include up(lg) {
+    grid-template-columns: 1.2fr 0.8fr;
+    padding: var(--space-ten) var(--space-twelve);
+  }
+}
+
+// Left Column: Text & CTA
+.textCol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-four);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-two);
+  padding: var(--space-one) var(--space-three);
+  border-radius: var(--radius-full);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: var(--text-label-sm-size);
+  font-weight: var(--text-label-sm-weight);
+  border: 1px solid var(--color-border);
+}
+
+.eyebrowDot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.4;
+    transform: scale(0.85);
+  }
+}
+
+.headline {
+  color: var(--color-foreground);
+  font-size: var(--text-headline-md-size);
+  font-weight: var(--text-headline-lg-weight);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+
+  @include up(md) {
+    font-size: var(--text-headline-lg-size);
+  }
+
+  @include up(lg) {
+    font-size: var(--text-display-size);
+  }
+}
+
+.highlight {
+  color: var(--color-primary);
+  display: block;
+}
+
+.description {
+  color: var(--color-foreground-muted);
+  font-size: var(--text-body-md-size);
+  line-height: var(--text-body-lg-line);
+  max-width: 48ch;
+
+  @include up(md) {
+    font-size: var(--text-body-lg-size);
+  }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-three);
+  padding-top: var(--space-two);
+}
+
+.primaryCta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-two);
+  padding: var(--space-three) var(--space-five);
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: var(--text-label-md-size);
+  font-weight: var(--text-label-md-weight);
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgb(22 101 52 / 24%);
+  transition:
+    background var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+
+  &:hover {
+    background: var(--color-primary-hover);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    background: var(--color-primary-pressed);
+    transform: translateY(0);
+  }
+}
+
+.secondaryCta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-two);
+  padding: var(--space-three) var(--space-five);
+  border-radius: var(--radius-md);
+  background: var(--color-glass-surface);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--color-border);
+  color: var(--color-foreground);
+  font-size: var(--text-label-md-size);
+  font-weight: var(--text-label-md-weight);
+  text-decoration: none;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+
+  &:hover {
+    border-color: var(--color-border-strong);
+    background: var(--color-surface);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// Right Column: Visual & Floating Badges
+.visualCol {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
+
+  @include up(md) {
+    min-height: 320px;
+  }
+}
+
+.laptopContainer {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.laptopGraphic {
+  width: 100%;
+  height: auto;
+  max-height: 280px;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 24px rgb(16 37 27 / 15%));
+
+  @include up(lg) {
+    max-height: 320px;
+  }
+}
+
+// Glassmorphism Badges
+.floatingBadgePrimary {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-two);
+  padding: var(--space-two) var(--space-three);
+  border-radius: var(--radius-full);
+  background: var(--color-glass-surface);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--color-glass-border);
+  box-shadow: var(--shadow-1);
+  color: var(--color-foreground);
+  font-size: var(--text-label-sm-size);
+  font-weight: var(--text-label-sm-weight);
+  pointer-events: none;
+}
+
+.floatingBadgeSecondary {
+  position: absolute;
+  bottom: 16px;
+  left: 8px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-two);
+  padding: var(--space-two) var(--space-three);
+  border-radius: var(--radius-full);
+  background: var(--color-glass-surface);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--color-glass-border);
+  box-shadow: var(--shadow-1);
+  color: var(--color-foreground-muted);
+  font-size: var(--text-label-sm-size);
+  font-weight: 500;
+  pointer-events: none;
+}
+
+.badgeDot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-success);
+}
+
+// Navigation Controls
+.navBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background: var(--color-glass-surface);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--color-border);
+  color: var(--color-foreground);
+  box-shadow: var(--shadow-1);
+  cursor: pointer;
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+
+  &:hover {
+    background: var(--color-surface);
+    border-color: var(--color-border-strong);
+    transform: translateY(-50%) scale(1.06);
+  }
+
+  &:active {
+    transform: translateY(-50%) scale(0.96);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.prevBtn {
+  left: var(--space-three);
+
+  @include up(md) {
+    left: var(--space-four);
+  }
+}
+
+.nextBtn {
+  right: var(--space-three);
+
+  @include up(md) {
+    right: var(--space-four);
+  }
+}
+
+// Indicators
+.indicatorList {
+  position: absolute;
+  bottom: var(--space-four);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: var(--space-two);
+}
+
+.indicator {
+  height: 6px;
+  width: 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-border-strong);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition:
+    width var(--duration-menu) var(--ease-out),
+    background var(--duration-fast) var(--ease-out);
+
+  &:hover {
+    background: var(--color-secondary);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  &.active {
+    width: 26px;
+    background: var(--color-primary);
+  }
+}
