@@ -32,7 +32,7 @@
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-two);
+  gap: var(--space-one);
   min-width: 0;
   color: var(--color-foreground);
   text-decoration: none;
@@ -42,38 +42,15 @@
   }
 }
 
-.brandIcon {
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-md);
-  background: var(--color-primary);
-  color: var(--color-on-primary);
-}
-
-.brandText {
-  display: grid;
-
-  // the mobile header keeps the logo mark only on very narrow phones
-  .header & {
-    @media (width < 400px) {
-      @include visually-hidden;
-    }
-  }
-
-  line-height: 1.2;
+.brandLabel {
+  color: var(--color-foreground-muted);
   white-space: nowrap;
 
-  @include text(label-md);
+  @include text(body-sm);
 
-  small {
-    color: var(--color-foreground-muted);
-    font-weight: 400;
-
-    @include text(body-sm);
+  // the mobile header already sits inside the admin shell, so the extra qualifier can recede
+  .header & {
+    display: none;
   }
 }
 

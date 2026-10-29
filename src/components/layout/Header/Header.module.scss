@@ -29,35 +29,12 @@
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-two);
   min-height: var(--control-md);
-  color: var(--color-foreground);
   text-decoration: none;
-  letter-spacing: -0.02em;
 
-  @include text(title-md);
-
-  &:hover {
-    color: var(--color-primary);
+  &:focus-visible {
+    @include focus-ring;
   }
-}
-
-// very narrow phones keep the logo mark only; the name stays available to screen readers
-.brandText {
-  @media (width < 400px) {
-    @include visually-hidden;
-  }
-}
-
-.brandIcon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-md);
-  background: var(--color-primary);
-  color: var(--color-on-primary);
 }
 
 // the search field takes the free space between brand and actions; below 768px it moves into the menu

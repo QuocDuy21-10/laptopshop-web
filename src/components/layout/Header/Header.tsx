@@ -1,6 +1,7 @@
 import { Sparkles } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
+import { BrandLogo } from "@/components/brand/BrandLogo/BrandLogo";
 import { AccountMenu } from "@/components/layout/AccountMenu/AccountMenu";
 import { CartLink } from "@/components/layout/CartLink/CartLink";
 import { Container } from "@/components/layout/Container/Container";
@@ -31,23 +32,8 @@ export async function Header() {
       <Container className={styles.main}>
         <div className={styles.start}>
           <MobileMenu targets={targets} />
-          <Link href="/" className={styles.brand}>
-            <span className={styles.brandIcon} aria-hidden>
-              <svg
-                viewBox="0 0 24 24"
-                width="18"
-                height="18"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <rect x="3" y="4" width="18" height="12" rx="2" ry="2" />
-                <line x1="2" y1="20" x2="22" y2="20" />
-              </svg>
-            </span>
-            <span className={styles.brandText}>LaptopShop</span>
+          <Link href="/" className={styles.brand} aria-label="LaptopShop - Trang chủ">
+            <BrandLogo />
           </Link>
         </div>
 
