@@ -28,6 +28,10 @@
 
 .sm {
   min-height: var(--control-sm);
+
+  @include touch {
+    min-height: var(--control-md);
+  }
 }
 
 .md {

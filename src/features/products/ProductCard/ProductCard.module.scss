@@ -2,7 +2,9 @@
 
 .card {
   display: flex;
+  flex: 1;
   flex-direction: column;
+  min-width: 0;
   background: var(--color-surface-raised);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);

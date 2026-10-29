@@ -48,7 +48,7 @@ export function Footer() {
 
           {/* CỘT 2: DANH MỤC SẢN PHẨM */}
           <div className={styles.linkCol}>
-            <h3 className={styles.colTitle}>Danh mục laptop</h3>
+            <h2 className={styles.colTitle}>Danh mục laptop</h2>
             <ul className={styles.linkList}>
               <li>
                 <Link href="/products">Sản phẩm</Link>
@@ -63,7 +63,7 @@ export function Footer() {
 
           {/* CỘT 3: TIỆN ÍCH & TÀI KHOẢN */}
           <div className={styles.linkCol}>
-            <h3 className={styles.colTitle}>Tiện ích mua sắm</h3>
+            <h2 className={styles.colTitle}>Tiện ích mua sắm</h2>
             <ul className={styles.linkList}>
               <li>
                 <Link href="/advisor">Tư vấn chọn laptop</Link>

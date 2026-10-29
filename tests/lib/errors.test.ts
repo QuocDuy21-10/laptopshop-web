@@ -79,8 +79,8 @@ describe("errorMessage (reviews)", () => {
 
 describe("errorMessage (wishlist and notifications)", () => {
   it("translates private feature error codes", () => {
-    expect(errorMessage(new ApiError(409, "WISHLIST_LIMIT_REACHED", "x"))).toBe("Wishlist đã đạt giới hạn 100 sản phẩm.");
-    expect(errorMessage(new ApiError(404, "WISHLIST_ITEM_NOT_FOUND", "x"))).toBe("Không tìm thấy sản phẩm trong Wishlist.");
+    expect(errorMessage(new ApiError(409, "WISHLIST_LIMIT_REACHED", "x"))).toBe("Danh sách yêu thích đã đạt giới hạn 100 sản phẩm.");
+    expect(errorMessage(new ApiError(404, "WISHLIST_ITEM_NOT_FOUND", "x"))).toBe("Không tìm thấy sản phẩm trong danh sách yêu thích.");
     expect(errorMessage(new ApiError(400, "INVALID_TARGET_PRICE", "x"))).toBe("Giá mục tiêu phải thấp hơn giá hiện tại.");
     expect(errorMessage(new ApiError(404, "NOTIFICATION_NOT_FOUND", "x"))).toBe("Không tìm thấy thông báo yêu cầu.");
   });

@@ -48,6 +48,7 @@ export default async function ProductsPage({ searchParams }: Props) {
             <SortSelect filters={filters} />
           </div>
           <ActiveFilterChips options={options} filters={filters} />
+          <h2 className={styles.srOnly}>Danh sách laptop</h2>
           {result.data.length === 0 ? (
             <EmptyState
               icon={<SearchX size={40} aria-hidden="true" />}
