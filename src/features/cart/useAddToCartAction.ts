@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { errorMessage, isApiError } from "@/lib/api/errors";
 import { loginHref } from "@/lib/safe-next";
 import { useAddToCart } from "./hooks";
+import { savePendingCartIntent } from "./intent";
 
 export function useAddToCartAction() {
   const addToCart = useAddToCart();
@@ -22,8 +23,11 @@ export function useAddToCartAction() {
         action: { label: "Xem giỏ", onClick: () => router.push("/cart") },
       });
     } catch (e) {
-      // the API has no guest cart: anonymous users must log in first
-      if (isApiError(e) && e.status === 401) router.push(loginHref(pathname));
+      // the API has no guest cart: remember the action, log in, then PendingCartIntent replays it
+      if (isApiError(e) && e.status === 401) {
+        savePendingCartIntent({ productId, quantity, goToCart: Boolean(opts.goToCart) });
+        router.push(loginHref(pathname));
+      }
       else toast.error(errorMessage(e));
     }
   };

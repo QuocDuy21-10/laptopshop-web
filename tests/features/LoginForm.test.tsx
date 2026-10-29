@@ -2,6 +2,7 @@ import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { LoginForm } from "@/features/auth/LoginForm";
+import { savePendingCartIntent } from "@/features/cart/intent";
 import { json, lastRequest, mockFetch, renderWithQuery } from "../utils";
 
 const router = vi.hoisted(() => ({ push: vi.fn(), replace: vi.fn(), refresh: vi.fn() }));
@@ -20,6 +21,13 @@ const fill = async () => {
 };
 
 describe("LoginForm", () => {
+  it("tells guests why they were sent to login after an add-to-cart", async () => {
+    savePendingCartIntent({ productId: 3, quantity: 1, goToCart: false });
+    renderWithQuery(<LoginForm next="/products" />);
+    expect(await screen.findByText("Đăng nhập để thêm sản phẩm vào giỏ hàng.")).toBeInTheDocument();
+    window.sessionStorage.clear();
+  });
+
   it("validates before calling the API", async () => {
     renderWithQuery(<LoginForm next="/" />);
     await userEvent.click(screen.getByRole("button", { name: "Đăng nhập" }));

@@ -51,6 +51,8 @@ describe("WishlistToggle", () => {
 
   it("stores a guest intent and redirects to login with the current path", async () => {
     mocks.me.mockReturnValue({ data: null, isPending: false });
+    // a disabled query reports isPending=true forever, but isLoading=false
+    mocks.status.mockReturnValue({ data: undefined, isPending: true, isLoading: false });
     renderWithQuery(<WishlistToggle productId={3} productName="Dell XPS" />);
     await userEvent.click(screen.getByRole("button", { name: "Thêm Dell XPS vào Wishlist" }));
     expect(mocks.push).toHaveBeenCalledWith("/login?next=%2Fproducts%3Fq%3Ddell");
