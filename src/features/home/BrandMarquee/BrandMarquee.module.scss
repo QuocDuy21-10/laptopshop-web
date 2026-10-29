@@ -1,0 +1,126 @@
+@use "mixins" as *;
+
+.marqueeSection {
+  position: relative;
+  width: 100%;
+  padding: var(--space-four) 0;
+  overflow: hidden;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-three);
+}
+
+.heading {
+  font-size: var(--text-label-sm-size);
+  font-weight: var(--text-label-sm-weight);
+  color: var(--color-foreground-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.viewAllLink {
+  font-size: var(--text-label-sm-size);
+  font-weight: var(--text-label-sm-weight);
+  color: var(--color-primary);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// Fade gradients at edges for smooth entrance/exit
+.marqueeContainer {
+  position: relative;
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--color-foreground) 6%,
+    var(--color-foreground) 94%,
+    transparent 100%
+  );
+}
+
+.marqueeTrack {
+  display: flex;
+  align-items: center;
+  gap: var(--space-three);
+  width: max-content;
+  animation: marquee-scroll 26s linear infinite;
+  padding: var(--space-one) 0;
+
+  &:hover {
+    animation-play-state: paused;
+  }
+
+  @include reduced-motion {
+    animation: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.brandCard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-two);
+  min-width: 130px;
+  height: 52px;
+  padding: var(--space-two) var(--space-four);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-foreground-muted);
+  text-decoration: none;
+  filter: grayscale(1);
+  opacity: 0.7;
+  transition:
+    filter var(--duration-fast) var(--ease-out),
+    opacity var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+
+  &:hover {
+    filter: grayscale(0);
+    opacity: 1;
+    color: var(--color-foreground);
+    border-color: var(--color-border-strong);
+    background: var(--color-surface-raised);
+    box-shadow: var(--shadow-1);
+    transform: translateY(-2px);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  @media (pointer: coarse) {
+    min-height: var(--control-md);
+  }
+}
+
+.brandName {
+  font-size: var(--text-label-sm-size);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}

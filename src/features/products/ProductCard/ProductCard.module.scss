@@ -44,6 +44,20 @@
   text-decoration: none;
   border-radius: var(--radius-md);
   overflow: hidden;
+
+  img {
+    transition: transform var(--duration-menu) var(--ease-out);
+  }
+
+  .card:hover & img {
+    transform: scale(1.03);
+  }
+
+  @include reduced-motion {
+    .card:hover & img {
+      transform: none;
+    }
+  }
 }
 
 .body {

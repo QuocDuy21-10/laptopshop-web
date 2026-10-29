@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/layout/Container/Container";
 import { Alert } from "@/components/ui/Alert/Alert";
-import { buttonClassName } from "@/components/ui/Button/Button";
 import { EmptyState } from "@/components/ui/EmptyState/EmptyState";
+import { BrandMarquee, HeroSlider, QuickFilterBar } from "@/features/home";
 import { optionName, targetName } from "@/features/products/labels";
 import { ProductGrid } from "@/features/products/ProductGrid/ProductGrid";
 import { getFilterOptions, listProducts } from "@/features/products/server";
@@ -123,13 +123,6 @@ const TARGET_CARDS = [
 
 const POPULAR_BRANDS = ["APPLE", "ASUS", "DELL", "LENOVO", "LG", "ACER"] as const;
 
-const BUDGET_SHORTCUTS = [
-  { label: "Dưới 15 triệu", href: "/products?maxPrice=15000000" },
-  { label: "15 – 20 triệu", href: "/products?minPrice=15000000&maxPrice=20000000" },
-  { label: "20 – 30 triệu", href: "/products?minPrice=20000000&maxPrice=30000000" },
-  { label: "Trên 30 triệu", href: "/products?minPrice=30000000" },
-] as const;
-
 export default async function HomePage() {
   let products: CatalogProduct[] = [];
   let options: FilterOptions | null = null;
@@ -148,74 +141,12 @@ export default async function HomePage() {
 
   return (
     <Container className={styles.page}>
-      {/* HERO BANNER */}
-      <section className={styles.hero}>
-        <div className={styles.heroCopy}>
-          <span className={styles.eyebrow}>
-            <span className={styles.eyebrowDot} aria-hidden />
-            Thanh toán khi nhận hàng hoặc chuyển khoản
-          </span>
-          <h1 className={styles.heroTitle}>Chọn đúng laptop cho công việc và giải trí</h1>
-          <p className={styles.heroLead}>
-            Tra cứu thông số minh bạch, so sánh trực tiếp tối đa 4 mẫu máy và nhận gợi ý cấu hình
-            tối ưu theo đúng ngân sách của bạn.
-          </p>
-          <div className={styles.heroActions}>
-            <Link href="/products" className={buttonClassName({ size: "lg" })}>
-              Xem tất cả laptop
-            </Link>
-            <Link href="/advisor" className={buttonClassName({ variant: "secondary", size: "lg" })}>
-              Tư vấn chọn laptop
-            </Link>
-          </div>
-        </div>
-
-        {/* HERO RIGHT PANEL: Interactive Quick Finder thay cho icon trống */}
-        <aside className={styles.heroCard} aria-label="Tìm nhanh theo ngân sách">
-          <div className={styles.heroCardHeader}>
-            <span className={styles.heroCardBadge}>Trợ lý cấu hình</span>
-            <h2 className={styles.heroCardTitle}>Bạn đang tìm máy tầm giá nào?</h2>
-            <p className={styles.heroCardSub}>
-              Chọn nhanh mức ngân sách hoặc để hệ thống phân tích theo công việc.
-            </p>
-          </div>
-
-          <div className={styles.budgetGrid}>
-            {BUDGET_SHORTCUTS.map((item) => (
-              <Link key={item.label} href={item.href} className={styles.budgetPill}>
-                <span>{item.label}</span>
-                <span aria-hidden className={styles.budgetArrow}>
-                  →
-                </span>
-              </Link>
-            ))}
-          </div>
-
-          <div className={styles.heroCardFooter}>
-            <div className={styles.advisorPromo}>
-              <div className={styles.advisorPromoIcon} aria-hidden>
-                <svg
-                  viewBox="0 0 24 24"
-                  width="20"
-                  height="20"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                </svg>
-              </div>
-              <div>
-                <strong>Chưa rõ nên chọn CPU hay RAM nào?</strong>
-                <p>Trả lời 3 câu hỏi để nhận Top 3 máy phù hợp nhất.</p>
-              </div>
-            </div>
-            <Link href="/advisor" className={styles.advisorLink}>
-              Bắt đầu tư vấn ngay →
-            </Link>
-          </div>
-        </aside>
-      </section>
+      {/* HERO SECTION: Slider 100% + Quick Filter Bar + Brand Marquee */}
+      <div className={styles.heroGroup}>
+        <HeroSlider />
+        <QuickFilterBar />
+        <BrandMarquee />
+      </div>
 
       {/* THEO NHU CẦU */}
       <section className={styles.section} aria-labelledby="targets-heading">
