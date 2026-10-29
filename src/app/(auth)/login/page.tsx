@@ -6,10 +6,10 @@ import { safeNext } from "@/lib/safe-next";
 
 export const metadata: Metadata = { title: "Đăng nhập" };
 
-type Props = { searchParams: Promise<{ next?: string | string[] }> };
+type Props = { searchParams: Promise<{ next?: string | string[]; reset?: string | string[] }> };
 
 export default async function LoginPage({ searchParams }: Props) {
-  const { next } = await searchParams;
+  const { next, reset } = await searchParams;
   const target = safeNext(typeof next === "string" ? next : undefined);
   return (
     <AuthCard
@@ -20,7 +20,7 @@ export default async function LoginPage({ searchParams }: Props) {
         </>
       }
     >
-      <LoginForm next={target} />
+      <LoginForm next={target} passwordReset={reset === "1"} />
     </AuthCard>
   );
 }

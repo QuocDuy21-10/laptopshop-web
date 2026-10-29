@@ -1,3 +1,4 @@
+import { getStoreInfo } from "@/features/store-info/server";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/layout/Container/Container";
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
 const TARGET_CARDS = [
   {
     key: "GAMING",
-    desc: "Card rời RTX, tản nhiệt khỏe, màn 144Hz+",
+    desc: "Máy cấu hình mạnh cho chơi game",
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -41,7 +42,7 @@ const TARGET_CARDS = [
   },
   {
     key: "SINHVIEN_VANPHONG",
-    desc: "Bền bỉ, bàn phím êm, pin dùng cả ngày",
+    desc: "Máy cho học tập và văn phòng",
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -60,7 +61,7 @@ const TARGET_CARDS = [
   },
   {
     key: "THIET_KE_DO_HOA",
-    desc: "Màn chuẩn màu 100% sRGB, dựng phim mượt",
+    desc: "Máy cho dựng hình và thiết kế",
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -82,7 +83,7 @@ const TARGET_CARDS = [
   },
   {
     key: "MONG_NHE",
-    desc: "Trọng lượng từ 1.1kg, vỏ hợp kim sang trọng",
+    desc: "Máy gọn nhẹ, dễ mang theo",
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -102,7 +103,7 @@ const TARGET_CARDS = [
   },
   {
     key: "DOANH_NHAN",
-    desc: "Bảo mật vân tay/IR, độ bền chuẩn quân đội",
+    desc: "Máy cho công việc doanh nghiệp",
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -135,6 +136,9 @@ export default async function HomePage() {
   let options: FilterOptions | null = null;
   let loadError: string | null = null;
 
+  const storeInfo = await getStoreInfo();
+  const bankTransfer = storeInfo?.paymentMethods.includes("BANK_TRANSFER") ?? false;
+
   try {
     const [loadedOptions, result] = await Promise.all([
       getFilterOptions(),
@@ -153,7 +157,7 @@ export default async function HomePage() {
         <div className={styles.heroCopy}>
           <span className={styles.eyebrow}>
             <span className={styles.eyebrowDot} aria-hidden />
-            Thanh toán khi nhận hàng hoặc chuyển khoản
+            {bankTransfer ? "Thanh toán khi nhận hàng hoặc chuyển khoản" : "Thanh toán khi nhận hàng"}
           </span>
           <h1 className={styles.heroTitle}>Chọn đúng laptop cho công việc và giải trí</h1>
           <p className={styles.heroLead}>

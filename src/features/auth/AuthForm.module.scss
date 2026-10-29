@@ -3,3 +3,17 @@
   flex-direction: column;
   gap: var(--space-four);
 }
+
+.hint {
+  margin: 0;
+  color: var(--color-foreground-muted);
+}
+
+.forgot {
+  align-self: flex-end;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-md);
+  margin-block: calc(var(--space-two) * -1);
+  color: var(--color-link);
+}

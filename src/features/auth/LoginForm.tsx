@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useSyncExternalStore } from "react";
 import { useForm } from "react-hook-form";
@@ -16,7 +17,7 @@ import styles from "./AuthForm.module.scss";
 
 const noopSubscribe = () => () => {};
 
-export function LoginForm({ next }: { next: string }) {
+export function LoginForm({ next, passwordReset = false }: { next: string; passwordReset?: boolean }) {
   const router = useRouter();
   const login = useLogin();
   const [formError, setFormError] = useState<string | null>(null);
@@ -40,6 +41,7 @@ export function LoginForm({ next }: { next: string }) {
 
   return (
     <form className={styles.form} onSubmit={onSubmit} noValidate>
+      {passwordReset && <Alert tone="success" title="Đã đặt lại mật khẩu. Hãy đăng nhập bằng mật khẩu mới." />}
       {hasCartIntent && <Alert tone="info" title="Đăng nhập để thêm sản phẩm vào giỏ hàng." />}
       {formError && <Alert tone="error" title={formError} />}
       <TextField
@@ -58,6 +60,9 @@ export function LoginForm({ next }: { next: string }) {
         error={formState.errors.password?.message}
         {...register("password")}
       />
+      <Link href="/forgot-password" className={styles.forgot}>
+        Quên mật khẩu?
+      </Link>
       <Button type="submit" size="lg" fullWidth loading={login.isPending}>
         Đăng nhập
       </Button>

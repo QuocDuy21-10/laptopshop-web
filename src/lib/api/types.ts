@@ -106,6 +106,9 @@ export type Order = Omit<
     >
   >;
 export type OrderStatus = Order["status"];
+export type StoreInfo = NonNullable<
+  paths["/api/v1/store-info"]["get"]["responses"][200]["content"]["application/json"]["data"]
+>;
 export type PricingQuote = Schemas["PricingQuote"];
 export type FlashSaleAvailability = Schemas["FlashSaleAvailability"];
 export type FlashSaleAllocation = Schemas["FlashSaleAllocation"];
