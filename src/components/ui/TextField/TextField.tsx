@@ -1,5 +1,7 @@
-import { CircleAlert } from "lucide-react";
-import { useId, type InputHTMLAttributes, type Ref } from "react";
+"use client";
+
+import { CircleAlert, Eye, EyeOff } from "lucide-react";
+import { useId, useState, type InputHTMLAttributes, type Ref } from "react";
 import { cx } from "@/lib/cx";
 import styles from "./TextField.module.scss";
 
@@ -7,11 +9,13 @@ type Props = InputHTMLAttributes<HTMLInputElement> & {
   label: string;
   error?: string;
   hint?: string;
+  revealable?: boolean;
   ref?: Ref<HTMLInputElement>;
 };
 
-export function TextField({ label, error, hint, id, required, className, ref, ...rest }: Props) {
+export function TextField({ label, error, hint, id, required, className, revealable, type, ref, ...rest }: Props) {
   const autoId = useId();
+  const [revealed, setRevealed] = useState(false);
   const inputId = id ?? autoId;
   const hintId = hint ? `${inputId}-hint` : undefined;
   const errorId = error ? `${inputId}-error` : undefined;
@@ -28,15 +32,29 @@ export function TextField({ label, error, hint, id, required, className, ref, ..
           </span>
         )}
       </label>
-      <input
-        ref={ref}
-        id={inputId}
-        className={cx(styles.input, error && styles.invalid)}
-        aria-invalid={error ? true : undefined}
-        aria-describedby={describedBy}
-        aria-required={required || undefined}
-        {...rest}
-      />
+      <div className={styles.control}>
+        <input
+          ref={ref}
+          id={inputId}
+          type={revealable && revealed ? "text" : type}
+          className={cx(styles.input, revealable && styles.revealable, error && styles.invalid)}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={describedBy}
+          aria-required={required || undefined}
+          {...rest}
+        />
+        {revealable && (
+          <button
+            type="button"
+            className={styles.toggle}
+            aria-label={revealed ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+            aria-pressed={revealed}
+            onClick={() => setRevealed((v) => !v)}
+          >
+            {revealed ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
+          </button>
+        )}
+      </div>
       {hint && (
         <p id={hintId} className={styles.hint}>
           {hint}

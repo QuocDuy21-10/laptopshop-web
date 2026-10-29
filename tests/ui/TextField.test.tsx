@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { TextField } from "@/components/ui/TextField/TextField";
 
@@ -13,5 +13,14 @@ describe("TextField", () => {
   it("is valid without an error", () => {
     render(<TextField label="Họ tên" />);
     expect(screen.getByLabelText("Họ tên")).not.toHaveAttribute("aria-invalid");
+  });
+
+  it("toggles password visibility", () => {
+    render(<TextField label="Mật khẩu" type="password" revealable />);
+    const input = screen.getByLabelText("Mật khẩu");
+    expect(input).toHaveAttribute("type", "password");
+    fireEvent.click(screen.getByRole("button", { name: "Hiện mật khẩu" }));
+    expect(input).toHaveAttribute("type", "text");
+    expect(screen.getByRole("button", { name: "Ẩn mật khẩu" })).toHaveAttribute("aria-pressed", "true");
   });
 });

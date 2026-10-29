@@ -42,6 +42,7 @@ export function RegisterForm({ next }: { next: string }) {
       <TextField
         label="Mật khẩu"
         type="password"
+        revealable
         autoComplete="new-password"
         hint="Tối thiểu 8 ký tự"
         required
@@ -51,6 +52,7 @@ export function RegisterForm({ next }: { next: string }) {
       <TextField
         label="Nhập lại mật khẩu"
         type="password"
+        revealable
         autoComplete="new-password"
         required
         error={formState.errors.confirmPassword?.message}
