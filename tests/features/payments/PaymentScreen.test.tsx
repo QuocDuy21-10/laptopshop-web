@@ -32,7 +32,13 @@ const payment = (over: Record<string, unknown> = {}) => ({
 beforeEach(() => {
   vi.useFakeTimers();
   vi.setSystemTime(new Date("2026-10-24T10:00:00.000Z"));
-  usePaymentStatus.mockReturnValue({ data: payment(), isPending: false, isError: false, refetch: vi.fn() });
+  usePaymentStatus.mockReturnValue({
+    data: payment(),
+    dataUpdatedAt: Date.now(),
+    isPending: false,
+    isError: false,
+    refetch: vi.fn(),
+  });
 });
 
 describe("PaymentScreen", () => {
@@ -43,9 +49,44 @@ describe("PaymentScreen", () => {
     expect(screen.getByText("Thời gian còn lại: 00:58")).toBeInTheDocument();
   });
 
+  it("uses the observed server time on the first render when the device clock is skewed", () => {
+    vi.setSystemTime(new Date("2026-10-24T10:05:00.000Z"));
+    usePaymentStatus.mockReturnValue({
+      data: payment(),
+      dataUpdatedAt: Date.now(),
+      isPending: false,
+      isError: false,
+      refetch: vi.fn(),
+    });
+
+    renderWithQuery(<PaymentScreen orderId={50} />);
+
+    expect(screen.getByText("Thời gian còn lại: 01:00")).toBeInTheDocument();
+  });
+
+  it("does not keep a recurring clock after payment reaches a terminal state", () => {
+    usePaymentStatus.mockReturnValue({
+      data: payment({ status: "EXPIRED" }),
+      dataUpdatedAt: Date.now(),
+      isPending: false,
+      isError: false,
+      refetch: vi.fn(),
+    });
+
+    render(<PaymentScreen orderId={50} />);
+    act(() => vi.advanceTimersByTime(60_000));
+
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
   it("shows verification copy and no QR after the payment enters verifying", () => {
     usePaymentStatus.mockReturnValue({
-      data: payment({ status: "VERIFYING", expiresAt: "2026-10-24T09:45:00.000Z", instructions: null }),
+      data: payment({
+        status: "VERIFYING",
+        expiresAt: "2026-10-24T09:45:00.000Z",
+        instructions: null,
+      }),
+      dataUpdatedAt: Date.now(),
       isPending: false,
       isError: false,
       refetch: vi.fn(),

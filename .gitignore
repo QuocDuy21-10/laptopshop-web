@@ -16,3 +16,5 @@ docs-local/
 .codex/
 screenshots/
 .agents/
+.playwright-mcp/
+laptopshop-brand-kit/

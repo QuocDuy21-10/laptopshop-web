@@ -20,33 +20,27 @@ const formatRemaining = (seconds: number) => {
 export function PaymentScreen({ orderId }: { orderId: number }) {
   const paymentQuery = usePaymentStatus(orderId);
   const [now, setNow] = useState(() => Date.now());
-  const [serverOffset, setServerOffset] = useState(0);
   const [qrFailed, setQrFailed] = useState(false);
   const notified = useRef<string | null>(null);
   const payment = paymentQuery.data;
-  const serverTime = payment?.serverTime;
+  const paymentId = payment?.id;
+  const paymentStatus = payment?.status;
+  const shouldTick = paymentStatus === "PENDING";
 
   useEffect(() => {
-    if (!serverTime) return;
-    const timestamp = new Date(serverTime).getTime();
-    if (!Number.isFinite(timestamp)) return;
-    const sync = window.setTimeout(() => setServerOffset(timestamp - Date.now()), 0);
-    return () => window.clearTimeout(sync);
-  }, [serverTime]);
-
-  useEffect(() => {
+    if (!shouldTick) return;
     const timer = window.setInterval(() => {
       setNow(Date.now());
     }, 1000);
     return () => window.clearInterval(timer);
-  }, []);
+  }, [shouldTick]);
 
   useEffect(() => {
-    if (payment?.status === "SUCCEEDED" && notified.current !== payment.id) {
-      notified.current = payment.id;
+    if (paymentStatus === "SUCCEEDED" && paymentId && notified.current !== paymentId) {
+      notified.current = paymentId;
       toast.success("Thanh toán đã được xác nhận!");
     }
-  }, [payment]);
+  }, [paymentId, paymentStatus]);
 
   const copy = async (value: string) => {
     try {
@@ -64,7 +58,10 @@ export function PaymentScreen({ orderId }: { orderId: number }) {
       return (
         <section className={styles.state}>
           <h1>Thanh toán đơn hàng #{orderId}</h1>
-          <p>Không có thông tin thanh toán trực tuyến cho đơn hàng này. Đơn thanh toán khi nhận hàng (COD) không cần thanh toán trước.</p>
+          <p>
+            Không có thông tin thanh toán trực tuyến cho đơn hàng này. Đơn thanh toán khi nhận hàng
+            (COD) không cần thanh toán trước.
+          </p>
           <Link href={`/account/orders/${orderId}`}>Xem chi tiết đơn hàng</Link>
         </section>
       );
@@ -99,10 +96,15 @@ export function PaymentScreen({ orderId }: { orderId: number }) {
     );
   }
 
+  const parsedServerTime = Date.parse(payment.serverTime);
+  const serverNow =
+    Number.isFinite(parsedServerTime) && paymentQuery.dataUpdatedAt > 0
+      ? parsedServerTime + Math.max(0, now - paymentQuery.dataUpdatedAt)
+      : now;
   const expiresAt = new Date(payment.expiresAt).getTime();
   const cancelAfter = new Date(payment.cancelAfter).getTime();
-  const seconds = Math.floor((expiresAt - (now + serverOffset)) / 1000);
-  const inGrace = seconds <= 0 && now + serverOffset < cancelAfter;
+  const seconds = Math.floor((expiresAt - serverNow) / 1000);
+  const inGrace = seconds <= 0 && serverNow < cancelAfter;
   const isVerifying = payment.status === "VERIFYING" || payment.status === "REVIEW_REQUIRED";
   const instructions = payment.instructions;
 
