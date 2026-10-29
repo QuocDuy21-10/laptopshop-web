@@ -1,0 +1,40 @@
+@use "mixins" as *;
+
+.aside {
+  display: none;
+
+  @include up(md) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--space-six);
+    padding: var(--space-eight);
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+  }
+}
+
+.heading {
+  @include text(headline-sm);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-four);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-three);
+
+  @include text(body-md);
+
+  svg {
+    flex-shrink: 0;
+  }
+}

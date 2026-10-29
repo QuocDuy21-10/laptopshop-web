@@ -47,6 +47,7 @@ export function LoginForm({ next, passwordReset = false }: { next: string; passw
       <TextField
         label="Email"
         type="email"
+        placeholder="name@example.com"
         autoComplete="email"
         required
         error={formState.errors.username?.message}
@@ -55,6 +56,7 @@ export function LoginForm({ next, passwordReset = false }: { next: string; passw
       <TextField
         label="Mật khẩu"
         type="password"
+        revealable
         autoComplete="current-password"
         required
         error={formState.errors.password?.message}

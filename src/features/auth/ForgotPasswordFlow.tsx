@@ -77,8 +77,8 @@ function ResetStep({ email, onBack }: { email: string; onBack: () => void }) {
       </Alert>
       {formError && <Alert tone="error" title={formError} />}
       <TextField label="Mã xác nhận" inputMode="numeric" autoComplete="one-time-code" maxLength={6} required error={formState.errors.code?.message} {...register("code")} />
-      <TextField label="Mật khẩu mới" type="password" autoComplete="new-password" hint="Tối thiểu 8 ký tự" required error={formState.errors.password?.message} {...register("password")} />
-      <TextField label="Nhập lại mật khẩu mới" type="password" autoComplete="new-password" required error={formState.errors.confirmPassword?.message} {...register("confirmPassword")} />
+      <TextField label="Mật khẩu mới" type="password" revealable autoComplete="new-password" hint="Tối thiểu 8 ký tự" required error={formState.errors.password?.message} {...register("password")} />
+      <TextField label="Nhập lại mật khẩu mới" type="password" revealable autoComplete="new-password" required error={formState.errors.confirmPassword?.message} {...register("confirmPassword")} />
       <Button type="submit" size="lg" fullWidth loading={reset.isPending}>
         Đặt lại mật khẩu
       </Button>
