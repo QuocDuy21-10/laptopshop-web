@@ -1,10 +1,11 @@
 import type { ReactNode } from "react";
-import { CompareBar } from "@/features/compare/CompareBar/CompareBar";
-import { PendingCartIntent } from "@/features/cart/PendingCartIntent/PendingCartIntent";
+
 import { Footer } from "../Footer/Footer";
 import { Header } from "../Header/Header";
-import { PendingWishlistIntent } from "@/features/wishlist/PendingWishlistIntent/PendingWishlistIntent";
 import styles from "./SiteShell.module.scss";
+import { CompareBar } from "@/features/compare/CompareBar/CompareBar";
+import { PendingCartIntent } from "@/features/cart/PendingCartIntent/PendingCartIntent";
+import { PendingWishlistIntent } from "@/features/wishlist/PendingWishlistIntent/PendingWishlistIntent";
 
 export function SiteShell({ children }: { children: ReactNode }) {
   return (

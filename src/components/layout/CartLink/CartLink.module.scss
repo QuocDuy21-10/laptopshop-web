@@ -34,3 +34,13 @@
 
   @include text(label-sm);
 }
+
+.popover {
+  width: min(360px, calc(100vw - 2 * var(--space-gutter-mobile)));
+  padding: var(--space-four);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-2);
+  z-index: var(--z-dropdown);
+}
