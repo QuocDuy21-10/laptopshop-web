@@ -43,6 +43,30 @@ describe("LoginForm", () => {
     expect(router.replace).not.toHaveBeenCalled();
   });
 
+  it("flags the inputs, clears and refocuses the password, and dismisses the error on typing", async () => {
+    fetchMock.mockResolvedValue(json(401, { error: { code: "INVALID_CREDENTIALS", message: "Invalid" } }));
+    renderWithQuery(<LoginForm next="/" />);
+    await fill();
+    await screen.findByRole("alert");
+    const password = screen.getByLabelText(/Mật khẩu/);
+    expect(screen.getByLabelText(/Email/)).toHaveAttribute("aria-invalid", "true");
+    expect(password).toHaveAttribute("aria-invalid", "true");
+    await waitFor(() => expect(password).toHaveFocus());
+    expect(password).toHaveValue("");
+
+    await userEvent.type(password, "x");
+    await waitFor(() => expect(screen.queryByRole("alert")).not.toBeInTheDocument());
+    expect(password).not.toHaveAttribute("aria-invalid");
+  });
+
+  it("keeps the password when the failure is not a credentials error", async () => {
+    fetchMock.mockResolvedValue(json(500, { error: { code: "INTERNAL", message: "boom" } }));
+    renderWithQuery(<LoginForm next="/" />);
+    await fill();
+    await screen.findByRole("alert");
+    expect(screen.getByLabelText(/Mật khẩu/)).toHaveValue("password1");
+  });
+
   it("logs in and goes to the next page", async () => {
     fetchMock.mockResolvedValue(json(200, { data: { user: { id: 1 } } }));
     renderWithQuery(<LoginForm next="/checkout" />);
