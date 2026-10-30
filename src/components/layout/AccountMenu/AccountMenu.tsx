@@ -19,9 +19,9 @@ export function AccountMenu() {
   if (isPending) return <Skeleton className={styles.skeleton} />;
   if (!me) {
     return (
-      <Link href={loginHref(pathname)} className={styles.trigger}>
+      <Link href={loginHref(pathname)} className={styles.trigger} aria-label="Đăng nhập">
         <User size={20} aria-hidden="true" />
-        <span>Đăng nhập</span>
+        <span className={styles.name}>Đăng nhập</span>
       </Link>
     );
   }

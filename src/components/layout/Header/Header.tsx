@@ -6,6 +6,7 @@ import { AccountMenu } from "@/components/layout/AccountMenu/AccountMenu";
 import { CartLink } from "@/components/layout/CartLink/CartLink";
 import { Container } from "@/components/layout/Container/Container";
 import { MobileMenu } from "@/components/layout/MobileMenu/MobileMenu";
+import { MobileSearch } from "@/components/layout/MobileSearch/MobileSearch";
 import { SearchForm } from "@/components/layout/SearchForm/SearchForm";
 import { NotificationBell } from "@/features/notifications/NotificationBell/NotificationBell";
 import { TARGET_LABEL, targetName } from "@/features/products/labels";
@@ -48,6 +49,7 @@ export async function Header() {
           <span className={styles.wideOnly}>
             <WishlistLink />
           </span>
+          <MobileSearch />
           <NotificationBell />
           <CartLink />
           <AccountMenu />

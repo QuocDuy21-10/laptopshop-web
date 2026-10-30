@@ -1,0 +1,21 @@
+@use "mixins" as *;
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-md);
+  height: var(--control-md);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-md);
+  color: var(--color-foreground);
+
+  &:hover {
+    background: var(--color-surface-muted);
+  }
+
+  @include up(md) {
+    display: none;
+  }
+}
