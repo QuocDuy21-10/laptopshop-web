@@ -1,3 +1,4 @@
+@use "sass:math";
 @use "mixins" as *;
 
 .form {
@@ -8,6 +9,9 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 640px;
+  margin-inline: auto;
 }
 
 .header {
@@ -20,6 +24,49 @@
   color: var(--color-primary);
 
   @include text(label-sm);
+}
+
+.progress {
+  height: 6px;
+  overflow: hidden;
+  background: var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.progressBar {
+  display: block;
+  height: 100%;
+  background: var(--color-primary);
+  transition: width 0.15s ease;
+
+  @for $i from 1 through 4 {
+    &[data-step="#{$i}"] {
+      width: math.percentage(calc($i / 4));
+    }
+  }
+}
+
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-two);
+}
+
+.preset {
+  min-height: var(--control-md);
+  padding: 0 var(--space-three);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-foreground);
+  cursor: pointer;
+
+  @include text(label-md);
+}
+
+.preset:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
 }
 
 .title {

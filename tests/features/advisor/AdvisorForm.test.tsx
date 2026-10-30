@@ -33,7 +33,17 @@ describe("AdvisorForm", () => {
     expect(screen.getByText(/Chỉ chọn tối đa 3 ưu tiên/)).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "Quay lại" }));
     expect(screen.getByLabelText("Lập trình / CNTT")).toBeChecked();
-    expect(screen.getByLabelText(/Ngân sách tối đa/)).toHaveValue(20_000_000);
+    expect(screen.getByLabelText(/Ngân sách tối đa/)).toHaveValue("20.000.000");
+  });
+
+  it("fills the budget from a quick preset and shows a title per step", async () => {
+    renderWithQuery(<AdvisorForm onSubmit={onSubmit} pending={false} />);
+    expect(screen.getByRole("heading", { name: "Mục đích sử dụng và ngân sách" })).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Đến 15 triệu" }));
+    expect(screen.getByLabelText(/Ngân sách tối đa/)).toHaveValue("15.000.000");
+    await userEvent.click(screen.getByLabelText("Lập trình / CNTT"));
+    await userEvent.click(screen.getByRole("button", { name: "Tiếp tục" }));
+    expect(screen.getByRole("heading", { name: "Tiêu chí bạn ưu tiên nhất" })).toBeInTheDocument();
   });
 
   it("collects RAM, workloads and note, then submits once", async () => {
