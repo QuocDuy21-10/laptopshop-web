@@ -110,12 +110,6 @@
   color: var(--color-foreground-muted);
 }
 
-.noRating {
-  color: var(--color-foreground-muted);
-  font-size: var(--text-label-sm-size);
-  font-weight: 400;
-}
-
 .name {
   font-size: var(--text-body-lg-size);
   font-weight: var(--text-label-sm-weight);
@@ -144,6 +138,12 @@
   }
 }
 
+// reserves two pill rows (2 x 26px + 6px gap) so wrapped specs do not make cards uneven
+.specList,
+.specListPlaceholder {
+  --spec-rows-height: 58px;
+}
+
 .specList {
   display: flex;
   flex-wrap: wrap;
@@ -151,11 +151,11 @@
   list-style: none;
   padding: 0;
   margin: 2px 0 var(--space-two);
-  min-height: 26px;
+  min-height: var(--spec-rows-height);
 }
 
 .specListPlaceholder {
-  min-height: 26px;
+  min-height: var(--spec-rows-height);
   margin: 2px 0 var(--space-two);
 }
 

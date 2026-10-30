@@ -66,10 +66,21 @@ describe("FilterControls", () => {
     expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ minRefreshHz: undefined, page: 1 }));
   });
 
-  it("disables unselected multi values once maxSelections is reached", () => {
+  it("disables unselected multi values once maxSelections is reached", async () => {
     const many = Array.from({ length: 10 }, (_, index) => ({ value: String(index + 1), name: String(index + 1) }));
     render(<FilterControls definitions={[{ key: "ramGb", name: "RAM", mode: "MULTI", kind: "exact", maxSelections: 10, options: [...many, { value: "11", name: "11" }] }]} counts={{}} filters={{ ...filters, ramGb: many.map((item) => Number(item.value)) }} onChange={vi.fn()} idPrefix="sheet" />);
+    await userEvent.click(screen.getByRole("button", { name: /Xem thêm/ }));
     expect(screen.getByRole("checkbox", { name: "11" })).toBeDisabled();
     expect(screen.getByRole("checkbox", { name: "1" })).toBeEnabled();
+  });
+
+  it("folds long option lists behind Xem thêm but keeps selected options visible", async () => {
+    const many: FacetDefinition[] = [{ key: "ramGb", name: "RAM", mode: "MULTI", kind: "exact", options: [4, 8, 12, 16, 24, 32, 64].map((v) => ({ value: String(v), name: `${v} GB` })) }];
+    render(<FilterControls definitions={many} counts={{}} filters={{ ...filters, ramGb: [64] }} onChange={vi.fn()} idPrefix="desktop" />);
+    expect(screen.getAllByRole("checkbox")).toHaveLength(6);
+    expect(screen.getByRole("checkbox", { name: "64 GB" })).toBeChecked();
+    await userEvent.click(screen.getByRole("button", { name: "Xem thêm 1" }));
+    expect(screen.getAllByRole("checkbox")).toHaveLength(7);
+    expect(screen.getByRole("button", { name: "Thu gọn" })).toBeInTheDocument();
   });
 });

@@ -45,6 +45,18 @@
   cursor: pointer;
 }
 
+.more {
+  min-height: 44px;
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: var(--color-primary);
+
+  @include text(label-sm);
+}
+
 .srOnly {
   position: absolute;
   width: 1px;
