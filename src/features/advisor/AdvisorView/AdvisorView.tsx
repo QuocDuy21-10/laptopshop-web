@@ -12,7 +12,6 @@ export function AdvisorView() {
   const advisor = useAdvisor();
   const [result, setResult] = useState<AdvisorResult | null>(null);
   const [lastInput, setLastInput] = useState<AdvisorFormInput | null>(null);
-  const [formKey, setFormKey] = useState(0);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const requestSeq = useRef(0);
   const controllerRef = useRef<AbortController | null>(null);
@@ -60,13 +59,16 @@ export function AdvisorView() {
     submittingRef.current = false;
     advisor.reset();
     setResult(null);
-    setLastInput(null);
-    setFormKey((key) => key + 1);
   };
+
+  const showResults = advisor.isPending || result !== null;
 
   return (
     <div className={styles.view}>
-      <AdvisorForm key={formKey} onSubmit={submit} onRetry={retry} pending={advisor.isPending} serverError={advisor.error} />
+      {/* hidden, not unmounted, so "Sửa tiêu chí" keeps the user's answers */}
+      <div hidden={showResults}>
+        <AdvisorForm onSubmit={submit} onRetry={retry} pending={advisor.isPending} serverError={advisor.error} />
+      </div>
       <AdvisorResults result={result} loading={advisor.isPending} onEdit={edit} headingRef={headingRef} />
     </div>
   );

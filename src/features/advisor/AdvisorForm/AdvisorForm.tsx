@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { Alert } from "@/components/ui/Alert/Alert";
 import { Button } from "@/components/ui/Button/Button";
 import { TextField } from "@/components/ui/TextField/TextField";
@@ -39,6 +39,15 @@ const workloadOptions = [
   ["CAD_3D", "CAD / 3D"],
 ] as const;
 
+const budgetPresets = [15, 20, 25, 30] as const;
+const stepTitles = [
+  "Mục đích sử dụng và ngân sách",
+  "Tiêu chí bạn ưu tiên nhất",
+  "Cấu hình và ứng dụng thường dùng",
+  "Yêu cầu đặc biệt",
+] as const;
+const formatDigits = (digits: string) => digits.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
 type Priority = AdvisorFormOutput["priorities"][number];
 type Workload = AdvisorFormOutput["workloads"][number];
 
@@ -68,6 +77,7 @@ export function AdvisorForm({ onSubmit, onRetry, pending, serverError }: Props) 
     if (fields.length && !(await trigger(fields))) return;
     setStep((current) => Math.min(4, current + 1));
   };
+  const setBudget = (digits: string) => setValue("budgetMax", digits, { shouldValidate: true });
   const priorities = useWatch({ control, name: "priorities" }) ?? [];
   const workloads = useWatch({ control, name: "workloads" }) ?? [];
   const togglePriority = (value: Priority) => {
@@ -90,8 +100,11 @@ export function AdvisorForm({ onSubmit, onRetry, pending, serverError }: Props) 
     <form className={styles.form} onSubmit={submit} noValidate aria-labelledby="advisor-form-title">
       <div className={styles.header}>
         <p className={styles.step}>Bước {step}/4</p>
+        <div className={styles.progress} role="progressbar" aria-label="Tiến độ" aria-valuemin={1} aria-valuemax={4} aria-valuenow={step}>
+          <span className={styles.progressBar} data-step={step} />
+        </div>
         <h2 id="advisor-form-title" className={styles.title}>
-          Cho biết nhu cầu của bạn
+          {stepTitles[step - 1]}
         </h2>
       </div>
       {formError && (
@@ -102,17 +115,33 @@ export function AdvisorForm({ onSubmit, onRetry, pending, serverError }: Props) 
 
       {step === 1 && (
         <div className={styles.content}>
-          <TextField
-            label="Ngân sách tối đa (₫)"
-            type="number"
-            inputMode="numeric"
-            min={5_000_000}
-            max={200_000_000}
-            required
-            hint="Từ 5 triệu đến 200 triệu đồng."
-            error={errors.budgetMax?.message as string | undefined}
-            {...register("budgetMax")}
+          <Controller
+            control={control}
+            name="budgetMax"
+            render={({ field }) => (
+              <TextField
+                label="Ngân sách tối đa (₫)"
+                type="text"
+                inputMode="numeric"
+                autoComplete="off"
+                required
+                hint="Từ 5 triệu đến 200 triệu đồng."
+                error={errors.budgetMax?.message as string | undefined}
+                name={field.name}
+                ref={field.ref}
+                onBlur={field.onBlur}
+                value={formatDigits(String(field.value ?? ""))}
+                onChange={(event) => setBudget(event.target.value.replace(/\D/g, "").slice(0, 9))}
+              />
+            )}
           />
+          <div className={styles.presets} role="group" aria-label="Chọn nhanh ngân sách">
+            {budgetPresets.map((million) => (
+              <button type="button" className={styles.preset} key={million} onClick={() => setBudget(String(million * 1_000_000))}>
+                Đến {million} triệu
+              </button>
+            ))}
+          </div>
           <fieldset className={styles.fieldset}>
             <legend className={styles.legend}>Bạn dùng laptop chủ yếu cho việc gì?</legend>
             {usageOptions.map(([value, label]) => (

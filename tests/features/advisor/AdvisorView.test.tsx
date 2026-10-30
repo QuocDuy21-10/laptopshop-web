@@ -59,7 +59,7 @@ describe("AdvisorView", () => {
     await screen.findByRole("button", { name: "Hủy và sửa tiêu chí" });
     await userEvent.click(screen.getByRole("button", { name: "Hủy và sửa tiêu chí" }));
     expect(pendingRequest.signal.aborted).toBe(true);
-    expect(screen.getByText("Bước 1/4")).toBeInTheDocument();
+    expect(screen.getByText("Bước 4/4")).toBeVisible();
     expect(screen.queryByRole("button", { name: "Thử lại" })).not.toBeInTheDocument();
     resolveAdvisor(json(200, { data: { mode: "rule_based", recommendations: [], suggestions: [] } }));
   });
@@ -89,7 +89,7 @@ describe("AdvisorView", () => {
     await complete();
     await screen.findByRole("button", { name: "Hủy và sửa tiêu chí" });
     await userEvent.click(screen.getByRole("button", { name: "Hủy và sửa tiêu chí" }));
-    await complete();
+    await userEvent.click(screen.getByRole("button", { name: "Nhận tư vấn" }));
     await screen.findByRole("button", { name: "Hủy và sửa tiêu chí" });
     expect(resolvers).toHaveLength(2);
     resolvers[1](response("Kết quả mới"));
@@ -123,7 +123,7 @@ describe("AdvisorView", () => {
     expect(fetchMock).toHaveBeenCalledTimes(2); // advisor recommendation plus the shared session lookup used by wishlist controls
   });
 
-  it("focuses the empty result and resets the wizard when editing criteria", async () => {
+  it("focuses the empty result and keeps the answers when editing criteria", async () => {
     const fetchMock = mockFetch();
     fetchMock.mockResolvedValue(json(200, { data: { mode: "rule_based", recommendations: [], suggestions: ["Tăng ngân sách"] } }));
     renderWithQuery(<AdvisorView />);
@@ -136,7 +136,7 @@ describe("AdvisorView", () => {
     const heading = await screen.findByRole("heading", { name: "Laptop phù hợp với bạn" });
     await waitFor(() => expect(heading).toHaveFocus());
     await userEvent.click(screen.getByRole("button", { name: "Sửa tiêu chí" }));
-    expect(screen.getByText("Bước 1/4")).toBeInTheDocument();
+    expect(screen.getByText("Bước 4/4")).toBeVisible();
   });
 
   it("offers a retry after a network failure and preserves the wizard", async () => {

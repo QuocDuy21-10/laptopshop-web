@@ -31,7 +31,7 @@ export function AdvisorResults({ result, loading, onEdit, headingRef }: Props) {
     <section className={styles.results} aria-labelledby="advisor-results-title">
       <h2 id="advisor-results-title" ref={headingRef} tabIndex={-1} className={styles.title}>Laptop phù hợp với bạn</h2>
       <p className={styles.live} role="status" aria-live="polite">Đã tìm thấy {result.recommendations.length} laptop phù hợp.</p>
-      {result.mode === "rule_based" && <Alert tone="info" title="Đề xuất theo tiêu chí hiện tại">Đề xuất được tính từ tiêu chí, thông số và giá hiện hành; phần giải thích AI không được dùng cho kết quả này.</Alert>}
+      {result.mode === "rule_based" && <Alert tone="info" title="Đề xuất theo tiêu chí hiện tại">Kết quả được tính từ ngân sách, tiêu chí bạn chọn, thông số và giá hiện hành.</Alert>}
       <div className={styles.grid}>
         {result.recommendations.map((recommendation) => <AdvisorRecommendationCard key={recommendation.product.id} recommendation={recommendation} />)}
       </div>
