@@ -4,7 +4,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useOptimistic, useState, useTransition } from "react";
 import type { FacetDefinition } from "@/lib/api/types";
 import { FilterControls, type FacetCounts } from "../FilterControls/FilterControls";
-import { toQueryString, type ProductFilters } from "../search-params";
+import { Button } from "@/components/ui/Button/Button";
+import { activeFilterCount, clearProductFacets, toQueryString, type ProductFilters } from "../search-params";
 
 export function DesktopFilters({ definitions, counts, filters, countsAvailable = true }: { definitions: readonly FacetDefinition[]; counts: FacetCounts; filters: ProductFilters; countsAvailable?: boolean }) {
   const router = useRouter();
@@ -19,21 +20,27 @@ export function DesktopFilters({ definitions, counts, filters, countsAvailable =
     }
   }, [filters, pendingFilters]);
   const effectiveFilters = pendingFilters ?? optimisticFilters;
+  const apply = (next: ProductFilters) => {
+    setPendingFilters(next);
+    startTransition(() => {
+      setOptimisticFilters(next);
+      router.push(`/products${toQueryString(next)}`, { scroll: false });
+    });
+  };
   return (
-    <FilterControls
-      definitions={definitions}
-      counts={counts}
-      filters={effectiveFilters}
-      countsAvailable={countsAvailable}
-      busy={pending}
-      idPrefix="desktop"
-      onChange={(next) => {
-        setPendingFilters(next);
-        startTransition(() => {
-          setOptimisticFilters(next);
-          router.push(`/products${toQueryString(next)}`, { scroll: false });
-        });
-      }}
-    />
+    <>
+      {activeFilterCount(effectiveFilters) > 0 && (
+        <Button variant="ghost" size="sm" onClick={() => apply(clearProductFacets(effectiveFilters))}>Xoá bộ lọc</Button>
+      )}
+      <FilterControls
+        definitions={definitions}
+        counts={counts}
+        filters={effectiveFilters}
+        countsAvailable={countsAvailable}
+        busy={pending}
+        idPrefix="desktop"
+        onChange={apply}
+      />
+    </>
   );
 }

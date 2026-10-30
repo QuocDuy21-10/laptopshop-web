@@ -70,22 +70,11 @@ export function ProductCard({ product, factoryName }: ProductCardProps) {
         <div className={styles.metaRow}>
           {factoryLabel ? <span className={styles.factory}>{factoryLabel}</span> : <span />}
 
-          <div
-            className={styles.rating}
-            aria-label={
-              reviewCount > 0
-                ? `Đánh giá ${averageRating.toFixed(1)} sao, ${reviewCount} đánh giá`
-                : "Chưa có đánh giá"
-            }
-          >
-            {reviewCount > 0 ? (
-              <>
-                <span className={styles.ratingValue}>★ {averageRating.toFixed(1)} ({reviewCount})</span>
-              </>
-            ) : (
-              <span className={styles.noRating}>Chưa có đánh giá</span>
-            )}
-          </div>
+          {reviewCount > 0 && (
+            <div className={styles.rating} aria-label={`Đánh giá ${averageRating.toFixed(1)} sao, ${reviewCount} đánh giá`}>
+              <span className={styles.ratingValue}>★ {averageRating.toFixed(1)} ({reviewCount})</span>
+            </div>
+          )}
         </div>
 
         <h3 className={styles.name}>

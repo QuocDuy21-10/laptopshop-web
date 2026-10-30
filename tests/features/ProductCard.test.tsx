@@ -57,9 +57,9 @@ describe("ProductCard", () => {
     expect(screen.getByLabelText("Đánh giá 4.6 sao, 25 đánh giá")).toBeInTheDocument();
   });
 
-  it("shows the empty review state for a catalog product without reviews", () => {
+  it("hides the review area for a catalog product without reviews", () => {
     renderWithQuery(<ProductCard product={{ ...product, reviewSummary: { averageRating: null, totalReviews: 0 } }} />);
-    expect(screen.getByText("Chưa có đánh giá")).toBeInTheDocument();
+    expect(screen.queryByText("Chưa có đánh giá")).not.toBeInTheDocument();
   });
 
   const priced = (kind: "FLASH_SALE" | "AUTOMATIC", eligibility: "POTENTIAL" | "EXACT") =>
