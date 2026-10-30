@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type FC, type KeyboardEvent } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { LaptopMockup, type LaptopVariant } from "../LaptopMockup/LaptopMockup";
@@ -19,6 +20,8 @@ export interface HeroSlide {
   floatingBadge: string;
   floatingBadgeSecondary: string;
   variant: LaptopVariant;
+  /** Ảnh sản phẩm WebP/AVIF trong /public/banners (không chứa chữ); bỏ trống thì dùng LaptopMockup SVG. */
+  image?: string;
 }
 
 export const DEFAULT_SLIDES: HeroSlide[] = [
@@ -35,6 +38,7 @@ export const DEFAULT_SLIDES: HeroSlide[] = [
     floatingBadge: "Chỉ từ 1.24 kg",
     floatingBadgeSecondary: "Pin 18 tiếng",
     variant: "ultrabook",
+    image: "/banners/hero-ultrabook.webp",
   },
   {
     id: 2,
@@ -49,6 +53,7 @@ export const DEFAULT_SLIDES: HeroSlide[] = [
     floatingBadge: "Màn hình 165Hz QHD",
     floatingBadgeSecondary: "Tản nhiệt buồng hơi",
     variant: "gaming",
+    image: "/banners/hero-gaming.webp",
   },
   {
     id: 3,
@@ -63,6 +68,7 @@ export const DEFAULT_SLIDES: HeroSlide[] = [
     floatingBadge: "100% DCI-P3 Chuẩn màu",
     floatingBadgeSecondary: "Bảo hành 2 năm",
     variant: "creator",
+    image: "/banners/hero-creator.webp",
   },
 ];
 
@@ -217,7 +223,19 @@ export const HeroSlider: FC<HeroSliderProps> = ({
                 }}
                 className={styles.laptopContainer}
               >
-                <LaptopMockup variant={currentSlide.variant} className={styles.laptopGraphic} />
+                {currentSlide.image ? (
+                  <Image
+                    src={currentSlide.image}
+                    alt=""
+                    width={880}
+                    height={495}
+                    priority={current === 0}
+                    sizes="(min-width: 1024px) 440px, 90vw"
+                    className={styles.laptopGraphic}
+                  />
+                ) : (
+                  <LaptopMockup variant={currentSlide.variant} className={styles.laptopGraphic} />
+                )}
               </motion.div>
             </div>
           </motion.div>
