@@ -1,0 +1,89 @@
+@use "mixins" as *;
+
+.skeleton {
+  width: 100%;
+  height: 120px;
+}
+
+.empty {
+  margin: 0;
+  color: var(--color-foreground-muted);
+
+  @include text(body-md);
+}
+
+.cart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-three);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-three);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.line {
+  display: flex;
+  gap: var(--space-three);
+}
+
+.image {
+  flex-shrink: 0;
+  width: 56px;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-one);
+  min-width: 0;
+}
+
+.name {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  color: var(--color-foreground);
+  text-decoration: none;
+
+  @include text(label-md);
+
+  &:hover {
+    color: var(--color-primary);
+  }
+}
+
+.meta {
+  color: var(--color-foreground-muted);
+
+  @include text(body-sm);
+}
+
+.more {
+  margin: 0;
+  color: var(--color-foreground-muted);
+
+  @include text(body-sm);
+}
+
+.total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--space-three);
+  border-top: 1px solid var(--color-border);
+
+  @include text(label-md);
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-two);
+}

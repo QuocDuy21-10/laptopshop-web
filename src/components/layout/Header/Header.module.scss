@@ -82,46 +82,8 @@
   min-height: var(--header-nav-h);
 }
 
-// scrolls sideways instead of running under the advisor link when labels are long (e.g. 1024px)
-.nav {
+.navFallback {
   flex: 1;
-  min-width: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.navList {
-  display: flex;
-  align-items: center;
-  gap: var(--space-one);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.navLink {
-  display: inline-flex;
-  align-items: center;
-  min-height: 36px;
-  padding-inline: var(--space-two);
-  border-radius: var(--radius-sm);
-  color: var(--color-foreground-muted);
-  text-decoration: none;
-  white-space: nowrap;
-  transition:
-    color var(--duration-fast) var(--ease-out),
-    background-color var(--duration-fast) var(--ease-out);
-
-  @include text(label-md);
-
-  &:hover {
-    color: var(--color-foreground);
-    background: var(--color-surface-hover);
-  }
-
-  @include up(xl) {
-    padding-inline: var(--space-three);
-  }
 }
 
 // 1024–1279px: the pill reads "Tư vấn" so every category fits; the full name stays for screen readers

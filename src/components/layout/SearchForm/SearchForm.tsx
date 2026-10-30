@@ -1,4 +1,5 @@
 import { Search } from "lucide-react";
+
 import { cx } from "@/lib/cx";
 import styles from "./SearchForm.module.scss";
 

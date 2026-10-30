@@ -1,18 +1,20 @@
-import { Sparkles } from "lucide-react";
-import Link from "next/link";
 import { Suspense } from "react";
-import { BrandLogo } from "@/components/brand/BrandLogo/BrandLogo";
-import { AccountMenu } from "@/components/layout/AccountMenu/AccountMenu";
-import { CartLink } from "@/components/layout/CartLink/CartLink";
-import { Container } from "@/components/layout/Container/Container";
-import { MobileMenu } from "@/components/layout/MobileMenu/MobileMenu";
-import { SearchForm } from "@/components/layout/SearchForm/SearchForm";
-import { NotificationBell } from "@/features/notifications/NotificationBell/NotificationBell";
+import Link from "next/link";
+import { Sparkles } from "lucide-react";
+
+import type { FilterOption } from "@/lib/api/types";
+import styles from "./Header.module.scss";
 import { TARGET_LABEL, targetName } from "@/features/products/labels";
 import { getFilterOptions } from "@/features/products/server";
-import type { FilterOption } from "@/lib/api/types";
 import { WishlistLink } from "../WishlistLink/WishlistLink";
-import styles from "./Header.module.scss";
+import { CartLink } from "@/components/layout/CartLink/CartLink";
+import { BrandLogo } from "@/components/brand/BrandLogo/BrandLogo";
+import { Container } from "@/components/layout/Container/Container";
+import { SearchBox } from "@/components/layout/SearchBox/SearchBox";
+import { MobileMenu } from "@/components/layout/MobileMenu/MobileMenu";
+import { AccountMenu } from "@/components/layout/AccountMenu/AccountMenu";
+import { CategoryNav } from "@/components/layout/CategoryNav/CategoryNav";
+import { NotificationBell } from "@/features/notifications/NotificationBell/NotificationBell";
 
 const TARGET_KEYS = Object.keys(TARGET_LABEL);
 
@@ -39,7 +41,7 @@ export async function Header() {
 
         <div className={styles.search}>
           <Suspense fallback={null}>
-            <SearchForm />
+            <SearchBox />
           </Suspense>
         </div>
 
@@ -56,27 +58,9 @@ export async function Header() {
 
       <div className={styles.navRow}>
         <Container className={styles.navInner}>
-          <nav className={styles.nav} aria-label="Danh mục chính">
-            <ul className={styles.navList}>
-              <li>
-                <Link href="/products" className={styles.navLink}>
-                  Tất cả laptop
-                </Link>
-              </li>
-              {targets.map((t) => (
-                <li key={t.value}>
-                  <Link href={`/products?target=${t.value}`} className={styles.navLink}>
-                    {t.name}
-                  </Link>
-                </li>
-              ))}
-              <li>
-                <Link href="/promotions" className={styles.navLink}>
-                  Khuyến mãi
-                </Link>
-              </li>
-            </ul>
-          </nav>
+          <Suspense fallback={<div className={styles.navFallback} />}>
+            <CategoryNav targets={targets} />
+          </Suspense>
           <Link href="/advisor" className={styles.advisorLink} aria-label="Tư vấn chọn laptop">
             <Sparkles size={16} aria-hidden="true" />
             <span>

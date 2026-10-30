@@ -1,17 +1,18 @@
+import { describe, expect, it, vi } from "vitest";
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+
+import { renderWithQuery } from "../utils";
+import HomePage from "@/app/(storefront)/page";
 import { Header } from "@/components/layout/Header/Header";
 import { MobileMenu } from "@/components/layout/MobileMenu/MobileMenu";
-import HomePage from "@/app/(storefront)/page";
-import { renderWithQuery } from "../utils";
 
 vi.mock("@/features/products/server", () => ({
   getFilterOptions: vi.fn().mockResolvedValue({ targetOptions: [{ name: "Gaming", value: "GAMING" }] }),
   listProducts: vi.fn().mockResolvedValue({ data: [], meta: { page: 1, pageSize: 8, total: 0, totalPages: 0 } }),
 }));
 vi.mock("@/features/store-info/server", () => ({ getStoreInfo: vi.fn().mockResolvedValue(null) }));
-vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn(), replace: vi.fn() }), usePathname: () => "/" }));
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn(), replace: vi.fn() }), usePathname: () => "/", useSearchParams: () => new URLSearchParams() }));
 
 describe("advisor navigation", () => {
   it("shows the advisor link in desktop header", async () => {
