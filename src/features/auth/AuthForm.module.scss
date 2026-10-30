@@ -17,3 +17,20 @@
   margin-block: calc(var(--space-two) * -1);
   color: var(--color-link);
 }
+
+// the form gap is cancelled here and re-added inside the animated box, so the gap grows with the alert
+.errorSlot {
+  margin-bottom: calc(var(--space-five) * -1);
+
+  &:empty {
+    display: none;
+  }
+}
+
+.errorMotion {
+  overflow: hidden;
+}
+
+.errorGap {
+  padding-bottom: var(--space-five);
+}

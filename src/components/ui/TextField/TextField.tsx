@@ -8,12 +8,13 @@ import styles from "./TextField.module.scss";
 type Props = InputHTMLAttributes<HTMLInputElement> & {
   label: string;
   error?: string;
+  invalid?: boolean;
   hint?: string;
   revealable?: boolean;
   ref?: Ref<HTMLInputElement>;
 };
 
-export function TextField({ label, error, hint, id, required, className, revealable, type, ref, ...rest }: Props) {
+export function TextField({ label, error, invalid, hint, id, required, className, revealable, type, ref, ...rest }: Props) {
   const autoId = useId();
   const [revealed, setRevealed] = useState(false);
   const inputId = id ?? autoId;
@@ -37,8 +38,8 @@ export function TextField({ label, error, hint, id, required, className, reveala
           ref={ref}
           id={inputId}
           type={revealable && revealed ? "text" : type}
-          className={cx(styles.input, revealable && styles.revealable, error && styles.invalid)}
-          aria-invalid={error ? true : undefined}
+          className={cx(styles.input, revealable && styles.revealable, (error || invalid) && styles.invalid)}
+          aria-invalid={error || invalid ? true : undefined}
           aria-describedby={describedBy}
           aria-required={required || undefined}
           {...rest}
