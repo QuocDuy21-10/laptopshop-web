@@ -1,5 +1,6 @@
-import { render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+import { render } from "@testing-library/react";
+
 import { Header } from "@/components/layout/Header/Header";
 
 vi.mock("@/features/products/server", () => ({
@@ -8,7 +9,7 @@ vi.mock("@/features/products/server", () => ({
 vi.mock("@/components/layout/AccountMenu/AccountMenu", () => ({ AccountMenu: () => null }));
 vi.mock("@/components/layout/CartLink/CartLink", () => ({ CartLink: () => null }));
 vi.mock("@/components/layout/MobileMenu/MobileMenu", () => ({ MobileMenu: () => null }));
-vi.mock("@/components/layout/SearchForm/SearchForm", () => ({ SearchForm: () => null }));
+vi.mock("@/components/layout/SearchBox/SearchBox", () => ({ SearchBox: () => null }));
 vi.mock("@/features/notifications/NotificationBell/NotificationBell", () => ({ NotificationBell: () => null }));
 vi.mock("@/components/layout/WishlistLink/WishlistLink", () => ({ WishlistLink: () => null }));
 

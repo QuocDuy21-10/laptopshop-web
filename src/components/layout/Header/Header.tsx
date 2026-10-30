@@ -10,8 +10,8 @@ import { WishlistLink } from "../WishlistLink/WishlistLink";
 import { CartLink } from "@/components/layout/CartLink/CartLink";
 import { BrandLogo } from "@/components/brand/BrandLogo/BrandLogo";
 import { Container } from "@/components/layout/Container/Container";
+import { SearchBox } from "@/components/layout/SearchBox/SearchBox";
 import { MobileMenu } from "@/components/layout/MobileMenu/MobileMenu";
-import { SearchForm } from "@/components/layout/SearchForm/SearchForm";
 import { AccountMenu } from "@/components/layout/AccountMenu/AccountMenu";
 import { CategoryNav } from "@/components/layout/CategoryNav/CategoryNav";
 import { NotificationBell } from "@/features/notifications/NotificationBell/NotificationBell";
@@ -41,7 +41,7 @@ export async function Header() {
 
         <div className={styles.search}>
           <Suspense fallback={null}>
-            <SearchForm />
+            <SearchBox />
           </Suspense>
         </div>
 

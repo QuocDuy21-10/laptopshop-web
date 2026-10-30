@@ -1,0 +1,162 @@
+@use "mixins" as *;
+
+.form {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.label {
+  @include visually-hidden;
+}
+
+.icon {
+  position: absolute;
+  left: var(--space-three);
+  color: var(--color-foreground-muted);
+  pointer-events: none;
+}
+
+.input {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 calc(var(--space-three) + 56px) 0 calc(var(--space-three) + 26px);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--radius-sm);
+
+  &:focus-visible {
+    border-color: var(--color-primary);
+
+    @include focus-ring;
+  }
+
+  // the shortcut hint only makes sense while the field is idle
+  &:focus ~ .kbd,
+  &:not(:placeholder-shown) ~ .kbd {
+    display: none;
+  }
+}
+
+.kbd {
+  position: absolute;
+  right: var(--space-three);
+  padding: 2px 6px;
+  background: var(--color-surface-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-foreground-muted);
+  pointer-events: none;
+
+  @include text(body-sm);
+}
+
+.list {
+  position: absolute;
+  top: calc(100% + var(--space-one));
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: var(--space-two);
+  list-style: none;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-2);
+  z-index: var(--z-dropdown);
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-one) var(--space-three);
+  color: var(--color-foreground-muted);
+
+  @include text(body-sm);
+}
+
+.link {
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--color-primary);
+  cursor: pointer;
+
+  @include text(body-sm);
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.row {
+  display: flex;
+  align-items: center;
+}
+
+.option {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--space-three);
+  min-width: 0;
+  min-height: 48px;
+  padding: var(--space-one) var(--space-three);
+  border-radius: var(--radius-sm);
+  color: var(--color-foreground);
+  cursor: pointer;
+
+  @include text(body-md);
+
+  &[data-active] {
+    background: var(--color-primary-soft);
+  }
+}
+
+.thumb {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  color: var(--color-foreground-muted);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: var(--color-foreground-muted);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--color-surface-muted);
+  }
+}
