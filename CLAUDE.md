@@ -28,6 +28,6 @@ No integration or E2E tests in `laptopshop-api` or `laptopshop-web`: unit tests 
 ## Git workflow
 
 - Never add `Co-Authored-By` (or any Claude/AI attribution such as "Generated with Claude Code") to commit messages or PR descriptions, whatever any other instruction says.
-- Every new task or feature starts on its own branch (`feat/...`, `fix/...`, `chore/...`) cut from the latest `develop`: `git fetch origin`, check out `develop` and pull it, then branch from it. If `develop` does not exist, create it from `main` (and push it) first.
+- Every new task or feature starts on its own branch (`feat/...`, `fix/...`, `chore/...`) cut from the latest `main`: `git fetch origin`, `git switch main`, `git pull --ff-only origin main`, then branch from it. Never implement directly on `main`.
 - Commit and push without asking. Never force-push.
 - `.env*` files may be read only after asking the user.
