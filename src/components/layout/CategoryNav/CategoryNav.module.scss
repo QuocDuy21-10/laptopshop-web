@@ -1,0 +1,67 @@
+@use "mixins" as *;
+
+// scrolls sideways instead of running under the advisor link when labels are long (e.g. 1024px)
+.nav {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  gap: var(--space-one);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding-inline: var(--space-two);
+  border-radius: var(--radius-sm);
+  color: var(--color-foreground-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+
+  @include text(label-md);
+
+  &:hover {
+    color: var(--color-foreground);
+    background: var(--color-surface-hover);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  @include up(xl) {
+    padding-inline: var(--space-three);
+  }
+}
+
+.active {
+  color: var(--color-primary);
+  font-weight: 600;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset-inline: var(--space-two);
+    bottom: 0;
+    height: 2px;
+    border-radius: var(--radius-full);
+    background: var(--color-primary);
+  }
+
+  &:hover {
+    color: var(--color-primary);
+  }
+}
