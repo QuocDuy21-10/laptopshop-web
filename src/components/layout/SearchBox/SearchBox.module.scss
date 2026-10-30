@@ -29,6 +29,8 @@
     border-color: var(--color-primary);
 
     @include focus-ring;
+
+    outline-offset: -1px; // ring replaces the border instead of doubling it
   }
 
   // the shortcut hint only makes sense while the field is idle

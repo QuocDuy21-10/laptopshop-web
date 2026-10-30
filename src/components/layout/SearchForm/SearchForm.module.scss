@@ -29,5 +29,7 @@
     border-color: var(--color-primary);
 
     @include focus-ring;
+
+    outline-offset: -1px; // ring replaces the border instead of doubling it
   }
 }
