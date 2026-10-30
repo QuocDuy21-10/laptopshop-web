@@ -5,7 +5,7 @@ import { Checkbox } from "@/components/ui/Checkbox/Checkbox";
 import { formatFacetValue } from "../labels";
 import type { ProductFilters } from "../search-params";
 import { updateProductFacet } from "../filter-updates";
-import { FilterGroup } from "./FilterGroup";
+import { ExpandableRows, FilterGroup } from "./FilterGroup";
 import styles from "./FilterControls.module.scss";
 
 export type FacetCount = { value: string; count: number };
@@ -73,24 +73,28 @@ export function FilterControls({ definitions, counts, filters, onChange, idPrefi
                 <span>Tất cả</span>
               </label>
             ) : null}
-            {options.map((option) => {
+            <ExpandableRows rows={options.map((option) => {
               const count = countFor(option.value);
               const label = countsAvailable && count !== undefined ? `${option.name} (${count})` : option.name;
               const atLimit = definition.mode === "MULTI" && definition.maxSelections !== undefined && arrayValue(filters, definition.key).length >= definition.maxSelections;
               const disabled = (countsAvailable && count === 0 && !selected(option.value)) || (atLimit && !selected(option.value));
               const id = `${idPrefix}-${definition.key}-${option.value}`;
               if (definition.mode === "MULTI" || definition.mode === "BOOLEAN") {
-                return (
-                  <Checkbox key={option.value} id={id} label={label} checked={selected(option.value)} disabled={disabled} onCheckedChange={() => update(definition, option.value)} />
-                );
+                return {
+                  selected: selected(option.value),
+                  node: <Checkbox key={option.value} id={id} label={label} checked={selected(option.value)} disabled={disabled} onCheckedChange={() => update(definition, option.value)} />,
+                };
               }
-              return (
-                <label key={option.value} className={styles.radioRow} htmlFor={id}>
-                  <input id={id} type="radio" name={`${idPrefix}-${definition.key}`} checked={selected(option.value)} disabled={disabled} onChange={() => update(definition, option.value)} />
-                  <span>{label}</span>
-                </label>
-              );
-            })}
+              return {
+                selected: selected(option.value),
+                node: (
+                  <label key={option.value} className={styles.radioRow} htmlFor={id}>
+                    <input id={id} type="radio" name={`${idPrefix}-${definition.key}`} checked={selected(option.value)} disabled={disabled} onChange={() => update(definition, option.value)} />
+                    <span>{label}</span>
+                  </label>
+                ),
+              };
+            })} />
           </FilterGroup>
         );
       })}
