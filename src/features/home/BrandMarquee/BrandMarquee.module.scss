@@ -51,7 +51,6 @@
 .marqueeTrack {
   display: flex;
   align-items: center;
-  gap: var(--space-three);
   width: max-content;
   animation: marquee-scroll 26s linear infinite;
   padding: var(--space-one) 0;
@@ -85,6 +84,9 @@
   gap: var(--space-two);
   min-width: 130px;
   height: 52px;
+
+  // margin, not flex gap, so the track is exactly two equal halves and -50% loops seamlessly
+  margin-right: var(--space-three);
   padding: var(--space-two) var(--space-four);
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
@@ -103,8 +105,8 @@
   &:hover {
     filter: grayscale(0);
     opacity: 1;
-    color: var(--color-foreground);
-    border-color: var(--color-border-strong);
+    color: var(--brand-color, var(--color-foreground));
+    border-color: var(--brand-color, var(--color-border-strong));
     background: var(--color-surface-raised);
     box-shadow: var(--shadow-1);
     transform: translateY(-2px);
@@ -112,6 +114,18 @@
 
   &:focus-visible {
     @include focus-ring;
+  }
+
+  @each $key in apple, asus, dell, lenovo, hp, acer, msi, lg {
+    &[data-brand="#{to-upper-case($key)}"] {
+      --brand-color: var(--color-brand-#{$key});
+    }
+  }
+
+  &.duplicate {
+    @include reduced-motion {
+      display: none;
+    }
   }
 
   @media (pointer: coarse) {

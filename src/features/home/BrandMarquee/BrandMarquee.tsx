@@ -7,6 +7,8 @@ export interface PartnerBrand {
   name: string;
   href: string;
   logo: ReactNode;
+  /** The logo already spells the name, so no text label is shown beside it. */
+  wordmark?: boolean;
 }
 
 export const PARTNER_BRANDS: PartnerBrand[] = [
@@ -22,11 +24,21 @@ export const PARTNER_BRANDS: PartnerBrand[] = [
   },
   {
     key: "ASUS",
+    wordmark: true,
     name: "ASUS",
     href: "/products?factory=ASUS",
     logo: (
       <svg viewBox="0 0 48 24" width="36" height="18" fill="currentColor" aria-hidden="true">
-        <text x="50%" y="65%" textAnchor="middle" dominantBaseline="middle" fontFamily="sans-serif" fontWeight="900" fontSize="15" letterSpacing="1">
+        <text
+          x="50%"
+          y="65%"
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fontFamily="sans-serif"
+          fontWeight="900"
+          fontSize="15"
+          letterSpacing="1"
+        >
           ASUS
         </text>
       </svg>
@@ -34,12 +46,31 @@ export const PARTNER_BRANDS: PartnerBrand[] = [
   },
   {
     key: "DELL",
+    wordmark: true,
     name: "Dell",
     href: "/products?factory=DELL",
     logo: (
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <svg
+        viewBox="0 0 24 24"
+        width="22"
+        height="22"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        aria-hidden="true"
+      >
         <circle cx="12" cy="12" r="10" />
-        <text x="12" y="15" fill="currentColor" stroke="none" textAnchor="middle" fontFamily="sans-serif" fontWeight="bold" fontSize="7" letterSpacing="0.5">
+        <text
+          x="12"
+          y="15"
+          fill="currentColor"
+          stroke="none"
+          textAnchor="middle"
+          fontFamily="sans-serif"
+          fontWeight="bold"
+          fontSize="7"
+          letterSpacing="0.5"
+        >
           DELL
         </text>
       </svg>
@@ -47,11 +78,21 @@ export const PARTNER_BRANDS: PartnerBrand[] = [
   },
   {
     key: "LENOVO",
+    wordmark: true,
     name: "Lenovo",
     href: "/products?factory=LENOVO",
     logo: (
       <svg viewBox="0 0 54 22" width="40" height="16" fill="currentColor" aria-hidden="true">
-        <text x="50%" y="65%" textAnchor="middle" dominantBaseline="middle" fontFamily="sans-serif" fontWeight="800" fontSize="13" letterSpacing="0.5">
+        <text
+          x="50%"
+          y="65%"
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fontFamily="sans-serif"
+          fontWeight="800"
+          fontSize="13"
+          letterSpacing="0.5"
+        >
           Lenovo
         </text>
       </svg>
@@ -62,7 +103,15 @@ export const PARTNER_BRANDS: PartnerBrand[] = [
     name: "HP",
     href: "/products?factory=HP",
     logo: (
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
+      <svg
+        viewBox="0 0 24 24"
+        width="22"
+        height="22"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        aria-hidden="true"
+      >
         <circle cx="12" cy="12" r="10" />
         <path d="M9 7v10M15 7v10M9 12h6" strokeWidth="2" strokeLinecap="round" />
       </svg>
@@ -70,11 +119,21 @@ export const PARTNER_BRANDS: PartnerBrand[] = [
   },
   {
     key: "ACER",
+    wordmark: true,
     name: "Acer",
     href: "/products?factory=ACER",
     logo: (
       <svg viewBox="0 0 46 22" width="36" height="16" fill="currentColor" aria-hidden="true">
-        <text x="50%" y="65%" textAnchor="middle" dominantBaseline="middle" fontFamily="sans-serif" fontWeight="800" fontSize="14" letterSpacing="1">
+        <text
+          x="50%"
+          y="65%"
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fontFamily="sans-serif"
+          fontWeight="800"
+          fontSize="14"
+          letterSpacing="1"
+        >
           acer
         </text>
       </svg>
@@ -82,11 +141,21 @@ export const PARTNER_BRANDS: PartnerBrand[] = [
   },
   {
     key: "MSI",
+    wordmark: true,
     name: "MSI",
     href: "/products?factory=MSI",
     logo: (
       <svg viewBox="0 0 44 22" width="34" height="16" fill="currentColor" aria-hidden="true">
-        <text x="50%" y="65%" textAnchor="middle" dominantBaseline="middle" fontFamily="sans-serif" fontWeight="900" fontSize="14" letterSpacing="1.5">
+        <text
+          x="50%"
+          y="65%"
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fontFamily="sans-serif"
+          fontWeight="900"
+          fontSize="14"
+          letterSpacing="1.5"
+        >
           MSI
         </text>
       </svg>
@@ -97,7 +166,15 @@ export const PARTNER_BRANDS: PartnerBrand[] = [
     name: "LG",
     href: "/products?factory=LG",
     logo: (
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <svg
+        viewBox="0 0 24 24"
+        width="22"
+        height="22"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        aria-hidden="true"
+      >
         <circle cx="12" cy="12" r="10" />
         <circle cx="9" cy="10" r="1" fill="currentColor" />
         <path d="M15 8v8h-6" strokeLinecap="round" strokeLinejoin="round" />
@@ -128,10 +205,12 @@ export const BrandMarquee: FC<BrandMarqueeProps> = ({ brands = PARTNER_BRANDS })
               key={brand.key}
               href={brand.href}
               className={styles.brandCard}
+              data-brand={brand.key}
               title={`Xem laptop ${brand.name}`}
+              aria-label={brand.wordmark ? `Xem laptop ${brand.name}` : undefined}
             >
               {brand.logo}
-              <span className={styles.brandName}>{brand.name}</span>
+              {!brand.wordmark && <span className={styles.brandName}>{brand.name}</span>}
             </Link>
           ))}
 
@@ -140,12 +219,13 @@ export const BrandMarquee: FC<BrandMarqueeProps> = ({ brands = PARTNER_BRANDS })
             <Link
               key={`${brand.key}-dup`}
               href={brand.href}
-              className={styles.brandCard}
+              className={`${styles.brandCard} ${styles.duplicate}`}
+              data-brand={brand.key}
               aria-hidden="true"
               tabIndex={-1}
             >
               {brand.logo}
-              <span className={styles.brandName}>{brand.name}</span>
+              {!brand.wordmark && <span className={styles.brandName}>{brand.name}</span>}
             </Link>
           ))}
         </div>
