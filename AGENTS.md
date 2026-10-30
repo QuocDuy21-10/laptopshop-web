@@ -12,6 +12,13 @@ Rules that are easy to miss:
 - Show only product data the API returns; no fake ratings, discounts or urgency.
 - After changing the API contract, run `pnpm gen:api` and commit `src/lib/api/schema.d.ts`.
 
+Coding style (enforced by `eslint.config.mjs`; run `eslint --fix` on files you touch):
+- Imports: external (Node built-ins, packages) first, then internal (`@/` aliases and relative paths), exactly one blank line between the groups. Inside each group sort by module path length ascending, then A-Z (`eslint-rules/import-order-by-length.mjs`). `import type` follows the same order. Side-effect imports (`import "x"`, e.g. CSS) keep their place and split the sorting into separate runs.
+- No unused or duplicate imports; use `import type` for type-only imports.
+- Avoid `any` (use `unknown` and narrow), unsafe `as` and `@ts-ignore`; prefer `const`.
+- Do not disable a lint rule to get past an error; fix the cause. Do not reformat or re-sort files unrelated to the task.
+- Server Components by default; `"use client"` only for interactivity. Keep business logic in hooks/modules, not presentational components. Handle loading, empty, error and retry states.
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 ## This is NOT the Next.js you know
