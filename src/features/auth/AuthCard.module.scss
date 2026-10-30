@@ -1,38 +1,27 @@
 @use "mixins" as *;
 
-.wrap {
-  display: flex;
-  justify-content: center;
-  padding: var(--space-ten) var(--space-gutter-mobile);
-
-  @include up(md) {
-    padding-block: var(--space-sixteen);
-  }
-}
-
 .split {
   display: grid;
+  flex: 1;
   width: 100%;
-  max-width: 440px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
 
   @include up(md) {
     grid-template-columns: 1fr 1fr;
-    max-width: 880px;
   }
 }
 
 .card {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: var(--space-six);
-  padding: var(--space-six);
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  padding: var(--space-six) var(--space-gutter-mobile) var(--space-ten);
 
   @include up(md) {
-    padding: var(--space-eight);
+    padding: var(--space-eight) var(--space-gutter-desktop);
   }
 }
 

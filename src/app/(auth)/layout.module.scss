@@ -1,0 +1,40 @@
+@use "mixins" as *;
+
+.shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-four);
+  padding: var(--space-four) var(--space-gutter-mobile);
+
+  @include up(md) {
+    // sits over the right column, the green panel on the left has its own heading
+    padding-inline: var(--space-gutter-desktop);
+  }
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-md);
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-one);
+  min-height: var(--control-md);
+  color: var(--color-link);
+}
+
+.main {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+}
