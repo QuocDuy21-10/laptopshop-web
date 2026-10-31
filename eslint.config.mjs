@@ -17,5 +17,6 @@ export default defineConfig([
     "playwright-report/**",
     "test-results/**",
     ".superpowers/**",
+    "docs-local/**",
   ]),
 ]);
