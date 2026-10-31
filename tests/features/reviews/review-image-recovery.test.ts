@@ -107,3 +107,11 @@ describe("original review image recovery", () => {
     vi.restoreAllMocks();
   });
 });
+
+it("clears only its current record even when unrelated legacy JSON is corrupt", async () => {
+  const pending = await createPendingImageSync(scope, 7, "current-key", []);
+  savePendingImageSyncFor(pending);
+  sessionStorage.setItem("laptopshop:review-image-sync", "{");
+  expect(() => clearPendingImageSyncFor(scope, "current-key")).not.toThrow();
+  expect(sessionStorage.getItem("laptopshop:review-image-sync")).toBe("{");
+});

@@ -5,7 +5,7 @@ import { api } from "@/lib/api/client";
 import { unwrap } from "@/lib/api/errors";
 import { sendMultipart } from "@/lib/api/multipart";
 import { queryKeys } from "@/lib/api/query-keys";
-import type { HelpfulMutation, PageMeta, ProductReviewsQuery, PublicReview, ReviewImage, ReviewImageSyncResult, ReviewImageSyncStatus } from "@/lib/api/types";
+import type { HelpfulMutation, PageMeta, ProductReviewsQuery, PublicReview, ReviewImage, ReviewImageSyncResult } from "@/lib/api/types";
 import type { ReviewEligibility } from "@/lib/api/types";
 import type { ReviewInput } from "./schema";
 import type { DraftImage } from "./ReviewImagesEditor/ReviewImagesEditor";
@@ -126,17 +126,6 @@ export function useSyncReviewImages(productId: number, userId?: number) {
       return response.data;
     },
     onSuccess: (result) => invalidateReviewQueries(queryClient, productId, userId, result.reviewId),
-  });
-}
-
-export function useReviewImageSyncStatus(reviewId: number, idempotencyKey?: string, enabled = true) {
-  return useQuery<ReviewImageSyncStatus>({
-    queryKey: queryKeys.reviewImageSync(reviewId, idempotencyKey ?? ""),
-    enabled: Boolean(idempotencyKey) && enabled,
-    queryFn: async () =>
-      (await unwrap(api.GET("/api/v1/reviews/{id}/images/sync", {
-        params: { path: { id: reviewId }, header: { "Idempotency-Key": idempotencyKey! } },
-      }))).data,
   });
 }
 

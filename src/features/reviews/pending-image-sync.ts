@@ -15,58 +15,6 @@ export type PendingImageSync = {
   >;
 };
 
-export function savePendingImageSync(value: PendingImageSync) {
-  if (typeof window === "undefined") return;
-  window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(value));
-}
-
-export function readPendingImageSync(productId: number, reviewId: number): PendingImageSync | null {
-  if (typeof window === "undefined") return null;
-  const raw = window.sessionStorage.getItem(STORAGE_KEY);
-  if (!raw) return null;
-  try {
-    const value = JSON.parse(raw) as PendingImageSync;
-    if (value.productId !== productId || value.reviewId !== reviewId) {
-      return null;
-    }
-    return value;
-  } catch {
-    window.sessionStorage.removeItem(STORAGE_KEY);
-    return null;
-  }
-}
-
-export function clearPendingImageSync() {
-  if (typeof window !== "undefined") window.sessionStorage.removeItem(STORAGE_KEY);
-}
-
-export function toPendingImageSync(
-  productId: number,
-  reviewId: number,
-  expectedVersion: number,
-  idempotencyKey: string,
-  items: readonly DraftImage[],
-): PendingImageSync {
-  return {
-    productId,
-    reviewId,
-    expectedVersion,
-    idempotencyKey,
-    createdAt: Date.now(),
-    items: items.map((item) =>
-      item.kind === "existing"
-        ? { kind: "existing", clientId: item.clientId, imageId: item.image.id }
-        : {
-            kind: "new",
-            clientId: item.clientId,
-            fileName: item.file.name,
-            fileSize: item.file.size,
-            fileType: item.file.type,
-          },
-    ),
-  };
-}
-
 export type PendingSyncScope = { userId: number; productId: number; reviewId: number };
 export type PendingNewItem = {
   kind: "new";
@@ -91,6 +39,11 @@ export type PendingReadResult =
   | { kind: "current"; value: PendingImageSyncV2 }
   | { kind: "legacy"; value: LegacyPendingImageSync }
   | { kind: "invalid" | "storage-error"; reason: string };
+export class ReviewImageVerificationError extends Error {
+  constructor() {
+    super("Không thể xác minh ảnh gốc. Hãy dùng kết nối bảo mật và thử lại.");
+  }
+}
 export class PendingImageSyncStorageError extends Error {
   constructor() {
     super(
@@ -104,10 +57,7 @@ const recordKey = (value: PendingImageSyncV2) =>
   `${prefixFor(value)}${encodeURIComponent(value.idempotencyKey)}`;
 
 export async function hashReviewImageFile(file: File): Promise<string> {
-  if (!globalThis.crypto?.subtle)
-    throw new Error(
-      "Trình duyệt chưa hỗ trợ xác minh ảnh gốc. Hãy dùng kết nối bảo mật và thử lại.",
-    );
+  if (!globalThis.crypto?.subtle) throw new ReviewImageVerificationError();
   const hash = await crypto.subtle.digest("SHA-256", await file.arrayBuffer());
   return Array.from(new Uint8Array(hash), (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
@@ -200,7 +150,13 @@ export function clearPendingImageSyncFor(scope: PendingSyncScope, key: string): 
     sessionStorage.removeItem(`${prefixFor(scope)}${encodeURIComponent(key)}`);
     const raw = sessionStorage.getItem(STORAGE_KEY);
     if (raw) {
-      const legacy = legacySchema.safeParse(JSON.parse(raw));
+      let value: unknown;
+      try {
+        value = JSON.parse(raw);
+      } catch {
+        return;
+      }
+      const legacy = legacySchema.safeParse(value);
       if (
         legacy.success &&
         legacy.data.productId === scope.productId &&
