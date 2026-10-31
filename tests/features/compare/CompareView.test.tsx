@@ -1,10 +1,12 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { CompareView } from "@/features/compare/CompareView/CompareView";
-import { getCompareItems, toggleCompare } from "@/features/compare/store";
+
+import { json, lastRequest, mockFetch, priceText, renderWithQuery } from "../../utils";
 import type { Product } from "@/lib/api/types";
-import { json, lastRequest, mockFetch, renderWithQuery } from "../../utils";
+import { getCompareItems, toggleCompare } from "@/features/compare/store";
+import { CompareView } from "@/features/compare/CompareView/CompareView";
 
 const nav = vi.hoisted(() => ({
   search: "",
@@ -88,9 +90,53 @@ describe("CompareView", () => {
 
     await waitFor(() => expect(nav.router.replace).toHaveBeenCalledWith("/compare?ids=1,5"));
     expect(getCompareItems().map((i) => i.id)).toEqual([1, 5]);
-    expect(
-      screen.getByText("Một số sản phẩm không còn bán đã được bỏ khỏi danh sách so sánh."),
-    ).toBeInTheDocument();
+  });
+
+  it("compares the promotion price shoppers see, not the list price", async () => {
+    nav.search = "ids=1,2";
+    fetchMock.mockResolvedValue(
+      json(200, {
+        data: [
+          { ...product(1, { price: 20_000_000 }), salePrice: 17_000_000 },
+          { ...product(2, { price: 19_000_000 }), salePrice: 19_000_000 },
+        ],
+      }),
+    );
+    renderWithQuery(<CompareView />);
+
+    const row = await screen.findByRole("rowheader", { name: "Giá" });
+    const [first, second] = within(row.closest("tr")!).getAllByRole("cell");
+    expect(first).toHaveTextContent(priceText(17_000_000));
+    expect(first).toHaveTextContent(priceText(20_000_000));
+    expect(within(first).getByText("Tốt nhất")).toBeInTheDocument();
+    expect(within(second).queryByText("Tốt nhất")).not.toBeInTheDocument();
+  });
+
+  it("hides the dropped notice once the URL moves to another list", async () => {
+    nav.search = "ids=1,3,5";
+    fetchMock.mockResolvedValue(
+      json(404, { error: { code: "NOT_FOUND", message: "x", details: { missingIds: [3] } } }),
+    );
+    const notice = "Một số sản phẩm không còn bán đã được bỏ khỏi danh sách so sánh.";
+    const { client, rerender } = renderWithQuery(<CompareView />);
+    const navigate = (search: string) => {
+      nav.search = search;
+      rerender(
+        <QueryClientProvider client={client}>
+          <CompareView />
+        </QueryClientProvider>,
+      );
+    };
+    await waitFor(() => expect(nav.router.replace).toHaveBeenCalledWith("/compare?ids=1,5"));
+
+    fetchMock.mockResolvedValue(json(200, { data: [product(1), product(5)] }));
+    navigate("ids=1,5");
+    expect(await screen.findByText(notice)).toBeInTheDocument();
+
+    fetchMock.mockResolvedValue(json(200, { data: [product(2), product(4)] }));
+    navigate("ids=2,4");
+    await screen.findByRole("link", { name: "Laptop 2" });
+    expect(screen.queryByText(notice)).not.toBeInTheDocument();
   });
 
   it("shows an error for an invalid list", async () => {

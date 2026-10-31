@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { errorMessage, isApiError } from "@/lib/api/errors";
 import { loginHref } from "@/lib/safe-next";
@@ -10,7 +10,6 @@ import { savePendingCartIntent } from "./intent";
 export function useAddToCartAction() {
   const addToCart = useAddToCart();
   const router = useRouter();
-  const pathname = usePathname();
 
   const add = async (productId: number, quantity: number, opts: { goToCart?: boolean } = {}) => {
     try {
@@ -26,9 +25,10 @@ export function useAddToCartAction() {
       // the API has no guest cart: remember the action, log in, then PendingCartIntent replays it
       if (isApiError(e) && e.status === 401) {
         savePendingCartIntent({ productId, quantity, goToCart: Boolean(opts.goToCart) });
-        router.push(loginHref(pathname));
-      }
-      else toast.error(errorMessage(e));
+        // keep the query so pages like /compare?ids=… come back intact
+        const { pathname, search } = window.location;
+        router.push(loginHref(pathname + search));
+      } else toast.error(errorMessage(e));
     }
   };
 

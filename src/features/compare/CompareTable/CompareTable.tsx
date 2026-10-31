@@ -1,20 +1,21 @@
 "use client";
 
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { Badge } from "@/components/ui/Badge/Badge";
 import { Button } from "@/components/ui/Button/Button";
 import { AddToCartButton } from "@/features/products/AddToCart/AddToCartButton";
 import { ProductImage } from "@/features/products/ProductImage/ProductImage";
-import type { Product } from "@/lib/api/types";
+import { PromotionPrice } from "@/features/promotions/PromotionPrice/PromotionPrice";
+import type { PricedProduct } from "@/lib/api/types";
 import { cx } from "@/lib/cx";
-import { formatVnd } from "@/lib/format";
 import { SpecValue } from "../SpecTable/SpecTable";
 import { bestIndexes, formatSpec, SPEC_ROWS } from "../specs";
 import styles from "./CompareTable.module.scss";
 
-type Props = { products: Product[]; onRemove: (id: number) => void };
+type Props = { products: PricedProduct[]; onRemove: (id: number) => void };
 
-function Row({ label, cells, best }: { label: string; cells: (string | null)[]; best: Set<number> }) {
+function Row({ label, cells, best }: { label: string; cells: ReactNode[]; best: Set<number> }) {
   return (
     <tr>
       <th scope="row" className={styles.label}>
@@ -22,7 +23,7 @@ function Row({ label, cells, best }: { label: string; cells: (string | null)[]; 
       </th>
       {cells.map((value, i) => (
         <td key={i} className={cx(styles.cell, best.has(i) && styles.best)}>
-          <SpecValue value={value} />
+          {value}
           {best.has(i) && <Badge tone="success">Tốt nhất</Badge>}
         </td>
       ))}
@@ -68,9 +69,12 @@ export function CompareTable({ products, onRemove }: Props) {
           <tbody>
             <Row
               label="Giá"
-              cells={products.map((p) => formatVnd(p.price))}
+              cells={products.map((p) => (
+                <PromotionPrice key={p.id} product={p} size="sm" />
+              ))}
+              // the price shoppers see on the catalog, not the list price
               best={bestIndexes(
-                products.map((p) => p.price),
+                products.map((p) => p.salePrice ?? p.price),
                 "lower",
               )}
             />
@@ -84,7 +88,9 @@ export function CompareTable({ products, onRemove }: Props) {
                 <Row
                   key={row.key}
                   label={row.label}
-                  cells={values.map((v) => formatSpec(row, v))}
+                  cells={values.map((v, i) => (
+                    <SpecValue key={i} value={formatSpec(row, v)} />
+                  ))}
                   best={best}
                 />
               );

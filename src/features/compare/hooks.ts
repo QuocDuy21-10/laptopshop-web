@@ -17,5 +17,8 @@ export function useCompareProducts(ids: number[]) {
       ).data,
     enabled: ids.length >= 2,
     retry: false,
+    // prices and promotions change while the page is open
+    refetchOnWindowFocus: true,
+    refetchInterval: 60_000,
   });
 }
