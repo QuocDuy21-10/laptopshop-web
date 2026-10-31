@@ -29,6 +29,8 @@ export const queryKeys = {
   reviewEligibility: (productId: number, userId: number) =>
     ["reviews", productId, "eligibility", userId] as const,
   reviewImages: (reviewId: number) => ["reviews", reviewId, "images"] as const,
+  reviewImageSyncForUser: (userId: number, reviewId: number, key: string) => ["reviews", reviewId, "image-sync", userId, key] as const,
+  reviewImageSyncBudget: (userId: number, reviewId: number, key: string) => ["review-image-sync-budget", userId, reviewId, key] as const,
   reviewImageSync: (reviewId: number, idempotencyKey: string) => ["reviews", reviewId, "image-sync", idempotencyKey] as const,
   reviewHelpfulState: (reviewIds: number[], userId: number) =>
     ["reviews", "helpful", userId, reviewIds] as const,

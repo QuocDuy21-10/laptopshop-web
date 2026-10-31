@@ -199,3 +199,5 @@ export function useToggleHelpful(reviewIds: number[], userId?: number) {
     },
   });
 }
+
+export { useBoundedReviewImageSyncStatus } from "./useBoundedReviewImageSyncStatus";
