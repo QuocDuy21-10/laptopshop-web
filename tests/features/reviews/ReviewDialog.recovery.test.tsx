@@ -1,7 +1,8 @@
+import { clearReviewImageSyncBudget } from "@/features/reviews/review-image-sync-budget";
 import { File as NodeFile } from "node:buffer";
 import { webcrypto } from "node:crypto";
 import { beforeEach, expect, it, vi } from "vitest";
-import { screen, waitFor } from "@testing-library/react";
+import { screen, waitFor, act, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { OwnerReview } from "@/lib/api/types";
 import { ReviewDialog } from "@/features/reviews/ReviewDialog/ReviewDialog";
@@ -38,6 +39,9 @@ const eligibility = {
 };
 beforeEach(async () => {
   sessionStorage.clear();
+  for (const userId of [7, 8])
+    for (const key of ["original-key", "legacy-key"])
+      clearReviewImageSyncBudget({ userId, reviewId: 18 }, key);
   vi.stubGlobal("File", NodeFile);
   vi.stubGlobal("crypto", webcrypto);
   const nativeForm = await new Response("", {
@@ -407,3 +411,52 @@ it("explains saved text and prevents PUT when Crypto is unavailable", async () =
   expect(methods).toEqual(["POST"]);
   expect(screen.getByRole("textbox", { name: "Nội dung" })).toHaveValue("Nội dung mới đủ dài.");
 });
+
+it.each(["last-attempt", "after-deadline"])(
+  "unlocks recovery when WAITING_RETRY arrives %s",
+  async (boundary) => {
+    await pendingFile();
+    vi.useFakeTimers();
+    let calls = 0;
+    let manualWaiting = false;
+    mockFetch().mockImplementation(async () => {
+      calls++;
+      const waiting = boundary === "last-attempt" ? calls >= 10 : manualWaiting;
+      return json(200, {
+        data: {
+          reviewId: 18,
+          expectedVersion: 7,
+          status: waiting ? "WAITING_RETRY" : "PROCESSING",
+          retryable: true,
+          retryAfterMs: boundary === "last-attempt" ? 0 : 120000,
+          updatedAt: owner.updatedAt,
+        },
+      });
+    });
+    try {
+      renderWithQuery(
+        <ReviewDialog
+          productId={12}
+          productName="Laptop"
+          eligibility={eligibility}
+          open
+          onOpenChange={vi.fn()}
+        />,
+      );
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(boundary === "last-attempt" ? 25000 : 190000);
+      });
+      if (boundary === "after-deadline") {
+        manualWaiting = true;
+        fireEvent.click(screen.getByRole("button", { name: "Kiểm tra lại trạng thái ảnh" }));
+        await act(async () => {
+          await vi.advanceTimersByTimeAsync(10);
+        });
+      }
+      expect(screen.getByLabelText("Chọn lại ảnh 1: one.png")).toBeEnabled();
+      expect(readPendingImageSyncFor(scope).kind).toBe("current");
+    } finally {
+      vi.useRealTimers();
+    }
+  },
+);

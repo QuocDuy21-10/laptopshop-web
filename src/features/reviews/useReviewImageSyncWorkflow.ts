@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api/client";
 import { ApiError, errorMessage, unwrap } from "@/lib/api/errors";
 import { queryKeys } from "@/lib/api/query-keys";
+import { clearReviewImageSyncBudget } from "./review-image-sync-budget";
 import type { OwnerReview, ReviewImageSyncResult } from "@/lib/api/types";
 import { useCreateReview, useUpdateReview, useSyncReviewImages } from "./hooks";
 import { useBoundedReviewImageSyncStatus } from "./useBoundedReviewImageSyncStatus";
@@ -206,6 +207,11 @@ export function useReviewImageSyncWorkflow({
         });
         return;
       }
+      clearReviewImageSyncBudget({ userId, reviewId: pending.reviewId }, pending.idempotencyKey);
+      client.removeQueries({
+        queryKey: queryKeys.reviewImageSyncBudget(userId, pending.reviewId, pending.idempotencyKey),
+        exact: true,
+      });
       dispatch({ type: "success", result });
       void client.invalidateQueries({ queryKey: queryKeys.reviews(productId) });
       void client.invalidateQueries({ queryKey: queryKeys.reviewImages(result.reviewId) });
@@ -221,7 +227,8 @@ export function useReviewImageSyncWorkflow({
       complete(pending, data.result);
       return;
     }
-    if (status.isError || status.timedOut) {
+    const resolvedRetry = data?.status === "WAITING_RETRY" || data?.status === "FAILED";
+    if (status.isError || (status.timedOut && !resolvedRetry)) {
       dispatch({
         type: "patch",
         value: {

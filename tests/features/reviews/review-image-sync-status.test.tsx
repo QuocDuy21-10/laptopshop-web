@@ -1,4 +1,6 @@
-import { act, fireEvent, screen } from "@testing-library/react";
+import { clearReviewImageSyncBudget } from "@/features/reviews/review-image-sync-budget";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { act, fireEvent, screen, render } from "@testing-library/react";
 import { useState } from "react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { useBoundedReviewImageSyncStatus } from "@/features/reviews/hooks";
@@ -31,6 +33,10 @@ function Harness({ userId = 7 }: { userId?: number }) {
   );
 }
 beforeEach(() => {
+  sessionStorage.clear();
+  for (const userId of [7, 8])
+    for (const key of ["original-key", "legacy-key"])
+      clearReviewImageSyncBudget({ userId, reviewId: 18 }, key);
   vi.useFakeTimers();
   vi.spyOn(document, "visibilityState", "get").mockReturnValue("visible");
   vi.spyOn(document, "hidden", "get").mockReturnValue(false);
@@ -194,4 +200,103 @@ it("keeps timeout visible after a manual PROCESSING check beyond the time window
   });
   expect(screen.getByTestId("timeout")).toHaveTextContent("true");
   expect(fetchMock.mock.calls.length).toBeLessThanOrEqual(7);
+});
+
+it.each(["reset", "clear"])("keeps the allowance after auth cache %s", async (operation) => {
+  const fetchMock = mockFetch().mockImplementation(async () =>
+    json(200, { data: { ...processing, retryAfterMs: 0 } }),
+  );
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false, staleTime: 30000 } },
+  });
+  const view = render(
+    <QueryClientProvider client={client}>
+      <Harness />
+    </QueryClientProvider>,
+  );
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(25000);
+  });
+  expect(fetchMock).toHaveBeenCalledTimes(10);
+  if (operation === "reset")
+    await act(async () => {
+      await client.resetQueries();
+    });
+  else {
+    view.unmount();
+    client.clear();
+    render(
+      <QueryClientProvider client={client}>
+        <Harness />
+      </QueryClientProvider>,
+    );
+  }
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(10);
+  });
+  expect(fetchMock).toHaveBeenCalledTimes(10);
+});
+it("keeps Retry-After when logout clears QueryClient before account return", async () => {
+  const fetchMock = mockFetch().mockImplementation(
+    async () =>
+      new Response(JSON.stringify({ error: { code: "TOO_MANY_REQUESTS", message: "wait" } }), {
+        status: 429,
+        headers: { "Content-Type": "application/json", "Retry-After": "30" },
+      }),
+  );
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  const view = render(
+    <QueryClientProvider client={client}>
+      <Harness />
+    </QueryClientProvider>,
+  );
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(10);
+  });
+  view.unmount();
+  client.clear();
+  render(
+    <QueryClientProvider client={client}>
+      <Harness />
+    </QueryClientProvider>,
+  );
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(10);
+  });
+  fireEvent.click(screen.getByText("Check"));
+  expect(fetchMock).toHaveBeenCalledTimes(1);
+});
+it("obtains fresh status after retry even under the production staleTime", async () => {
+  let succeeded = false;
+  const fetchMock = mockFetch().mockImplementation(async () =>
+    json(200, {
+      data: {
+        ...processing,
+        status: succeeded ? "SUCCEEDED" : "WAITING_RETRY",
+        result: succeeded
+          ? { reviewId: 18, imageVersion: 8, images: [], replayed: true }
+          : undefined,
+      },
+    }),
+  );
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false, staleTime: 30000 } },
+  });
+  render(
+    <QueryClientProvider client={client}>
+      <Harness />
+    </QueryClientProvider>,
+  );
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(10);
+  });
+  expect(fetchMock).toHaveBeenCalledTimes(1);
+  fireEvent.click(screen.getByText("Toggle"));
+  succeeded = true;
+  fireEvent.click(screen.getByText("Toggle"));
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(10);
+  });
+  expect(fetchMock).toHaveBeenCalledTimes(2);
+  expect(screen.getByRole("status")).toHaveTextContent("SUCCEEDED/false");
 });

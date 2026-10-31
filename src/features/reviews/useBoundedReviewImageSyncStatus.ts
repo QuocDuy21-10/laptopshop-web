@@ -8,6 +8,11 @@ import { queryKeys } from "@/lib/api/query-keys";
 import type { ReviewImageSyncStatus } from "@/lib/api/types";
 import type { PendingSyncScope } from "./pending-image-sync";
 import {
+  readReviewImageSyncBudget,
+  saveReviewImageSyncBudget,
+  clearReviewImageSyncBudget,
+} from "./review-image-sync-budget";
+import {
   nextReviewImageSyncDelay,
   parseRetryAfter,
   ReviewImageStatusError,
@@ -50,21 +55,26 @@ export function useBoundedReviewImageSyncStatus({
     queryKey,
     enabled: active,
     retry: false,
+    staleTime: 0,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchIntervalInBackground: false,
     queryFn: async ({ signal }) => {
-      const previous = readBudget();
+      const previous = readReviewImageSyncBudget(scope, key) ?? readBudget();
       const budget = previous.attempts ? previous : { ...previous, startedAt: Date.now() };
       const permit = manual.current;
       manual.current = false;
+      client.setQueryDefaults(budgetKey, { gcTime: Infinity });
+      client.setQueryData(budgetKey, budget);
       if (
         Date.now() < budget.nextAllowedAt ||
         (!permit && (budget.attempts >= 10 || Date.now() - budget.startedAt >= 180_000))
       )
         throw new PollingStopped("Đang tạm dừng kiểm tra ảnh.");
-      const next = { ...budget, attempts: budget.attempts + 1 };
-      client.setQueryDefaults(budgetKey, { gcTime: Infinity });
+      const next = saveReviewImageSyncBudget(scope, key, {
+        ...budget,
+        attempts: budget.attempts + 1,
+      });
       client.setQueryData(budgetKey, next);
       try {
         const result = await api.GET("/api/v1/reviews/{id}/images/sync", {
@@ -77,11 +87,13 @@ export function useBoundedReviewImageSyncStatus({
             result.response.headers.get("Retry-After"),
             Date.now(),
           );
-          if (error.status === 429)
-            client.setQueryData(budgetKey, {
+          if (error.status === 429) {
+            const blocked = saveReviewImageSyncBudget(scope, key, {
               ...next,
               nextAllowedAt: Date.now() + (retryAfterMs ?? 30_000),
             });
+            client.setQueryData(budgetKey, blocked);
+          }
           throw new ReviewImageStatusError(
             error.status,
             error.code,
@@ -107,9 +119,11 @@ export function useBoundedReviewImageSyncStatus({
     if (!active) void client.cancelQueries({ queryKey, exact: true });
   }, [active, client, queryKey]);
   useEffect(() => {
-    if (query.data?.status === "SUCCEEDED" || query.data?.status === "FAILED")
+    if (query.data?.status === "SUCCEEDED" || query.data?.status === "FAILED") {
       client.removeQueries({ queryKey: budgetKey, exact: true });
-  }, [query.data?.status, client, budgetKey]);
+      clearReviewImageSyncBudget({ userId: scope.userId, reviewId: scope.reviewId }, key);
+    }
+  }, [query.data?.status, client, budgetKey, scope.userId, scope.reviewId, key]);
   const budget = readBudget();
   const timedOut =
     budget.attempts >= 10 ||
