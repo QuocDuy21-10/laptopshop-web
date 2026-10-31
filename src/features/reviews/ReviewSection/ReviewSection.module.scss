@@ -52,3 +52,7 @@
 
   @include text(body-md);
 }
+
+.heading h2:focus-visible {
+  @include focus-ring;
+}

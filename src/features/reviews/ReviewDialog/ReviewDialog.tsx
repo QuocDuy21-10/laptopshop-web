@@ -17,6 +17,7 @@ type Props = {
   eligibility: ReviewEligibility;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onCloseAutoFocus?: (event: Event) => void;
 };
 export function ReviewDialog(props: Props) {
   const me = useMe();
@@ -35,6 +36,7 @@ function ReviewDialogContent({
   eligibility,
   open,
   onOpenChange,
+  onCloseAutoFocus,
   userId,
   fullName,
 }: Props & { userId?: number; fullName: string | null }) {
@@ -51,6 +53,7 @@ function ReviewDialogContent({
   const busy = workflow.busy || remove.isPending;
   return (
     <Dialog
+      onCloseAutoFocus={onCloseAutoFocus}
       open={open}
       onOpenChange={(next) => {
         if (!next && busy) return;
