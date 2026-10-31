@@ -44,7 +44,7 @@ export function CompareTable({ products, onRemove }: Props) {
               {products.map((p) => (
                 <th key={p.id} scope="col" className={styles.product}>
                   <ProductImage src={p.image} alt={p.name} sizes="200px" />
-                  <Link href={`/products/${p.id}`} className={styles.name}>
+                  <Link href={`/products/${p.id}`} className={styles.name} title={p.name}>
                     {p.name}
                   </Link>
                   <div className={styles.actions}>

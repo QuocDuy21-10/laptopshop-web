@@ -50,6 +50,8 @@
 }
 
 .product {
+  // a fixed width keeps one long name from widening its column past the others
+  width: 220px;
   min-width: 160px;
   padding: var(--space-four);
   text-align: start;
@@ -58,10 +60,15 @@
 }
 
 .name {
-  display: block;
   margin-block: var(--space-two);
   color: var(--color-foreground);
   text-decoration: none;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow-wrap: anywhere;
 
   @include text(title-md);
 
