@@ -5,9 +5,9 @@ import { Button, buttonClassName } from "@/components/ui/Button/Button";
 import { Price } from "@/components/ui/Price/Price";
 import { Skeleton } from "@/components/ui/Skeleton/Skeleton";
 import { useMe } from "@/features/account/useMe";
+import { AuthPromptActions } from "@/features/auth/AuthPrompt/AuthPromptProvider";
 import { useCart } from "@/features/cart/hooks";
 import { ProductImage } from "@/features/products/ProductImage/ProductImage";
-import { loginHref } from "@/lib/safe-next";
 import styles from "./MiniCart.module.scss";
 
 const MAX_LINES = 4;
@@ -24,14 +24,7 @@ function SignInPrompt({ onNavigate }: { onNavigate: () => void }) {
   return (
     <div className={styles.cart}>
       <p className={styles.empty}>Đăng nhập để xem giỏ hàng và thanh toán.</p>
-      <div className={styles.actions}>
-        <Link href={loginHref("/cart")} className={buttonClassName({ size: "sm" })} onClick={onNavigate}>
-          Đăng nhập
-        </Link>
-        <Link href="/register" className={buttonClassName({ variant: "secondary", size: "sm" })} onClick={onNavigate}>
-          Tạo tài khoản
-        </Link>
-      </div>
+      <AuthPromptActions returnTo="/cart" onNavigate={onNavigate} />
     </div>
   );
 }
