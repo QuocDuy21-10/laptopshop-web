@@ -1,25 +1,52 @@
-import { describe, expect, it, beforeEach } from "vitest";
+import { File as NodeFile } from "node:buffer";
+import { describe, expect, it, vi, beforeEach } from "vitest";
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useReviewEligibility, useProductReviews, useCreateReview, useAddReviewImages, useReorderReviewImages, useDeleteReviewImage, useHelpfulReviewIds, useToggleHelpful, useSyncReviewImages } from "@/features/reviews/hooks";
+import {
+  useReviewEligibility,
+  useProductReviews,
+  useCreateReview,
+  useAddReviewImages,
+  useReorderReviewImages,
+  useDeleteReviewImage,
+  useHelpfulReviewIds,
+  useToggleHelpful,
+  useSyncReviewImages,
+} from "@/features/reviews/hooks";
 import type { DraftImage } from "@/features/reviews/ReviewImagesEditor/ReviewImagesEditor";
 import { queryKeys } from "@/lib/api/query-keys";
 import { json, lastRequest, mockFetch, renderWithQuery, urlOf } from "../../utils";
 
 function EligibilityHarness({ userId, enabled = true }: { userId?: number; enabled?: boolean }) {
   const query = useReviewEligibility(12, userId, enabled);
-  return <output data-testid="state">{query.isFetching ? "fetching" : query.isSuccess ? "success" : query.isError ? "error" : "idle"}</output>;
+  return (
+    <output data-testid="state">
+      {query.isFetching
+        ? "fetching"
+        : query.isSuccess
+          ? "success"
+          : query.isError
+            ? "error"
+            : "idle"}
+    </output>
+  );
 }
 
 function PublicAndEligibilityHarness() {
   const eligibility = useReviewEligibility(12, 7);
   const reviews = useProductReviews(12, { page: 1, pageSize: 10, sort: "newest" });
-  return <output data-testid="combined">{`${eligibility.isError ? "eligibility-error" : "eligibility-pending"}/${reviews.isSuccess ? "reviews-success" : "reviews-pending"}`}</output>;
+  return (
+    <output data-testid="combined">{`${eligibility.isError ? "eligibility-error" : "eligibility-pending"}/${reviews.isSuccess ? "reviews-success" : "reviews-pending"}`}</output>
+  );
 }
 
 function HelpfulStateHarness({ userId, ids }: { userId?: number; ids: number[] }) {
   const query = useHelpfulReviewIds(ids, userId);
-  return <output data-testid="helpful-state">{query.isFetching ? "fetching" : query.data?.join(",") ?? "idle"}</output>;
+  return (
+    <output data-testid="helpful-state">
+      {query.isFetching ? "fetching" : (query.data?.join(",") ?? "idle")}
+    </output>
+  );
 }
 
 describe("review query hooks", () => {
@@ -42,12 +69,16 @@ describe("review query hooks", () => {
     const fetchMock = mockFetch();
     fetchMock.mockImplementation(async (input) => {
       const url = urlOf(input);
-      if (url.includes("/auth/refresh")) return json(401, { error: { code: "UNAUTHENTICATED", message: "login" } });
-      if (url.includes("eligibility")) return json(401, { error: { code: "UNAUTHENTICATED", message: "login" } });
+      if (url.includes("/auth/refresh"))
+        return json(401, { error: { code: "UNAUTHENTICATED", message: "login" } });
+      if (url.includes("eligibility"))
+        return json(401, { error: { code: "UNAUTHENTICATED", message: "login" } });
       return json(200, { data: [], meta: { page: 1, pageSize: 10, total: 0, totalPages: 0 } });
     });
     renderWithQuery(<PublicAndEligibilityHarness />);
-    await waitFor(() => expect(screen.getByTestId("combined")).toHaveTextContent("eligibility-error/reviews-success"));
+    await waitFor(() =>
+      expect(screen.getByTestId("combined")).toHaveTextContent("eligibility-error/reviews-success"),
+    );
     expect(screen.getByTestId("combined")).toHaveTextContent("reviews-success");
   });
 
@@ -56,7 +87,16 @@ describe("review query hooks", () => {
     fetchMock.mockResolvedValue(json(201, { data: { id: 1 } }));
     function Harness() {
       const mutation = useCreateReview(12);
-      return <button type="button" onClick={() => mutation.mutate({ rating: 5, content: "Nội dung đủ dài.", isAnonymous: true })}>Gửi</button>;
+      return (
+        <button
+          type="button"
+          onClick={() =>
+            mutation.mutate({ rating: 5, content: "Nội dung đủ dài.", isAnonymous: true })
+          }
+        >
+          Gửi
+        </button>
+      );
     }
     renderWithQuery(<Harness />);
     await userEvent.click(screen.getByRole("button", { name: "Gửi" }));
@@ -69,7 +109,19 @@ describe("review query hooks", () => {
     fetchMock.mockResolvedValue(json(201, { data: [] }));
     function Harness() {
       const mutation = useAddReviewImages(12, 18);
-      return <button type="button" onClick={() => mutation.mutate([new File(["one"], "one.png", { type: "image/png" }), new File(["two"], "two.png", { type: "image/png" })])}>Upload</button>;
+      return (
+        <button
+          type="button"
+          onClick={() =>
+            mutation.mutate([
+              new File(["one"], "one.png", { type: "image/png" }),
+              new File(["two"], "two.png", { type: "image/png" }),
+            ])
+          }
+        >
+          Upload
+        </button>
+      );
     }
     renderWithQuery(<Harness />);
     await userEvent.click(screen.getByRole("button", { name: "Upload" }));
@@ -79,16 +131,52 @@ describe("review query hooks", () => {
     expect(request.headers.get("content-type")).toContain("multipart/form-data");
   });
 
-  it("syncs one ordered draft through the saved review ID and idempotency key", async () => {
+  it.each([0, 7])("syncs an ordered draft with expectedVersion=%i", async (expectedVersion) => {
+    // Match the native Request encoder at the mocked HTTP boundary.
+    const nativeForm = await new Response("", {
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    }).formData();
+    vi.stubGlobal("FormData", nativeForm.constructor);
+    vi.stubGlobal("File", NodeFile);
     const fetchMock = mockFetch();
-    fetchMock.mockResolvedValue(json(200, { data: { reviewId: 18, imageVersion: 1, replayed: false, images: [] } }));
+    fetchMock.mockResolvedValue(
+      json(200, {
+        data: { reviewId: 18, imageVersion: expectedVersion + 1, replayed: false, images: [] },
+      }),
+    );
     const items: DraftImage[] = [
-      { kind: "existing", clientId: "existing-21", image: { id: 21, url: "https://signed.test/21.webp", urlExpiresAt: "2026-10-21T03:15:00.000Z", mimeType: "image/webp", width: 10, height: 10, position: 0 } },
-      { kind: "new", clientId: "new-c", file: new File(["new"], "new.png", { type: "image/png" }), url: "blob:new" },
+      {
+        kind: "existing",
+        clientId: "existing-21",
+        image: {
+          id: 21,
+          url: "https://signed.test/21.webp",
+          urlExpiresAt: "2026-10-21T03:15:00.000Z",
+          mimeType: "image/webp",
+          width: 10,
+          height: 10,
+          position: 0,
+        },
+      },
+      {
+        kind: "new",
+        clientId: "new-c",
+        file: new File(["new"], "new.png", { type: "image/png" }),
+        url: "blob:new",
+      },
     ];
     function Harness() {
       const mutation = useSyncReviewImages(12, 7);
-      return <button type="button" onClick={() => mutation.mutate({ reviewId: 18, expectedVersion: 0, idempotencyKey: "sync-key", items })}>Sync</button>;
+      return (
+        <button
+          type="button"
+          onClick={() =>
+            mutation.mutate({ reviewId: 18, expectedVersion, idempotencyKey: "sync-key", items })
+          }
+        >
+          Sync
+        </button>
+      );
     }
     renderWithQuery(<Harness />);
     await userEvent.click(screen.getByRole("button", { name: "Sync" }));
@@ -97,6 +185,15 @@ describe("review query hooks", () => {
     expect(request.method).toBe("PUT");
     expect(new URL(request.url).pathname).toBe("/api/v1/reviews/18/images/sync");
     expect(request.headers.get("Idempotency-Key")).toBe("sync-key");
+    const form = await request.formData();
+    expect(JSON.parse(String(form.get("manifest")))).toEqual({
+      expectedVersion,
+      items: [
+        { kind: "existing", clientId: "existing-21", imageId: 21 },
+        { kind: "new", clientId: "new-c", fileIndex: 0 },
+      ],
+    });
+    expect(form.getAll("files")).toHaveLength(1);
   });
 
   it("uses generated JSON routes for reorder and image delete", async () => {
@@ -105,7 +202,16 @@ describe("review query hooks", () => {
     function Harness() {
       const reorder = useReorderReviewImages(12, 18);
       const remove = useDeleteReviewImage(12, 18);
-      return <><button type="button" onClick={() => reorder.mutate([22, 21])}>Reorder</button><button type="button" onClick={() => remove.mutate(21)}>Delete image</button></>;
+      return (
+        <>
+          <button type="button" onClick={() => reorder.mutate([22, 21])}>
+            Reorder
+          </button>
+          <button type="button" onClick={() => remove.mutate(21)}>
+            Delete image
+          </button>
+        </>
+      );
     }
     renderWithQuery(<Harness />);
     await userEvent.click(screen.getByRole("button", { name: "Reorder" }));
@@ -123,10 +229,14 @@ describe("review query hooks", () => {
     await waitFor(() => expect(screen.getByTestId("helpful-state")).toHaveTextContent("idle"));
     expect(fetchMock).not.toHaveBeenCalled();
 
-    renderWithQuery(<HelpfulStateHarness userId={7} ids={Array.from({ length: 51 }, (_, i) => i + 1)} />);
+    renderWithQuery(
+      <HelpfulStateHarness userId={7} ids={Array.from({ length: 51 }, (_, i) => i + 1)} />,
+    );
     await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
     expect(urlOf(fetchMock.mock.calls[0][0])).toContain("reviewIds=");
-    expect(new URL(urlOf(fetchMock.mock.calls[0][0])).searchParams.get("reviewIds")?.split(",")).toHaveLength(50);
+    expect(
+      new URL(urlOf(fetchMock.mock.calls[0][0])).searchParams.get("reviewIds")?.split(","),
+    ).toHaveLength(50);
   });
 
   it("rolls helpful viewer state back when the mutation fails", async () => {
@@ -136,7 +246,11 @@ describe("review query hooks", () => {
     function Harness() {
       const state = useHelpfulReviewIds([2], 7);
       const mutation = useToggleHelpful([2], 7);
-      return <button type="button" onClick={() => mutation.mutate({ reviewId: 2, helpful: true })}>{state.data?.includes(2) ? "yes" : "no"}</button>;
+      return (
+        <button type="button" onClick={() => mutation.mutate({ reviewId: 2, helpful: true })}>
+          {state.data?.includes(2) ? "yes" : "no"}
+        </button>
+      );
     }
     renderWithQuery(<Harness />);
     await waitFor(() => expect(screen.getByRole("button")).toHaveTextContent("no"));
