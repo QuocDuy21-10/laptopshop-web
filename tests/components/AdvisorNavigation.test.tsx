@@ -31,7 +31,7 @@ describe("advisor navigation", () => {
 
   it("adds a homepage advisor CTA while keeping the product CTA", async () => {
     renderWithQuery(await HomePage());
-    expect(screen.getByRole("link", { name: "Tư vấn chọn laptop" })).toHaveAttribute("href", "/advisor");
-    expect(screen.getByRole("link", { name: "Xem tất cả laptop" })).toHaveAttribute("href", "/products");
+    expect(screen.getByRole("link", { name: "Tư vấn cấu hình chi tiết" })).toHaveAttribute("href", "/advisor");
+    expect(screen.getByRole("link", { name: "Xem toàn bộ danh mục" })).toHaveAttribute("href", "/products");
   });
 });
