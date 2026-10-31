@@ -1,0 +1,15 @@
+@use "mixins" as *;
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-three);
+}
+
+.note {
+  margin: 0;
+  color: var(--color-foreground-muted);
+  text-align: center;
+
+  @include text(body-sm);
+}

@@ -2,6 +2,7 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { WishlistToggle } from "@/features/wishlist/WishlistToggle/WishlistToggle";
+import { AuthPromptProvider } from "@/features/auth/AuthPrompt/AuthPromptProvider";
 import { renderWithQuery } from "../../utils";
 
 const mocks = vi.hoisted(() => ({
@@ -49,13 +50,14 @@ describe("WishlistToggle", () => {
     expect(mocks.remove).toHaveBeenCalledWith(3);
   });
 
-  it("stores a guest intent and redirects to login with the current path", async () => {
+  it("stores a guest intent and asks to sign in with the current path", async () => {
     mocks.me.mockReturnValue({ data: null, isPending: false });
     // a disabled query reports isPending=true forever, but isLoading=false
     mocks.status.mockReturnValue({ data: undefined, isPending: true, isLoading: false });
-    renderWithQuery(<WishlistToggle productId={3} productName="Dell XPS" />);
+    renderWithQuery(<AuthPromptProvider><WishlistToggle productId={3} productName="Dell XPS" /></AuthPromptProvider>);
     await userEvent.click(screen.getByRole("button", { name: "Thêm Dell XPS vào danh sách yêu thích" }));
-    expect(mocks.push).toHaveBeenCalledWith("/login?next=%2Fproducts%3Fq%3Ddell");
+    expect(await screen.findByText("Đăng nhập để lưu sản phẩm yêu thích")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Đăng nhập" })).toHaveAttribute("href", "/login?next=%2Fproducts%3Fq%3Ddell");
     expect(JSON.parse(window.sessionStorage.getItem("laptopshop.wishlist.intent")!)).toMatchObject({ productId: 3 });
     expect(mocks.add).not.toHaveBeenCalled();
   });

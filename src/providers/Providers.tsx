@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import { Toaster } from "sonner";
+import { AuthPromptProvider } from "@/features/auth/AuthPrompt/AuthPromptProvider";
 import { setSessionExpiredHandler } from "@/lib/api/client";
 import { ApiError } from "@/lib/api/errors";
 import { queryKeys } from "@/lib/api/query-keys";
@@ -35,7 +36,7 @@ export function Providers({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {children}
+      <AuthPromptProvider>{children}</AuthPromptProvider>
       <Toaster position="top-right" closeButton />
     </QueryClientProvider>
   );

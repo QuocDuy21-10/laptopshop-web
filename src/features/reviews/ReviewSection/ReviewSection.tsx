@@ -2,10 +2,9 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Alert } from "@/components/ui/Alert/Alert";
-import { Button, buttonClassName } from "@/components/ui/Button/Button";
-import Link from "next/link";
+import { Button } from "@/components/ui/Button/Button";
 import { useMe } from "@/features/account/useMe";
-import { loginHref } from "@/lib/safe-next";
+import { useAuthPrompt } from "@/features/auth/AuthPrompt/AuthPromptProvider";
 import { useHydrated } from "@/lib/useHydrated";
 import type { ProductReviewsQuery, PublicReview, ReviewSummary as ReviewSummaryData } from "@/lib/api/types";
 import { useHelpfulReviewIds, useProductReviews, useReviewEligibility, useReviewSummary } from "../hooks";
@@ -80,6 +79,7 @@ export function ReviewSection({ productId, initialSummary, initialPage }: Props)
   const summaryQuery = useReviewSummary(productId);
   const reviewsQuery = useProductReviews(productId, query);
   const me = useMe();
+  const promptLogin = useAuthPrompt();
   const hydrated = useHydrated();
   const eligibility = useReviewEligibility(productId, me.data?.id);
   const summary = summaryQuery.data ?? initialSummary;
@@ -108,9 +108,9 @@ export function ReviewSection({ productId, initialSummary, initialPage }: Props)
         </div>
         <div className={styles.action}>
           {!hydrated || me.isPending ? null : !me.data ? (
-            <Link className={buttonClassName({ variant: "secondary" })} href={loginHref(`/products/${productId}#reviews`)}>
+            <Button variant="secondary" onClick={() => promptLogin({ reason: "review", returnTo: `/products/${productId}#reviews` })}>
               Đăng nhập để đánh giá
-            </Link>
+            </Button>
           ) : eligibility.data?.existingReview ? (
             <Button ref={registerAction} variant="secondary" onClick={() => setDialogOpen(true)}>
               Sửa đánh giá của tôi

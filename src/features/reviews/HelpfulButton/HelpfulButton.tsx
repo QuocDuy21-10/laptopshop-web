@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/Button/Button";
-import { loginHref } from "@/lib/safe-next";
+import { useAuthPrompt } from "@/features/auth/AuthPrompt/AuthPromptProvider";
 import { useToggleHelpful } from "../hooks";
 import styles from "./HelpfulButton.module.scss";
 
@@ -20,10 +19,11 @@ type Props = {
 export function HelpfulButton({ productId, reviewId, reviewIds, count, helpful, userId, selfVoteDisabled = false }: Props) {
   const [optimistic, setOptimistic] = useState<{ active: boolean; count: number } | null>(null);
   const mutation = useToggleHelpful(reviewIds, userId);
+  const promptLogin = useAuthPrompt();
   const active = optimistic?.active ?? helpful;
   const currentCount = optimistic?.count ?? count;
   if (!userId) {
-    return <Link className={styles.button} href={loginHref(`/products/${productId}#reviews`)}>Hữu ích ({currentCount})</Link>;
+    return <Button variant="secondary" className={styles.button} onClick={() => promptLogin({ reason: "helpful", returnTo: `/products/${productId}#reviews` })}>Hữu ích ({currentCount})</Button>;
   }
   const toggle = () => {
     if (selfVoteDisabled || mutation.isPending) return;
