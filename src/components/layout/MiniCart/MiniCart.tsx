@@ -1,21 +1,55 @@
 "use client";
 
 import Link from "next/link";
-import { buttonClassName } from "@/components/ui/Button/Button";
+import { Button, buttonClassName } from "@/components/ui/Button/Button";
 import { Price } from "@/components/ui/Price/Price";
 import { Skeleton } from "@/components/ui/Skeleton/Skeleton";
+import { useMe } from "@/features/account/useMe";
 import { useCart } from "@/features/cart/hooks";
 import { ProductImage } from "@/features/products/ProductImage/ProductImage";
+import { loginHref } from "@/lib/safe-next";
 import styles from "./MiniCart.module.scss";
 
 const MAX_LINES = 4;
 
 /** Body of the cart popover; mounted only while open, so the cart is fetched on demand. */
 export function MiniCart({ onNavigate }: { onNavigate: () => void }) {
-  const { data: cart, isPending, isError } = useCart();
+  const { data: me } = useMe();
+  if (me === null) return <SignInPrompt onNavigate={onNavigate} />;
+  return <CartBody onNavigate={onNavigate} />;
+}
+
+// the cart API is session-only, so anonymous visitors get a prompt instead of a failed request
+function SignInPrompt({ onNavigate }: { onNavigate: () => void }) {
+  return (
+    <div className={styles.cart}>
+      <p className={styles.empty}>Đăng nhập để xem giỏ hàng và thanh toán.</p>
+      <div className={styles.actions}>
+        <Link href={loginHref("/cart")} className={buttonClassName({ size: "sm" })} onClick={onNavigate}>
+          Đăng nhập
+        </Link>
+        <Link href="/register" className={buttonClassName({ variant: "secondary", size: "sm" })} onClick={onNavigate}>
+          Tạo tài khoản
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+function CartBody({ onNavigate }: { onNavigate: () => void }) {
+  const { data: cart, isPending, isError, refetch } = useCart();
 
   if (isPending) return <Skeleton className={styles.skeleton} />;
-  if (isError) return <p className={styles.empty}>Không tải được giỏ hàng. Vui lòng thử lại.</p>;
+  if (isError) {
+    return (
+      <div className={styles.cart}>
+        <p className={styles.empty}>Không tải được giỏ hàng. Vui lòng thử lại.</p>
+        <Button size="sm" variant="secondary" onClick={() => refetch()}>
+          Thử lại
+        </Button>
+      </div>
+    );
+  }
   if (cart.items.length === 0) return <p className={styles.empty}>Giỏ hàng của bạn đang trống.</p>;
 
   const lines = cart.items.slice(0, MAX_LINES);

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { fireEvent, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, screen, waitFor } from "@testing-library/react";
 
 import { json, mockFetch, priceText, renderWithQuery, urlOf } from "../utils";
 import { CartLink } from "@/components/layout/CartLink/CartLink";
@@ -55,5 +55,28 @@ describe("MiniCart", () => {
     await waitFor(() => expect(fetchMock).toHaveBeenCalled());
     expect(screen.queryByText("Laptop 1")).not.toBeInTheDocument();
     expect(await trigger()).toHaveAttribute("href", "/cart");
+  });
+
+  it("prompts anonymous visitors to sign in without calling the cart API", async () => {
+    document.cookie = "logged_in=; Path=/; Max-Age=0";
+    window.sessionStorage.setItem("laptopshop.session.probed", "1"); // guests skip the /users/me probe
+    const fetchMock = setup(2);
+    const link = await screen.findByRole("link", { name: /Giỏ hàng, 0 sản phẩm/ });
+    await act(async () => {}); // let the guest session probe settle, or the click is ignored
+    fireEvent.click(link);
+
+    expect(await screen.findByText("Đăng nhập để xem giỏ hàng và thanh toán.")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Đăng nhập" })).toHaveAttribute("href", "/login?next=%2Fcart");
+    expect(screen.getByRole("link", { name: "Tạo tài khoản" })).toHaveAttribute("href", "/register");
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("offers a retry when the cart fails to load", async () => {
+    const fetchMock = setup(2);
+    fetchMock.mockImplementation(async (input) =>
+      urlOf(input).includes("/cart") ? json(500, { message: "x" }) : json(200, { data: me }),
+    );
+    fireEvent.click(await trigger());
+    expect(await screen.findByRole("button", { name: "Thử lại" })).toBeInTheDocument();
   });
 });
