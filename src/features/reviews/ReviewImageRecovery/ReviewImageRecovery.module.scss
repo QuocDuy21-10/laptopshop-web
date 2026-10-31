@@ -1,0 +1,20 @@
+.recovery {
+  display: grid;
+  gap: var(--space-two);
+  margin: 0;
+  padding: var(--space-three);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-muted);
+}
+
+.item {
+  display: grid;
+  gap: var(--space-one);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.item input {
+  max-width: 100%;
+}

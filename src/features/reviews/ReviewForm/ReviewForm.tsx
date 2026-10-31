@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useForm } from "react-hook-form";
 import { Alert } from "@/components/ui/Alert/Alert";
 import { Button } from "@/components/ui/Button/Button";
@@ -27,9 +27,23 @@ type Props = {
   onSubmit: (input: ReviewInput) => Promise<void>;
   onImagesChange?: (state: ReviewImagesState) => void;
   imageError?: string | null;
+  imageState?: ReviewImagesState;
+  imagesLocked?: boolean;
+  submitDisabled?: boolean;
+  recovery?: ReactNode;
 };
 
-export function ReviewForm({ fullName, review, onSubmit, onImagesChange, imageError }: Props) {
+export function ReviewForm({
+  fullName,
+  review,
+  onSubmit,
+  onImagesChange,
+  imageError,
+  imageState,
+  imagesLocked,
+  submitDisabled,
+  recovery,
+}: Props) {
   const [formError, setFormError] = useState<string | null>(null);
   const { register, handleSubmit, setError, formState } = useForm<
     ReviewFormInput,
@@ -107,11 +121,20 @@ export function ReviewForm({ fullName, review, onSubmit, onImagesChange, imageEr
         </label>
         {identityError && <p className={styles.error}>{identityError}</p>}
       </fieldset>
+      {recovery}
       <ReviewImagesEditor
         images={review?.images ?? []}
+        value={imageState}
+        disabled={imagesLocked}
         onChange={onImagesChange ?? (() => undefined)}
       />
-      <Button type="submit" size="lg" fullWidth loading={formState.isSubmitting}>
+      <Button
+        type="submit"
+        size="lg"
+        fullWidth
+        disabled={submitDisabled}
+        loading={formState.isSubmitting}
+      >
         Gửi đánh giá
       </Button>
     </form>
