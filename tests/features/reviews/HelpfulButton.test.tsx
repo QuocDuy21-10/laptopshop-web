@@ -2,17 +2,17 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { HelpfulButton } from "@/features/reviews/HelpfulButton/HelpfulButton";
+import { AuthPromptProvider } from "@/features/auth/AuthPrompt/AuthPromptProvider";
 import { json, mockFetch, renderWithQuery } from "../../utils";
 
 describe("HelpfulButton", () => {
   beforeEach(() => mockFetch());
 
-  it("redirects anonymous users to login while preserving the review anchor", () => {
-    renderWithQuery(<HelpfulButton productId={12} reviewId={2} reviewIds={[2]} count={3} helpful={false} />);
-    expect(screen.getByRole("link", { name: /hữu ích/i })).toHaveAttribute(
-      "href",
-      "/login?next=%2Fproducts%2F12%23reviews",
-    );
+  it("asks anonymous users to sign in and keeps the review anchor", async () => {
+    renderWithQuery(<AuthPromptProvider><HelpfulButton productId={12} reviewId={2} reviewIds={[2]} count={3} helpful={false} /></AuthPromptProvider>);
+    await userEvent.click(screen.getByRole("button", { name: /hữu ích/i }));
+    expect(await screen.findByText("Đăng nhập để bình chọn hữu ích")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Đăng nhập" })).toHaveAttribute("href", "/login?next=%2Fproducts%2F12%23reviews");
   });
 
   it("optimistically toggles count and aria-pressed, then rolls back on failure", async () => {

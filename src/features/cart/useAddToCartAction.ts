@@ -2,14 +2,15 @@
 
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useAuthPrompt } from "@/features/auth/AuthPrompt/AuthPromptProvider";
 import { errorMessage, isApiError } from "@/lib/api/errors";
-import { loginHref } from "@/lib/safe-next";
 import { useAddToCart } from "./hooks";
 import { savePendingCartIntent } from "./intent";
 
 export function useAddToCartAction() {
   const addToCart = useAddToCart();
   const router = useRouter();
+  const promptLogin = useAuthPrompt();
 
   const add = async (productId: number, quantity: number, opts: { goToCart?: boolean } = {}) => {
     try {
@@ -27,7 +28,7 @@ export function useAddToCartAction() {
         savePendingCartIntent({ productId, quantity, goToCart: Boolean(opts.goToCart) });
         // keep the query so pages like /compare?ids=… come back intact
         const { pathname, search } = window.location;
-        router.push(loginHref(pathname + search));
+        promptLogin({ reason: "cart", returnTo: pathname + search });
       } else toast.error(errorMessage(e));
     }
   };
