@@ -1,3 +1,6 @@
+import { readPendingImageSyncFor } from "@/features/reviews/pending-image-sync";
+import { File as NodeFile } from "node:buffer";
+import { webcrypto } from "node:crypto";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -6,6 +9,14 @@ import type { OwnerReview } from "@/lib/api/types";
 import { ReviewDialog } from "@/features/reviews/ReviewDialog/ReviewDialog";
 import { renderWithQuery } from "../../utils";
 
+vi.mock("@/features/reviews/useBoundedReviewImageSyncStatus", () => ({
+  useBoundedReviewImageSyncStatus: () => ({
+    data: undefined,
+    isError: false,
+    timedOut: false,
+    checkAgain: vi.fn(),
+  }),
+}));
 const mutations = vi.hoisted(() => ({ create: vi.fn(), update: vi.fn(), sync: vi.fn() }));
 vi.mock("@/features/account/useMe", () => ({
   useMe: () => ({ data: { id: 7, fullName: "Nguyễn Văn A" } }),
@@ -35,6 +46,9 @@ const ownerReview: OwnerReview = {
 };
 
 beforeEach(() => {
+  vi.stubGlobal("File", NodeFile);
+  vi.stubGlobal("crypto", webcrypto);
+  sessionStorage.clear();
   for (const mutation of Object.values(mutations)) mutation.mockReset();
   window.sessionStorage.clear();
 });
@@ -89,7 +103,7 @@ describe("ReviewDialog with the real review form", () => {
         idempotencyKey: expect.any(String),
         items: [expect.objectContaining({ kind: "new", file })],
       });
-      expect(window.sessionStorage.getItem("laptopshop:review-image-sync")).toBeNull();
+      expect(readPendingImageSyncFor({ userId: 7, productId: 12, reviewId: 18 }).kind).toBe("none");
     },
   );
 

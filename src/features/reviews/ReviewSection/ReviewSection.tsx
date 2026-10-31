@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Alert } from "@/components/ui/Alert/Alert";
 import { Button, buttonClassName } from "@/components/ui/Button/Button";
 import Link from "next/link";
@@ -17,10 +17,61 @@ import styles from "./ReviewSection.module.scss";
 type Props = {
   productId: number;
   initialSummary: ReviewSummaryData;
-  initialPage: { data: PublicReview[]; meta: { page: number; pageSize: number; total: number; totalPages: number } };
+  initialPage: {
+    data: PublicReview[];
+    meta: { page: number; pageSize: number; total: number; totalPages: number };
+  };
 };
 
 export function ReviewSection({ productId, initialSummary, initialPage }: Props) {
+  const actionRef = useRef<HTMLButtonElement | null>(null);
+  const headingRef = useRef<HTMLHeadingElement | null>(null);
+  const restoreWanted = useRef(false);
+  const restoredAnchor = useRef<HTMLElement | null>(null);
+  const focusAction = useCallback(() => {
+    const button = actionRef.current;
+    const target = button?.isConnected && !button.disabled ? button : headingRef.current;
+    target?.focus();
+    restoredAnchor.current = target;
+  }, []);
+  const registerAction = useCallback(
+    (node: HTMLButtonElement | null) => {
+      const previous = actionRef.current;
+      actionRef.current = node;
+      if (!restoreWanted.current) return;
+      const active = document.activeElement;
+      if (
+        active !== document.body &&
+        active !== previous &&
+        active !== restoredAnchor.current &&
+        active !== headingRef.current
+      ) {
+        restoreWanted.current = false;
+        return;
+      }
+      focusAction();
+    },
+    [focusAction],
+  );
+  const restoreReviewActionFocus = useCallback(
+    (event: Event) => {
+      event.preventDefault();
+      restoreWanted.current = true;
+      focusAction();
+    },
+    [focusAction],
+  );
+  useEffect(() => {
+    const cancel = () => {
+      restoreWanted.current = false;
+    };
+    document.addEventListener("pointerdown", cancel, true);
+    document.addEventListener("keydown", cancel, true);
+    return () => {
+      document.removeEventListener("pointerdown", cancel, true);
+      document.removeEventListener("keydown", cancel, true);
+    };
+  }, []);
   const [rating, setRating] = useState<number | undefined>();
   const [sort, setSort] = useState<ProductReviewsQuery["sort"]>("newest");
   const [page, setPage] = useState(1);
@@ -37,37 +88,101 @@ export function ReviewSection({ productId, initialSummary, initialPage }: Props)
   const hasReviews = summary.totalReviews > 0;
   const visibleReviewIds = pageData.data.map((review) => review.id);
   const helpfulState = useHelpfulReviewIds(visibleReviewIds, me.data?.id);
-  const eligibilityMessage = eligibility.data?.reason === "NOT_PURCHASED"
-    ? "Chỉ khách đã mua sản phẩm mới có thể đánh giá."
-    : eligibility.data?.reason === "ORDER_NOT_COMPLETED"
-      ? "Bạn có thể đánh giá sau khi đơn hàng hoàn tất."
-      : eligibility.data?.reason === "PAYMENT_NOT_CONFIRMED"
-        ? "Đánh giá sẽ mở sau khi thanh toán được xác nhận."
-        : null;
+  const eligibilityMessage =
+    eligibility.data?.reason === "NOT_PURCHASED"
+      ? "Chỉ khách đã mua sản phẩm mới có thể đánh giá."
+      : eligibility.data?.reason === "ORDER_NOT_COMPLETED"
+        ? "Bạn có thể đánh giá sau khi đơn hàng hoàn tất."
+        : eligibility.data?.reason === "PAYMENT_NOT_CONFIRMED"
+          ? "Đánh giá sẽ mở sau khi thanh toán được xác nhận."
+          : null;
 
   return (
     <section id="reviews" className={styles.section} aria-labelledby="reviews-title">
       <div className={styles.heading}>
-        <div><h2 id="reviews-title">Đánh giá từ khách hàng</h2><p>Chỉ hiển thị nhận xét từ đơn hàng đã hoàn tất.</p></div>
+        <div>
+          <h2 id="reviews-title" ref={headingRef} tabIndex={-1}>
+            Đánh giá từ khách hàng
+          </h2>
+          <p>Chỉ hiển thị nhận xét từ đơn hàng đã hoàn tất.</p>
+        </div>
         <div className={styles.action}>
-          {!hydrated || me.isPending ? null : !me.data ? <Link className={buttonClassName({ variant: "secondary" })} href={loginHref(`/products/${productId}#reviews`)}>Đăng nhập để đánh giá</Link> : eligibility.data?.existingReview ? <Button variant="secondary" onClick={() => setDialogOpen(true)}>Sửa đánh giá của tôi</Button> : eligibility.data?.eligible ? <Button onClick={() => setDialogOpen(true)}>Viết đánh giá</Button> : eligibilityMessage ? <p className={styles.eligibility}>{eligibilityMessage}</p> : null}
+          {!hydrated || me.isPending ? null : !me.data ? (
+            <Link className={buttonClassName({ variant: "secondary" })} href={loginHref(`/products/${productId}#reviews`)}>
+              Đăng nhập để đánh giá
+            </Link>
+          ) : eligibility.data?.existingReview ? (
+            <Button ref={registerAction} variant="secondary" onClick={() => setDialogOpen(true)}>
+              Sửa đánh giá của tôi
+            </Button>
+          ) : eligibility.data?.eligible ? (
+            <Button ref={registerAction} onClick={() => setDialogOpen(true)}>
+              Viết đánh giá
+            </Button>
+          ) : eligibilityMessage ? (
+            <p className={styles.eligibility}>{eligibilityMessage}</p>
+          ) : null}
         </div>
       </div>
-      {summaryQuery.isError ? <Alert tone="warning" title="Chưa thể tải thống kê đánh giá" /> : hasReviews && <ReviewSummary summary={summary} />}
+      {summaryQuery.isError ? (
+        <Alert tone="warning" title="Chưa thể tải thống kê đánh giá" />
+      ) : (
+        hasReviews && <ReviewSummary summary={summary} />
+      )}
       {hasReviews && <div className={styles.toolbar}>
-        <label> Lọc theo số sao
+        <label>
+          {" "}Lọc theo số sao
           <select aria-label="Lọc theo số sao" value={rating ?? ""} onChange={(event) => { setRating(event.target.value ? Number(event.target.value) : undefined); setPage(1); }}>
-            <option value="">Tất cả</option><option value="5">5 sao</option><option value="4">4 sao</option><option value="3">3 sao</option><option value="2">2 sao</option><option value="1">1 sao</option>
+            <option value="">Tất cả</option>
+            <option value="5">5 sao</option>
+            <option value="4">4 sao</option>
+            <option value="3">3 sao</option>
+            <option value="2">2 sao</option>
+            <option value="1">1 sao</option>
           </select>
         </label>
-        <label> Sắp xếp
-          <select aria-label="Sắp xếp" value={sort} onChange={(event) => { setSort(event.target.value as ProductReviewsQuery["sort"]); setPage(1); }}>
-            <option value="newest">Mới nhất</option><option value="highest">Cao nhất</option><option value="lowest">Thấp nhất</option>
+        <label>
+          {" "}
+          Sắp xếp
+          <select
+            aria-label="Sắp xếp"
+            value={sort}
+            onChange={(event) => {
+              setSort(event.target.value as ProductReviewsQuery["sort"]);
+              setPage(1);
+            }}
+          >
+            <option value="newest">Mới nhất</option>
+            <option value="highest">Cao nhất</option>
+            <option value="lowest">Thấp nhất</option>
           </select>
         </label>
       </div>}
-      <ReviewList reviews={pageData.data} productId={productId} reviewIds={visibleReviewIds} helpfulIds={helpfulState.data ?? []} userId={me.data?.id} selfReviewId={eligibility.data?.existingReview?.id} isPending={reviewsQuery.isPending && initialPage.data.length > 0} isError={reviewsQuery.isError} onRetry={() => void reviewsQuery.refetch()} onImageError={() => void reviewsQuery.refetch()} page={pageData.meta.page} totalPages={pageData.meta.totalPages} onPage={setPage} />
-      {eligibility.data && <ReviewDialog productId={productId} productName="sản phẩm này" eligibility={eligibility.data} open={dialogOpen} onOpenChange={setDialogOpen} />}
+      <ReviewList
+        reviews={pageData.data}
+        productId={productId}
+        reviewIds={visibleReviewIds}
+        helpfulIds={helpfulState.data ?? []}
+        userId={me.data?.id}
+        selfReviewId={eligibility.data?.existingReview?.id}
+        isPending={reviewsQuery.isPending && initialPage.data.length > 0}
+        isError={reviewsQuery.isError}
+        onRetry={() => void reviewsQuery.refetch()}
+        onImageError={() => void reviewsQuery.refetch()}
+        page={pageData.meta.page}
+        totalPages={pageData.meta.totalPages}
+        onPage={setPage}
+      />
+      {eligibility.data && (
+        <ReviewDialog
+          productId={productId}
+          productName="sản phẩm này"
+          eligibility={eligibility.data}
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+          onCloseAutoFocus={restoreReviewActionFocus}
+        />
+      )}
     </section>
   );
 }

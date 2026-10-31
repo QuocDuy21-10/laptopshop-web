@@ -1,9 +1,19 @@
+import { File as NodeFile } from "node:buffer";
+import { webcrypto } from "node:crypto";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ReviewDialog } from "@/features/reviews/ReviewDialog/ReviewDialog";
 import { renderWithQuery } from "../../utils";
 
+vi.mock("@/features/reviews/useBoundedReviewImageSyncStatus", () => ({
+  useBoundedReviewImageSyncStatus: () => ({
+    data: undefined,
+    isError: false,
+    timedOut: false,
+    checkAgain: vi.fn(),
+  }),
+}));
 const mocks = vi.hoisted(() => ({
   create: { mutateAsync: vi.fn(), isPending: false },
   update: { mutateAsync: vi.fn(), isPending: false },
@@ -82,6 +92,9 @@ const eligibility = {
 } as const;
 
 beforeEach(() => {
+  vi.stubGlobal("File", NodeFile);
+  vi.stubGlobal("crypto", webcrypto);
+  sessionStorage.clear();
   for (const mutation of Object.values(mocks)) mutation.mutateAsync.mockReset();
   mocks.create.mutateAsync.mockResolvedValue({ data: ownerReview });
   mocks.sync.mutateAsync.mockRejectedValue(new Error("network"));

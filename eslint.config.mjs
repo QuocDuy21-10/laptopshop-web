@@ -25,5 +25,6 @@ export default defineConfig([
     "next-env.d.ts",
     "src/lib/api/schema.d.ts",
     ".superpowers/**",
+    "docs-local/**",
   ]),
 ]);
