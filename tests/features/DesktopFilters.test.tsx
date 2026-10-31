@@ -1,10 +1,11 @@
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { act, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+
+import type { FacetDefinition } from "@/lib/api/types";
+import type { ProductFilters } from "@/features/products/search-params";
 import { DesktopFilters } from "@/features/products/DesktopFilters/DesktopFilters";
 import { ActiveFilterChips } from "@/features/products/ActiveFilterChips/ActiveFilterChips";
-import type { ProductFilters } from "@/features/products/search-params";
-import type { FacetDefinition } from "@/lib/api/types";
 
 const router = vi.hoisted(() => ({ push: vi.fn() }));
 vi.mock("next/navigation", () => ({ useRouter: () => router }));
@@ -44,6 +45,19 @@ describe("DesktopFilters and active chips", () => {
     view.rerender(<DesktopFilters definitions={definitions} counts={{ cpuBrand: [{ value: "INTEL", count: 2 }] }} filters={{ ...filters, cpuBrand: ["INTEL"], page: 1 }} />);
     view.rerender(<DesktopFilters definitions={definitions} counts={{ cpuBrand: [{ value: "INTEL", count: 2 }] }} filters={filters} />);
     expect(screen.getByRole("checkbox", { name: "Intel (2)" })).not.toBeChecked();
+  });
+
+  it("drops a pending selection when Back/Forward moves to another URL", async () => {
+    const user = userEvent.setup();
+    const counts = { cpuBrand: [{ value: "INTEL", count: 2 }, { value: "AMD", count: 2 }] };
+    const view = render(<DesktopFilters definitions={definitions} counts={counts} filters={{ ...filters, cpuBrand: ["INTEL"] }} />);
+    await user.click(screen.getByRole("checkbox", { name: "AMD (2)" }));
+    expect(screen.getByRole("checkbox", { name: "AMD (2)" })).toBeChecked();
+    // the push never commits; history goes back to an unfiltered URL instead
+    act(() => window.dispatchEvent(new PopStateEvent("popstate")));
+    view.rerender(<DesktopFilters definitions={definitions} counts={counts} filters={filters} />);
+    expect(screen.getByRole("checkbox", { name: "Intel (2)" })).not.toBeChecked();
+    expect(screen.getByRole("checkbox", { name: "AMD (2)" })).not.toBeChecked();
   });
 
   it("renders and removes advanced scalar and toggle chips", async () => {

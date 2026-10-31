@@ -19,6 +19,12 @@ export function DesktopFilters({ definitions, counts, filters, countsAvailable =
       setPendingFilters(null);
     }
   }, [filters, pendingFilters]);
+  useEffect(() => {
+    // Back/Forward abandons an uncommitted push, so its URL would never match and clear the selection.
+    const dropPending = () => setPendingFilters(null);
+    window.addEventListener("popstate", dropPending);
+    return () => window.removeEventListener("popstate", dropPending);
+  }, []);
   const effectiveFilters = pendingFilters ?? optimisticFilters;
   const apply = (next: ProductFilters) => {
     setPendingFilters(next);
