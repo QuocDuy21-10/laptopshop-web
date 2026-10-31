@@ -12,9 +12,9 @@ type Props = { product: Pick<Product, "id" | "name" | "image"> };
 export function CompareToggle({ product }: Props) {
   const selected = useCompare().some((i) => i.id === product.id);
   const onClick = () => {
-    if (toggleCompare(product) === "full") {
-      toast.error(`Chỉ so sánh tối đa ${MAX_COMPARE} sản phẩm`);
-    }
+    const result = toggleCompare(product);
+    if (result === "full") toast.error(`Chỉ so sánh tối đa ${MAX_COMPARE} sản phẩm`);
+    if (result === "error") toast.error("Không thể lưu danh sách so sánh trên trình duyệt này");
   };
   return (
     <Button

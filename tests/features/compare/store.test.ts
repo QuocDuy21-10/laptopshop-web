@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+
 import {
   clearCompare,
   compareHref,
@@ -31,6 +32,26 @@ describe("compare store", () => {
     expect(getCompareItems()).toEqual([]);
     localStorage.setItem("laptopshop.compare", JSON.stringify([{ id: "x" }]));
     expect(getCompareItems()).toEqual([]);
+  });
+
+  it("drops invalid and duplicate entries but keeps the valid ones", () => {
+    localStorage.setItem(
+      "laptopshop.compare",
+      JSON.stringify([item(1), item(1), item(-1), item(0), item(1_000_000_000), item(2)]),
+    );
+    expect(getCompareItems()).toEqual([item(1), item(2)]);
+  });
+
+  it("reports a write the browser refuses", () => {
+    const setItem = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("blocked", "QuotaExceededError");
+    });
+    try {
+      expect(toggleCompare(item(1))).toBe("error");
+      expect(getCompareItems()).toEqual([]);
+    } finally {
+      setItem.mockRestore();
+    }
   });
 
   it("removes several ids and clears", () => {

@@ -3,26 +3,38 @@
 import * as Menu from "@radix-ui/react-dropdown-menu";
 import { Bell, ChevronDown, Heart, LayoutDashboard, LogOut, Package, User, Wrench } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/Skeleton/Skeleton";
 import { useMe } from "@/features/account/useMe";
 import { useLogout } from "@/features/auth/hooks";
 import { loginHref } from "@/lib/safe-next";
 import styles from "./AccountMenu.module.scss";
 
+// keeps the query (e.g. /compare?ids=…) so login returns to the same view
+function LoginLink() {
+  const pathname = usePathname();
+  const search = useSearchParams().toString();
+  return (
+    <Link href={loginHref(search ? `${pathname}?${search}` : pathname)} className={styles.trigger}>
+      <User size={20} aria-hidden="true" />
+      <span>Đăng nhập</span>
+    </Link>
+  );
+}
+
 export function AccountMenu() {
   const { data: me, isPending } = useMe();
   const logout = useLogout();
   const router = useRouter();
-  const pathname = usePathname();
 
   if (isPending) return <Skeleton className={styles.skeleton} />;
   if (!me) {
+    // useSearchParams needs a Suspense boundary on statically rendered pages
     return (
-      <Link href={loginHref(pathname)} className={styles.trigger}>
-        <User size={20} aria-hidden="true" />
-        <span>Đăng nhập</span>
-      </Link>
+      <Suspense fallback={<Skeleton className={styles.skeleton} />}>
+        <LoginLink />
+      </Suspense>
     );
   }
 

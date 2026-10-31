@@ -2,6 +2,8 @@ export type CompareItem = { id: number; name: string; image: string | null };
 
 export const MAX_COMPARE = 4;
 export const EMPTY_COMPARE: CompareItem[] = [];
+// the API caps ids at 9 digits
+const MAX_ID = 999_999_999;
 
 const KEY = "laptopshop.compare";
 const listeners = new Set<() => void>();
@@ -14,6 +16,8 @@ const isItem = (v: unknown): v is CompareItem => {
     typeof v === "object" &&
     v !== null &&
     Number.isInteger(i.id) &&
+    i.id > 0 &&
+    i.id <= MAX_ID &&
     typeof i.name === "string" &&
     (i.image === null || typeof i.image === "string")
   );
@@ -35,32 +39,34 @@ export function getCompareItems(): CompareItem[] {
   cachedRaw = raw;
   try {
     const parsed: unknown = raw ? JSON.parse(raw) : [];
-    cachedItems =
-      Array.isArray(parsed) && parsed.every(isItem) ? parsed.slice(0, MAX_COMPARE) : EMPTY_COMPARE;
+    // drop invalid and duplicate entries left by hand edits or older versions
+    const valid = Array.isArray(parsed) ? parsed.filter(isItem) : [];
+    const unique = valid.filter((item, i) => valid.findIndex((x) => x.id === item.id) === i);
+    cachedItems = unique.length ? unique.slice(0, MAX_COMPARE) : EMPTY_COMPARE;
   } catch {
     cachedItems = EMPTY_COMPARE;
   }
   return cachedItems;
 }
 
-function write(items: CompareItem[]) {
+// false when the browser refuses to store (blocked site data, quota)
+function write(items: CompareItem[]): boolean {
   try {
     window.localStorage.setItem(KEY, JSON.stringify(items));
   } catch {
-    return;
+    return false;
   }
   listeners.forEach((l) => l());
+  return true;
 }
 
-export function toggleCompare(item: CompareItem): "added" | "removed" | "full" {
+export function toggleCompare(item: CompareItem): "added" | "removed" | "full" | "error" {
   const items = getCompareItems();
   if (items.some((i) => i.id === item.id)) {
-    write(items.filter((i) => i.id !== item.id));
-    return "removed";
+    return write(items.filter((i) => i.id !== item.id)) ? "removed" : "error";
   }
   if (items.length >= MAX_COMPARE) return "full";
-  write([...items, { id: item.id, name: item.name, image: item.image }]);
-  return "added";
+  return write([...items, { id: item.id, name: item.name, image: item.image }]) ? "added" : "error";
 }
 
 export const removeCompare = (ids: number[]) =>

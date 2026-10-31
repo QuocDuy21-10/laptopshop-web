@@ -27,9 +27,15 @@ export function CompareView() {
   const selected = useCompare();
   const query = useCompareProducts(ids);
   const missing = missingIdsOf(query.error);
-  const [dropped, setDropped] = useState(false);
+  const kept = useMemo(
+    () => (missing ? ids.filter((id) => !missing.includes(id)) : null),
+    [missing, ids],
+  );
+  // the ids left after dropping; the notice shows only while the URL still holds that list
+  const [droppedTo, setDroppedTo] = useState<string | null>(null);
   // set while rendering (not in an effect) so the notice survives the URL replace below
-  if (missing && !dropped) setDropped(true);
+  if (kept && droppedTo !== kept.join(",")) setDroppedTo(kept.join(","));
+  const dropped = droppedTo !== null && droppedTo === (raw ?? "");
 
   // a bare /compare opens the list saved in this browser
   useEffect(() => {
@@ -37,10 +43,10 @@ export function CompareView() {
   }, [raw, selected, router]);
 
   useEffect(() => {
-    if (!missing) return;
+    if (!missing || !kept) return;
     removeCompare(missing);
-    router.replace(compareHref(ids.filter((id) => !missing.includes(id))));
-  }, [missing, ids, router]);
+    router.replace(compareHref(kept));
+  }, [missing, kept, router]);
 
   const remove = (id: number) => {
     removeCompare([id]);

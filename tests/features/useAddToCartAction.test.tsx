@@ -1,14 +1,15 @@
-import { renderHook, waitFor } from "@testing-library/react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { ReactNode } from "react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
 import { toast } from "sonner";
-import { useAddToCartAction } from "@/features/cart/useAddToCartAction";
-import { readPendingCartIntent } from "@/features/cart/intent";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { renderHook, waitFor } from "@testing-library/react";
+
 import { json, mockFetch, urlOf } from "../utils";
+import { readPendingCartIntent } from "@/features/cart/intent";
+import { useAddToCartAction } from "@/features/cart/useAddToCartAction";
 
 const router = vi.hoisted(() => ({ push: vi.fn() }));
-vi.mock("next/navigation", () => ({ useRouter: () => router, usePathname: () => "/products/3" }));
+vi.mock("next/navigation", () => ({ useRouter: () => router }));
 vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 
 const wrapper = ({ children }: { children: ReactNode }) => (
@@ -26,11 +27,20 @@ beforeEach(() => {
 
 describe("useAddToCartAction", () => {
   it("sends anonymous users to login and back", async () => {
+    window.history.replaceState(null, "", "/products/3");
     fetchMock.mockResolvedValue(json(401, { error: { code: "UNAUTHENTICATED", message: "x" } }));
     const { result } = renderHook(() => useAddToCartAction(), { wrapper });
     await result.current.add(3, 1);
     expect(router.push).toHaveBeenCalledWith("/login?next=%2Fproducts%2F3");
     expect(readPendingCartIntent()).toMatchObject({ productId: 3, quantity: 1, goToCart: false });
+  });
+
+  it("keeps the query of the current page in the login redirect", async () => {
+    window.history.replaceState(null, "", "/compare?ids=1,2");
+    fetchMock.mockResolvedValue(json(401, { error: { code: "UNAUTHENTICATED", message: "x" } }));
+    const { result } = renderHook(() => useAddToCartAction(), { wrapper });
+    await result.current.add(1, 1);
+    expect(router.push).toHaveBeenCalledWith("/login?next=%2Fcompare%3Fids%3D1%2C2");
   });
 
   it("toasts the stock error", async () => {
