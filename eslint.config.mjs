@@ -28,5 +28,6 @@ export default defineConfig([
     ".superpowers/**",
     ".agents/**",
     "docs-local/**",
+    "docs/**",
   ]),
 ]);
