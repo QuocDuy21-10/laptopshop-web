@@ -1,0 +1,45 @@
+@use "mixins" as *;
+
+.banner {
+  display: grid;
+  gap: var(--space-four);
+  align-items: center;
+  padding: var(--space-six);
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-xl);
+
+  @include up(md) {
+    grid-template-columns: auto 1fr auto;
+    padding: var(--space-eight) var(--space-ten);
+  }
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  color: var(--color-primary);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-one);
+}
+
+.title {
+  @include text(headline-sm);
+
+  margin: 0;
+}
+
+.description {
+  @include text(body-md);
+
+  margin: 0;
+  color: var(--color-foreground-muted);
+}

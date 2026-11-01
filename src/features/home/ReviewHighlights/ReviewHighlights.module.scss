@@ -1,0 +1,78 @@
+@use "mixins" as *;
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-two);
+  margin: 0;
+}
+
+.stars {
+  color: var(--color-tertiary);
+  letter-spacing: 1px;
+}
+
+.average {
+  @include text(headline-sm);
+}
+
+.total {
+  @include text(body-sm);
+
+  color: var(--color-foreground-muted);
+}
+
+.row {
+  --scroll-item: minmax(260px, 1fr);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-two);
+  height: 100%;
+  padding: var(--space-four);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-two);
+}
+
+.author {
+  @include text(label-md);
+}
+
+.reviewTitle {
+  @include text(label-md);
+
+  margin: 0;
+}
+
+.content {
+  @include text(body-md);
+
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: var(--color-foreground-muted);
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
+.product {
+  @include text(body-sm);
+
+  margin-top: auto;
+  color: var(--color-link);
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}

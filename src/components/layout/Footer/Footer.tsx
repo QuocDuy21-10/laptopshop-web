@@ -2,10 +2,10 @@ import Link from "next/link";
 
 import styles from "./Footer.module.scss";
 import { TARGET_LABEL } from "@/features/products/labels";
+import { PAYMENT_LABEL } from "@/features/store-info/labels";
 import { getStoreInfo } from "@/features/store-info/server";
 import { Container } from "@/components/layout/Container/Container";
 
-const PAYMENT_LABEL: Record<string, string> = { COD: "Thanh toán COD", BANK_TRANSFER: "Chuyển khoản QR" };
 
 export async function Footer() {
   const info = await getStoreInfo();
