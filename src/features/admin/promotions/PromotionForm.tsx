@@ -4,8 +4,9 @@ import { Alert, Button, Form, Input, InputNumber, Select, Switch } from "antd";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { errorMessage } from "@/lib/api/errors";
+import type { PromotionDetail } from "@/lib/api/types";
 import { FlashSaleQuotaEditor, validateQuotaItems, type FlashSaleQuotaItem } from "./FlashSaleQuotaEditor";
-import { useCreatePromotion, type PromotionCreateBody } from "./hooks";
+import { useCreatePromotion, useUpdatePromotion, type PromotionCreateBody } from "./hooks";
 import { PromotionTargetSelect } from "./PromotionTargetSelect";
 
 type FormValues = {
@@ -30,16 +31,38 @@ type FormValues = {
 };
 
 const toIso = (local: string) => new Date(local).toISOString();
+// datetime-local wants the shop's wall-clock time, not UTC
+const toLocalInput = (iso: string) => {
+  const date = new Date(iso);
+  return new Date(date.getTime() - date.getTimezoneOffset() * 60_000).toISOString().slice(0, 16);
+};
 
-const targetsField = (name: string[]) => (
+const targetsField = (name: string[], productNames?: Record<number, string>) => (
   <Form.Item name={name} label="Sản phẩm áp dụng" rules={[{ required: true, type: "array", min: 1, message: "Chọn ít nhất một sản phẩm." }]}>
-    <PromotionTargetSelect />
+    <PromotionTargetSelect productNames={productNames} />
   </Form.Item>
 );
 
-export function PromotionForm() {
+const createDefaults = { kind: "COUPON", discountKind: "PERCENT", discountValue: 10, coupon: { scope: "ORDER", minOrderValue: 0, maxUsesPerUser: 1, isPublic: false }, automatic: { priority: 0, stackableWithCoupon: false }, flashSale: { priority: 0, stackableWithCoupon: false, showRemainingQuota: true } };
+
+const editDefaults = (promotion: PromotionDetail) => ({
+  name: promotion.name,
+  kind: promotion.kind,
+  discountKind: promotion.discountKind,
+  discountValue: promotion.discountValue,
+  startsAt: toLocalInput(promotion.startsAt),
+  endsAt: toLocalInput(promotion.endsAt),
+  coupon: promotion.coupon ?? undefined,
+  automatic: promotion.automatic ?? undefined,
+});
+
+/** Creates a promotion, or edits a draft coupon/automatic promotion when `promotion` is given. */
+export function PromotionForm({ promotion }: { promotion?: PromotionDetail }) {
   const router = useRouter();
   const create = useCreatePromotion();
+  const update = useUpdatePromotion(promotion?.id ?? 0);
+  const mutation = promotion ? update : create;
+  const productNames = promotion && Object.fromEntries(promotion.products.map((product) => [product.id, product.name]));
   const [form] = Form.useForm<FormValues>();
   const kind = Form.useWatch("kind", form);
   const discountKind = Form.useWatch("discountKind", form);
@@ -48,20 +71,19 @@ export function PromotionForm() {
   const [quotaError, setQuotaError] = useState<string | null>(null);
 
   const onFinish = (values: FormValues) => {
-    const { startsAt, endsAt, coupon, automatic, flashSale, ...rest } = values;
-    const base = { ...rest, startsAt: toIso(startsAt), endsAt: toIso(endsAt) };
-    let body: PromotionCreateBody;
+    const { coupon, automatic, flashSale } = values;
+    const base = { name: values.name, discountKind: values.discountKind, discountValue: values.discountValue, startsAt: toIso(values.startsAt), endsAt: toIso(values.endsAt) };
+    let policy: Pick<PromotionCreateBody, "coupon" | "automatic" | "flashSale">;
     if (values.kind === "FLASH_SALE") {
       const error = validateQuotaItems(quotas);
       setQuotaError(error);
       if (error) return;
-      body = { ...base, flashSale: { priority: flashSale?.priority ?? 0, stackableWithCoupon: flashSale?.stackableWithCoupon ?? false, showRemainingQuota: flashSale?.showRemainingQuota ?? true, items: quotas } };
+      policy = { flashSale: { priority: flashSale?.priority ?? 0, stackableWithCoupon: flashSale?.stackableWithCoupon ?? false, showRemainingQuota: flashSale?.showRemainingQuota ?? true, items: quotas } };
     } else if (values.kind === "AUTOMATIC") {
-      body = { ...base, automatic: { priority: automatic?.priority ?? 0, stackableWithCoupon: automatic?.stackableWithCoupon ?? false, targetProductIds: automatic?.targetProductIds ?? [] } };
+      policy = { automatic: { priority: automatic?.priority ?? 0, stackableWithCoupon: automatic?.stackableWithCoupon ?? false, targetProductIds: automatic?.targetProductIds ?? [] } };
     } else {
       const scope = coupon?.scope ?? "ORDER";
-      body = {
-        ...base,
+      policy = {
         coupon: {
           code: coupon?.code?.trim() ?? "",
           scope,
@@ -75,12 +97,16 @@ export function PromotionForm() {
         },
       };
     }
-    create.mutate(body, { onSuccess: (result) => router.push(`/admin/promotions/${result.data.id}`) });
+    if (promotion) {
+      update.mutate({ ...base, ...policy });
+      return;
+    }
+    create.mutate({ kind: values.kind, ...base, ...policy }, { onSuccess: (result) => router.push(`/admin/promotions/${result.data.id}`) });
   };
 
-  return <Form form={form} layout="vertical" initialValues={{ kind: "COUPON", discountKind: "PERCENT", discountValue: 10, coupon: { scope: "ORDER", minOrderValue: 0, maxUsesPerUser: 1, isPublic: false }, automatic: { priority: 0, stackableWithCoupon: false }, flashSale: { priority: 0, stackableWithCoupon: false, showRemainingQuota: true } }} onFinish={onFinish}>
+  return <Form form={form} layout="vertical" initialValues={promotion ? editDefaults(promotion) : createDefaults} onFinish={onFinish}>
     <Form.Item name="name" label="Tên chương trình" rules={[{ required: true }]}><Input /></Form.Item>
-    <Form.Item name="kind" label="Loại" rules={[{ required: true }]}><Select aria-label="Loại" options={[{ value: "COUPON", label: "Coupon" }, { value: "AUTOMATIC", label: "Tự động" }, { value: "FLASH_SALE", label: "Flash Sale" }]} /></Form.Item>
+    <Form.Item name="kind" label="Loại" rules={[{ required: true }]}><Select aria-label="Loại" disabled={Boolean(promotion)} options={[{ value: "COUPON", label: "Coupon" }, { value: "AUTOMATIC", label: "Tự động" }, { value: "FLASH_SALE", label: "Flash Sale" }]} /></Form.Item>
     <Form.Item name="startsAt" label="Bắt đầu" rules={[{ required: true }]}><Input type="datetime-local" /></Form.Item>
     <Form.Item name="endsAt" label="Kết thúc" rules={[{ required: true }]}><Input type="datetime-local" /></Form.Item>
     <Form.Item name="discountKind" label="Kiểu giảm" rules={[{ required: true }]}><Select options={[{ value: "PERCENT", label: "Phần trăm" }, { value: "FIXED", label: "Số tiền" }]} /></Form.Item>
@@ -88,7 +114,7 @@ export function PromotionForm() {
     {kind === "COUPON" && <>
       <Form.Item name={["coupon", "code"]} label="Mã coupon" rules={[{ required: true, whitespace: true, message: "Nhập mã coupon." }]}><Input /></Form.Item>
       <Form.Item name={["coupon", "scope"]} label="Phạm vi"><Select aria-label="Phạm vi" options={[{ value: "ORDER", label: "Toàn đơn" }, { value: "PRODUCT", label: "Theo sản phẩm" }]} /></Form.Item>
-      {couponScope === "PRODUCT" && targetsField(["coupon", "targetProductIds"])}
+      {couponScope === "PRODUCT" && targetsField(["coupon", "targetProductIds"], productNames)}
       <Form.Item name={["coupon", "minOrderValue"]} label="Giá trị đơn tối thiểu"><InputNumber min={0} precision={0} /></Form.Item>
       {discountKind === "PERCENT" && <Form.Item name={["coupon", "maxDiscount"]} label="Giảm tối đa"><InputNumber min={1} precision={0} /></Form.Item>}
       <Form.Item name={["coupon", "maxUses"]} label="Tổng lượt dùng"><InputNumber min={1} precision={0} /></Form.Item>
@@ -98,7 +124,7 @@ export function PromotionForm() {
     {kind === "AUTOMATIC" && <>
       <Form.Item name={["automatic", "priority"]} label="Độ ưu tiên"><InputNumber precision={0} /></Form.Item>
       <Form.Item name={["automatic", "stackableWithCoupon"]} label="Cho phép dùng cùng coupon" valuePropName="checked"><Switch /></Form.Item>
-      {targetsField(["automatic", "targetProductIds"])}
+      {targetsField(["automatic", "targetProductIds"], productNames)}
     </>}
     {kind === "FLASH_SALE" && <>
       <Form.Item name={["flashSale", "priority"]} label="Độ ưu tiên"><InputNumber precision={0} /></Form.Item>
@@ -107,7 +133,7 @@ export function PromotionForm() {
       <FlashSaleQuotaEditor value={quotas} onChange={(next) => { setQuotas(next); setQuotaError(null); }} />
       {quotaError && <Alert type="error" message={quotaError} showIcon style={{ marginBottom: 16 }} />}
     </>}
-    {create.error && <Alert type="error" message={errorMessage(create.error)} showIcon style={{ marginBottom: 16 }} />}
-    <Button type="primary" htmlType="submit" loading={create.isPending}>Lưu bản nháp</Button>
+    {mutation.error && <Alert type="error" message={errorMessage(mutation.error)} showIcon style={{ marginBottom: 16 }} />}
+    <Button type="primary" htmlType="submit" loading={mutation.isPending}>{promotion ? "Lưu thay đổi" : "Lưu bản nháp"}</Button>
   </Form>;
 }

@@ -10661,6 +10661,18 @@ export interface components {
       redemptionCount: number;
     };
     PromotionDetail: components["schemas"]["PromotionSummary"] & {
+      coupon?: {
+        code: string;
+        /** @enum {string} */
+        scope: "ORDER" | "PRODUCT";
+        minOrderValue: number;
+        maxDiscount: number | null;
+        maxUses: number | null;
+        usedCount: number;
+        maxUsesPerUser: number;
+        isPublic: boolean;
+        targetProductIds: number[];
+      } | null;
       description: string | null;
       /** Format: date-time */
       activatedAt: string | null;

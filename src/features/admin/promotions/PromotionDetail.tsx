@@ -7,6 +7,7 @@ import type { FlashSaleAllocationQuery, PromotionDetail as PromotionDetailDto } 
 import { FlashSaleAllocations } from "./FlashSaleAllocations";
 import { FlashSaleQuotaEditor, validateQuotaItems, type FlashSaleQuotaItem } from "./FlashSaleQuotaEditor";
 import { FlashSaleSummary } from "./FlashSaleSummary";
+import { PromotionForm } from "./PromotionForm";
 import { stateLabel } from "./labels";
 import { useAdminPromotion, useAdminPromotionAllocations, useAdminPromotionSummary, useTransitionPromotion, useUpdatePromotion } from "./hooks";
 
@@ -57,6 +58,9 @@ export function PromotionDetail({ id }: { id: number }) {
       {promotion.coupon && <Descriptions.Item label="Mã">{promotion.coupon.code}</Descriptions.Item>}
       <Descriptions.Item label="Trường đã khóa">{promotion.lockedFields.join(", ") || "Chưa khóa"}</Descriptions.Item>
     </Descriptions>
+    {promotion.state === "DRAFT" && promotion.kind !== "FLASH_SALE" && <div style={{ marginTop: 16 }}>
+      <PromotionForm key={promotion.updatedAt} promotion={promotion} />
+    </div>}
     {promotion.flashSale && <div style={{ marginTop: 16, display: "grid", gap: 16 }}>
       <FlashSaleManager key={promotion.updatedAt} id={id} promotion={promotion} flashSale={promotion.flashSale} />
       {summary.error && <Alert type="error" message={errorMessage(summary.error)} showIcon />}
