@@ -5,6 +5,7 @@ import {
   BellRing,
   Banknote,
   ExternalLink,
+  Images,
   LayoutDashboard,
   LogOut,
   Menu as MenuIcon,
@@ -54,7 +55,13 @@ const NAV_GROUPS: { title: string; items: NavItem[] }[] = [
       { href: "/admin/after-sales", label: "Bảo hành & Hậu mãi", icon: Wrench },
     ],
   },
-  { title: "Hệ thống", items: [{ href: "/admin/notifications", label: "Thông báo", icon: BellRing }] },
+  {
+    title: "Hệ thống",
+    items: [
+      { href: "/admin/home-banners", label: "Banner trang chủ", icon: Images },
+      { href: "/admin/notifications", label: "Thông báo", icon: BellRing },
+    ],
+  },
 ];
 
 const NAV = NAV_GROUPS.flatMap((group) => group.items);
