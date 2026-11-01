@@ -24,6 +24,7 @@
 .title {
   @include text(headline-sm);
 
+  color: var(--color-on-primary);
   display: inline-flex;
   align-items: center;
   gap: var(--space-two);

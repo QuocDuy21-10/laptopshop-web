@@ -1,7 +1,6 @@
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import { useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 import { buttonClassName } from "@/components/ui/Button/Button";
@@ -16,7 +15,6 @@ const SWIPE_PX = 40;
 export function HeroSlider({ slides }: { slides: PublicHomeBanner[] }) {
   const [current, setCurrent] = useState(0);
   const startX = useRef<number | null>(null);
-  const reduceMotion = useReducedMotion();
   const total = slides.length;
   const many = total > 1;
   const slide = slides[current] ?? slides[0];
@@ -57,15 +55,12 @@ export function HeroSlider({ slides }: { slides: PublicHomeBanner[] }) {
       onPointerDown={many ? onPointerDown : undefined}
       onPointerUp={many ? onPointerUp : undefined}
     >
-      <motion.div
+      <div
         key={slide.id}
         className={cx(styles.slide, !slide.imageUrl && styles.textOnly)}
         role="group"
         aria-roledescription="slide"
         aria-label={`${current + 1} / ${total}`}
-        initial={{ opacity: reduceMotion ? 1 : 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: reduceMotion ? 0 : 0.24, ease: "easeOut" }}
       >
         <div className={styles.copy}>
           {slide.eyebrow && <p className={styles.eyebrow}>{slide.eyebrow}</p>}
@@ -119,7 +114,7 @@ export function HeroSlider({ slides }: { slides: PublicHomeBanner[] }) {
             )}
           </div>
         )}
-      </motion.div>
+      </div>
 
       {many && (
         <>

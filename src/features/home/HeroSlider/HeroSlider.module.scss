@@ -18,11 +18,27 @@
   display: grid;
   grid-template-rows: auto 1fr;
   height: 100%;
+  animation: reveal var(--duration-fast) var(--ease-out);
+  padding-bottom: var(--space-four);
+
+  @include reduced-motion {
+    animation: none;
+  }
 
   @include up(md) {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: none;
     align-items: center;
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
   }
 }
 
@@ -123,7 +139,7 @@
 
 .nav {
   position: absolute;
-  top: 50%;
+  bottom: var(--space-two);
   display: none;
   align-items: center;
   justify-content: center;
@@ -133,7 +149,6 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-full);
-  transform: translateY(-50%);
   cursor: pointer;
   transition: border-color var(--duration-fast) var(--ease-out);
 

@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { renderToString } from "react-dom/server";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
@@ -28,6 +29,13 @@ if (!("PointerEvent" in window))
   Object.defineProperty(window, "PointerEvent", { value: MouseEvent });
 
 describe("HeroSlider", () => {
+  it("server-renders the slide visibly before hydration", () => {
+    const container = document.createElement("div");
+    container.innerHTML = renderToString(<HeroSlider slides={[banner(1)]} />);
+    const slide = container.querySelector('[aria-roledescription="slide"]');
+    expect(slide).not.toHaveStyle({ opacity: "0" });
+  });
+
   it("renders the banner content with internal and external links", () => {
     render(
       <HeroSlider
