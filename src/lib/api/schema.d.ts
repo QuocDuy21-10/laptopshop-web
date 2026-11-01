@@ -685,6 +685,7 @@ export interface paths {
                 pageSize: number;
                 total: number;
                 totalPages: number;
+                flashSaleAlertEnabled: boolean;
               };
             };
           };
@@ -975,7 +976,7 @@ export interface paths {
             "application/json": components["schemas"]["Error"];
           };
         };
-        /** @description Product unavailable */
+        /** @description Product unavailable or Flash Sale alerts disabled */
         409: {
           headers: {
             [name: string]: unknown;
