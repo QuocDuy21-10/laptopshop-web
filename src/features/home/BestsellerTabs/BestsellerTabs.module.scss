@@ -1,0 +1,48 @@
+@use "mixins" as *;
+
+.tabs {
+  display: flex;
+  gap: var(--space-two);
+  padding-bottom: var(--space-one);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tab {
+  @include text(label-md);
+
+  flex: 0 0 auto;
+  min-height: var(--control-md);
+  padding: 0 var(--space-four);
+  color: var(--color-foreground);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+
+  &:hover {
+    border-color: var(--color-border-strong);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.tabActive {
+  color: var(--color-on-primary);
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+
+  &:hover {
+    border-color: var(--color-primary-hover);
+  }
+}
+
+.stale {
+  opacity: 0.6;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}

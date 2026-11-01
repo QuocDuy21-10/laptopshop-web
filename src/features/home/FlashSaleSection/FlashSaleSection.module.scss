@@ -1,0 +1,68 @@
+@use "mixins" as *;
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-four);
+  padding: var(--space-five) var(--space-four);
+  background: var(--color-primary-pressed);
+  border-radius: var(--radius-xl);
+
+  @include up(lg) {
+    padding: var(--space-six);
+  }
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-three) var(--space-six);
+  color: var(--color-on-primary);
+}
+
+.title {
+  @include text(headline-sm);
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-two);
+  margin: 0;
+}
+
+.timer {
+  @include text(label-md);
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-two);
+}
+
+// readable on the dark band whatever colours the countdown uses
+.timerValue {
+  padding: var(--space-one) var(--space-two);
+  color: var(--color-foreground);
+  background: var(--color-surface);
+  border-radius: var(--radius-sm);
+}
+
+.link {
+  @include text(label-md);
+
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-md);
+  margin-left: auto;
+  color: var(--color-on-primary);
+  text-decoration: underline;
+
+  &:focus-visible {
+    @include focus-ring;
+
+    outline-color: var(--color-on-primary);
+  }
+}
+
+.row {
+  --scroll-item: minmax(220px, 1fr);
+}
