@@ -100,9 +100,10 @@ describe("PromotionDetail flash sale", () => {
   });
 });
 
+const couponPolicy = { code: "WELCOME10", scope: "PRODUCT", minOrderValue: 0, maxDiscount: null, maxUses: 100, usedCount: 0, maxUsesPerUser: 1, isPublic: false, targetProductIds: [3] };
 const draftCoupon = promotion({
   kind: "COUPON", flashSale: null, automatic: null, description: null,
-  coupon: { code: "WELCOME10", scope: "PRODUCT", minOrderValue: 0, maxDiscount: null, maxUses: 100, usedCount: 0, maxUsesPerUser: 1, isPublic: false, targetProductIds: [3] },
+  coupon: couponPolicy,
 });
 const draftAutomatic = promotion({
   kind: "AUTOMATIC", flashSale: null, coupon: null, description: null,
@@ -147,5 +148,46 @@ describe("PromotionDetail draft edit", () => {
     mocks.detail.mockReturnValue({ isPending: false, error: null, data: { data: { ...draftCoupon, state: "ACTIVE", effectiveState: "RUNNING" } } });
     renderAdmin(<PromotionDetail id={42} />);
     expect(screen.queryByRole("button", { name: "Lưu thay đổi" })).not.toBeInTheDocument();
+  });
+});
+
+const activeCoupon = {
+  ...draftCoupon,
+  state: "ACTIVE",
+  effectiveState: "RUNNING",
+  activatedAt: "2026-11-10T03:00:00.000Z",
+  coupon: { ...couponPolicy, usedCount: 12 },
+};
+
+describe("PromotionDetail active coupon", () => {
+  it("lets an active coupon change visibility and raise its usage cap", async () => {
+    mocks.detail.mockReturnValue({ isPending: false, error: null, data: { data: activeCoupon } });
+    renderAdmin(<PromotionDetail id={42} />);
+    await userEvent.click(screen.getByRole("switch", { name: "Công khai" }));
+    fireEvent.change(screen.getByLabelText("Tổng lượt dùng"), { target: { value: "150" } });
+    await userEvent.click(screen.getByRole("button", { name: "Lưu coupon" }));
+    await waitFor(() => expect(mocks.update).toHaveBeenCalledWith({ coupon: { isPublic: true, maxUses: 150 } }));
+  });
+
+  it("refuses to lower the usage cap of an active coupon", () => {
+    mocks.detail.mockReturnValue({ isPending: false, error: null, data: { data: activeCoupon } });
+    renderAdmin(<PromotionDetail id={42} />);
+    fireEvent.change(screen.getByLabelText("Tổng lượt dùng"), { target: { value: "50" } });
+    expect(screen.getByText("Không được giảm tổng lượt dùng.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Lưu coupon" })).toBeDisabled();
+  });
+
+  it("keeps an unlimited coupon unlimited unless a cap is entered", async () => {
+    mocks.detail.mockReturnValue({ isPending: false, error: null, data: { data: { ...activeCoupon, coupon: { ...activeCoupon.coupon, maxUses: null } } } });
+    renderAdmin(<PromotionDetail id={42} />);
+    await userEvent.click(screen.getByRole("switch", { name: "Công khai" }));
+    await userEvent.click(screen.getByRole("button", { name: "Lưu coupon" }));
+    await waitFor(() => expect(mocks.update).toHaveBeenCalledWith({ coupon: { isPublic: true } }));
+  });
+
+  it("does not offer coupon settings once the promotion has ended", () => {
+    mocks.detail.mockReturnValue({ isPending: false, error: null, data: { data: { ...activeCoupon, state: "ENDED", effectiveState: "ENDED" } } });
+    renderAdmin(<PromotionDetail id={42} />);
+    expect(screen.queryByRole("button", { name: "Lưu coupon" })).not.toBeInTheDocument();
   });
 });
