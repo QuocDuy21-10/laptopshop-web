@@ -3,193 +3,24 @@
 .page {
   display: flex;
   flex-direction: column;
-  gap: var(--space-eight);
+  gap: var(--space-ten);
   padding-top: var(--space-four);
+  padding-bottom: var(--space-twelve);
 
   @include up(lg) {
-    gap: var(--space-twelve);
+    gap: var(--space-sixteen);
     padding-top: var(--space-six);
   }
 }
 
-.heroGroup {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-four);
-}
-
-// ==========================================
-// SECTIONS & TARGET CARDS
-// ==========================================
-.section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-five);
-}
-
-.sectionHeader {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: var(--space-four);
-  flex-wrap: wrap;
-}
-
-.sectionTitle {
-  font-size: var(--text-headline-sm-size);
-  font-weight: var(--text-headline-sm-weight);
-  letter-spacing: -0.015em;
-  color: var(--color-foreground);
-}
-
-.sectionSubtitle {
-  font-size: var(--text-body-md-size);
-  color: var(--color-foreground-muted);
-  margin-top: 2px;
-}
-
-.sectionLink {
-  font-size: var(--text-body-md-size);
-  font-weight: var(--text-label-sm-weight);
-  color: var(--color-primary);
-  text-decoration: none;
-
-  @include touch {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--control-md);
-  }
-
-  &:hover {
-    text-decoration: underline;
-  }
-}
-
-.targetGrid {
+.bottomRow {
   display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: var(--space-three);
+  gap: var(--space-eight);
+}
 
-  @include up(sm) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  @include up(md) {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
+.withReviews {
   @include up(lg) {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-  }
-}
-
-.targetCard {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: var(--space-three);
-  padding: var(--space-four);
-  background: var(--color-surface-raised);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  text-decoration: none;
-  min-height: 124px; // Đảm bảo 5 cột cao bằng nhau tuyệt đối
-  transition:
-    border-color var(--duration-fast) var(--ease-out),
-    transform var(--duration-fast) var(--ease-out),
-    box-shadow var(--duration-fast) var(--ease-out);
-
-  &:hover {
-    border-color: var(--color-primary);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-2);
-  }
-}
-
-.targetIconWrap {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-md);
-  background: var(--color-primary-soft);
-  color: var(--color-primary);
-  transition:
-    background-color var(--duration-fast) var(--ease-out),
-    color var(--duration-fast) var(--ease-out);
-
-  .targetCard:hover & {
-    background: var(--color-primary);
-    color: var(--color-on-primary);
-  }
-}
-
-.targetContent {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.targetName {
-  font-size: var(--text-body-lg-size);
-  font-weight: var(--text-label-sm-weight);
-  color: var(--color-foreground);
-  line-height: var(--text-title-md-line);
-}
-
-.targetDesc {
-  font-size: var(--text-label-sm-size);
-  color: var(--color-foreground-muted);
-  line-height: 1.35;
-}
-
-// ==========================================
-// BRAND QUICK-FILTER STRIP
-// ==========================================
-.brandStrip {
-  display: flex;
-  align-items: center;
-  gap: var(--space-two);
-  overflow-x: auto;
-  padding-bottom: var(--space-one);
-  scrollbar-width: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-.brandPill {
-  display: inline-flex;
-  align-items: center;
-  padding: var(--space-one) var(--space-three);
-  border-radius: var(--radius-full);
-  border: 1px solid var(--color-border);
-  background: var(--color-surface-raised);
-  color: var(--color-foreground-muted);
-  font-size: var(--text-label-sm-size);
-  font-weight: 500;
-  white-space: nowrap;
-  text-decoration: none;
-  transition: all var(--duration-fast) var(--ease-out);
-
-  @include touch {
-    min-height: var(--control-md);
-  }
-
-  &:hover {
-    border-color: var(--color-primary);
-    color: var(--color-primary);
-  }
-}
-
-.brandPillActive {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-  color: var(--color-on-primary);
-
-  &:hover {
-    color: var(--color-on-primary);
+    grid-template-columns: 2fr 1fr;
+    align-items: start;
   }
 }

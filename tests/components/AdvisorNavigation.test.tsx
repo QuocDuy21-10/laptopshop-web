@@ -12,6 +12,18 @@ vi.mock("@/features/products/server", () => ({
   listProducts: vi.fn().mockResolvedValue({ data: [], meta: { page: 1, pageSize: 8, total: 0, totalPages: 0 } }),
 }));
 vi.mock("@/features/store-info/server", () => ({ getStoreInfo: vi.fn().mockResolvedValue(null) }));
+vi.mock("@/features/home/server", () => ({
+  getHomeData: vi.fn().mockResolvedValue({
+    banners: { hero: [], side: [] },
+    options: null,
+    targetImages: {},
+    flashSale: [],
+    bestsellers: [],
+    reviews: null,
+    storeInfo: null,
+    renderedAt: "2026-11-01T00:00:00.000Z",
+  }),
+}));
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn(), replace: vi.fn() }), usePathname: () => "/", useSearchParams: () => new URLSearchParams() }));
 
 describe("advisor navigation", () => {
@@ -31,7 +43,7 @@ describe("advisor navigation", () => {
 
   it("adds a homepage advisor CTA while keeping the product CTA", async () => {
     renderWithQuery(await HomePage());
-    expect(screen.getByRole("link", { name: "Tư vấn cấu hình chi tiết" })).toHaveAttribute("href", "/advisor");
-    expect(screen.getByRole("link", { name: "Xem toàn bộ danh mục" })).toHaveAttribute("href", "/products");
+    expect(screen.getByRole("link", { name: /Nhận gợi ý/ })).toHaveAttribute("href", "/advisor");
+    expect(screen.getByRole("link", { name: "Xem tất cả laptop" })).toHaveAttribute("href", "/products");
   });
 });
