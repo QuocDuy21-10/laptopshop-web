@@ -18,11 +18,13 @@ export function PriceAlertDialog({
   item,
   open,
   onOpenChange,
+  flashSaleAlertEnabled = false,
 }: {
   userId: number;
   item: WishlistItem;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  flashSaleAlertEnabled?: boolean;
 }) {
   const currentPrice =
     item.priceSnapshot?.effectivePrice ?? item.product.salePrice ?? item.product.price;
@@ -59,15 +61,17 @@ export function PriceAlertDialog({
       setError("targetPrice", { message: "Giá mục tiêu phải thấp hơn giá hiện tại" });
       return;
     }
+    // the API rejects Flash Sale opt-in while the server flag is off
+    const includeFlashSale = flashSaleAlertEnabled && parsed.data.includeFlashSale;
     try {
       const input =
         parsed.data.mode === "TARGET_PRICE"
           ? {
               mode: "TARGET_PRICE" as const,
               targetPrice: parsed.data.targetPrice!,
-              includeFlashSale: parsed.data.includeFlashSale,
+              includeFlashSale,
             }
-          : { mode: "PERCENT_DROP" as const, includeFlashSale: parsed.data.includeFlashSale };
+          : { mode: "PERCENT_DROP" as const, includeFlashSale };
       await configure.mutateAsync({ productId: item.productId, input });
       onOpenChange(false);
     } catch (error) {
@@ -88,7 +92,11 @@ export function PriceAlertDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={`Theo dõi giá — ${item.product.name}`}
-      description="Cảnh báo dựa trên giá niêm yết và Automatic Promotion; Flash Sale là tùy chọn."
+      description={
+        flashSaleAlertEnabled
+          ? "Cảnh báo dựa trên giá niêm yết và Automatic Promotion; Flash Sale là tùy chọn."
+          : "Cảnh báo dựa trên giá niêm yết và Automatic Promotion."
+      }
     >
       <form className={styles.form} onSubmit={submit} noValidate>
         {formError && <Alert tone="error" title={formError} />}
@@ -116,12 +124,16 @@ export function PriceAlertDialog({
             {...register("targetPrice", { valueAsNumber: true })}
           />
         )}
-        <label className={styles.flashSale}>
-          <input type="checkbox" {...register("includeFlashSale")} /> Theo dõi Flash Sale
-        </label>
-        <p className={styles.note}>
-          Flash Sale phụ thuộc stock và quota; checkout sẽ xác nhận lại giá cuối cùng.
-        </p>
+        {flashSaleAlertEnabled && (
+          <>
+            <label className={styles.flashSale}>
+              <input type="checkbox" {...register("includeFlashSale")} /> Theo dõi Flash Sale
+            </label>
+            <p className={styles.note}>
+              Flash Sale phụ thuộc stock và quota; checkout sẽ xác nhận lại giá cuối cùng.
+            </p>
+          </>
+        )}
         <p className={styles.note}>
           Khi đạt giá mục tiêu, hệ thống gửi một thông báo rồi tự động tắt cảnh báo.
         </p>

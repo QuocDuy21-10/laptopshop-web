@@ -12,7 +12,15 @@ import type { WishlistItem } from "@/lib/api/types";
 import { PriceAlertDialog } from "../PriceAlertDialog/PriceAlertDialog";
 import styles from "./WishlistCard.module.scss";
 
-export function WishlistCard({ userId, item }: { userId: number; item: WishlistItem }) {
+export function WishlistCard({
+  userId,
+  item,
+  flashSaleAlertEnabled,
+}: {
+  userId: number;
+  item: WishlistItem;
+  flashSaleAlertEnabled: boolean;
+}) {
   const [open, setOpen] = useState(false);
   const remove = useRemoveWishlistItem(userId);
   const { product } = item;
@@ -44,7 +52,7 @@ export function WishlistCard({ userId, item }: { userId: number; item: WishlistI
           Nguồn giá: {sourceLabel}
           {snapshot?.validUntil ? " · đến " + formatDate(snapshot.validUntil) : ""}
         </p>
-        {item.includeFlashSale && (
+        {flashSaleAlertEnabled && item.includeFlashSale && (
           <p className={styles.flashSaleState}>Đang theo dõi Flash Sale (không giữ quota)</p>
         )}
         {item.alertMode === "PERCENT_DROP" && (
@@ -83,7 +91,13 @@ export function WishlistCard({ userId, item }: { userId: number; item: WishlistI
           </Button>
         </div>
       </div>
-      <PriceAlertDialog userId={userId} item={item} open={open} onOpenChange={setOpen} />
+      <PriceAlertDialog
+        userId={userId}
+        item={item}
+        open={open}
+        onOpenChange={setOpen}
+        flashSaleAlertEnabled={flashSaleAlertEnabled}
+      />
     </article>
   );
 }

@@ -1,9 +1,10 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { PriceAlertDialog } from "@/features/wishlist/PriceAlertDialog/PriceAlertDialog";
-import type { WishlistItem } from "@/lib/api/types";
+
 import { renderWithQuery } from "../../utils";
+import type { WishlistItem } from "@/lib/api/types";
+import { PriceAlertDialog } from "@/features/wishlist/PriceAlertDialog/PriceAlertDialog";
 
 const configure = vi.fn();
 vi.mock("@/features/wishlist/hooks", () => ({ useConfigurePriceAlert: () => ({ mutateAsync: configure, isPending: false }) }));
@@ -29,14 +30,24 @@ beforeEach(() => configure.mockReset());
 
 describe("PriceAlertDialog", () => {
   it("offers the two modes and explains pricing boundaries", async () => {
-    renderWithQuery(<PriceAlertDialog userId={7} item={item} open onOpenChange={vi.fn()} />);
+    renderWithQuery(<PriceAlertDialog userId={7} item={item} open onOpenChange={vi.fn()} flashSaleAlertEnabled />);
     expect(screen.getByText(/Flash Sale phụ thuộc stock và quota/i)).toBeInTheDocument();
     expect(screen.getByText(/xác nhận lại giá cuối cùng/i)).toBeInTheDocument();
     expect(screen.getByRole("radio", { name: /giảm thêm ít nhất 5%/i })).toBeChecked();
   });
 
+  it("hides Flash Sale opt-in and never sends it while the server has it disabled", async () => {
+    renderWithQuery(<PriceAlertDialog userId={7} item={{ ...item, includeFlashSale: true } as WishlistItem} open onOpenChange={vi.fn()} />);
+    expect(screen.queryByRole("checkbox", { name: /theo dõi Flash Sale/i })).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Lưu cảnh báo" }));
+    expect(configure).toHaveBeenCalledWith({
+      productId: 3,
+      input: { mode: "PERCENT_DROP", includeFlashSale: false },
+    });
+  });
+
   it("submits explicit Flash Sale opt-in", async () => {
-    renderWithQuery(<PriceAlertDialog userId={7} item={item} open onOpenChange={vi.fn()} />);
+    renderWithQuery(<PriceAlertDialog userId={7} item={item} open onOpenChange={vi.fn()} flashSaleAlertEnabled />);
     await userEvent.click(screen.getByRole("checkbox", { name: /theo dõi Flash Sale/i }));
     await userEvent.click(screen.getByRole("button", { name: "Lưu cảnh báo" }));
     expect(configure).toHaveBeenCalledWith({
