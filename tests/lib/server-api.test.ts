@@ -1,13 +1,21 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+
 import { mockFetch } from "../utils";
 
 vi.mock("server-only", () => ({}));
 vi.mock("@/lib/env", () => ({ env: { API_ORIGIN: "http://api.test" } }));
 
-const { catalogFetch, freshFetch } = await import("@/lib/api/server");
+const { catalogFetch, freshFetch, homeFetch } = await import("@/lib/api/server");
 
 describe("server API cache adapters", () => {
   beforeEach(() => mockFetch().mockResolvedValue(new Response(null, { status: 200 })));
+
+  it("caches public home requests for only sixty seconds", async () => {
+    const fetchMock = mockFetch().mockResolvedValue(new Response(null, { status: 200 }));
+    const request = new Request("http://api.test/api/v1/promotions/available");
+    await homeFetch(request);
+    expect(fetchMock).toHaveBeenCalledWith(request, { next: { revalidate: 60 } });
+  });
 
   it("uses one-hour cache for catalog requests", async () => {
     const fetchMock = mockFetch().mockResolvedValue(new Response(null, { status: 200 }));

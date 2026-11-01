@@ -1,11 +1,11 @@
-// header / page / footer rows: the footer sits at the bottom of short pages instead of leaving a gap under it
+// Optional promo/header/footer keep their size; main fills short pages.
 .shell {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  grid-template-columns: minmax(0, 1fr);
+  display: flex;
+  flex-direction: column;
   min-height: 100dvh;
 }
 
 .main {
+  flex: 1;
   min-width: 0;
 }
