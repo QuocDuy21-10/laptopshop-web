@@ -8,6 +8,7 @@ import {
   Images,
   LayoutDashboard,
   LogOut,
+  Mail,
   Menu as MenuIcon,
   MessageSquareQuote,
   Package,
@@ -51,6 +52,7 @@ const NAV_GROUPS: { title: string; items: NavItem[] }[] = [
     title: "Khách hàng",
     items: [
       { href: "/admin/users", label: "Người dùng", icon: Users },
+      { href: "/admin/newsletter", label: "Đăng ký nhận tin", icon: Mail },
       { href: "/admin/reviews", label: "Đánh giá", icon: MessageSquareQuote },
       { href: "/admin/after-sales", label: "Bảo hành & Hậu mãi", icon: Wrench },
     ],
