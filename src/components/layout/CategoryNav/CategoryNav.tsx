@@ -21,6 +21,7 @@ export function CategoryNav({ targets }: Props) {
       active: onProducts && target === t.value,
     })),
     { href: "/promotions", label: "Khuyến mãi", active: pathname === "/promotions" },
+    { href: "/account/warranties", label: "Bảo hành", active: pathname === "/account/warranties" },
   ];
 
   return (

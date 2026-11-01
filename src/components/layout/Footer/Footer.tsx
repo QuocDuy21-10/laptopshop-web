@@ -97,6 +97,14 @@ export async function Footer() {
               </li>
             </ul>
           </div>
+          <div className={styles.linkCol}>
+            <h2 className={styles.colTitle}>Hỗ trợ</h2>
+            <ul className={styles.linkList}>
+              <li><Link href="/promotions">Khuyến mãi</Link></li>
+              <li><Link href="/account/warranties">Bảo hành của tôi</Link></li>
+              <li><Link href="/account/after-sales">Yêu cầu hậu mãi</Link></li>
+            </ul>
+          </div>
         </div>
 
         <div className={styles.bottomBar}>

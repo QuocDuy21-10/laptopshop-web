@@ -40,6 +40,9 @@ export function MobileMenu({ targets }: { targets: FilterOption[] }) {
         <Link href="/promotions" onClick={close}>
           Khuyến mãi
         </Link>
+        <Link href="/account/warranties" onClick={close}>
+          Bảo hành
+        </Link>
       </nav>
       <nav aria-label="Tài khoản và mua sắm" className={styles.nav}>
         <Link href="/wishlist" onClick={close}>

@@ -45,4 +45,13 @@ describe("CategoryNav", () => {
     render(<CategoryNav targets={targets} />);
     expect(current().map((l) => l.textContent)).toEqual(["Khuyến mãi"]);
   });
+
+  it("links to warranties after promotions and marks the warranty page", () => {
+    nav.pathname = "/account/warranties";
+    render(<CategoryNav targets={targets} />);
+    const warranty = screen.getByRole("link", { name: "Bảo hành" });
+    expect(warranty).toHaveAttribute("href", "/account/warranties");
+    expect(current()).toEqual([warranty]);
+    expect(warranty.closest("li")?.previousElementSibling).toHaveTextContent("Khuyến mãi");
+  });
 });
