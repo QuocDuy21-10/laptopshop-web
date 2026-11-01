@@ -1,12 +1,13 @@
-import { Zap } from "lucide-react";
 import Link from "next/link";
+import { Zap } from "lucide-react";
+
+import type { CatalogProduct, FilterOptions } from "@/lib/api/types";
+import { FlashSaleTimer } from "./FlashSaleTimer";
+import { ScrollRow } from "../ScrollRow/ScrollRow";
 import { optionName } from "@/features/products/labels";
+import styles from "./FlashSaleSection.module.scss";
 import { ProductCard } from "@/features/products/ProductCard/ProductCard";
 import { WishlistStatusProvider } from "@/features/wishlist/WishlistStatusProvider/WishlistStatusProvider";
-import type { CatalogProduct, FilterOptions } from "@/lib/api/types";
-import { ScrollRow } from "../ScrollRow/ScrollRow";
-import { FlashSaleTimer } from "./FlashSaleTimer";
-import styles from "./FlashSaleSection.module.scss";
 
 type Props = { products: CatalogProduct[]; renderedAt: string; options: FilterOptions | null };
 
@@ -25,7 +26,11 @@ export function FlashSaleSection({ products, renderedAt, options }: Props) {
           <div className={styles.timer}>
             <span>Kết thúc sau</span>
             <span className={styles.timerValue}>
-              <FlashSaleTimer endsAt={endsAt} renderedAt={renderedAt} />
+              <FlashSaleTimer
+                key={`${renderedAt}:${endsAt}`}
+                endsAt={endsAt}
+                renderedAt={renderedAt}
+              />
             </span>
           </div>
         )}
@@ -37,7 +42,10 @@ export function FlashSaleSection({ products, renderedAt, options }: Props) {
         <ScrollRow label="Sản phẩm Flash Sale" className={styles.row}>
           {products.map((p) => (
             <li key={p.id}>
-              <ProductCard product={p} factoryName={options ? optionName(options.factoryOptions, p.factory) : undefined} />
+              <ProductCard
+                product={p}
+                factoryName={options ? optionName(options.factoryOptions, p.factory) : undefined}
+              />
             </li>
           ))}
         </ScrollRow>

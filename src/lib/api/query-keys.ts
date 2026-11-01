@@ -20,7 +20,7 @@ export const queryKeys = {
   flashSaleAvailability: (productIds: number[]) =>
     ["promotions", "flash-sale-availability", productIds] as const,
   productFilters: ["product-filters"] as const,
-  homeBestsellers: (target: string) => ["home", "bestsellers", target] as const,
+  homeBestsellers: (target: string, renderedAt: string) => ["home", "bestsellers", target, renderedAt] as const,
   searchSuggest: (q: string) => ["search-suggest", q] as const,
   productFacets: (query: object) => ["product-facets", query] as const,
   compare: (ids: number[]) => ["compare", ids] as const,

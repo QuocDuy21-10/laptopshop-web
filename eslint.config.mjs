@@ -1,7 +1,8 @@
 import { defineConfig, globalIgnores } from "eslint/config";
-import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTs from "eslint-config-next/typescript";
 import prettier from "eslint-config-prettier";
+import nextTs from "eslint-config-next/typescript";
+import nextVitals from "eslint-config-next/core-web-vitals";
+
 import importOrderByLength from "./eslint-rules/import-order-by-length.mjs";
 
 export default defineConfig([
@@ -25,6 +26,7 @@ export default defineConfig([
     "next-env.d.ts",
     "src/lib/api/schema.d.ts",
     ".superpowers/**",
+    ".agents/**",
     "docs-local/**",
   ]),
 ]);

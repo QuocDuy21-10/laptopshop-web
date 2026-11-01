@@ -25,9 +25,11 @@ export function HeroSlider({ slides }: { slides: PublicHomeBanner[] }) {
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "ArrowLeft") {
       e.preventDefault();
+      e.currentTarget.focus();
       go(current - 1);
     } else if (e.key === "ArrowRight") {
       e.preventDefault();
+      e.currentTarget.focus();
       go(current + 1);
     }
   };
@@ -85,7 +87,10 @@ export function HeroSlider({ slides }: { slides: PublicHomeBanner[] }) {
                 </BannerLink>
               )}
               {hasSecondary && (
-                <BannerLink href={slide.secondaryLinkUrl!} className={buttonClassName({ variant: "secondary", size: "lg" })}>
+                <BannerLink
+                  href={slide.secondaryLinkUrl!}
+                  className={buttonClassName({ variant: "secondary", size: "lg" })}
+                >
                   {slide.secondaryCtaText}
                 </BannerLink>
               )}
@@ -118,10 +123,20 @@ export function HeroSlider({ slides }: { slides: PublicHomeBanner[] }) {
 
       {many && (
         <>
-          <button type="button" className={cx(styles.nav, styles.prev)} aria-label="Slide trước" onClick={() => go(current - 1)}>
+          <button
+            type="button"
+            className={cx(styles.nav, styles.prev)}
+            aria-label="Slide trước"
+            onClick={() => go(current - 1)}
+          >
             <ChevronLeft size={20} aria-hidden="true" />
           </button>
-          <button type="button" className={cx(styles.nav, styles.next)} aria-label="Slide tiếp theo" onClick={() => go(current + 1)}>
+          <button
+            type="button"
+            className={cx(styles.nav, styles.next)}
+            aria-label="Slide tiếp theo"
+            onClick={() => go(current + 1)}
+          >
             <ChevronRight size={20} aria-hidden="true" />
           </button>
           <div className={styles.dots}>

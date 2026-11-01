@@ -15,19 +15,31 @@ import { HomeSection } from "../HomeSection/HomeSection";
 import styles from "./BestsellerTabs.module.scss";
 
 type Tab = { value: string; name: string };
-type Props = { tabs: Tab[]; initialProducts: CatalogProduct[] | null; options: FilterOptions | null };
+type Props = {
+  tabs: Tab[];
+  initialProducts: CatalogProduct[] | null;
+  options: FilterOptions | null;
+  renderedAt: string;
+};
 
-export function BestsellerTabs({ tabs, initialProducts, options }: Props) {
+export function BestsellerTabs({ tabs, initialProducts, options, renderedAt }: Props) {
   const all: Tab[] = [{ value: "", name: "Tất cả" }, ...tabs];
   const [active, setActive] = useState("");
   const buttons = useRef<(HTMLButtonElement | null)[]>([]);
   const query = useQuery({
-    queryKey: queryKeys.homeBestsellers(active),
+    // A server refresh replaces expired prices in every tab, including previously cached targets.
+    queryKey: queryKeys.homeBestsellers(active, renderedAt),
     queryFn: async () =>
       (
         await unwrap(
           api.GET("/api/v1/products", {
-            params: { query: { sort: "sold_desc", pageSize: HOME_PRODUCT_LIMIT, ...(active ? { target: active } : {}) } },
+            params: {
+              query: {
+                sort: "sold_desc",
+                pageSize: HOME_PRODUCT_LIMIT,
+                ...(active ? { target: active } : {}),
+              },
+            },
           }),
         )
       ).data,
@@ -60,7 +72,12 @@ export function BestsellerTabs({ tabs, initialProducts, options }: Props) {
       subtitle="Sắp xếp theo số lượng đã bán"
       link={{ href: bestsellersHref(active), label: "Xem thêm" }}
     >
-      <div role="tablist" aria-label="Lọc theo nhu cầu" className={styles.tabs} onKeyDown={onKeyDown}>
+      <div
+        role="tablist"
+        aria-label="Lọc theo nhu cầu"
+        className={styles.tabs}
+        onKeyDown={onKeyDown}
+      >
         {all.map((tab, i) => (
           <button
             key={tab.value || "all"}

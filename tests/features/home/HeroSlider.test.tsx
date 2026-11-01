@@ -1,8 +1,9 @@
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { HeroSlider } from "@/features/home/HeroSlider/HeroSlider";
+
 import type { PublicHomeBanner } from "@/lib/api/types";
+import { HeroSlider } from "@/features/home/HeroSlider/HeroSlider";
 
 const banner = (id: number, over: Partial<PublicHomeBanner> = {}): PublicHomeBanner => ({
   id,
@@ -23,7 +24,8 @@ const banner = (id: number, over: Partial<PublicHomeBanner> = {}): PublicHomeBan
 afterEach(() => vi.useRealTimers());
 
 // jsdom may lack PointerEvent; without it fireEvent.pointerDown drops clientX
-if (!("PointerEvent" in window)) Object.defineProperty(window, "PointerEvent", { value: MouseEvent });
+if (!("PointerEvent" in window))
+  Object.defineProperty(window, "PointerEvent", { value: MouseEvent });
 
 describe("HeroSlider", () => {
   it("renders the banner content with internal and external links", () => {
@@ -46,7 +48,10 @@ describe("HeroSlider", () => {
       />,
     );
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Slide 1 RTX 50");
-    expect(screen.getByRole("link", { name: "Xem ngay" })).toHaveAttribute("href", "/products?target=GAMING");
+    expect(screen.getByRole("link", { name: "Xem ngay" })).toHaveAttribute(
+      "href",
+      "/products?target=GAMING",
+    );
     const external = screen.getByRole("link", { name: "Chi tiết" });
     expect(external).toHaveAttribute("href", "https://example.com/x");
     expect(external).toHaveAttribute("rel", "noopener");
@@ -71,6 +76,21 @@ describe("HeroSlider", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Slide 1");
     await userEvent.click(screen.getByRole("button", { name: "Slide trước" }));
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Slide 3");
+  });
+
+  it("keeps keyboard focus in the carousel when switching from a slide link", async () => {
+    render(
+      <HeroSlider
+        slides={[
+          banner(1, { ctaText: "Xem ngay", linkUrl: "/products" }),
+          banner(2, { ctaText: "Tư vấn", linkUrl: "/advisor" }),
+        ]}
+      />,
+    );
+    screen.getByRole("link", { name: "Xem ngay" }).focus();
+    await userEvent.keyboard("{ArrowRight}");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Slide 2");
+    expect(screen.getByRole("region")).toHaveFocus();
   });
 
   it("swipes on touch", () => {
