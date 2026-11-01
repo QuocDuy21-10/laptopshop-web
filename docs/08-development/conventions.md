@@ -52,6 +52,7 @@ Test nằm riêng trong `tests/`, chia theo `components`, `features`, `lib` và 
 | Tới mã nguồn web | `https://github.com/QuocDuy21-10/laptopshop-web/blob/main/<path>#L<a>-L<b>`. |
 | Tới mã nguồn backend | `https://github.com/QuocDuy21-10/laptopshop-api/blob/main/<path>`. |
 | Tới file ở root repo | URL GitHub (VitePress không phục vụ file ngoài `docs/`). |
+| Đường dẫn có dấu ngoặc, như `(admin)` | Mã hóa thành `%28` và `%29` trong URL, ví dụ `src/app/%28admin%29/admin/layout.tsx`. Nếu không, Markdown cắt liên kết ở dấu `)` đầu tiên. |
 | Địa chỉ localhost | Viết dạng code (`http://localhost:3000`), không viết thành liên kết. |
 
 ### Đánh dấu điều chưa xác minh
