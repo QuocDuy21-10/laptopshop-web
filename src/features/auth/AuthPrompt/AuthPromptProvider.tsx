@@ -28,7 +28,6 @@ export const useAuthPrompt = () => useContext(AuthPromptContext);
 
 export function AuthPromptProvider({ children }: { children: ReactNode }) {
   const [prompt, setPrompt] = useState<Prompt | null>(null);
-  const reduce = useReducedMotion();
   const open = useCallback((next: Prompt) => setPrompt(next), []);
   const close = () => setPrompt(null);
   // keep the last copy while the closing animation plays
@@ -41,35 +40,43 @@ export function AuthPromptProvider({ children }: { children: ReactNode }) {
       {children}
       {copy && shown && (
         <Dialog open={prompt !== null} onOpenChange={(o) => !o && close()} title={copy.title} description={copy.description}>
-          <motion.div
-            className={styles.actions}
-            initial={reduce ? false : "hidden"}
-            animate="visible"
-            variants={{ visible: { transition: { staggerChildren: 0.06, delayChildren: 0.08 } } }}
-          >
-            <motion.div variants={item}>
-              <Link href={loginHref(shown.returnTo)} className={buttonClassName({ fullWidth: true })} onClick={close}>
-                Đăng nhập
-              </Link>
-            </motion.div>
-            <motion.div variants={item}>
-              <Link
-                href={`/register?next=${encodeURIComponent(shown.returnTo)}`}
-                className={buttonClassName({ variant: "secondary", fullWidth: true })}
-                onClick={close}
-              >
-                Tạo tài khoản
-              </Link>
-            </motion.div>
-            {copy.resumes && (
-              <motion.p variants={item} className={styles.note}>
-                Hành động của bạn sẽ được hoàn tất sau khi đăng nhập.
-              </motion.p>
-            )}
-          </motion.div>
+          <AuthPromptActions returnTo={shown.returnTo} resumes={copy.resumes} onNavigate={close} />
         </Dialog>
       )}
     </AuthPromptContext.Provider>
+  );
+}
+
+/** Sign-in / register buttons; also used by the mini cart so both prompts read the same. */
+export function AuthPromptActions({ returnTo, resumes = false, onNavigate }: { returnTo: string; resumes?: boolean; onNavigate: () => void }) {
+  const reduce = useReducedMotion();
+  return (
+    <motion.div
+      className={styles.actions}
+      initial={reduce ? false : "hidden"}
+      animate="visible"
+      variants={{ visible: { transition: { staggerChildren: 0.06, delayChildren: 0.08 } } }}
+    >
+      <motion.div variants={item}>
+        <Link href={loginHref(returnTo)} className={buttonClassName({ fullWidth: true })} onClick={onNavigate}>
+          Đăng nhập
+        </Link>
+      </motion.div>
+      <motion.div variants={item}>
+        <Link
+          href={`/register?next=${encodeURIComponent(returnTo)}`}
+          className={buttonClassName({ variant: "secondary", fullWidth: true })}
+          onClick={onNavigate}
+        >
+          Tạo tài khoản
+        </Link>
+      </motion.div>
+      {resumes && (
+        <motion.p variants={item} className={styles.note}>
+          Hành động của bạn sẽ được hoàn tất sau khi đăng nhập.
+        </motion.p>
+      )}
+    </motion.div>
   );
 }
 

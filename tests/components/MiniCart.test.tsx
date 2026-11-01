@@ -67,7 +67,7 @@ describe("MiniCart", () => {
 
     expect(await screen.findByText("Đăng nhập để xem giỏ hàng và thanh toán.")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Đăng nhập" })).toHaveAttribute("href", "/login?next=%2Fcart");
-    expect(screen.getByRole("link", { name: "Tạo tài khoản" })).toHaveAttribute("href", "/register");
+    expect(screen.getByRole("link", { name: "Tạo tài khoản" })).toHaveAttribute("href", "/register?next=%2Fcart");
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
