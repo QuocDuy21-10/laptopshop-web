@@ -1,5 +1,6 @@
 import type { FC, ReactNode } from "react";
 import Link from "next/link";
+import { ScrollRow } from "../ScrollRow/ScrollRow";
 import styles from "./BrandMarquee.module.scss";
 
 export interface PartnerBrand {
@@ -187,49 +188,32 @@ interface BrandMarqueeProps {
   brands?: PartnerBrand[];
 }
 
-export const BrandMarquee: FC<BrandMarqueeProps> = ({ brands = PARTNER_BRANDS }) => {
-  return (
-    <section className={styles.marqueeSection} aria-label="Thương hiệu đối tác chính hãng">
-      <div className={styles.headerRow}>
-        <span className={styles.heading}>Thương hiệu máy tính hàng đầu</span>
-        <Link href="/products" className={styles.viewAllLink}>
-          Tất cả thương hiệu &rarr;
-        </Link>
-      </div>
-
-      <div className={styles.marqueeContainer}>
-        <div className={styles.marqueeTrack}>
-          {/* First loop */}
-          {brands.map((brand) => (
-            <Link
-              key={brand.key}
-              href={brand.href}
-              className={styles.brandCard}
-              data-brand={brand.key}
-              title={`Xem laptop ${brand.name}`}
-              aria-label={brand.wordmark ? `Xem laptop ${brand.name}` : undefined}
-            >
-              {brand.logo}
-              {!brand.wordmark && <span className={styles.brandName}>{brand.name}</span>}
-            </Link>
-          ))}
-
-          {/* Duplicated loop for infinite seamless scroll */}
-          {brands.map((brand) => (
-            <Link
-              key={`${brand.key}-dup`}
-              href={brand.href}
-              className={`${styles.brandCard} ${styles.duplicate}`}
-              data-brand={brand.key}
-              aria-hidden="true"
-              tabIndex={-1}
-            >
-              {brand.logo}
-              {!brand.wordmark && <span className={styles.brandName}>{brand.name}</span>}
-            </Link>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
+// a static, scrollable row: DESIGN.md rules out decorative motion that runs on its own
+export const BrandMarquee: FC<BrandMarqueeProps> = ({ brands = PARTNER_BRANDS }) => (
+  <section className={styles.section} aria-labelledby="brands-heading">
+    <div className={styles.headerRow}>
+      <h2 id="brands-heading" className={styles.heading}>
+        Thương hiệu
+      </h2>
+      <Link href="/products" className={styles.viewAllLink}>
+        Tất cả laptop <span aria-hidden="true">→</span>
+      </Link>
+    </div>
+    <ScrollRow label="Thương hiệu laptop" className={styles.row}>
+      {brands.map((brand) => (
+        <li key={brand.key}>
+          <Link
+            href={brand.href}
+            className={styles.brandCard}
+            data-brand={brand.key}
+            title={`Xem laptop ${brand.name}`}
+            aria-label={brand.wordmark ? `Xem laptop ${brand.name}` : undefined}
+          >
+            {brand.logo}
+            {!brand.wordmark && <span className={styles.brandName}>{brand.name}</span>}
+          </Link>
+        </li>
+      ))}
+    </ScrollRow>
+  </section>
+);

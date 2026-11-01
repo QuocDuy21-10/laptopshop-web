@@ -1,80 +1,41 @@
 @use "mixins" as *;
 
-.marqueeSection {
-  position: relative;
-  width: 100%;
-  padding: var(--space-four) 0;
-  overflow: hidden;
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-three);
 }
 
 .headerRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--space-three);
+  gap: var(--space-four);
 }
 
 .heading {
-  font-size: var(--text-label-sm-size);
-  font-weight: var(--text-label-sm-weight);
-  color: var(--color-foreground-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  @include text(title-md);
+
+  margin: 0;
+  color: var(--color-foreground);
 }
 
 .viewAllLink {
-  font-size: var(--text-label-sm-size);
-  font-weight: var(--text-label-sm-weight);
-  color: var(--color-primary);
+  @include text(label-md);
+
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-md);
+  color: var(--color-link);
   text-decoration: none;
 
-  &:hover {
-    text-decoration: underline;
+  &:focus-visible {
+    @include focus-ring;
   }
 }
 
-// Fade gradients at edges for smooth entrance/exit
-.marqueeContainer {
-  position: relative;
-  display: flex;
-  width: 100%;
-  overflow: hidden;
-  mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    var(--color-foreground) 6%,
-    var(--color-foreground) 94%,
-    transparent 100%
-  );
-}
-
-.marqueeTrack {
-  display: flex;
-  align-items: center;
-  width: max-content;
-  animation: marquee-scroll 26s linear infinite;
-  padding: var(--space-one) 0;
-
-  &:hover {
-    animation-play-state: paused;
-  }
-
-  @include reduced-motion {
-    animation: none;
-    flex-wrap: wrap;
-    justify-content: center;
-    width: 100%;
-  }
-}
-
-@keyframes marquee-scroll {
-  0% {
-    transform: translateX(0);
-  }
-
-  100% {
-    transform: translateX(-50%);
-  }
+.row {
+  --scroll-item: minmax(128px, 1fr);
 }
 
 .brandCard {
@@ -82,34 +43,20 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-two);
-  min-width: 130px;
-  height: 52px;
-
-  // margin, not flex gap, so the track is exactly two equal halves and -50% loops seamlessly
-  margin-right: var(--space-three);
+  min-height: 56px;
   padding: var(--space-two) var(--space-four);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
   color: var(--color-foreground-muted);
   text-decoration: none;
-  filter: grayscale(1);
-  opacity: 0.7;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
   transition:
-    filter var(--duration-fast) var(--ease-out),
-    opacity var(--duration-fast) var(--ease-out),
-    border-color var(--duration-fast) var(--ease-out),
-    box-shadow var(--duration-fast) var(--ease-out),
-    transform var(--duration-fast) var(--ease-out);
+    color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
 
   &:hover {
-    filter: grayscale(0);
-    opacity: 1;
     color: var(--brand-color, var(--color-foreground));
     border-color: var(--brand-color, var(--color-border-strong));
-    background: var(--color-surface-raised);
-    box-shadow: var(--shadow-1);
-    transform: translateY(-2px);
   }
 
   &:focus-visible {
@@ -121,20 +68,10 @@
       --brand-color: var(--color-brand-#{$key});
     }
   }
-
-  &.duplicate {
-    @include reduced-motion {
-      display: none;
-    }
-  }
-
-  @media (pointer: coarse) {
-    min-height: var(--control-md);
-  }
 }
 
 .brandName {
-  font-size: var(--text-label-sm-size);
-  font-weight: 700;
+  @include text(label-md);
+
   letter-spacing: 0.04em;
 }
