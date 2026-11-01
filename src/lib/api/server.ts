@@ -16,6 +16,10 @@ export const catalogServerApi = createClient<paths>({
 export const freshServerApi = createClient<paths>({ baseUrl: env.API_ORIGIN, fetch: freshFetch });
 export const serverApi = freshServerApi;
 
+// home sections without prices (banners, review highlights, category photos) may be a minute old
+export const homeFetch = (request: Request) => fetch(request, { next: { revalidate: 60 } });
+export const homeServerApi = createClient<paths>({ baseUrl: env.API_ORIGIN, fetch: homeFetch });
+
 type Result<T> = { data?: T; error?: unknown; response: Response };
 
 export async function fetchPublic<T>(promise: Promise<Result<T>>): Promise<T> {

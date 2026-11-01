@@ -2852,6 +2852,7 @@ export interface paths {
           inStock?: boolean | ("true" | "false");
           q?: string;
           sort?: "price_asc" | "price_desc" | "rating_desc" | "sold_desc";
+          flashSale?: boolean | ("true" | "false");
         };
         header?: never;
         path?: never;
