@@ -1,7 +1,7 @@
 import type { FilterOptions, ProductFacetsQuery, ProductQuery } from "@/lib/api/types";
 import { PRICE_RANGE_OPTIONS } from "./labels";
 
-export type ProductSort = "price_asc" | "price_desc" | "rating_desc";
+export type ProductSort = "price_asc" | "price_desc" | "rating_desc" | "sold_desc";
 export type ProductFilters = {
   factory: string[];
   target: string[];
@@ -20,12 +20,15 @@ export type ProductFilters = {
   minWarrantyMonths?: number;
   minRating?: 3 | 4;
   inStock?: boolean;
+  flashSale?: boolean;
   sort?: ProductSort;
   q?: string;
   page: number;
 };
 
 export const PAGE_SIZE = 12;
+
+const SORTS: readonly ProductSort[] = ["price_asc", "price_desc", "rating_desc", "sold_desc"];
 
 export type Raw = Record<string, string | string[] | undefined>;
 
@@ -66,7 +69,7 @@ const WARRANTY_MINIMUMS = [12, 24, 36] as const;
 
 // unknown values are dropped: the API answers 400 for them
 export function parseFilters(raw: Raw, options: FilterOptions): ProductFilters {
-  const sort = raw.sort === "price_asc" || raw.sort === "price_desc" || raw.sort === "rating_desc" ? raw.sort : undefined;
+  const sort = SORTS.includes(raw.sort as ProductSort) ? (raw.sort as ProductSort) : undefined;
   const q = typeof raw.q === "string" && raw.q.trim() ? raw.q.trim().slice(0, 100) : undefined;
   const page = Math.trunc(Number(raw.page));
   return {
@@ -87,6 +90,7 @@ export function parseFilters(raw: Raw, options: FilterOptions): ProductFilters {
     minWarrantyMonths: threshold(raw.minWarrantyMonths, WARRANTY_MINIMUMS),
     minRating: threshold(raw.minRating, [3, 4]) as 3 | 4 | undefined,
     inStock: raw.inStock === "true" ? true : undefined,
+    flashSale: raw.flashSale === "true" ? true : undefined,
     sort,
     q,
     page: page > 0 ? page : 1,
@@ -112,6 +116,7 @@ export function toQueryString(f: ProductFilters): string {
   if (f.minWarrantyMonths !== undefined) params.set("minWarrantyMonths", String(f.minWarrantyMonths));
   if (f.minRating !== undefined) params.set("minRating", String(f.minRating));
   if (f.inStock) params.set("inStock", "true");
+  if (f.flashSale) params.set("flashSale", "true");
   if (f.sort) params.set("sort", f.sort);
   if (f.q) params.set("q", f.q);
   if (f.page > 1) params.set("page", String(f.page));
@@ -140,6 +145,7 @@ export function toApiQuery(f: ProductFilters): ProductQuery {
     ...(f.minWarrantyMonths !== undefined ? { minWarrantyMonths: f.minWarrantyMonths } : {}),
     ...(f.minRating !== undefined ? { minRating: f.minRating } : {}),
     ...(f.inStock ? { inStock: true } : {}),
+    ...(f.flashSale ? { flashSale: true } : {}),
     ...(f.sort ? { sort: f.sort } : {}),
     ...(f.q ? { q: f.q } : {}),
   };
@@ -151,6 +157,7 @@ export function toFacetsApiQuery(f: ProductFilters): ProductFacetsQuery {
   delete facets.page;
   delete facets.pageSize;
   delete facets.sort;
+  delete facets.flashSale;
   return facets;
 }
 
@@ -159,11 +166,11 @@ export const activeFilterCount = (f: ProductFilters) =>
   f.ramGb.length + f.storageGb.length + f.screenSize.length + f.resolutionTier.length + f.panelType.length +
   (f.minRefreshHz === undefined ? 0 : 1) + (f.minBatteryWh === undefined ? 0 : 1) +
   (f.maxWeightGrams === undefined ? 0 : 1) + (f.minWarrantyMonths === undefined ? 0 : 1) +
-  (f.minRating === undefined ? 0 : 1) + (f.inStock ? 1 : 0);
+  (f.minRating === undefined ? 0 : 1) + (f.inStock ? 1 : 0) + (f.flashSale ? 1 : 0);
 
 export const clearProductFacets = (filters: ProductFilters): ProductFilters => ({
   ...filters,
   factory: [], target: [], price: [], cpuBrand: [], gpuBrand: [], gpuType: [], ramGb: [], storageGb: [],
   screenSize: [], resolutionTier: [], panelType: [], minRefreshHz: undefined, minBatteryWh: undefined,
-  maxWeightGrams: undefined, minWarrantyMonths: undefined, minRating: undefined, inStock: undefined, page: 1,
+  maxWeightGrams: undefined, minWarrantyMonths: undefined, minRating: undefined, inStock: undefined, flashSale: undefined, page: 1,
 });

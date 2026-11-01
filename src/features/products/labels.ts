@@ -10,6 +10,7 @@ export const SORT_OPTIONS = [
   { value: "price_asc", name: "Giá tăng dần" },
   { value: "price_desc", name: "Giá giảm dần" },
   { value: "rating_desc", name: "Đánh giá cao nhất" },
+  { value: "sold_desc", name: "Bán chạy nhất" },
 ] as const;
 
 export const FACET_LABELS: Record<string, string> = {

@@ -22,6 +22,7 @@ export function ActiveFilterChips({ options, filters }: { options: FilterOptions
     ...(filters.minWarrantyMonths === undefined ? [] : [{ key: "minWarrantyMonths" as const, v: String(filters.minWarrantyMonths), name: formatFacetValue("minWarrantyMonths", String(filters.minWarrantyMonths)) }]),
     ...(filters.minRating === undefined ? [] : [{ key: "minRating" as const, v: String(filters.minRating), name: formatFacetValue("minRating", String(filters.minRating)) }]),
     ...(filters.inStock ? [{ key: "inStock" as const, v: "true", name: formatFacetValue("inStock", "true") }] : []),
+    ...(filters.flashSale ? [{ key: "flashSale" as const, v: "true", name: "Đang Flash Sale" }] : []),
   ];
   const without = (key: string, v: string) => {
     const value = (filters as unknown as Record<string, unknown>)[key];

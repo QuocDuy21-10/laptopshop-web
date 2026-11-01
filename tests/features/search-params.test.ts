@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { clearProductFacets, parseFilters, toApiQuery, toFacetsApiQuery, toQueryString } from "@/features/products/search-params";
+import { activeFilterCount, clearProductFacets, parseFilters, toApiQuery, toFacetsApiQuery, toQueryString } from "@/features/products/search-params";
 
 const options = {
   factoryOptions: [
@@ -117,5 +117,25 @@ describe("toApiQuery", () => {
     expect(toQueryString(four)).toBe("?minRating=4&sort=rating_desc&page=9");
     expect(toFacetsApiQuery(four)).toMatchObject({ minRating: 4 });
     expect(parseFilters({ minRating: "5" }, options).minRating).toBeUndefined();
+  });
+});
+
+describe("best sellers and flash sale on the listing", () => {
+  it("reads sold_desc and flashSale from the URL and sends them to the API", () => {
+    const f = parseFilters({ sort: "sold_desc", flashSale: "true" }, options);
+    expect(f.sort).toBe("sold_desc");
+    expect(f.flashSale).toBe(true);
+    expect(toQueryString(f)).toBe("?flashSale=true&sort=sold_desc");
+    expect(toApiQuery(f)).toMatchObject({ sort: "sold_desc", flashSale: true });
+    expect(toFacetsApiQuery(f)).not.toHaveProperty("flashSale");
+    expect(toFacetsApiQuery(f)).not.toHaveProperty("sort");
+  });
+
+  it("ignores any other flashSale value and clears it with the facets", () => {
+    expect(parseFilters({ flashSale: "1" }, options).flashSale).toBeUndefined();
+    const f = parseFilters({ flashSale: "true", q: "tuf" }, options);
+    expect(activeFilterCount(f)).toBe(1);
+    expect(clearProductFacets(f).flashSale).toBeUndefined();
+    expect(clearProductFacets(f).q).toBe("tuf");
   });
 });
