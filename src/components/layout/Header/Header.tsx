@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { Sparkles } from "lucide-react";
 
+import { HeaderFrame } from "./HeaderFrame";
 import type { FilterOption } from "@/lib/api/types";
 import styles from "./Header.module.scss";
 import { TARGET_LABEL, targetName } from "@/features/products/labels";
@@ -30,33 +31,34 @@ export async function Header() {
   const targets = TARGET_KEYS.map((value) => ({ value, name: targetName(apiTargets, value) }));
 
   return (
-    <header className={styles.header}>
-      <Container className={styles.main}>
-        <div className={styles.start}>
-          <MobileMenu targets={targets} />
-          <Link href="/" className={styles.brand} aria-label="LaptopShop - Trang chủ">
-            <BrandLogo />
-          </Link>
-        </div>
+    <HeaderFrame
+      mainRow={
+        <Container className={styles.main}>
+          <div className={styles.start}>
+            <MobileMenu targets={targets} />
+            <Link href="/" className={styles.brand} aria-label="LaptopShop - Trang chủ">
+              <BrandLogo />
+            </Link>
+          </div>
 
-        <div className={styles.search}>
-          <Suspense fallback={null}>
-            <SearchBox />
-          </Suspense>
-        </div>
+          <div className={styles.search}>
+            <Suspense fallback={null}>
+              <SearchBox />
+            </Suspense>
+          </div>
 
-        <div className={styles.actions}>
-          {/* on phones the wishlist stays reachable from the account menu */}
-          <span className={styles.wideOnly}>
-            <WishlistLink />
-          </span>
-          <NotificationBell />
-          <CartLink />
-          <AccountMenu />
-        </div>
-      </Container>
-
-      <div className={styles.navRow}>
+          <div className={styles.actions}>
+            {/* on phones the wishlist stays reachable from the account menu */}
+            <span className={styles.wideOnly}>
+              <WishlistLink />
+            </span>
+            <NotificationBell />
+            <CartLink />
+            <AccountMenu />
+          </div>
+        </Container>
+      }
+      navigationRow={
         <Container className={styles.navInner}>
           <Suspense fallback={<div className={styles.navFallback} />}>
             <CategoryNav targets={targets} />
@@ -68,7 +70,7 @@ export async function Header() {
             </span>
           </Link>
         </Container>
-      </div>
-    </header>
+      }
+    />
   );
 }

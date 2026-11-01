@@ -4,8 +4,17 @@
   position: sticky;
   top: 0;
   z-index: var(--z-sticky);
+  align-self: flex-start;
+  flex: none;
+  width: 100%;
+  pointer-events: none;
+}
+
+.mainRow {
+  position: relative;
+  z-index: 1;
   background: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
+  pointer-events: auto;
 }
 
 .main {
@@ -68,9 +77,26 @@
 .navRow {
   display: none;
   border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+  pointer-events: auto;
+  transition:
+    transform 200ms ease-out,
+    opacity 200ms ease-out;
+
+  @include reduced-motion {
+    transition: none;
+  }
 
   @include up(lg) {
     display: block;
+  }
+}
+
+.collapsed {
+  @include up(lg) {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
   }
 }
 
