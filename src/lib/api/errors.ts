@@ -30,6 +30,7 @@ const MESSAGES: Record<string, string> = {
   CART_EMPTY: "Giỏ hàng đang trống.",
   PASSWORD_RESET_CODE_INVALID: "Mã không đúng hoặc đã hết hạn.",
   PASSWORD_RESET_LOCKED: "Bạn đã nhập sai quá nhiều lần. Hãy yêu cầu mã mới.",
+  NEWSLETTER_TOKEN_INVALID: "Liên kết không hợp lệ hoặc đã hết hạn.",
   EMAIL_DELIVERY_UNAVAILABLE: "Hiện chưa gửi được email. Vui lòng liên hệ cửa hàng để được hỗ trợ.",
   INVALID_STATUS_TRANSITION: "Không thể thực hiện thao tác ở trạng thái hiện tại của đơn hàng.",
   NOT_FOUND: "Không tìm thấy dữ liệu yêu cầu.",

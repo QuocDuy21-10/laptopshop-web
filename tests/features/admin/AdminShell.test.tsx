@@ -36,6 +36,15 @@ describe("AdminShell", () => {
     expect(screen.getByRole("link", { name: "Banner trang chủ" })).toHaveAttribute("href", "/admin/home-banners");
   });
 
+  it("links to the newsletter subscribers screen", () => {
+    renderAdmin(
+      <AdminShell>
+        <main>Content</main>
+      </AdminShell>,
+    );
+    expect(screen.getByRole("link", { name: "Đăng ký nhận tin" })).toHaveAttribute("href", "/admin/newsletter");
+  });
+
   it("uses the shared LaptopShop logo assets in the admin brand", () => {
     const { container } = renderAdmin(
       <AdminShell>
