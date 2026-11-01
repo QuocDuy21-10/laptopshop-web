@@ -4,6 +4,7 @@ type Schemas = components["schemas"];
 
 export type Me = Schemas["Me"];
 export type User = Schemas["User"];
+export type AdminHomeBanner = Schemas["AdminHomeBanner"];
 type GeneratedProduct = Schemas["Product"];
 export type Product = Omit<
   GeneratedProduct,

@@ -27,6 +27,15 @@ describe("AdminShell", () => {
     expect(screen.getByText("Thông báo")).toBeInTheDocument();
   });
 
+  it("links to the homepage banner manager", () => {
+    renderAdmin(
+      <AdminShell>
+        <main>Content</main>
+      </AdminShell>,
+    );
+    expect(screen.getByRole("link", { name: "Banner trang chủ" })).toHaveAttribute("href", "/admin/home-banners");
+  });
+
   it("uses the shared LaptopShop logo assets in the admin brand", () => {
     const { container } = renderAdmin(
       <AdminShell>

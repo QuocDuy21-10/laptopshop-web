@@ -472,6 +472,513 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/home-banners": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List active homepage banners */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: {
+                hero: components["schemas"]["PublicHomeBanner"][];
+                side: components["schemas"]["PublicHomeBanner"][];
+              };
+            };
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/home-banners": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List all homepage banners */
+    get: {
+      parameters: {
+        query?: {
+          placement?: "HERO" | "SIDE";
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AdminHomeBanner"][];
+            };
+          };
+        };
+        /** @description Invalid filter */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    /** Create a homepage banner */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            eyebrow?: string | null;
+            title: string;
+            highlight?: string | null;
+            description?: string | null;
+            ctaText?: string | null;
+            linkUrl?: string | null;
+            secondaryCtaText?: string | null;
+            secondaryLinkUrl?: string | null;
+            badges?: string[];
+            position?: number;
+            isActive?: boolean;
+            startsAt?: string | null;
+            endsAt?: string | null;
+            /** @enum {string} */
+            placement: "HERO" | "SIDE";
+          };
+        };
+      };
+      responses: {
+        /** @description Created */
+        201: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AdminHomeBanner"];
+            };
+          };
+        };
+        /** @description Invalid banner */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/home-banners/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get a homepage banner */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AdminHomeBanner"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Banner not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    /** Delete a homepage banner */
+    delete: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Deleted */
+        204: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": unknown;
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Banner not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    options?: never;
+    head?: never;
+    /** Update a homepage banner */
+    patch: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            eyebrow?: string | null;
+            title?: string;
+            highlight?: string | null;
+            description?: string | null;
+            ctaText?: string | null;
+            linkUrl?: string | null;
+            secondaryCtaText?: string | null;
+            secondaryLinkUrl?: string | null;
+            badges?: string[];
+            imageAlt?: string | null;
+            position?: number;
+            isActive?: boolean;
+            startsAt?: string | null;
+            endsAt?: string | null;
+          };
+        };
+      };
+      responses: {
+        /** @description Updated */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AdminHomeBanner"];
+            };
+          };
+        };
+        /** @description Invalid banner */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Banner not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    trace?: never;
+  };
+  "/api/v1/admin/home-banners/{id}/image": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Upload or replace a banner image */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: {
+        content: {
+          "multipart/form-data": {
+            imageAlt?: string;
+            /** Format: binary */
+            image: string;
+          };
+        };
+      };
+      responses: {
+        /** @description Updated */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AdminHomeBanner"];
+            };
+          };
+        };
+        /** @description Missing alt text, no file or invalid image */
+        400: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Banner not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    /** Remove a banner image */
+    delete: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          id: number;
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description Updated */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["AdminHomeBanner"];
+            };
+          };
+        };
+        /** @description Not authenticated */
+        401: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Not an admin */
+        403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+        /** @description Banner not found */
+        404: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/auth/refresh": {
     parameters: {
       query?: never;
@@ -2015,7 +2522,7 @@ export interface paths {
           minRating?: number;
           inStock?: boolean | ("true" | "false");
           q?: string;
-          sort?: "price_asc" | "price_desc" | "rating_desc";
+          sort?: "price_asc" | "price_desc" | "rating_desc" | "sold_desc";
         };
         header?: never;
         path?: never;
@@ -2498,6 +3005,55 @@ export interface paths {
         };
         /** @description Not eligible */
         403: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Error"];
+          };
+        };
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/reviews/highlights": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List highlighted public reviews with a shop-wide summary */
+    get: {
+      parameters: {
+        query?: {
+          limit?: number;
+        };
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description OK */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              data: components["schemas"]["ReviewHighlights"];
+            };
+          };
+        };
+        /** @description Invalid limit */
+        400: {
           headers: {
             [name: string]: unknown;
           };
@@ -10229,6 +10785,57 @@ export interface components {
         4?: number;
         5?: number;
       };
+    };
+    PublicHomeBanner: {
+      id: number;
+      eyebrow: string | null;
+      title: string;
+      highlight: string | null;
+      description: string | null;
+      ctaText: string | null;
+      linkUrl: string | null;
+      secondaryCtaText: string | null;
+      secondaryLinkUrl: string | null;
+      badges: string[];
+      imageUrl: string | null;
+      imageAlt: string | null;
+    };
+    AdminHomeBanner: components["schemas"]["PublicHomeBanner"] & {
+      /** @enum {string} */
+      placement: "HERO" | "SIDE";
+      position: number;
+      isActive: boolean;
+      /** Format: date-time */
+      startsAt: string | null;
+      /** Format: date-time */
+      endsAt: string | null;
+      /** @enum {string} */
+      status: "ACTIVE" | "SCHEDULED" | "EXPIRED" | "INACTIVE";
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    ReviewHighlights: {
+      summary: {
+        averageRating: number | null;
+        totalReviews: number;
+      };
+      items: {
+        id: number;
+        rating: number;
+        title: string | null;
+        content: string;
+        /** Format: date-time */
+        createdAt: string;
+        helpfulCount: number;
+        author: components["schemas"]["ReviewAuthor"];
+        product: {
+          id: number;
+          name: string;
+          image: string | null;
+        };
+      }[];
     };
     OwnerReview: {
       id: number;
