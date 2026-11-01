@@ -7,7 +7,10 @@ import { PromotionForm } from "@/features/admin/promotions/PromotionForm";
 
 const mocks = vi.hoisted(() => ({ push: vi.fn(), mutate: vi.fn(), useAdminProducts: vi.fn() }));
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: mocks.push }) }));
-vi.mock("@/features/admin/promotions/hooks", () => ({ useCreatePromotion: () => ({ mutate: mocks.mutate, isPending: false, error: null }) }));
+vi.mock("@/features/admin/promotions/hooks", () => ({
+  useCreatePromotion: () => ({ mutate: mocks.mutate, isPending: false, error: null }),
+  useUpdatePromotion: () => ({ mutate: vi.fn(), isPending: false, error: null }),
+}));
 vi.mock("@/features/admin/products/hooks", () => ({ useAdminProducts: mocks.useAdminProducts }));
 
 beforeEach(() => {

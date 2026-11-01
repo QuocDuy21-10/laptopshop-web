@@ -6,12 +6,12 @@ import { useAdminProducts } from "@/features/admin/products/hooks";
 import { useDebouncedValue } from "@/lib/useDebouncedValue";
 
 /** Multi-select of active products, driven by Form.Item (value/onChange). */
-export function PromotionTargetSelect({ id, value = [], onChange }: { id?: string; value?: number[]; onChange?: (value: number[]) => void }) {
+export function PromotionTargetSelect({ id, value = [], onChange, productNames = {} }: { id?: string; value?: number[]; onChange?: (value: number[]) => void; productNames?: Record<number, string> }) {
   const [search, setSearch] = useState("");
   const q = useDebouncedValue(search.trim());
   const products = useAdminProducts({ page: 1, pageSize: 20, q: q || undefined, isActive: true });
   // labels survive a new search: keep what was picked, then the current results
-  const [picked, setPicked] = useState<Record<number, string>>({});
+  const [picked, setPicked] = useState<Record<number, string>>(productNames);
   const names: Record<number, string> = { ...picked, ...Object.fromEntries((products.data?.data ?? []).map((product) => [product.id, product.name])) };
 
   return (
