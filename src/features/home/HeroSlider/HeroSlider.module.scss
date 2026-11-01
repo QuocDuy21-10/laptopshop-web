@@ -1,391 +1,204 @@
 @use "mixins" as *;
 
-.sliderWrap {
+.slider {
   position: relative;
-  width: 100%;
-}
-
-.sliderBox {
-  position: relative;
-  width: 100%;
-  min-height: 440px;
-  border-radius: var(--radius-xl);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-2);
-  background: var(--color-surface-raised);
+  height: 100%;
+  min-height: 320px;
   overflow: hidden;
-
-  @include up(lg) {
-    min-height: 480px;
-  }
-}
-
-// Background Ambient Mesh Gradient
-.ambientBackground {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background:
-    radial-gradient(ellipse 60% 50% at 75% 50%, var(--color-ambient-emerald) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 40% at 85% 30%, var(--color-ambient-teal) 0%, transparent 65%),
-    radial-gradient(ellipse 40% 40% at 20% 80%, var(--color-ambient-sky) 0%, transparent 70%),
-    linear-gradient(135deg, var(--color-surface-raised) 0%, var(--color-surface-muted) 100%);
-}
-
-.ambientOrb {
-  position: absolute;
-  top: 50%;
-  right: 20%;
-  width: 320px;
-  height: 320px;
-  border-radius: var(--radius-full);
   background: var(--color-primary-soft);
-  opacity: 0.55;
-  filter: blur(60px);
-  transform: translateY(-50%);
-  pointer-events: none;
-  z-index: 1;
+  border-radius: var(--radius-xl);
+  touch-action: pan-y;
 
-  @include up(lg) {
-    width: 420px;
-    height: 420px;
+  &:focus-visible {
+    @include focus-ring;
   }
 }
 
-// Slide Layout
-.slideContent {
-  position: relative;
-  z-index: 2;
+.slide {
   display: grid;
-  grid-template-columns: 1fr;
-  align-items: center;
-  gap: var(--space-six);
-  padding: var(--space-six);
-  min-height: 440px;
+  grid-template-rows: auto 1fr;
+  height: 100%;
 
   @include up(md) {
-    grid-template-columns: 1.15fr 0.85fr;
-    padding: var(--space-eight) var(--space-ten);
-    min-height: 480px;
-  }
-
-  @include up(lg) {
-    grid-template-columns: 1.2fr 0.8fr;
-    padding: var(--space-ten) var(--space-twelve);
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: none;
+    align-items: center;
   }
 }
 
-// Left Column: Text & CTA
-.textCol {
+.textOnly {
+  @include up(md) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.copy {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-four);
+  gap: var(--space-three);
+  padding: var(--space-six) var(--space-six) var(--space-ten);
+
+  @include up(lg) {
+    padding: var(--space-ten) var(--space-eight) var(--space-twelve) var(--space-ten);
+  }
 }
 
 .eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-two);
+  @include text(label-sm);
+
+  align-self: flex-start;
+  margin: 0;
   padding: var(--space-one) var(--space-three);
-  border-radius: var(--radius-full);
-  background: var(--color-primary-soft);
   color: var(--color-primary);
-  font-size: var(--text-label-sm-size);
-  font-weight: var(--text-label-sm-weight);
-  border: 1px solid var(--color-border);
-}
-
-.eyebrowDot {
-  width: 6px;
-  height: 6px;
+  background: var(--color-surface);
   border-radius: var(--radius-full);
-  background: var(--color-primary);
-  animation: pulse 2s infinite ease-in-out;
 }
 
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
+.title {
+  @include text(display);
 
-  50% {
-    opacity: 0.4;
-    transform: scale(0.85);
-  }
-}
-
-.headline {
+  margin: 0;
   color: var(--color-foreground);
-  font-size: var(--text-headline-md-size);
-  font-weight: var(--text-headline-lg-weight);
-  line-height: 1.2;
-  letter-spacing: -0.025em;
-
-  @include up(md) {
-    font-size: var(--text-headline-lg-size);
-  }
-
-  @include up(lg) {
-    font-size: var(--text-display-size);
-  }
 }
 
 .highlight {
   color: var(--color-primary);
-  display: block;
 }
 
 .description {
-  color: var(--color-foreground-muted);
-  font-size: var(--text-body-md-size);
-  line-height: var(--text-body-lg-line);
-  max-width: 48ch;
+  @include text(body-lg);
 
-  @include up(md) {
-    font-size: var(--text-body-lg-size);
-  }
+  max-width: 52ch;
+  margin: 0;
+  color: var(--color-foreground-muted);
 }
 
 .actions {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
   gap: var(--space-three);
-  padding-top: var(--space-two);
+  margin-top: var(--space-two);
 }
 
-.primaryCta {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-two);
-  padding: var(--space-three) var(--space-five);
-  border-radius: var(--radius-md);
-  background: var(--color-primary);
-  color: var(--color-on-primary);
-  font-size: var(--text-label-md-size);
-  font-weight: var(--text-label-md-weight);
-  text-decoration: none;
-  box-shadow: 0 4px 14px rgb(22 101 52 / 24%);
-  transition:
-    background var(--duration-fast) var(--ease-out),
-    transform var(--duration-fast) var(--ease-out);
-
-  &:hover {
-    background: var(--color-primary-hover);
-    transform: translateY(-2px);
-  }
-
-  &:active {
-    background: var(--color-primary-pressed);
-    transform: translateY(0);
-  }
-}
-
-.secondaryCta {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-two);
-  padding: var(--space-three) var(--space-five);
-  border-radius: var(--radius-md);
-  background: var(--color-glass-surface);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--color-border);
-  color: var(--color-foreground);
-  font-size: var(--text-label-md-size);
-  font-weight: var(--text-label-md-weight);
-  text-decoration: none;
-  transition:
-    border-color var(--duration-fast) var(--ease-out),
-    background var(--duration-fast) var(--ease-out),
-    transform var(--duration-fast) var(--ease-out);
-
-  &:hover {
-    border-color: var(--color-border-strong);
-    background: var(--color-surface);
-    transform: translateY(-2px);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-}
-
-// Right Column: Visual & Floating Badges
-.visualCol {
+.visual {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 220px;
+  order: -1;
+  aspect-ratio: 16 / 10;
 
   @include up(md) {
-    min-height: 320px;
+    order: 0;
+    height: 100%;
+    aspect-ratio: auto;
   }
 }
 
-.laptopContainer {
-  position: relative;
-  width: 100%;
-  max-width: 440px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
-}
-
-.laptopGraphic {
-  border-radius: var(--radius-lg);
-  width: 100%;
-  height: auto;
-  max-height: 280px;
+.image {
   object-fit: contain;
-  filter: drop-shadow(0 18px 24px rgb(16 37 27 / 15%));
-
-  @include up(lg) {
-    max-height: 320px;
-  }
+  padding: var(--space-six);
 }
 
-// Glassmorphism Badges
-.floatingBadgePrimary {
+.badges {
   position: absolute;
-  top: 10px;
-  right: 12px;
-  z-index: 3;
-  display: inline-flex;
-  align-items: center;
+  right: var(--space-four);
+  bottom: var(--space-four);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   gap: var(--space-two);
-  padding: var(--space-two) var(--space-three);
-  border-radius: var(--radius-full);
-  background: var(--color-glass-surface);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--color-glass-border);
-  box-shadow: var(--shadow-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.badge {
+  @include text(label-sm);
+
+  padding: var(--space-one) var(--space-three);
   color: var(--color-foreground);
-  font-size: var(--text-label-sm-size);
-  font-weight: var(--text-label-sm-weight);
-  pointer-events: none;
-}
-
-.floatingBadgeSecondary {
-  position: absolute;
-  bottom: 16px;
-  left: 8px;
-  z-index: 3;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-two);
-  padding: var(--space-two) var(--space-three);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-full);
-  background: var(--color-glass-surface);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--color-glass-border);
   box-shadow: var(--shadow-1);
-  color: var(--color-foreground-muted);
-  font-size: var(--text-label-sm-size);
-  font-weight: 500;
-  pointer-events: none;
 }
 
-.badgeDot {
-  width: 6px;
-  height: 6px;
-  border-radius: var(--radius-full);
-  background: var(--color-success);
-}
-
-// Navigation Controls
-.navBtn {
+.nav {
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
-  z-index: 4;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-full);
-  background: var(--color-glass-surface);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--color-border);
+  width: var(--control-md);
+  height: var(--control-md);
   color: var(--color-foreground);
-  box-shadow: var(--shadow-1);
-  cursor: pointer;
-  transition:
-    transform var(--duration-fast) var(--ease-out),
-    background var(--duration-fast) var(--ease-out),
-    border-color var(--duration-fast) var(--ease-out);
-
-  &:hover {
-    background: var(--color-surface);
-    border-color: var(--color-border-strong);
-    transform: translateY(-50%) scale(1.06);
-  }
-
-  &:active {
-    transform: translateY(-50%) scale(0.96);
-  }
-
-  &:focus-visible {
-    @include focus-ring;
-  }
-}
-
-.prevBtn {
-  left: var(--space-three);
-
-  @include up(md) {
-    left: var(--space-four);
-  }
-}
-
-.nextBtn {
-  right: var(--space-three);
-
-  @include up(md) {
-    right: var(--space-four);
-  }
-}
-
-// Indicators
-.indicatorList {
-  position: absolute;
-  bottom: var(--space-four);
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 4;
-  display: flex;
-  align-items: center;
-  gap: var(--space-two);
-}
-
-.indicator {
-  height: 6px;
-  width: 6px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-full);
-  background: var(--color-border-strong);
-  border: none;
-  padding: 0;
+  transform: translateY(-50%);
   cursor: pointer;
-  transition:
-    width var(--duration-menu) var(--ease-out),
-    background var(--duration-fast) var(--ease-out);
+  transition: border-color var(--duration-fast) var(--ease-out);
 
   &:hover {
-    background: var(--color-secondary);
+    border-color: var(--color-border-strong);
   }
 
   &:focus-visible {
     @include focus-ring;
   }
 
-  &.active {
-    width: 26px;
-    background: var(--color-primary);
+  @include up(md) {
+    display: inline-flex;
   }
+}
+
+.prev {
+  left: var(--space-three);
+}
+
+.next {
+  right: var(--space-three);
+}
+
+.dots {
+  position: absolute;
+  bottom: var(--space-two);
+  left: 50%;
+  display: flex;
+  transform: translateX(-50%);
+}
+
+// the button is the 44px touch target, the visible dot is its ::before
+.dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-md);
+  height: var(--control-md);
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  &::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    background: var(--color-border-strong);
+    border-radius: var(--radius-full);
+    transition: width var(--duration-fast) var(--ease-out);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  @include reduced-motion {
+    &::before {
+      transition: none;
+    }
+  }
+}
+
+.dotActive::before {
+  width: 24px;
+  background: var(--color-primary);
 }

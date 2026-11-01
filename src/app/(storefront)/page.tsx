@@ -3,7 +3,8 @@ import Link from "next/link";
 import { Container } from "@/components/layout/Container/Container";
 import { Alert } from "@/components/ui/Alert/Alert";
 import { EmptyState } from "@/components/ui/EmptyState/EmptyState";
-import { BrandMarquee, HeroSlider, QuickFilterBar } from "@/features/home";
+import { BrandMarquee, QuickFilterBar } from "@/features/home";
+import { HomeHero } from "@/features/home/HomeHero/HomeHero";
 import { optionName, targetName } from "@/features/products/labels";
 import { ProductGrid } from "@/features/products/ProductGrid/ProductGrid";
 import { getFilterOptions, listProducts } from "@/features/products/server";
@@ -143,7 +144,7 @@ export default async function HomePage() {
     <Container className={styles.page}>
       {/* HERO SECTION: Slider 100% + Quick Filter Bar + Brand Marquee */}
       <div className={styles.heroGroup}>
-        <HeroSlider />
+        <HomeHero hero={[]} side={[]} />
         <QuickFilterBar />
         <BrandMarquee />
       </div>

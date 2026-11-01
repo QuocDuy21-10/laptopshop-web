@@ -1,0 +1,48 @@
+@use "mixins" as *;
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-five);
+  min-width: 0;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-three) var(--space-four);
+}
+
+.title {
+  @include text(headline-sm);
+
+  margin: 0;
+  color: var(--color-foreground);
+}
+
+.subtitle {
+  @include text(body-md);
+
+  margin: var(--space-one) 0 0;
+  color: var(--color-foreground-muted);
+}
+
+.link {
+  @include text(label-md);
+
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-md);
+  color: var(--color-link);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
