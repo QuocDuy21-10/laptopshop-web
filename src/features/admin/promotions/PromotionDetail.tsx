@@ -1,6 +1,6 @@
 "use client";
 
-import { Alert, Button, Descriptions, Space, Switch, Tag } from "antd";
+import { Alert, Button, Descriptions, InputNumber, Space, Switch, Tag } from "antd";
 import { useState } from "react";
 import { errorMessage } from "@/lib/api/errors";
 import type { FlashSaleAllocationQuery, PromotionDetail as PromotionDetailDto } from "@/lib/api/types";
@@ -12,6 +12,27 @@ import { stateLabel } from "./labels";
 import { useAdminPromotion, useAdminPromotionAllocations, useAdminPromotionSummary, useTransitionPromotion, useUpdatePromotion } from "./hooks";
 
 type FlashSale = NonNullable<PromotionDetailDto["flashSale"]>;
+type Coupon = NonNullable<PromotionDetailDto["coupon"]>;
+
+/** An activated coupon may only change visibility and raise (or remove) its usage cap. */
+function ActiveCouponManager({ id, coupon }: { id: number; coupon: Coupon }) {
+  const update = useUpdatePromotion(id);
+  const [isPublic, setIsPublic] = useState(coupon.isPublic);
+  const [maxUses, setMaxUses] = useState<number | null>(coupon.maxUses);
+  const lowered = coupon.maxUses !== null && maxUses !== null && maxUses < coupon.maxUses;
+  const save = () => update.mutate({ coupon: { isPublic, ...(maxUses !== coupon.maxUses ? { maxUses } : {}) } });
+  return <section aria-label="Cài đặt coupon đang chạy" style={{ marginTop: 16 }}>
+    <p>Đã dùng {coupon.usedCount} lượt.</p>
+    <Space wrap>
+      <Switch checked={isPublic} onChange={setIsPublic} aria-label="Công khai" /> Công khai
+      <label htmlFor="active-coupon-max-uses">Tổng lượt dùng</label>
+      <InputNumber id="active-coupon-max-uses" min={1} precision={0} value={maxUses} placeholder="Không giới hạn" onChange={(value) => setMaxUses(value)} />
+      <Button type="primary" disabled={lowered} loading={update.isPending} onClick={save}>Lưu coupon</Button>
+    </Space>
+    {lowered && <p role="alert">Không được giảm tổng lượt dùng.</p>}
+    {update.error && <Alert type="error" message={errorMessage(update.error)} showIcon style={{ marginTop: 16 }} />}
+  </section>;
+}
 
 function FlashSaleManager({ id, promotion, flashSale }: { id: number; promotion: PromotionDetailDto; flashSale: FlashSale }) {
   const update = useUpdatePromotion(id);
@@ -61,6 +82,7 @@ export function PromotionDetail({ id }: { id: number }) {
     {promotion.state === "DRAFT" && promotion.kind !== "FLASH_SALE" && <div style={{ marginTop: 16 }}>
       <PromotionForm key={promotion.updatedAt} promotion={promotion} />
     </div>}
+    {promotion.coupon && promotion.activatedAt && promotion.state !== "ENDED" && <ActiveCouponManager key={promotion.updatedAt} id={id} coupon={promotion.coupon} />}
     {promotion.flashSale && <div style={{ marginTop: 16, display: "grid", gap: 16 }}>
       <FlashSaleManager key={promotion.updatedAt} id={id} promotion={promotion} flashSale={promotion.flashSale} />
       {summary.error && <Alert type="error" message={errorMessage(summary.error)} showIcon />}
