@@ -59,7 +59,7 @@ Quy tắc chung:
 
 ## UI states và xử lý lỗi
 
-<!-- Loading, empty, error, retry, thành công. Lỗi API đi qua errorMessage / applyFieldErrors. -->
+<!-- Loading, empty, error, retry, thành công. Lỗi API đi qua errorMessage (lib/api/errors.ts) và applyFieldErrors (lib/forms.ts). -->
 
 ## Edge cases
 

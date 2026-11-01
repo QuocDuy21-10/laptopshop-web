@@ -32,7 +32,7 @@ Path và schema lấy từ `src/lib/api/schema.d.ts` (file sinh tự động, ch
 | --- | --- | --- | --- |
 |  |  |  |  |
 
-Lỗi đi qua `errorMessage` và `applyFieldErrors` trong `src/lib/api/errors.ts`.
+Thông báo lỗi đi qua `errorMessage` trong `src/lib/api/errors.ts`; lỗi theo field của form đi qua `applyFieldErrors` trong `src/lib/forms.ts`.
 
 ## Hook frontend gọi tới
 
