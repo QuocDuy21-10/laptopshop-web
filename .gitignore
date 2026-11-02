@@ -18,3 +18,5 @@ screenshots/
 .agents/
 .playwright-mcp/
 laptopshop-brand-kit/
+docs/.vitepress/cache/
+docs/.vitepress/dist/
