@@ -13,7 +13,8 @@ export function ServiceRequestActions({ requestId, item }: { requestId: number; 
   const [noteOpen, setNoteOpen] = useState(false);
   const [pendingTo, setPendingTo] = useState<string | null>(null);
   const [reason, setReason] = useState("");
-  const transitions = item.allowedTransitions?.length ? item.allowedTransitions : [item.status];
+  // the current status stays an option so the select shows its label, not the raw code
+  const transitions = [item.status, ...(item.allowedTransitions ?? []).filter((to) => to !== item.status)];
   const requiresReason = pendingTo && ["REJECTED", "CLOSED"].includes(pendingTo);
   const requiresResolution = pendingTo && ["RESOLVED", "READY_FOR_RETURN"].includes(pendingTo);
   const submitTransition = () => {

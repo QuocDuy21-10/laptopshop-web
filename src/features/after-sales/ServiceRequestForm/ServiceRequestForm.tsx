@@ -5,21 +5,21 @@ import { useRouter } from "next/navigation";
 import { Alert } from "@/components/ui/Alert/Alert";
 import { Button } from "@/components/ui/Button/Button";
 import { errorMessage } from "@/lib/api/errors";
-import { useAfterSalesDevices, useCreateAfterSalesRequest } from "../hooks";
+import { useAllAfterSalesDevices, useCreateAfterSalesRequest } from "../hooks";
 import { createServiceRequestSchema } from "../schema";
 import type { AfterSalesDevice } from "../types";
 import { DevicePicker, type SelectedDevice } from "../DevicePicker/DevicePicker";
 import styles from "./ServiceRequestForm.module.scss";
 
 export function ServiceRequestForm({ userId, type, preselectedOrderDetailId }: { userId: number; type: "WARRANTY" | "TECHNICAL_SUPPORT"; preselectedOrderDetailId?: number }) {
-  const devices = useAfterSalesDevices(userId, type);
+  const devices = useAllAfterSalesDevices(userId, type);
   const create = useCreateAfterSalesRequest(userId);
   const router = useRouter();
   const [selected, setSelected] = useState<SelectedDevice[]>([]);
   const [subject, setSubject] = useState("");
   const [issue, setIssue] = useState<Record<string, string>>({});
   const [serial, setSerial] = useState<Record<string, string>>({});
-  const available = useMemo(() => (devices.data?.data ?? []).filter((device) => preselectedOrderDetailId === undefined || device.orderDetailId === preselectedOrderDetailId), [devices.data, preselectedOrderDetailId]);
+  const available = useMemo(() => (devices.data ?? []).filter((device) => preselectedOrderDetailId === undefined || device.orderDetailId === preselectedOrderDetailId), [devices.data, preselectedOrderDetailId]);
   const toggle = (unit: SelectedDevice) => setSelected((current) => current.some((item) => item.key === unit.key) ? current.filter((item) => item.key !== unit.key) : [...current, unit]);
   const submit = (event: React.FormEvent) => {
     event.preventDefault();

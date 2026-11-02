@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api/client";
 import { unwrap } from "@/lib/api/errors";
@@ -39,6 +40,32 @@ export function useAfterSalesDevices(
       ),
   });
 }
+// the request form needs every eligible device, not one page of them
+// shortcut: walks all pages up front; switch to an infinite list if accounts reach hundreds of devices
+export function useAllAfterSalesDevices(
+  userId: number | undefined,
+  type: "WARRANTY" | "TECHNICAL_SUPPORT",
+) {
+  return useQuery({
+    queryKey: queryKeys.afterSalesDevicesAll(userId ?? 0, type),
+    enabled: Boolean(userId),
+    queryFn: async () => {
+      const first = await unwrap(
+        api.GET("/api/v1/after-sales/devices", { params: { query: { type, page: 1, pageSize: 50 } } }),
+      );
+      const rest = await Promise.all(
+        Array.from({ length: Math.max(0, first.meta.totalPages - 1) }, (_, index) =>
+          unwrap(
+            api.GET("/api/v1/after-sales/devices", {
+              params: { query: { type, page: index + 2, pageSize: 50 } },
+            }),
+          ),
+        ),
+      );
+      return [first, ...rest].flatMap((page) => page.data);
+    },
+  });
+}
 export function useAfterSalesAttachments(
   userId: number | undefined,
   requestId: number,
@@ -76,15 +103,23 @@ export function useAfterSalesRequest(userId: number | undefined, id: number) {
 
 export function useCreateAfterSalesRequest(userId?: number) {
   const client = useQueryClient();
+  // a retry of the same body (e.g. after a timeout that committed) must reuse its key or it duplicates
+  const attempt = useRef<{ body: string; key: string } | null>(null);
   return useMutation({
-    mutationFn: (body: CreateServiceRequestForm) =>
-      unwrap(
+    mutationFn: (body: CreateServiceRequestForm) => {
+      const serialized = JSON.stringify(body);
+      if (attempt.current?.body !== serialized) attempt.current = { body: serialized, key: requestKey() };
+      return unwrap(
         api.POST("/api/v1/after-sales", {
-          params: { header: { "Idempotency-Key": requestKey() } },
+          params: { header: { "Idempotency-Key": attempt.current.key } },
           body: body as CreateServiceRequestInput,
         }),
-      ),
-    onSuccess: (result) => invalidateCustomer(client, userId, result.data.id),
+      );
+    },
+    onSuccess: (result) => {
+      attempt.current = null;
+      invalidateCustomer(client, userId, result.data.id);
+    },
   });
 }
 
