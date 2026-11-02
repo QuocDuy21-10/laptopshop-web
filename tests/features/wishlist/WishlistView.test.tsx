@@ -1,11 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import { renderWithQuery } from "../../utils";
 import type { WishlistItem } from "@/lib/api/types";
 import { WishlistView } from "@/features/wishlist/WishlistView/WishlistView";
 
-const state = vi.hoisted(() => ({ me: { id: 7 } as { id: number } | null, flash: true }));
+const state = vi.hoisted(() => ({ me: { id: 7 } as { id: number } | null, flash: true, pastEnd: false }));
+const removeMutate = vi.hoisted(() => vi.fn());
+const toastError = vi.hoisted(() => vi.fn());
+vi.mock("sonner", () => ({ toast: { error: toastError, success: vi.fn() } }));
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
@@ -18,7 +22,9 @@ vi.mock("@/features/wishlist/hooks", () => ({
   useWishlist: (userId: number | undefined) => ({
     isPending: userId === undefined,
     isError: false,
-    data: {
+    data: state.pastEnd
+      ? { data: [], meta: { page: 9, pageSize: 10, total: 12, totalPages: 2, flashSaleAlertEnabled: state.flash } }
+      : {
       data: [
         {
           id: 1,
@@ -59,7 +65,7 @@ vi.mock("@/features/wishlist/hooks", () => ({
       meta: { page: 1, pageSize: 10, total: 1, totalPages: 1, flashSaleAlertEnabled: state.flash },
     },
   }),
-  useRemoveWishlistItem: () => ({ mutate: vi.fn(), isPending: false }),
+  useRemoveWishlistItem: () => ({ mutate: removeMutate, isPending: false }),
   useConfigurePriceAlert: () => ({ mutateAsync: vi.fn(), isPending: false }),
 }));
 
@@ -67,6 +73,36 @@ describe("WishlistView", () => {
   beforeEach(() => {
     state.me = { id: 7 };
     state.flash = true;
+    state.pastEnd = false;
+    removeMutate.mockReset();
+    toastError.mockReset();
+  });
+
+  it("links back to the last page instead of claiming an empty wishlist past the end", () => {
+    state.pastEnd = true;
+    renderWithQuery(<WishlistView page={9} />);
+    expect(screen.queryByText("Danh sách yêu thích đang trống")).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Xem trang 2" })).toHaveAttribute("href", "/wishlist?page=2");
+  });
+
+  it("shows an error toast when removal fails", async () => {
+    const { ApiError } = await import("@/lib/api/errors");
+    removeMutate.mockImplementation((_id: number, options: { onError: (e: unknown) => void }) =>
+      options.onError(new ApiError(503, "SERVICE_UNAVAILABLE", "down")),
+    );
+    renderWithQuery(<WishlistView page={1} />);
+    await userEvent.click(screen.getByRole("button", { name: /xoá/i }));
+    expect(toastError).toHaveBeenCalledWith("Máy chủ đang gặp sự cố. Vui lòng thử lại sau.");
+  });
+
+  it("returns focus to the price-alert button after the dialog closes", async () => {
+    renderWithQuery(<WishlistView page={1} />);
+    const trigger = screen.getByRole("button", { name: "Theo dõi giá" });
+    await userEvent.click(trigger);
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    await userEvent.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(trigger).toHaveFocus();
   });
 
   it("asks a signed-out visitor to log in instead of loading forever", () => {

@@ -5,6 +5,9 @@ import { WishlistToggle } from "@/features/wishlist/WishlistToggle/WishlistToggl
 import { AuthPromptProvider } from "@/features/auth/AuthPrompt/AuthPromptProvider";
 import { renderWithQuery } from "../../utils";
 
+const toastError = vi.hoisted(() => vi.fn());
+vi.mock("sonner", () => ({ toast: { error: toastError, success: vi.fn() } }));
+
 const mocks = vi.hoisted(() => ({
   me: vi.fn(),
   status: vi.fn(),
@@ -38,7 +41,7 @@ describe("WishlistToggle", () => {
     expect(button).toHaveAttribute("aria-pressed", "false");
     expect(button.className).toContain("touchTarget");
     await userEvent.click(button);
-    expect(mocks.add).toHaveBeenCalledWith(3);
+    expect(mocks.add).toHaveBeenCalledWith(3, expect.objectContaining({ onError: expect.any(Function) }));
   });
 
   it("removes an authenticated wishlisted product", async () => {
@@ -47,7 +50,7 @@ describe("WishlistToggle", () => {
     const button = screen.getByRole("button", { name: "Bỏ Dell XPS khỏi danh sách yêu thích" });
     expect(button).toHaveAttribute("aria-pressed", "true");
     await userEvent.click(button);
-    expect(mocks.remove).toHaveBeenCalledWith(3);
+    expect(mocks.remove).toHaveBeenCalledWith(3, expect.objectContaining({ onError: expect.any(Function) }));
   });
 
   it("stores a guest intent and asks to sign in with the current path", async () => {
@@ -60,5 +63,26 @@ describe("WishlistToggle", () => {
     expect(screen.getByRole("link", { name: "Đăng nhập" })).toHaveAttribute("href", "/login?next=%2Fproducts%3Fq%3Ddell");
     expect(JSON.parse(window.sessionStorage.getItem("laptopshop.wishlist.intent")!)).toMatchObject({ productId: 3 });
     expect(mocks.add).not.toHaveBeenCalled();
+  });
+
+  it("tells the user why a failed add was rolled back", async () => {
+    const { ApiError } = await import("@/lib/api/errors");
+    mocks.add.mockImplementation((_id: number, options: { onError: (e: unknown) => void }) =>
+      options.onError(new ApiError(409, "WISHLIST_LIMIT_REACHED", "limit")),
+    );
+    renderWithQuery(<WishlistToggle productId={3} productName="Dell XPS" />);
+    await userEvent.click(screen.getByRole("button", { name: "Thêm Dell XPS vào danh sách yêu thích" }));
+    expect(toastError).toHaveBeenCalledWith("Danh sách yêu thích đã đạt giới hạn 100 sản phẩm.");
+  });
+
+  it("reports a failed removal", async () => {
+    const { ApiError } = await import("@/lib/api/errors");
+    mocks.status.mockReturnValue({ data: [{ productId: 3, isWishlisted: true }], isPending: false });
+    mocks.remove.mockImplementation((_id: number, options: { onError: (e: unknown) => void }) =>
+      options.onError(new ApiError(503, "SERVICE_UNAVAILABLE", "down")),
+    );
+    renderWithQuery(<WishlistToggle productId={3} productName="Dell XPS" />);
+    await userEvent.click(screen.getByRole("button", { name: "Bỏ Dell XPS khỏi danh sách yêu thích" }));
+    expect(toastError).toHaveBeenCalledWith("Máy chủ đang gặp sự cố. Vui lòng thử lại sau.");
   });
 });

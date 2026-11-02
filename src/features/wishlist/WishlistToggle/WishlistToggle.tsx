@@ -3,8 +3,10 @@
 import { Heart } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { usePathname } from "next/navigation";
+import { toast } from "sonner";
 import { useAuthPrompt } from "@/features/auth/AuthPrompt/AuthPromptProvider";
 import { useMe } from "@/features/account/useMe";
+import { errorMessage } from "@/lib/api/errors";
 import { useAddWishlistItem, useRemoveWishlistItem, useWishlistStatus } from "@/features/wishlist/hooks";
 import { savePendingWishlistIntent } from "@/features/wishlist/intent";
 import { useHydrated } from "@/lib/useHydrated";
@@ -34,8 +36,10 @@ export function WishlistToggle({ productId, productName }: { productId: number; 
       promptLogin({ reason: "wishlist", returnTo });
       return;
     }
-    if (status) remove.mutate(productId);
-    else add.mutate(productId);
+    // the hooks roll the optimistic state back; tell the user why (e.g. WISHLIST_LIMIT_REACHED)
+    const onError = (error: unknown) => toast.error(errorMessage(error));
+    if (status) remove.mutate(productId, { onError });
+    else add.mutate(productId, { onError });
   };
   return <button type="button" className={styles.touchTarget} aria-label={label} aria-pressed={status} disabled={hydrated && (isPending || add.isPending || remove.isPending)} onClick={onClick}><motion.span
       key={String(status)}

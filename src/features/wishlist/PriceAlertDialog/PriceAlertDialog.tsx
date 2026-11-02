@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useForm } from "react-hook-form";
 import { Alert } from "@/components/ui/Alert/Alert";
 import { Button } from "@/components/ui/Button/Button";
@@ -19,12 +19,15 @@ export function PriceAlertDialog({
   open,
   onOpenChange,
   flashSaleAlertEnabled = false,
+  trigger,
 }: {
   userId: number;
   item: WishlistItem;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   flashSaleAlertEnabled?: boolean;
+  /** rendered as the Radix trigger so focus returns to it when the dialog closes */
+  trigger?: ReactNode;
 }) {
   const currentPrice =
     item.priceSnapshot?.effectivePrice ?? item.product.salePrice ?? item.product.price;
@@ -54,10 +57,7 @@ export function PriceAlertDialog({
       setError("targetPrice", { message: "Giá mục tiêu không hợp lệ" });
       return;
     }
-    if (
-      parsed.data.mode === "TARGET_PRICE" &&
-      (parsed.data.targetPrice === undefined || parsed.data.targetPrice >= currentPrice)
-    ) {
+    if (parsed.data.mode === "TARGET_PRICE" && parsed.data.targetPrice >= currentPrice) {
       setError("targetPrice", { message: "Giá mục tiêu phải thấp hơn giá hiện tại" });
       return;
     }
@@ -68,7 +68,7 @@ export function PriceAlertDialog({
         parsed.data.mode === "TARGET_PRICE"
           ? {
               mode: "TARGET_PRICE" as const,
-              targetPrice: parsed.data.targetPrice!,
+              targetPrice: parsed.data.targetPrice,
               includeFlashSale,
             }
           : { mode: "PERCENT_DROP" as const, includeFlashSale };
@@ -91,6 +91,7 @@ export function PriceAlertDialog({
     <Dialog
       open={open}
       onOpenChange={onOpenChange}
+      trigger={trigger}
       title={`Theo dõi giá — ${item.product.name}`}
       description={
         flashSaleAlertEnabled
