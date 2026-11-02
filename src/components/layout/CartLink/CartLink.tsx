@@ -18,8 +18,7 @@ export function CartLink() {
   const reduce = useReducedMotion();
   const count = me?.cartItemCount ?? 0;
 
-  // anonymous visitors are sent to the login page by /cart, so there is nothing to preview
-  const canPreview = () => me !== undefined && hasPopover();
+  const canPreview = () => hasPopover();
 
   return (
     <Popover.Root open={open} onOpenChange={(next) => setOpen(next && canPreview())}>

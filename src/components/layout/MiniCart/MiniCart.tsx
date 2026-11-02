@@ -15,6 +15,7 @@ const MAX_LINES = 4;
 /** Body of the cart popover; mounted only while open, so the cart is fetched on demand. */
 export function MiniCart({ onNavigate }: { onNavigate: () => void }) {
   const { data: me } = useMe();
+  if (me === undefined) return <Skeleton className={styles.skeleton} />;
   if (me === null) return <SignInPrompt onNavigate={onNavigate} />;
   return <CartBody onNavigate={onNavigate} />;
 }
