@@ -91,4 +91,25 @@ describe("PriceAlertDialog", () => {
     renderWithQuery(<PriceAlertDialog userId={7} item={item} open onOpenChange={vi.fn()} />);
     expect(screen.getByText(/gửi một thông báo rồi tự động tắt/i)).toBeInTheDocument();
   });
+
+  it("saves PERCENT_DROP after switching away from an emptied target price", async () => {
+    renderWithQuery(<PriceAlertDialog userId={7} item={item} open onOpenChange={vi.fn()} />);
+    await userEvent.click(screen.getByRole("radio", { name: /mức giá mong muốn/i }));
+    await userEvent.type(screen.getByLabelText(/Giá mục tiêu/i), "800000");
+    await userEvent.clear(screen.getByLabelText(/Giá mục tiêu/i));
+    await userEvent.click(screen.getByRole("radio", { name: /giảm thêm ít nhất 5%/i }));
+    await userEvent.click(screen.getByRole("button", { name: "Lưu cảnh báo" }));
+    expect(configure).toHaveBeenCalledWith({
+      productId: 3,
+      input: { mode: "PERCENT_DROP", includeFlashSale: false },
+    });
+  });
+
+  it("rejects an empty target price with a clear message", async () => {
+    renderWithQuery(<PriceAlertDialog userId={7} item={item} open onOpenChange={vi.fn()} />);
+    await userEvent.click(screen.getByRole("radio", { name: /mức giá mong muốn/i }));
+    await userEvent.click(screen.getByRole("button", { name: "Lưu cảnh báo" }));
+    expect(await screen.findByText("Giá mục tiêu không hợp lệ")).toBeInTheDocument();
+    expect(configure).not.toHaveBeenCalled();
+  });
 });

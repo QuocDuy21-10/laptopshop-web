@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { toast } from "sonner";
 import { Badge } from "@/components/ui/Badge/Badge";
 import { Button } from "@/components/ui/Button/Button";
 import { Price } from "@/components/ui/Price/Price";
 import { AddToCartButton } from "@/features/products/AddToCart/AddToCartButton";
 import { useRemoveWishlistItem } from "@/features/wishlist/hooks";
+import { errorMessage } from "@/lib/api/errors";
 import { formatDate, formatVnd } from "@/lib/format";
 import type { WishlistItem } from "@/lib/api/types";
 import { PriceAlertDialog } from "../PriceAlertDialog/PriceAlertDialog";
@@ -78,12 +80,19 @@ export function WishlistCard({
             productName={product.name}
             disabled={!product.isActive || product.quantity <= 0}
           />
-          <Button variant="secondary" onClick={() => setOpen(true)}>
-            Theo dõi giá
-          </Button>
+          <PriceAlertDialog
+            userId={userId}
+            item={item}
+            open={open}
+            onOpenChange={setOpen}
+            flashSaleAlertEnabled={flashSaleAlertEnabled}
+            trigger={<Button variant="secondary">Theo dõi giá</Button>}
+          />
           <Button
             variant="ghost"
-            onClick={() => remove.mutate(product.id)}
+            onClick={() =>
+              remove.mutate(product.id, { onError: (error) => toast.error(errorMessage(error)) })
+            }
             loading={remove.isPending}
             aria-label={`Xoá ${product.name} khỏi Wishlist`}
           >
@@ -91,13 +100,6 @@ export function WishlistCard({
           </Button>
         </div>
       </div>
-      <PriceAlertDialog
-        userId={userId}
-        item={item}
-        open={open}
-        onOpenChange={setOpen}
-        flashSaleAlertEnabled={flashSaleAlertEnabled}
-      />
     </article>
   );
 }

@@ -19,7 +19,13 @@ export function WishlistView({ page }: { page: number }) {
     return <Alert tone="info" title="Bạn chưa đăng nhập"><Link href={loginHref("/wishlist")}>Đăng nhập</Link> để xem danh sách yêu thích.</Alert>;
   if (me.isPending || wishlist.isPending) return <Skeleton className={styles.loading} />;
   if (me.isError || wishlist.isError) return <Alert tone="error" title={errorMessage(me.error ?? wishlist.error)} />;
-  if (!wishlist.data || wishlist.data.data.length === 0) return <WishlistEmptyState />;
+  if (!wishlist.data || wishlist.data.data.length === 0) {
+    // a page past the end (stale link, last item removed) is not an empty wishlist
+    const { total, totalPages } = wishlist.data?.meta ?? { total: 0, totalPages: 0 };
+    if (total > 0 && totalPages > 0)
+      return <Alert tone="info" title="Trang này không còn sản phẩm"><Link href={`/wishlist?page=${totalPages}`}>Xem trang {totalPages}</Link> của danh sách yêu thích.</Alert>;
+    return <WishlistEmptyState />;
+  }
   return <>
     <div className={styles.list}>{wishlist.data.data.map((item) => <WishlistCard key={item.id} userId={me.data!.id} item={item} flashSaleAlertEnabled={wishlist.data.meta.flashSaleAlertEnabled} />)}</div>
     <Pagination page={wishlist.data.meta.page} totalPages={wishlist.data.meta.totalPages} hrefFor={(next) => `/wishlist?page=${next}`} />
