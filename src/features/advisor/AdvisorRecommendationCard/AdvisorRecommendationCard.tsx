@@ -1,6 +1,6 @@
 import type { AdvisorRecommendation } from "@/lib/api/types";
-import { ProductCard } from "@/features/products/ProductCard/ProductCard";
 import styles from "./AdvisorRecommendationCard.module.scss";
+import { ProductCard } from "@/features/products/ProductCard/ProductCard";
 
 export function AdvisorRecommendationCard({ recommendation }: { recommendation: AdvisorRecommendation }) {
   return (
@@ -15,6 +15,7 @@ export function AdvisorRecommendationCard({ recommendation }: { recommendation: 
         </div>
       </div>
       <ProductCard product={recommendation.product} />
+      <p className={styles.scoreHelp}>Giá tư vấn đã gồm khuyến mãi tự động, chưa gồm Flash Sale; giá cuối cùng được xác nhận khi thanh toán.</p>
       <p className={styles.reason}>{recommendation.reason}</p>
       {recommendation.tradeoffs.length > 0 && (
         <div className={styles.tradeoffs}>

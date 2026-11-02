@@ -1,9 +1,10 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { AdvisorForm } from "@/features/advisor/AdvisorForm/AdvisorForm";
-import { ApiError } from "@/lib/api/errors";
+
 import { renderWithQuery } from "../../utils";
+import { ApiError } from "@/lib/api/errors";
+import { AdvisorForm } from "@/features/advisor/AdvisorForm/AdvisorForm";
 
 const onSubmit = vi.fn();
 
@@ -66,6 +67,21 @@ describe("AdvisorForm", () => {
       workloads: ["DOCKER_VM"],
       note: "Chạy Docker mỗi ngày",
     });
+  });
+
+  it("keeps the minimum RAM after going back and forward", async () => {
+    renderWithQuery(<AdvisorForm onSubmit={onSubmit} pending={false} />);
+    await fillStepOne();
+    await userEvent.click(screen.getByRole("button", { name: "Tiếp tục" }));
+    expect(screen.getByRole("radio", { name: "Không bắt buộc" })).toBeChecked();
+    await userEvent.click(screen.getByRole("radio", { name: "16 GB" }));
+    await userEvent.click(screen.getByRole("button", { name: "Quay lại" }));
+    await userEvent.click(screen.getByRole("button", { name: "Tiếp tục" }));
+    expect(screen.getByRole("radio", { name: "16 GB" })).toBeChecked();
+    await userEvent.click(screen.getByRole("button", { name: "Tiếp tục" }));
+    await userEvent.click(screen.getByRole("button", { name: "Nhận tư vấn" }));
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1));
+    expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ minRamGb: 16 }));
   });
 
   it("does not submit when advancing from step three to step four", async () => {
