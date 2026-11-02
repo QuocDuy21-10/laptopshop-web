@@ -67,8 +67,19 @@ Chú ý khi đọc sơ đồ:
 - Admin "release" một ca xem xét sẽ hủy đơn và đặt thanh toán thành `CANCELLED`; "extend" chỉ dời thời điểm xem xét tiếp theo, không đổi trạng thái thanh toán.
 - Tên trạng thái thanh toán cấp đơn (`PAYMENT_*`) khác tên trạng thái của bản ghi `Payment` (`PENDING`...). Đừng nhầm hai bộ.
 
+Giao diện khách hiển thị từng trạng thái như sau ([PaymentScreen.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/features/payments/PaymentScreen.tsx#L78-L116)):
+
+| Trạng thái `Payment` | Tiêu đề màn hình |
+| --- | --- |
+| `PENDING` | Thanh toán chuyển khoản (đang chờ xác nhận, có mã QR và đếm ngược) |
+| `VERIFYING`, `REVIEW_REQUIRED` | Đang xác minh thanh toán (đang đối soát giao dịch) |
+| `SUCCEEDED` | Thanh toán thành công |
+| `EXPIRED`, `CANCELLED` | Phiên thanh toán đã kết thúc |
+
+Chi tiết ở [Payments](../04-features/payments.md).
+
 > [!WARNING]
-> **Chưa xác minh:** nhãn tiếng Việt cho từng trạng thái bản ghi `Payment` trên giao diện (`PaymentScreen`, trang admin). Mới xác nhận nhãn cho `paymentStatus` cấp đơn trong `labels.ts`. Cần đọc [PaymentScreen.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/features/payments/PaymentScreen.tsx) và [admin/payments/labels.ts](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/features/admin/payments/labels.ts). Điều kiện "đủ bằng chứng đối soát" (checkpoint thành công liên tiếp) cũng chưa được mô tả đầy đủ ở đây.
+> **Chưa xác minh:** điều kiện "đủ bằng chứng đối soát" (số lần kiểm tra liên tiếp thành công của nhà cung cấp và mốc thời gian) để chuyển `VERIFYING` sang `EXPIRED`. Mới đọc đầu logic trong [payment-maintenance.service.ts](https://github.com/QuocDuy21-10/laptopshop-api/blob/main/src/modules/payments/payment-maintenance.service.ts#L69-L91).
 
 Cấu trúc bảng `payments` (khóa, index, ràng buộc) thuộc backend: xem [schema.prisma](https://github.com/QuocDuy21-10/laptopshop-api/blob/main/prisma/schema.prisma).
 
