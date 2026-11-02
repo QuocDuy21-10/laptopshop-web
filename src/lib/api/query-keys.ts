@@ -36,6 +36,7 @@ export const queryKeys = {
   reviewHelpfulState: (reviewIds: number[], userId: number) =>
     ["reviews", "helpful", userId, reviewIds] as const,
   afterSalesDevices: (userId: number, type: string, page: number) => ["after-sales", userId, "devices", type, page] as const,
+  afterSalesDevicesAll: (userId: number, type: string) => ["after-sales", userId, "devices", type, "all"] as const,
   afterSalesRequests: (userId: number, page: number) => ["after-sales", userId, "requests", page] as const,
   afterSalesRequest: (userId: number, id: number) => ["after-sales", userId, "request", id] as const,
   afterSalesAttachments: (userId: number, requestId: number, itemId: number) =>
