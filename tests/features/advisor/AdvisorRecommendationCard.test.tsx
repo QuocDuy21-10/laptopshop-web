@@ -1,8 +1,9 @@
-import { screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { AdvisorRecommendationCard } from "@/features/advisor/AdvisorRecommendationCard/AdvisorRecommendationCard";
-import type { AdvisorRecommendation } from "@/lib/api/types";
+import { screen } from "@testing-library/react";
+
 import { renderWithQuery } from "../../utils";
+import type { AdvisorRecommendation } from "@/lib/api/types";
+import { AdvisorRecommendationCard } from "@/features/advisor/AdvisorRecommendationCard/AdvisorRecommendationCard";
 
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn(), replace: vi.fn() }), usePathname: () => "/advisor" }));
 
@@ -43,5 +44,10 @@ describe("AdvisorRecommendationCard", () => {
   it("explains match score as a rule-engine reference", () => {
     renderWithQuery(<AdvisorRecommendationCard recommendation={recommendation} />);
     expect(screen.getByText(/điểm tham khảo từ tiêu chí và thông số/i)).toBeInTheDocument();
+  });
+
+  it("states that the advisory price excludes flash sales", () => {
+    renderWithQuery(<AdvisorRecommendationCard recommendation={recommendation} />);
+    expect(screen.getByText(/chưa gồm Flash Sale/)).toBeInTheDocument();
   });
 });

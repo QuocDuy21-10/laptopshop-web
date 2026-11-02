@@ -63,7 +63,7 @@ export function AdvisorForm({ onSubmit, onRetry, pending, serverError }: Props) 
     formState: { errors },
   } = useForm<AdvisorFormInput>({
     resolver: zodResolver(advisorFormSchema),
-    defaultValues: { budgetMax: "", usage: undefined, priorities: [], minRamGb: undefined, workloads: [], note: "" },
+    defaultValues: { budgetMax: "", usage: undefined, priorities: [], minRamGb: "", workloads: [], note: "" },
     mode: "onTouched",
   });
 
@@ -174,7 +174,7 @@ export function AdvisorForm({ onSubmit, onRetry, pending, serverError }: Props) 
         <div className={styles.content}>
           <fieldset className={styles.fieldset}>
             <legend className={styles.legend}>RAM tối thiểu</legend>
-            <label className={styles.choice}><input type="radio" value="" defaultChecked {...register("minRamGb")} /><span>Không bắt buộc</span></label>
+            <label className={styles.choice}><input type="radio" value="" {...register("minRamGb")} /><span>Không bắt buộc</span></label>
             {[8, 16, 32].map((value) => (
               <label className={styles.choice} key={value}><input type="radio" value={value} {...register("minRamGb")} /><span>{value} GB</span></label>
             ))}
