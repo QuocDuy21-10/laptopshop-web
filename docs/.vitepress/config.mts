@@ -21,6 +21,7 @@ export default withMermaid(
     description: "Tài liệu kỹ thuật và nghiệp vụ của storefront và trang quản trị LaptopShop",
     base: "/laptopshop-web/",
     cleanUrls: true,
+    head: [["link", { rel: "icon", href: "/laptopshop-web/favicon.svg" }]],
     srcExclude: ["superpowers/**", "templates/**", "README.md"],
     themeConfig: {
       nav: [
