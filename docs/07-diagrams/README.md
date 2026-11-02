@@ -21,4 +21,18 @@ Tất cả sơ đồ viết bằng Mermaid, hiển thị được trên GitHub v
 | Sequence: refresh phiên single-flight | [Phiên đăng nhập](../02-architecture/auth-session.md) |
 | Activity: một request tới route riêng tư | [Routing và bảo vệ route](../02-architecture/routing-and-guards.md) |
 
-Sequence và activity diagram của từng tính năng nằm trong trang tính năng tương ứng ở [Danh sách module](../04-features/README.md).
+## Sơ đồ trong các trang tính năng
+
+Mỗi trang tính năng chứa sequence hoặc activity diagram đi kèm giải thích ngay bên dưới.
+
+| Trang | Sơ đồ |
+| --- | --- |
+| [Auth](../04-features/auth.md) | Sequence đăng nhập; flowchart đặt lại mật khẩu |
+| [Products](../04-features/products.md) | Sequence lọc sản phẩm; flowchart gợi ý tìm kiếm |
+| [Cart](../04-features/cart.md) | Activity thêm vào giỏ; sequence đổi số lượng |
+| [Checkout](../04-features/checkout.md) | Activity quy trình đặt hàng; sequence khôi phục sau sự cố |
+| [Payments](../04-features/payments.md) | Sequence khách thanh toán và hệ thống xác nhận; flowchart màn hình theo trạng thái |
+| [Orders](../04-features/orders.md) | Sequence hủy đơn; activity lối vào từ chi tiết đơn |
+| [Admin](../04-features/admin.md) | Sequence các tầng truy cập; sequence chuyển trạng thái đơn |
+
+Danh sách module và các tính năng chưa có tài liệu: [Danh sách module](../04-features/README.md).
