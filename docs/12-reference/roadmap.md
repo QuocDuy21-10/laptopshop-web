@@ -4,11 +4,10 @@ Trang này liệt kê phần tài liệu còn thiếu, các mục chưa xác min
 
 ## Module chưa có tài liệu riêng
 
-Mười hai module (Auth, Products, Cart, Checkout, Payments, Orders, After-sales, Reviews, Wishlist, Promotions, Home, Admin) đã xong. Còn 6 module; thứ tự đề xuất theo độ phức tạp và mức ảnh hưởng nghiệp vụ.
+Mười ba module (Auth, Products, Cart, Checkout, Payments, Orders, After-sales, Reviews, Wishlist, Promotions, Home, Notifications, Admin) đã xong. Còn 5 module; thứ tự đề xuất theo độ phức tạp và mức ảnh hưởng nghiệp vụ.
 
 | Ưu tiên | Module | Route chính | Cần tài liệu hóa |
 | --- | --- | --- | --- |
-| Trung bình | notifications | `/account/notifications`, `/admin/notifications` | Thông báo trong ứng dụng, cài đặt, thử lại gửi thất bại |
 | Trung bình | compare | `/compare` | Chọn sản phẩm, bảng thông số, giới hạn số lượng |
 | Trung bình | advisor | `/advisor` | Luồng tư vấn, giới hạn lượt dùng, vai trò của AI (bật bằng cấu hình backend) |
 | Thấp | account | `/account` | Hồ sơ, ảnh đại diện, xác minh email |
