@@ -133,8 +133,7 @@ Chi tiết ở [Data dictionary: Orders](../06-api-and-data/data-dictionary/orde
 - Đơn đã hủy mà chưa thanh toán không hiện huy hiệu thanh toán, để "Chưa thanh toán" không bị hiểu là còn nợ.
 - Trang chi tiết của đơn chuyển khoản đang chờ có liên kết tới hướng dẫn thanh toán; khi đơn đã hủy hoặc đã thanh toán thì liên kết biến mất.
 
-> [!WARNING]
-> **Chưa xác minh:** cách trả lại kho khi hủy: backend gọi `moveStock` cho từng dòng sau khi cập nhật trạng thái ([order-cancellation.service.ts](https://github.com/QuocDuy21-10/laptopshop-api/blob/main/src/modules/orders/order-cancellation.service.ts#L96-L112)), nhưng chưa đọc hết hàm để xác nhận dấu của `delta` và việc hoàn suất Flash Sale hay mã giảm giá.
+> Khi hủy, trong cùng một giao dịch backend cộng trả kho từng dòng (`moveStock` với `delta` dương, lý do `ORDER_CANCEL`), hoàn lượt dùng mã giảm giá (`reverseCouponRedemption`) và trả suất Flash Sale (`releaseFlashSaleAllocations`) ([order-cancellation.service.ts](https://github.com/QuocDuy21-10/laptopshop-api/blob/main/src/modules/orders/order-cancellation.service.ts#L95-L118)). Đơn chuyển khoản đã thanh toán thì trả `PAID_ORDER_CANNOT_CANCEL`; đang `VERIFYING` hoặc `REVIEW_REQUIRED` thì `PAYMENT_VERIFICATION_IN_PROGRESS` ([order-cancellation.service.ts](https://github.com/QuocDuy21-10/laptopshop-api/blob/main/src/modules/orders/order-cancellation.service.ts#L44-L58)).
 
 ## Bảo mật
 

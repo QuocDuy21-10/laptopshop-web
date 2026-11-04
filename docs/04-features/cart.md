@@ -144,8 +144,7 @@ Chi tiết ở [Data dictionary: Cart](../06-api-and-data/data-dictionary/cart.m
 - `sessionStorage` bị chặn: ý định thêm giỏ không được lưu, người dùng phải thêm lại sau khi đăng nhập.
 - Nút thêm vào giỏ ở thẻ sản phẩm, bảng so sánh và thẻ yêu thích đều đi qua `useAddToCartAction`; hook giữ lại cả query của trang hiện tại (ví dụ `/compare?ids=...`) làm địa chỉ quay lại sau đăng nhập.
 
-> [!WARNING]
-> **Chưa xác minh:** giới hạn tổng số lượng của một dòng sau nhiều lần cộng dồn. Backend giới hạn 100 cho mỗi request, nhưng `cart.service.ts` chỉ kiểm tra tổng so với tồn kho, không thấy chặn trần 100 cho tổng. Cần xác nhận ý định thiết kế.
+> Tổng số lượng của một dòng chỉ bị chặn bởi tồn kho: sau khi cộng dồn trong giao dịch, nếu vượt `product.quantity` thì trả `OUT_OF_STOCK` và hoàn tác ([cart.service.ts](https://github.com/QuocDuy21-10/laptopshop-api/blob/main/src/modules/cart/cart.service.ts#L60-L81)). Không có trần 100 cho tổng; 100 chỉ áp cho mỗi request.
 
 ## Bảo mật
 

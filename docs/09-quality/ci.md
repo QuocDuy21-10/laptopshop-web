@@ -27,10 +27,9 @@ Phiên bản pnpm lấy từ trường `packageManager` trong `package.json`.
 | Push lên `main` với cùng các thay đổi | Build, rồi tải artifact và triển khai lên GitHub Pages |
 | Chạy tay (`workflow_dispatch`) | Như push |
 
-Để triển khai chạy được, cần bật GitHub Pages trong cài đặt repo: **Settings, Pages, Source: GitHub Actions**. Nếu chưa bật, job `deploy` nhiều khả năng sẽ lỗi (chưa chạy thử vì Pages chưa được bật); job build vẫn kiểm tra tài liệu. Địa chỉ site dự kiến: `https://quocduy21-10.github.io/laptopshop-web/`.
+Để triển khai chạy được, cần bật GitHub Pages trong cài đặt repo: **Settings, Pages, Source: GitHub Actions**. Nếu chưa bật, job `deploy` sẽ lỗi (đã xảy ra ở lần push đầu); job build vẫn kiểm tra tài liệu.
 
-> [!WARNING]
-> **Chưa xác minh:** địa chỉ Pages ở trên suy ra từ tên tài khoản và tên repo (`base: "/laptopshop-web/"` trong [config.mts](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/docs/.vitepress/config.mts)); chưa kiểm tra vì Pages chưa được bật.
+Trang tài liệu được xuất bản tại <https://quocduy21-10.github.io/laptopshop-web/>.
 
 ## CI không chứng minh điều gì
 
