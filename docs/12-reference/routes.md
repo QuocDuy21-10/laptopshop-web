@@ -27,7 +27,7 @@ Layout gốc đặt `dynamic = "force-dynamic"`, nên các trang render theo t�
 | `/account/orders/[id]` | Chi tiết đơn hàng | Có | Client | [Orders](../04-features/orders.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/account/orders/%5Bid%5D/page.tsx) |
 | `/account/orders/[id]/payment` | Thanh toán đơn hàng | Có | Client | [Payments](../04-features/payments.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/account/orders/%5Bid%5D/payment/page.tsx) |
 | `/account/warranties` | Quyền lợi bảo hành | Có | Client | [After-sales](../04-features/after-sales.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/account/warranties/page.tsx) |
-| `/advisor` | Tư vấn chọn laptop | Không | Client | Advisor | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/advisor/page.tsx) |
+| `/advisor` | Tư vấn chọn laptop | Không | Client | [Advisor](../04-features/advisor.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/advisor/page.tsx) |
 | `/cart` | Giỏ hàng | Có | Client | [Cart](../04-features/cart.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/cart/page.tsx) |
 | `/checkout` | Đặt hàng | Có | Client | [Checkout](../04-features/checkout.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/checkout/page.tsx) |
 | `/compare` | So sánh laptop | Không | Client | [Compare](../04-features/compare.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/compare/page.tsx) |
