@@ -56,6 +56,7 @@ Dấu hiệu "chưa xác minh" trong bảng nghĩa là ý nghĩa hay chỗ dùng
 | Orders | [orders](orders.md) |
 | After-sales | [after-sales](after-sales.md) |
 | Reviews | [reviews](reviews.md) |
+| Wishlist | [wishlist](wishlist.md) |
 | Admin | [admin](admin.md) |
 
 ## Quy ước tiền tệ và thời gian
