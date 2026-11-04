@@ -12,6 +12,7 @@ Giao diện thương mại điện tử laptop xây dựng bằng **Next.js 16**
 [![React](https://img.shields.io/badge/React-19.3.1-149ECA?logo=react&logoColor=white)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![CI](https://github.com/QuocDuy21-10/laptopshop-web/actions/workflows/ci.yml/badge.svg)](https://github.com/QuocDuy21-10/laptopshop-web/actions/workflows/ci.yml)
+[![Tài liệu](https://img.shields.io/badge/Tài_liệu-GitHub_Pages-0A7EA4?logo=readthedocs&logoColor=white)](https://quocduy21-10.github.io/laptopshop-web/)
 
 <img src="public/banners/hero-gaming.webp" alt="Banner laptop gaming của LaptopShop" width="100%" />
 
@@ -21,7 +22,7 @@ Giao diện thương mại điện tử laptop xây dựng bằng **Next.js 16**
 
 ## Tài liệu
 
-Toàn bộ tài liệu kỹ thuật và nghiệp vụ (kiến trúc, tính năng, API, data dictionary, sơ đồ, vận hành, bảo mật) nằm ở **[docs/README.md](docs/README.md)**.
+Toàn bộ tài liệu kỹ thuật và nghiệp vụ (kiến trúc, tính năng, API, data dictionary, sơ đồ, vận hành, bảo mật) được đăng tại **[quocduy21-10.github.io/laptopshop-web](https://quocduy21-10.github.io/laptopshop-web/)**. Nguồn Markdown nằm trong thư mục `docs/` (đọc trực tiếp trên GitHub tại [docs/README.md](docs/README.md)) và được workflow `docs.yml` triển khai lên GitHub Pages.
 
 | Bạn muốn | Đọc |
 | --- | --- |
@@ -99,6 +100,7 @@ CI chạy lint, kiểm tra kiểu, test và build cho mọi pull request ([CI](d
 
 ## Liên kết
 
+- Site tài liệu: [quocduy21-10.github.io/laptopshop-web](https://quocduy21-10.github.io/laptopshop-web/)
 - Backend: [laptopshop-api](https://github.com/QuocDuy21-10/laptopshop-api)
 - Hướng dẫn cho AI agent: [AGENTS.md](AGENTS.md), [CLAUDE.md](CLAUDE.md)
 - Quy trình làm việc: [Quy trình làm việc](docs/08-development/workflow.md)
