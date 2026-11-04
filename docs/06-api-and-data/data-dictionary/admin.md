@@ -34,8 +34,7 @@ Hai quy ước gửi dữ liệu ([ProductForm.tsx](https://github.com/QuocDuy21
 - Với thông số bị bỏ trống, form gửi chuỗi rỗng (`""`) để backend xóa giá trị; `toFormData` bỏ qua `null` nên `null` sẽ để nguyên giá trị đã lưu.
 - Giá trị chuỗi được cắt khoảng trắng hai đầu.
 
-> [!WARNING]
-> **Chưa xác minh:** khoảng giá trị hợp lệ của các thông số số (ví dụ `ramGb`, `batteryWh`) do backend quy định; form chỉ giới hạn kiểu. Cần đọc `products.schema.ts` trong backend.
+> Khoảng hợp lệ do backend quy định ([products.schema.ts](https://github.com/QuocDuy21-10/laptopshop-api/blob/main/src/modules/products/products.schema.ts#L146-L154)): `ramGb` 1–256, `storageGb` 1–16384, `screenSizeInch` 10–20, `refreshRateHz` 30–500, `batteryWh` 1–200, `weightGrams` 300–10000, `warrantyMonths` 0–120.
 
 ## AdjustBody (điều chỉnh tồn kho)
 

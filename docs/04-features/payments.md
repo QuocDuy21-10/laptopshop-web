@@ -138,11 +138,9 @@ Chi tiết ở [Data dictionary: Payments](../06-api-and-data/data-dictionary/pa
 - Nhãn lý do xem xét ở trang admin chỉ có cho 4 mã (`OUTBOUND`, `UNKNOWN_CODE`, `INVALID_PAYMENT_STATE`, `AMOUNT_MISMATCH`); mã khác (`WRONG_ACCOUNT`, `LATE_PAYMENT`, `PROVIDER_MISMATCH`, `RECONCILIATION_INCONCLUSIVE`) hiển thị nguyên văn ([labels.ts](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/features/admin/payments/labels.ts#L14-L22)).
 - Ca xem xét có `version`; hai admin thao tác cùng lúc thì người sau nhận lỗi xung đột phiên bản.
 
-> [!WARNING]
-> **Chưa xác minh:** điều kiện chính xác để chuyển `VERIFYING` sang `EXPIRED` ("đủ bằng chứng đối soát": số lần kiểm tra liên tiếp thành công của nhà cung cấp và mốc thời gian). Mới đọc đầu logic ở [payment-maintenance.service.ts](https://github.com/QuocDuy21-10/laptopshop-api/blob/main/src/modules/payments/payment-maintenance.service.ts#L69-L91); cần đọc hết file và `reconciliation.service.ts`.
+> **Điều kiện chuyển `VERIFYING` sang `EXPIRED`** ([payment-maintenance.service.ts](https://github.com/QuocDuy21-10/laptopshop-api/blob/main/src/modules/payments/payment-maintenance.service.ts#L69-L141)): đơn còn `PENDING`; nhà cung cấp và chế độ của thanh toán khớp nhà cung cấp hiện hành; mốc kiểm tra của nhà cung cấp có `consecutiveSuccesses` từ 2 trở lên và cả `previousVerifiedThroughAt` lẫn `verifiedThroughAt` không sớm hơn `cancelAfter` cộng `PAYMENT_RECONCILIATION_SETTLEMENT_SECONDS` (mặc định 300 giây). Khi đủ điều kiện, bước kiểm tra được lặp lại trong giao dịch có khóa hàng rồi mới hủy đơn với lý do `PAYMENT_EXPIRED`. Nếu `reviewAfter` đến trước, thanh toán chuyển `REVIEW_REQUIRED` (lý do `RECONCILIATION_INCONCLUSIVE`) thay vì hết hạn.
 
-> [!WARNING]
-> **Chưa xác minh:** nhà cung cấp mặc định `fake` hoạt động ra sao (có QR không, có webhook mô phỏng không). Chỉ nhà cung cấp SePay được xác nhận dựng URL `vietqr.app`.
+> **Nhà cung cấp `fake`** ([fake-payment.provider.ts](https://github.com/QuocDuy21-10/laptopshop-api/blob/main/src/modules/payments/providers/fake-payment.provider.ts#L5-L13), [payment-provider.factory.ts](https://github.com/QuocDuy21-10/laptopshop-api/blob/main/src/modules/payments/payment-provider.factory.ts#L21-L28)): là lớp con của nhà cung cấp SePay ở chế độ `test`, nên dựng cùng URL QR `vietqr.app` và dùng cùng đường webhook; chỉ khác bí mật webhook và token cố định, và tài khoản nhận mặc định khi thiếu cấu hình. Đây là giá trị mặc định của `PAYMENT_PROVIDER`; production có bật chuyển khoản bắt buộc `sepay`.
 
 ## Bảo mật
 

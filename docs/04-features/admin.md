@@ -198,8 +198,7 @@ Chi tiết ở [Data dictionary: Admin](../06-api-and-data/data-dictionary/admin
 - Menu đánh dấu mục đang chọn theo tiền tố đường dẫn; `/admin` chỉ được chọn khi không khớp mục nào khác.
 - Đổi vai trò của chính mình hoặc xóa chính mình bị backend từ chối (`CANNOT_CHANGE_OWN_ROLE`, `CANNOT_DELETE_SELF`).
 
-> [!WARNING]
-> **Chưa xác minh:** quyền chi tiết theo từng vai trò. Giao diện chỉ phân biệt `ADMIN` và còn lại; `GET /api/v1/admin/roles` trả danh sách vai trò, và `roleLabel` có nhãn cho `ADMIN` ("Quản trị viên") và `USER` ("Khách hàng"). Cần đọc `middlewares/require-role.ts` của backend để biết mô hình vai trò đầy đủ.
+> Mô hình vai trò chỉ có hai vai trò `ADMIN` và `USER` ([seed.ts](https://github.com/QuocDuy21-10/laptopshop-api/blob/main/src/config/seed.ts#L18-L22)). Toàn bộ router `/admin` đi qua `requireRole("ADMIN")` ([index.ts](https://github.com/QuocDuy21-10/laptopshop-api/blob/main/src/routes/index.ts#L92), [require-role.ts](https://github.com/QuocDuy21-10/laptopshop-api/blob/main/src/middlewares/require-role.ts#L4-L13)); không có quyền chi tiết hơn.
 
 > [!WARNING]
 > **Chưa xác minh:** hành vi chi tiết của các module khuyến mãi, hậu mãi, đánh giá, banner, thông báo, bản tin và người dùng; bảng trên chỉ phản ánh route, endpoint và enum. Xem [Lộ trình](../12-reference/roadmap.md).

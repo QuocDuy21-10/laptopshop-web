@@ -163,8 +163,7 @@ Chi tiết cơ chế lỗi ở [Xử lý lỗi API](../06-api-and-data/errors.md
 - Khi `sessionStorage` bị chặn, thao tác giỏ hàng đang chờ không được lưu (code bắt lỗi và bỏ qua).
 - Đăng xuất xóa cache dù API lỗi, nên giao diện không giữ lại dữ liệu của phiên cũ.
 
-> [!WARNING]
-> **Chưa xác minh:** phản ứng giao diện khi `PASSWORD_RESET_LOCKED` xảy ra (chỉ biết đi vào nhánh lỗi chung). Cũng chưa kiểm tra liệu backend khóa theo email hay theo IP. Cần đọc `password-reset.service.ts` trong backend.
+> `PASSWORD_RESET_LOCKED` (429) được hiển thị bằng thông báo "Bạn đã nhập sai quá nhiều lần. Hãy yêu cầu mã mới." ([errors.ts](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/lib/api/errors.ts#L32)). Backend khóa theo thử thách OTP của người dùng, không theo IP hay email: tối đa 5 lần nhập sai, lần sai thứ 5 vô hiệu hóa thử thách ([password-reset.service.ts](https://github.com/QuocDuy21-10/laptopshop-api/blob/main/src/modules/auth/password-reset.service.ts#L96-L119)). Giới hạn tần suất theo IP ở tầng route chưa được đọc.
 
 ## Bảo mật
 

@@ -31,19 +31,9 @@ Danh sách này gom các callout "Chưa xác minh" đang có trong tài liệu. 
 | `revalidate` có tác dụng không khi layout gốc đặt `force-dynamic` | [Rendering và cache](../02-architecture/rendering-and-caching.md) | Build, `pnpm start`, đếm số request tới API |
 | Dòng "Thanh toán khi nhận hàng (COD)" cố định ở trang chi tiết sản phẩm | [Products](../04-features/products.md) | Xác nhận với người phụ trách nội dung |
 | `PricingQuote.lines` thiếu `productId`, `netLineTotal` trong `schema.d.ts` | [Checkout](../04-features/checkout.md) | Chạy `pnpm gen:api` |
-| Thời hạn `pricingFingerprint`, quy tắc đơn tối thiểu của mã giảm giá | [Checkout](../04-features/checkout.md) | `promotion-fingerprint.ts`, `promotions.service.ts` ở backend |
-| Điều kiện "đủ bằng chứng đối soát" để `VERIFYING` sang `EXPIRED` | [Payments](../04-features/payments.md), [State machine](../07-diagrams/state-machines.md) | `payment-maintenance.service.ts`, `reconciliation.service.ts` |
-| Nhà cung cấp thanh toán `fake`: có QR, webhook mô phỏng không | [Payments](../04-features/payments.md), [C4 Context](../07-diagrams/c4-context.md) | `fake-payment.provider.ts` |
-| Trần tổng số lượng một dòng giỏ sau nhiều lần cộng dồn | [Cart](../04-features/cart.md) | `cart.service.ts` |
-| Cách hủy đơn trả kho, hoàn suất flash sale và mã giảm giá | [Orders](../04-features/orders.md) | `order-cancellation.service.ts` |
-| Phản ứng giao diện và cơ chế khóa của `PASSWORD_RESET_LOCKED` | [Auth](../04-features/auth.md) | `password-reset.service.ts` |
 | Hai tab làm mới phiên đồng thời có bị thu hồi không | [Runbook: phiên bị thu hồi](../10-operations/runbooks/session-revoked.md) | Tái hiện bằng hai tab và token hết hạn |
-| Mô hình vai trò đầy đủ | [Admin](../04-features/admin.md) | `middlewares/require-role.ts` |
-| Khoảng giá trị hợp lệ của thông số sản phẩm | [Data dictionary: Admin](../06-api-and-data/data-dictionary/admin.md) | `products.schema.ts` |
-| Ý nghĩa `effectiveCatalogPrice` | [Data dictionary: Products](../06-api-and-data/data-dictionary/products.md) | Backend, `products.mapper.ts` |
 | HTTPS, HSTS, chuyển hướng HTTP | [Triển khai](../10-operations/deployment.md) | Tầng biên ngoài repo |
 | CORS và cookie ở môi trường thật | [Mô hình bảo mật](../11-security/security-model.md) | Cấu hình triển khai |
-| Địa chỉ GitHub Pages | [CI](../09-quality/ci.md) | Bật Pages rồi mở site |
 
 ## Điểm lệch giữa tài liệu cũ và mã nguồn
 

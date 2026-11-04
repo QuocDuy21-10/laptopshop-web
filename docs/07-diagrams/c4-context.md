@@ -52,8 +52,7 @@ flowchart TB
 | API không phản hồi | Trang catalog hiện lỗi "Không tải được trang"; trang chủ chỉ ẩn khối bị lỗi. Xem [Rendering và cache](../02-architecture/rendering-and-caching.md). |
 | Ảnh QR không tải được | `PaymentScreen` hiện thông báo và hướng dẫn chuyển khoản thủ công ([PaymentScreen.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/features/payments/PaymentScreen.tsx#L121-L136)). |
 
-> [!WARNING]
-> **Chưa xác minh:** nhà cung cấp thanh toán mặc định `fake` của backend trả `qrImageUrl` thế nào. Chỉ nhà cung cấp SePay được xác nhận tạo URL `vietqr.app`. Cần đọc `fake-payment.provider.ts` trong backend.
+> **Nhà cung cấp `fake`** ([fake-payment.provider.ts](https://github.com/QuocDuy21-10/laptopshop-api/blob/main/src/modules/payments/providers/fake-payment.provider.ts#L5-L13), [payment-provider.factory.ts](https://github.com/QuocDuy21-10/laptopshop-api/blob/main/src/modules/payments/payment-provider.factory.ts#L21-L28)): là lớp con của nhà cung cấp SePay ở chế độ `test`, nên dựng cùng URL QR `vietqr.app` và dùng cùng đường webhook; chỉ khác bí mật webhook và token cố định, và tài khoản nhận mặc định khi thiếu cấu hình. Đây là giá trị mặc định của `PAYMENT_PROVIDER`; production có bật chuyển khoản bắt buộc `sepay`.
 
 ## Đọc tiếp
 

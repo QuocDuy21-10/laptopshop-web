@@ -164,8 +164,7 @@ Chi tiết ở [Data dictionary: Checkout](../06-api-and-data/data-dictionary/ch
 > [!WARNING]
 > **Chưa xác minh:** `schema.d.ts` khai báo `PricingQuote.lines[]` chỉ có `promotionFallback`, trong khi `CheckoutView` đọc `productId` và `netLineTotal` của từng dòng bằng cách ép kiểu `unknown` ([CheckoutView.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/features/checkout/CheckoutView/CheckoutView.tsx#L18-L24)). Tài liệu OpenAPI ở backend có `netLineTotal` (xem [openapi.ts](https://github.com/QuocDuy21-10/laptopshop-api/blob/main/src/docs/openapi.ts#L479)), nên `schema.d.ts` trong repo này có thể đã cũ; cần chạy `pnpm gen:api` để xác nhận.
 
-> [!WARNING]
-> **Chưa xác minh:** thời hạn hiệu lực của `pricingFingerprint` và quy tắc "đơn tối thiểu" của mã giảm giá. Cần đọc `promotion-fingerprint.ts` và `promotions.service.ts` trong backend.
+> `pricingFingerprint` là mã băm SHA-256 của các dòng, mã giảm giá và tổng tiền, không có thời hạn ([promotion-fingerprint.ts](https://github.com/QuocDuy21-10/laptopshop-api/blob/main/src/modules/promotions/promotion-fingerprint.ts#L9-L40)). Khi đặt hàng, nếu có mã giảm giá hoặc khuyến mãi mà mã băm tính lại khác thì trả `PROMOTION_CHANGED` ([orders.service.ts](https://github.com/QuocDuy21-10/laptopshop-api/blob/main/src/modules/orders/orders.service.ts#L158-L160)). Đơn tối thiểu của mã so với tạm tính sau ưu đãi sản phẩm (hoặc phần đủ điều kiện với mã theo sản phẩm); thiếu thì `MIN_ORDER_NOT_MET` ([promotions.service.ts](https://github.com/QuocDuy21-10/laptopshop-api/blob/main/src/modules/promotions/promotions.service.ts#L722-L736)).
 
 ## Bảo mật
 

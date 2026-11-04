@@ -40,7 +40,7 @@ Một sản phẩm trong danh sách và trang chi tiết. Nguồn: `components["
 | `salePrice` | `number` | Tùy chọn | Không | Giá bán sau giảm; không có thì dùng `price` | `23990000` | `PromotionPrice` |
 | `productDiscountAmount` | `number` | Tùy chọn | Không | Số tiền giảm của khuyến mãi sản phẩm | `2000000` | chưa xác minh chỗ hiển thị trực tiếp |
 | `promotion` | object | Tùy chọn | Có | Khuyến mãi đang áp dụng (xem bên dưới) | | `PromotionPrice` |
-| `effectiveCatalogPrice` | `number` | Có | Không | Chưa xác minh ý nghĩa; frontend không dùng | | không có |
+| `effectiveCatalogPrice` | `number` | Có | Không | Giá hiệu lực của danh mục: giá niêm yết trừ ưu đãi tự động đang thắng, bằng giá niêm yết nếu không có ([catalog-price-timeline.ts](https://github.com/QuocDuy21-10/laptopshop-api/blob/main/src/modules/pricing/catalog-price-timeline.ts#L55)); frontend không dùng | | không có |
 | `reviewSummary` | object | Có | Không | `{ averageRating: number or null, totalReviews: number }` | `{ "averageRating": 4.5, "totalReviews": 10 }` | `ProductCard`, mục đánh giá |
 
 Phần trăm giảm hiển thị là `Math.round((1 - salePrice / price) * 100)` do frontend tính từ hai giá API trả về, không phải field của API ([PromotionPrice.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/features/promotions/PromotionPrice/PromotionPrice.tsx#L5-L22)). Frontend không tự cộng thêm giảm giá hay phí.
