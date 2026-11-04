@@ -4,11 +4,10 @@ Trang này liệt kê phần tài liệu còn thiếu, các mục chưa xác min
 
 ## Module chưa có tài liệu riêng
 
-Mười lăm module (Auth, Products, Cart, Checkout, Payments, Orders, After-sales, Reviews, Wishlist, Promotions, Home, Notifications, Compare, Advisor, Admin) đã xong. Còn 3 module; thứ tự đề xuất theo độ phức tạp và mức ảnh hưởng nghiệp vụ.
+Mười sáu module (Auth, Products, Cart, Checkout, Payments, Orders, After-sales, Reviews, Wishlist, Promotions, Home, Notifications, Compare, Advisor, Account, Admin) đã xong. Còn 2 module; thứ tự đề xuất theo độ phức tạp và mức ảnh hưởng nghiệp vụ.
 
 | Ưu tiên | Module | Route chính | Cần tài liệu hóa |
 | --- | --- | --- | --- |
-| Thấp | account | `/account` | Hồ sơ, ảnh đại diện, xác minh email |
 | Thấp | newsletter | `/newsletter/*`, `/admin/newsletter` | Đăng ký, xác nhận, hủy; trạng thái `PENDING`, `CONFIRMED`, `UNSUBSCRIBED` |
 | Thấp | store-info | chân trang | Dữ liệu cửa hàng hiển thị, xử lý khi thiếu |
 
