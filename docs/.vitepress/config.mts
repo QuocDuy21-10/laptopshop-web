@@ -131,6 +131,7 @@ export default withMermaid(
             { text: "Danh sách route", link: "/12-reference/routes" },
             { text: "Biến môi trường", link: "/12-reference/env-vars" },
             { text: "Lộ trình tài liệu", link: "/12-reference/roadmap" },
+            { text: "Việc chưa làm", link: "/12-reference/pending-items" },
           ],
         },
       ],
