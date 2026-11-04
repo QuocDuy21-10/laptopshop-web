@@ -64,6 +64,7 @@ Dấu hiệu "chưa xác minh" trong bảng nghĩa là ý nghĩa hay chỗ dùng
 | Advisor | [advisor](advisor.md) |
 | Account | [account](account.md) |
 | Newsletter | [newsletter](newsletter.md) |
+| Store info | [store-info](store-info.md) |
 | Admin | [admin](admin.md) |
 
 ## Quy ước tiền tệ và thời gian

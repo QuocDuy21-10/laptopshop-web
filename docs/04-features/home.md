@@ -41,7 +41,7 @@ Trang chủ `/` gom nhiều khối: banner hero và thẻ ưu đãi do admin c�
 | Tư vấn | Nội dung tĩnh | Luôn hiện |
 | Cam kết cửa hàng | `getStoreInfo` | Có ít nhất một thông tin cấu hình |
 | Đánh giá nổi bật | `GET /reviews/highlights?limit=6` | Có ít nhất một đánh giá |
-| Bản tin | Form đăng ký bản tin (module newsletter chưa có tài liệu riêng, xem [Lộ trình](../12-reference/roadmap.md)) | Luôn hiện |
+| Bản tin | Form đăng ký bản tin (xem [Newsletter](newsletter.md)) | Luôn hiện |
 
 ## Business rules
 

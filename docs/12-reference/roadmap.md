@@ -4,11 +4,7 @@ Trang này liệt kê phần tài liệu còn thiếu, các mục chưa xác min
 
 ## Module chưa có tài liệu riêng
 
-Mười bảy module (Auth, Products, Cart, Checkout, Payments, Orders, After-sales, Reviews, Wishlist, Promotions, Home, Notifications, Compare, Advisor, Account, Newsletter, Admin) đã xong. Còn 1 module; thứ tự đề xuất theo độ phức tạp và mức ảnh hưởng nghiệp vụ.
-
-| Ưu tiên | Module | Route chính | Cần tài liệu hóa |
-| --- | --- | --- | --- |
-| Thấp | store-info | chân trang | Dữ liệu cửa hàng hiển thị, xử lý khi thiếu |
+Cả 18 module trong `src/features` đã có tài liệu riêng (xem [Danh sách module](../04-features/README.md)).
 
 Các module admin con (khuyến mãi, người dùng, đánh giá, hậu mãi, banner, thông báo, bản tin) hiện chỉ có phần tóm tắt trong [Admin](../04-features/admin.md); chi tiết nên được viết cùng module khách tương ứng.
 

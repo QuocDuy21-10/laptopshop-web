@@ -1,6 +1,6 @@
 # Danh sách module
 
-Ứng dụng chia thành 18 module nghiệp vụ trong [src/features](https://github.com/QuocDuy21-10/laptopshop-web/tree/main/src/features). Mười bảy module đã có tài liệu đầy đủ theo [mẫu feature](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/docs/templates/feature.md); các module còn lại nằm trong [Lộ trình](../12-reference/roadmap.md).
+Ứng dụng chia thành 18 module nghiệp vụ trong [src/features](https://github.com/QuocDuy21-10/laptopshop-web/tree/main/src/features). Cả 18 module đều có tài liệu theo [mẫu feature](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/docs/templates/feature.md); phần chưa kiểm chứng ở từng trang được gom trong [Lộ trình](../12-reference/roadmap.md).
 
 ## Đã có tài liệu
 
@@ -22,13 +22,8 @@
 | [Advisor](advisor.md) | Tư vấn chọn laptop theo ngân sách và nhu cầu, AI tùy chọn | `/advisor` | [advisor](../06-api-and-data/data-dictionary/advisor.md) |
 | [Account](account.md) | Hồ sơ, ảnh đại diện, `useMe`, xác minh email | `/account` | [account](../06-api-and-data/data-dictionary/account.md) |
 | [Newsletter](newsletter.md) | Đăng ký, xác nhận hai bước, hủy nhận ưu đãi qua email | `/newsletter/confirm`, `/newsletter/unsubscribe`, `/admin/newsletter` | [newsletter](../06-api-and-data/data-dictionary/newsletter.md) |
+| [Store info](store-info.md) | Hotline, email, giờ hỗ trợ, VAT, phương thức thanh toán ở chân trang | chân trang, trang chủ | [store-info](../06-api-and-data/data-dictionary/store-info.md) |
 | [Admin](admin.md) | Khung quản trị và các module vận hành | `/admin/*` | [admin](../06-api-and-data/data-dictionary/admin.md) |
-
-## Chưa có tài liệu riêng
-
-| Module | Mô tả (theo route và mã nguồn) | Route chính |
-| --- | --- | --- |
-| store-info | Thông tin cửa hàng hiển thị ở chân trang | chân trang |
 
 Mọi route liệt kê ở [Danh sách route](../12-reference/routes.md).
 
