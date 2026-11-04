@@ -38,6 +38,7 @@ Mỗi trang tính năng chứa sequence hoặc activity diagram đi kèm giải 
 | [Wishlist](../04-features/wishlist.md) | Sequence thêm yêu thích khi chưa đăng nhập; state machine cảnh báo giá |
 | [Promotions](../04-features/promotions.md) | State machine vòng đời khuyến mãi; flowchart chọn khuyến mãi cho sản phẩm |
 | [Home](../04-features/home.md) | Flowchart nguồn dữ liệu và cô lập lỗi từng khối |
+| [Notifications](../04-features/notifications.md) | Flowchart từ sự kiện đến kênh gửi; sequence bật Web Push |
 | [Admin](../04-features/admin.md) | Sequence các tầng truy cập; sequence chuyển trạng thái đơn |
 
 Danh sách module và các tính năng chưa có tài liệu: [Danh sách module](../04-features/README.md).
