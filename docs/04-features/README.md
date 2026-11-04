@@ -1,6 +1,6 @@
 # Danh sách module
 
-Ứng dụng chia thành 18 module nghiệp vụ trong [src/features](https://github.com/QuocDuy21-10/laptopshop-web/tree/main/src/features). Mười module đã có tài liệu đầy đủ theo [mẫu feature](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/docs/templates/feature.md); các module còn lại nằm trong [Lộ trình](../12-reference/roadmap.md).
+Ứng dụng chia thành 18 module nghiệp vụ trong [src/features](https://github.com/QuocDuy21-10/laptopshop-web/tree/main/src/features). Mười một module đã có tài liệu đầy đủ theo [mẫu feature](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/docs/templates/feature.md); các module còn lại nằm trong [Lộ trình](../12-reference/roadmap.md).
 
 ## Đã có tài liệu
 
@@ -15,6 +15,7 @@
 | [After-sales](after-sales.md) | Yêu cầu bảo hành và hỗ trợ kỹ thuật theo thiết bị, báo giá, tin nhắn, ảnh | `/account/after-sales`, `/account/warranties`, `/admin/after-sales` | [after-sales](../06-api-and-data/data-dictionary/after-sales.md) |
 | [Reviews](reviews.md) | Đánh giá có ảnh, bình chọn hữu ích, trả lời chính thức, kiểm duyệt | trang chi tiết sản phẩm, `/admin/reviews` | [reviews](../06-api-and-data/data-dictionary/reviews.md) |
 | [Wishlist](wishlist.md) | Danh sách yêu thích, cảnh báo giá, ý định chờ đăng nhập | `/wishlist` | [wishlist](../06-api-and-data/data-dictionary/wishlist.md) |
+| [Promotions](promotions.md) | Mã giảm giá, giảm tự động, Flash Sale, giá đã giảm | `/promotions`, `/admin/promotions` | [promotions](../06-api-and-data/data-dictionary/promotions.md) |
 | [Admin](admin.md) | Khung quản trị và các module vận hành | `/admin/*` | [admin](../06-api-and-data/data-dictionary/admin.md) |
 
 ## Chưa có tài liệu riêng
@@ -27,7 +28,6 @@
 | home | Các khối của trang chủ | `/` |
 | newsletter | Đăng ký, xác nhận, hủy nhận ưu đãi qua email | `/newsletter/confirm`, `/newsletter/unsubscribe` |
 | notifications | Thông báo trong ứng dụng và cài đặt | `/account/notifications` |
-| promotions | Khuyến mãi, mã giảm giá, flash sale (phía khách) | `/promotions` |
 | store-info | Thông tin cửa hàng hiển thị ở chân trang | chân trang |
 
 Mọi route liệt kê ở [Danh sách route](../12-reference/routes.md).

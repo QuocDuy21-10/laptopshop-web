@@ -4,11 +4,10 @@ Trang này liệt kê phần tài liệu còn thiếu, các mục chưa xác min
 
 ## Module chưa có tài liệu riêng
 
-Mười module (Auth, Products, Cart, Checkout, Payments, Orders, After-sales, Reviews, Wishlist, Admin) đã xong. Còn 8 module; thứ tự đề xuất theo độ phức tạp và mức ảnh hưởng nghiệp vụ.
+Mười một module (Auth, Products, Cart, Checkout, Payments, Orders, After-sales, Reviews, Wishlist, Promotions, Admin) đã xong. Còn 7 module; thứ tự đề xuất theo độ phức tạp và mức ảnh hưởng nghiệp vụ.
 
 | Ưu tiên | Module | Route chính | Cần tài liệu hóa |
 | --- | --- | --- | --- |
-| Trung bình | promotions | `/promotions`, `/admin/promotions` | Ba loại (`COUPON`, `AUTOMATIC`, `FLASH_SALE`), trạng thái, suất flash sale, cách giá được tính |
 | Trung bình | home | `/` | Các khối trang chủ, banner do admin điều khiển, cách cô lập lỗi từng khối |
 | Trung bình | notifications | `/account/notifications`, `/admin/notifications` | Thông báo trong ứng dụng, cài đặt, thử lại gửi thất bại |
 | Trung bình | compare | `/compare` | Chọn sản phẩm, bảng thông số, giới hạn số lượng |
