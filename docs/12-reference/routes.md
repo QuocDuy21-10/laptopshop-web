@@ -17,7 +17,7 @@ Layout gốc đặt `dynamic = "force-dynamic"`, nên các trang render theo t�
 | Route | Tên trang | Cần đăng nhập | Dữ liệu | Tính năng | Mã nguồn |
 | --- | --- | --- | --- | --- | --- |
 | `/` | Trang chủ | Không | Server | [Home](../04-features/home.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/page.tsx) |
-| `/account` | Hồ sơ | Có | Client | Account | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/account/page.tsx) |
+| `/account` | Hồ sơ | Có | Client | [Account](../04-features/account.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/account/page.tsx) |
 | `/account/after-sales` | Yêu cầu hậu mãi | Có | Client | [After-sales](../04-features/after-sales.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/account/after-sales/page.tsx) |
 | `/account/after-sales/[id]` | Chi tiết yêu cầu hậu mãi | Có | Client | [After-sales](../04-features/after-sales.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/account/after-sales/%5Bid%5D/page.tsx) |
 | `/account/after-sales/new` | Tạo yêu cầu hậu mãi | Có | Client | [After-sales](../04-features/after-sales.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/account/after-sales/new/page.tsx) |

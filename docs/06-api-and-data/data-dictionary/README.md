@@ -62,6 +62,7 @@ Dấu hiệu "chưa xác minh" trong bảng nghĩa là ý nghĩa hay chỗ dùng
 | Notifications | [notifications](notifications.md) |
 | Compare | [compare](compare.md) |
 | Advisor | [advisor](advisor.md) |
+| Account | [account](account.md) |
 | Admin | [admin](admin.md) |
 
 ## Quy ước tiền tệ và thời gian
