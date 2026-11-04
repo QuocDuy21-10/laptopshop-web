@@ -8,7 +8,7 @@ Mọi trang của ứng dụng (49 route) liệt kê từ các file `page.tsx` t
 | --- | --- |
 | Cần đăng nhập | `Có` nếu route thuộc nhóm được bảo vệ trong [guarded-routes.ts](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/lib/guarded-routes.ts) (`/cart`, `/checkout`, `/wishlist`, `/account`, `/admin`). Việc bảo vệ gồm ba tầng, xem [Routing và bảo vệ route](../02-architecture/routing-and-guards.md). |
 | Dữ liệu | `Server`: file `page.tsx` gọi API trên server (Server Component). `Client`: trang là khung, dữ liệu lấy bằng TanStack Query trong component client. Xác định theo việc `page.tsx` có gọi `server.ts` hay client server API hay không. |
-| Tính năng | Liên kết tới tài liệu tính năng nếu có. Các tính năng khác chưa có tài liệu riêng ([Lộ trình](roadmap.md)). |
+| Tính năng | Liên kết tới tài liệu tính năng. |
 
 Layout gốc đặt `dynamic = "force-dynamic"`, nên các trang render theo từng yêu cầu ([Rendering và cache](../02-architecture/rendering-and-caching.md)). Các trang chi tiết sản phẩm, đơn hàng và thanh toán trả trang "không tìm thấy" khi `id` không hợp lệ.
 

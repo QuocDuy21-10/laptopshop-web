@@ -43,6 +43,7 @@ Mỗi trang tính năng chứa sequence hoặc activity diagram đi kèm giải 
 | [Advisor](../04-features/advisor.md) | Sequence gợi ý với nhánh lùi về quy tắc |
 | [Account](../04-features/account.md) | Sequence cập nhật hồ sơ và ảnh đại diện |
 | [Newsletter](../04-features/newsletter.md) | State machine trạng thái người đăng ký |
+| [Store info](../04-features/store-info.md) | Flowchart nguồn dữ liệu và trường hợp thiếu |
 | [Admin](../04-features/admin.md) | Sequence các tầng truy cập; sequence chuyển trạng thái đơn |
 
 Danh sách module và các tính năng chưa có tài liệu: [Danh sách module](../04-features/README.md).
