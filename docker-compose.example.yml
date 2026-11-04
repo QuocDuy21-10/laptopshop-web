@@ -1,7 +1,7 @@
 # Whole shop in containers: docker compose -f docker-compose.example.yml up -d --build
-# Needs ../nodejs-pro/.env (see that repo); set CORS_ORIGINS there to the site origin (e.g. http://localhost).
+# Needs ../laptopshop-api/.env (see that repo); set CORS_ORIGINS there to the site origin (e.g. http://localhost).
 include:
-  - ../nodejs-pro/docker-compose.yml
+  - ../laptopshop-api/docker-compose.yml
 
 services:
   web:
