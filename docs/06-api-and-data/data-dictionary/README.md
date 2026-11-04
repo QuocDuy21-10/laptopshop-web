@@ -58,6 +58,7 @@ Dấu hiệu "chưa xác minh" trong bảng nghĩa là ý nghĩa hay chỗ dùng
 | Reviews | [reviews](reviews.md) |
 | Wishlist | [wishlist](wishlist.md) |
 | Promotions | [promotions](promotions.md) |
+| Home | [home](home.md) |
 | Admin | [admin](admin.md) |
 
 ## Quy ước tiền tệ và thời gian
