@@ -1,6 +1,6 @@
 # Danh sách module
 
-Ứng dụng chia thành 18 module nghiệp vụ trong [src/features](https://github.com/QuocDuy21-10/laptopshop-web/tree/main/src/features). Tám module đã có tài liệu đầy đủ theo [mẫu feature](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/docs/templates/feature.md); các module còn lại nằm trong [Lộ trình](../12-reference/roadmap.md).
+Ứng dụng chia thành 18 module nghiệp vụ trong [src/features](https://github.com/QuocDuy21-10/laptopshop-web/tree/main/src/features). Chín module đã có tài liệu đầy đủ theo [mẫu feature](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/docs/templates/feature.md); các module còn lại nằm trong [Lộ trình](../12-reference/roadmap.md).
 
 ## Đã có tài liệu
 
@@ -13,6 +13,7 @@
 | [Payments](payments.md) | Thanh toán chuyển khoản bằng mã QR, theo dõi trạng thái, đối soát | `/account/orders/[id]/payment`, `/admin/payments` | [payments](../06-api-and-data/data-dictionary/payments.md) |
 | [Orders](orders.md) | Danh sách, chi tiết, hủy đơn | `/account/orders` | [orders](../06-api-and-data/data-dictionary/orders.md) |
 | [After-sales](after-sales.md) | Yêu cầu bảo hành và hỗ trợ kỹ thuật theo thiết bị, báo giá, tin nhắn, ảnh | `/account/after-sales`, `/account/warranties`, `/admin/after-sales` | [after-sales](../06-api-and-data/data-dictionary/after-sales.md) |
+| [Reviews](reviews.md) | Đánh giá có ảnh, bình chọn hữu ích, trả lời chính thức, kiểm duyệt | trang chi tiết sản phẩm, `/admin/reviews` | [reviews](../06-api-and-data/data-dictionary/reviews.md) |
 | [Admin](admin.md) | Khung quản trị và các module vận hành | `/admin/*` | [admin](../06-api-and-data/data-dictionary/admin.md) |
 
 ## Chưa có tài liệu riêng
@@ -26,7 +27,6 @@
 | newsletter | Đăng ký, xác nhận, hủy nhận ưu đãi qua email | `/newsletter/confirm`, `/newsletter/unsubscribe` |
 | notifications | Thông báo trong ứng dụng và cài đặt | `/account/notifications` |
 | promotions | Khuyến mãi, mã giảm giá, flash sale (phía khách) | `/promotions` |
-| reviews | Đánh giá sản phẩm | trang chi tiết sản phẩm |
 | store-info | Thông tin cửa hàng hiển thị ở chân trang | chân trang |
 | wishlist | Danh sách yêu thích, cảnh báo giá | `/wishlist` |
 
