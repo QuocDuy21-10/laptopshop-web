@@ -2,9 +2,9 @@ name: Docs
 on:
   push:
     branches: [main]
-    paths: ["docs/**", "package.json", "pnpm-lock.yaml", ".github/workflows/docs.yml"]
+    paths: ["docs/**", "scripts/docs-check/**", "package.json", "pnpm-lock.yaml", ".github/workflows/docs.yml"]
   pull_request:
-    paths: ["docs/**", "package.json", "pnpm-lock.yaml", ".github/workflows/docs.yml"]
+    paths: ["docs/**", "scripts/docs-check/**", "package.json", "pnpm-lock.yaml", ".github/workflows/docs.yml"]
   workflow_dispatch:
 
 permissions:
@@ -19,12 +19,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: QuocDuy21-10/laptopshop-api
+          ref: main
+          path: laptopshop-api
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: pnpm run docs:check
+        env:
+          API_DIR: laptopshop-api
       - run: pnpm run docs:build
       - if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v5
