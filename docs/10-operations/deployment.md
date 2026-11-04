@@ -32,9 +32,6 @@ docker compose -f docker-compose.example.yml up -d --build
 | `nginx` | `nginx:1.27-alpine` | Mở cổng 80, gắn [deploy/nginx.conf](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/deploy/nginx.conf) |
 | `app`, MySQL, Redis, worker... | Từ file compose của backend, nạp bằng `include:` | Xem repo [laptopshop-api](https://github.com/QuocDuy21-10/laptopshop-api/blob/main/docker-compose.yml) |
 
-> [!WARNING]
-> **Lệch tên thư mục:** file compose mẫu `include` đường dẫn `../nodejs-pro/docker-compose.yml` và chú thích cần `../nodejs-pro/.env`, trong khi repo backend hiện có tên `laptopshop-api`. Điều chỉnh đường dẫn cho khớp thư mục backend trên máy bạn. Cấu hình này chưa được sửa trong repo; đây là ghi chú để người triển khai biết.
-
 Backend cần `.env` riêng với cơ sở dữ liệu, Redis và các bí mật; không mô tả ở đây ([Biến môi trường](../12-reference/env-vars.md)).
 
 ## Danh sách kiểm tra production

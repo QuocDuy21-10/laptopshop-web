@@ -45,7 +45,6 @@ Các điểm lệch tìm thấy khi viết bộ tài liệu này, với trạng 
 | CLAUDE.md liệt kê proxy chặn `/cart`, `/checkout`, `/account/*`; thực tế còn `/wishlist` và `/admin/*` | Đã sửa trong CLAUDE.md |
 | CLAUDE.md ghi backend ở `../nodejs-pro`; repo backend hiện là `laptopshop-api` | Đã sửa trong CLAUDE.md |
 | CLAUDE.md ghi `applyFieldErrors` thuộc `errors.ts`; thực tế ở `src/lib/forms.ts` | Đã sửa trong CLAUDE.md |
-| `docker-compose.example.yml` còn `include` `../nodejs-pro/docker-compose.yml` | Chưa sửa (cấu hình); ghi chú ở [Triển khai](../10-operations/deployment.md) |
 
 ## Bước nâng cấp tiếp theo
 
