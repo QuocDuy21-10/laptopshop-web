@@ -4,11 +4,10 @@ Trang này liệt kê phần tài liệu còn thiếu, các mục chưa xác min
 
 ## Module chưa có tài liệu riêng
 
-Mười sáu module (Auth, Products, Cart, Checkout, Payments, Orders, After-sales, Reviews, Wishlist, Promotions, Home, Notifications, Compare, Advisor, Account, Admin) đã xong. Còn 2 module; thứ tự đề xuất theo độ phức tạp và mức ảnh hưởng nghiệp vụ.
+Mười bảy module (Auth, Products, Cart, Checkout, Payments, Orders, After-sales, Reviews, Wishlist, Promotions, Home, Notifications, Compare, Advisor, Account, Newsletter, Admin) đã xong. Còn 1 module; thứ tự đề xuất theo độ phức tạp và mức ảnh hưởng nghiệp vụ.
 
 | Ưu tiên | Module | Route chính | Cần tài liệu hóa |
 | --- | --- | --- | --- |
-| Thấp | newsletter | `/newsletter/*`, `/admin/newsletter` | Đăng ký, xác nhận, hủy; trạng thái `PENDING`, `CONFIRMED`, `UNSUBSCRIBED` |
 | Thấp | store-info | chân trang | Dữ liệu cửa hàng hiển thị, xử lý khi thiếu |
 
 Các module admin con (khuyến mãi, người dùng, đánh giá, hậu mãi, banner, thông báo, bản tin) hiện chỉ có phần tóm tắt trong [Admin](../04-features/admin.md); chi tiết nên được viết cùng module khách tương ứng.
