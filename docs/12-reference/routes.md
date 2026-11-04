@@ -16,7 +16,7 @@ Layout gốc đặt `dynamic = "force-dynamic"`, nên các trang render theo t�
 
 | Route | Tên trang | Cần đăng nhập | Dữ liệu | Tính năng | Mã nguồn |
 | --- | --- | --- | --- | --- | --- |
-| `/` | Trang chủ | Không | Server | Home | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/page.tsx) |
+| `/` | Trang chủ | Không | Server | [Home](../04-features/home.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/page.tsx) |
 | `/account` | Hồ sơ | Có | Client | Account | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/account/page.tsx) |
 | `/account/after-sales` | Yêu cầu hậu mãi | Có | Client | [After-sales](../04-features/after-sales.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/account/after-sales/page.tsx) |
 | `/account/after-sales/[id]` | Chi tiết yêu cầu hậu mãi | Có | Client | [After-sales](../04-features/after-sales.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/account/after-sales/%5Bid%5D/page.tsx) |
@@ -35,8 +35,8 @@ Layout gốc đặt `dynamic = "force-dynamic"`, nên các trang render theo t�
 | `/newsletter/unsubscribe` | Hủy đăng ký nhận ưu đãi | Không | Client | Newsletter | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/newsletter/unsubscribe/page.tsx) |
 | `/products` | Danh sách laptop | Không | Server | [Products](../04-features/products.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/products/page.tsx) |
 | `/products/[id]` | Chi tiết sản phẩm | Không | Server | [Products](../04-features/products.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/products/%5Bid%5D/page.tsx) |
-| `/promotions` | Khuyến mãi | Không | Server | Promotions | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/promotions/page.tsx) |
-| `/wishlist` | Yêu thích | Có | Client | Wishlist | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/wishlist/page.tsx) |
+| `/promotions` | Khuyến mãi | Không | Server | [Promotions](../04-features/promotions.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/promotions/page.tsx) |
+| `/wishlist` | Yêu thích | Có | Client | [Wishlist](../04-features/wishlist.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/wishlist/page.tsx) |
 
 ## Xác thực (`(auth)`)
 

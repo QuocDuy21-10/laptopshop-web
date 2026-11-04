@@ -34,6 +34,10 @@ Mỗi trang tính năng chứa sequence hoặc activity diagram đi kèm giải 
 | [Payments](../04-features/payments.md) | Sequence khách thanh toán và hệ thống xác nhận; flowchart màn hình theo trạng thái |
 | [Orders](../04-features/orders.md) | Sequence hủy đơn; activity lối vào từ chi tiết đơn |
 | [After-sales](../04-features/after-sales.md) | State machine vòng đời thiết bị; sequence tạo yêu cầu và thử lại |
+| [Reviews](../04-features/reviews.md) | Flowchart điều kiện được đánh giá; sequence đồng bộ ảnh |
+| [Wishlist](../04-features/wishlist.md) | Sequence thêm yêu thích khi chưa đăng nhập; state machine cảnh báo giá |
+| [Promotions](../04-features/promotions.md) | State machine vòng đời khuyến mãi; flowchart chọn khuyến mãi cho sản phẩm |
+| [Home](../04-features/home.md) | Flowchart nguồn dữ liệu và cô lập lỗi từng khối |
 | [Admin](../04-features/admin.md) | Sequence các tầng truy cập; sequence chuyển trạng thái đơn |
 
 Danh sách module và các tính năng chưa có tài liệu: [Danh sách module](../04-features/README.md).
