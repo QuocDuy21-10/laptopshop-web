@@ -16,7 +16,8 @@
     "gen:api": "openapi-typescript ${OPENAPI_URL:-http://localhost:8080/api-docs.json} -o src/lib/api/schema.d.ts && prettier --write src/lib/api/schema.d.ts",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "docs:check": "node scripts/docs-check/check-links.mjs . && node scripts/docs-check/check-mermaid.mjs . && bash scripts/docs-check/check-secrets.sh ."
   },
   "dependencies": {
     "@ant-design/nextjs-registry": "1.3.0",
