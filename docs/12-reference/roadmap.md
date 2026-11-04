@@ -4,11 +4,10 @@ Trang này liệt kê phần tài liệu còn thiếu, các mục chưa xác min
 
 ## Module chưa có tài liệu riêng
 
-Bảy module ưu tiên (Auth, Products, Cart, Checkout, Payments, Orders, Admin) đã xong. Còn 11 module; thứ tự đề xuất theo độ phức tạp và mức ảnh hưởng nghiệp vụ.
+Tám module (Auth, Products, Cart, Checkout, Payments, Orders, After-sales, Admin) đã xong. Còn 10 module; thứ tự đề xuất theo độ phức tạp và mức ảnh hưởng nghiệp vụ.
 
 | Ưu tiên | Module | Route chính | Cần tài liệu hóa |
 | --- | --- | --- | --- |
-| Cao | after-sales | `/account/after-sales`, `/account/warranties` (khách); `/admin/after-sales` (admin) | Hai loại yêu cầu (`WARRANTY`, `TECHNICAL_SUPPORT`), trạng thái yêu cầu và từng thiết bị, báo giá, tin nhắn, ảnh đính kèm, xác minh bảo hành, khóa idempotency. Module lớn nhất sau admin |
 | Cao | reviews | trang chi tiết sản phẩm; `/admin/reviews` | Điều kiện được đánh giá, ảnh đánh giá và đồng bộ ảnh, bình chọn hữu ích, trả lời chính thức, kiểm duyệt |
 | Trung bình | wishlist | `/wishlist` | Giới hạn 100 sản phẩm, cảnh báo giá, ý định chờ đăng nhập, thông báo liên quan |
 | Trung bình | promotions | `/promotions`, `/admin/promotions` | Ba loại (`COUPON`, `AUTOMATIC`, `FLASH_SALE`), trạng thái, suất flash sale, cách giá được tính |

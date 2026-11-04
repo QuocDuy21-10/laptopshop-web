@@ -1,6 +1,6 @@
 # Danh sách module
 
-Ứng dụng chia thành 18 module nghiệp vụ trong [src/features](https://github.com/QuocDuy21-10/laptopshop-web/tree/main/src/features). Bảy module ưu tiên đã có tài liệu đầy đủ theo [mẫu feature](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/docs/templates/feature.md); các module còn lại nằm trong [Lộ trình](../12-reference/roadmap.md).
+Ứng dụng chia thành 18 module nghiệp vụ trong [src/features](https://github.com/QuocDuy21-10/laptopshop-web/tree/main/src/features). Tám module đã có tài liệu đầy đủ theo [mẫu feature](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/docs/templates/feature.md); các module còn lại nằm trong [Lộ trình](../12-reference/roadmap.md).
 
 ## Đã có tài liệu
 
@@ -12,6 +12,7 @@
 | [Checkout](checkout.md) | Báo giá, mã giảm giá, đặt hàng, chống đặt trùng | `/checkout` | [checkout](../06-api-and-data/data-dictionary/checkout.md) |
 | [Payments](payments.md) | Thanh toán chuyển khoản bằng mã QR, theo dõi trạng thái, đối soát | `/account/orders/[id]/payment`, `/admin/payments` | [payments](../06-api-and-data/data-dictionary/payments.md) |
 | [Orders](orders.md) | Danh sách, chi tiết, hủy đơn | `/account/orders` | [orders](../06-api-and-data/data-dictionary/orders.md) |
+| [After-sales](after-sales.md) | Yêu cầu bảo hành và hỗ trợ kỹ thuật theo thiết bị, báo giá, tin nhắn, ảnh | `/account/after-sales`, `/account/warranties`, `/admin/after-sales` | [after-sales](../06-api-and-data/data-dictionary/after-sales.md) |
 | [Admin](admin.md) | Khung quản trị và các module vận hành | `/admin/*` | [admin](../06-api-and-data/data-dictionary/admin.md) |
 
 ## Chưa có tài liệu riêng
@@ -20,7 +21,6 @@
 | --- | --- | --- |
 | account | Hồ sơ người dùng, hook `useMe` | `/account` |
 | advisor | Tư vấn chọn laptop theo ngân sách và nhu cầu | `/advisor` |
-| after-sales | Bảo hành, yêu cầu hậu mãi, quyền lợi theo thiết bị | `/account/after-sales`, `/account/warranties` |
 | compare | So sánh thông số nhiều laptop | `/compare` |
 | home | Các khối của trang chủ | `/` |
 | newsletter | Đăng ký, xác nhận, hủy nhận ưu đãi qua email | `/newsletter/confirm`, `/newsletter/unsubscribe` |

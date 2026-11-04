@@ -3,7 +3,7 @@ import { withMermaid } from "vitepress-plugin-mermaid";
 
 const repo = "https://github.com/QuocDuy21-10/laptopshop-web";
 
-const features = ["auth", "products", "cart", "checkout", "payments", "orders", "admin"] as const;
+const features = ["auth", "products", "cart", "checkout", "payments", "orders", "after-sales", "admin"] as const;
 const featureTitle: Record<(typeof features)[number], string> = {
   auth: "Xác thực",
   products: "Sản phẩm",
@@ -11,6 +11,7 @@ const featureTitle: Record<(typeof features)[number], string> = {
   checkout: "Thanh toán đơn (checkout)",
   payments: "Thanh toán (payments)",
   orders: "Đơn hàng",
+  "after-sales": "Hậu mãi",
   admin: "Quản trị",
 };
 

@@ -54,6 +54,7 @@ Dấu hiệu "chưa xác minh" trong bảng nghĩa là ý nghĩa hay chỗ dùng
 | Checkout | [checkout](checkout.md) |
 | Payments | [payments](payments.md) |
 | Orders | [orders](orders.md) |
+| After-sales | [after-sales](after-sales.md) |
 | Admin | [admin](admin.md) |
 
 ## Quy ước tiền tệ và thời gian

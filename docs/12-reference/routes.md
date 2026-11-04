@@ -18,15 +18,15 @@ Layout gốc đặt `dynamic = "force-dynamic"`, nên các trang render theo t�
 | --- | --- | --- | --- | --- | --- |
 | `/` | Trang chủ | Không | Server | Home | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/page.tsx) |
 | `/account` | Hồ sơ | Có | Client | Account | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/account/page.tsx) |
-| `/account/after-sales` | Yêu cầu hậu mãi | Có | Client | After-sales | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/account/after-sales/page.tsx) |
-| `/account/after-sales/[id]` | Chi tiết yêu cầu hậu mãi | Có | Client | After-sales | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/account/after-sales/%5Bid%5D/page.tsx) |
-| `/account/after-sales/new` | Tạo yêu cầu hậu mãi | Có | Client | After-sales | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/account/after-sales/new/page.tsx) |
+| `/account/after-sales` | Yêu cầu hậu mãi | Có | Client | [After-sales](../04-features/after-sales.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/account/after-sales/page.tsx) |
+| `/account/after-sales/[id]` | Chi tiết yêu cầu hậu mãi | Có | Client | [After-sales](../04-features/after-sales.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/account/after-sales/%5Bid%5D/page.tsx) |
+| `/account/after-sales/new` | Tạo yêu cầu hậu mãi | Có | Client | [After-sales](../04-features/after-sales.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/account/after-sales/new/page.tsx) |
 | `/account/notifications` | Thông báo | Có | Client | Notifications | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/account/notifications/page.tsx) |
 | `/account/notifications/settings` | Cài đặt thông báo | Có | Client | Notifications | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/account/notifications/settings/page.tsx) |
 | `/account/orders` | Đơn hàng của tôi | Có | Client | [Orders](../04-features/orders.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/account/orders/page.tsx) |
 | `/account/orders/[id]` | Chi tiết đơn hàng | Có | Client | [Orders](../04-features/orders.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/account/orders/%5Bid%5D/page.tsx) |
 | `/account/orders/[id]/payment` | Thanh toán đơn hàng | Có | Client | [Payments](../04-features/payments.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/account/orders/%5Bid%5D/payment/page.tsx) |
-| `/account/warranties` | Quyền lợi bảo hành | Có | Client | After-sales | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/account/warranties/page.tsx) |
+| `/account/warranties` | Quyền lợi bảo hành | Có | Client | [After-sales](../04-features/after-sales.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/account/warranties/page.tsx) |
 | `/advisor` | Tư vấn chọn laptop | Không | Client | Advisor | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/advisor/page.tsx) |
 | `/cart` | Giỏ hàng | Có | Client | [Cart](../04-features/cart.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/cart/page.tsx) |
 | `/checkout` | Đặt hàng | Có | Client | [Checkout](../04-features/checkout.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/checkout/page.tsx) |
