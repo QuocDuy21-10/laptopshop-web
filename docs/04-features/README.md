@@ -1,6 +1,6 @@
 # Danh sách module
 
-Ứng dụng chia thành 18 module nghiệp vụ trong [src/features](https://github.com/QuocDuy21-10/laptopshop-web/tree/main/src/features). Mười sáu module đã có tài liệu đầy đủ theo [mẫu feature](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/docs/templates/feature.md); các module còn lại nằm trong [Lộ trình](../12-reference/roadmap.md).
+Ứng dụng chia thành 18 module nghiệp vụ trong [src/features](https://github.com/QuocDuy21-10/laptopshop-web/tree/main/src/features). Mười bảy module đã có tài liệu đầy đủ theo [mẫu feature](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/docs/templates/feature.md); các module còn lại nằm trong [Lộ trình](../12-reference/roadmap.md).
 
 ## Đã có tài liệu
 
@@ -21,13 +21,13 @@
 | [Compare](compare.md) | So sánh thông số tối đa 4 laptop, danh sách lưu ở trình duyệt | `/compare` | [compare](../06-api-and-data/data-dictionary/compare.md) |
 | [Advisor](advisor.md) | Tư vấn chọn laptop theo ngân sách và nhu cầu, AI tùy chọn | `/advisor` | [advisor](../06-api-and-data/data-dictionary/advisor.md) |
 | [Account](account.md) | Hồ sơ, ảnh đại diện, `useMe`, xác minh email | `/account` | [account](../06-api-and-data/data-dictionary/account.md) |
+| [Newsletter](newsletter.md) | Đăng ký, xác nhận hai bước, hủy nhận ưu đãi qua email | `/newsletter/confirm`, `/newsletter/unsubscribe`, `/admin/newsletter` | [newsletter](../06-api-and-data/data-dictionary/newsletter.md) |
 | [Admin](admin.md) | Khung quản trị và các module vận hành | `/admin/*` | [admin](../06-api-and-data/data-dictionary/admin.md) |
 
 ## Chưa có tài liệu riêng
 
 | Module | Mô tả (theo route và mã nguồn) | Route chính |
 | --- | --- | --- |
-| newsletter | Đăng ký, xác nhận, hủy nhận ưu đãi qua email | `/newsletter/confirm`, `/newsletter/unsubscribe` |
 | store-info | Thông tin cửa hàng hiển thị ở chân trang | chân trang |
 
 Mọi route liệt kê ở [Danh sách route](../12-reference/routes.md).
