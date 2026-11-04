@@ -30,7 +30,7 @@ Layout gốc đặt `dynamic = "force-dynamic"`, nên các trang render theo t�
 | `/advisor` | Tư vấn chọn laptop | Không | Client | Advisor | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/advisor/page.tsx) |
 | `/cart` | Giỏ hàng | Có | Client | [Cart](../04-features/cart.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/cart/page.tsx) |
 | `/checkout` | Đặt hàng | Có | Client | [Checkout](../04-features/checkout.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/checkout/page.tsx) |
-| `/compare` | So sánh laptop | Không | Client | Compare | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/compare/page.tsx) |
+| `/compare` | So sánh laptop | Không | Client | [Compare](../04-features/compare.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/compare/page.tsx) |
 | `/newsletter/confirm` | Xác nhận đăng ký nhận ưu đãi | Không | Client | Newsletter | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/newsletter/confirm/page.tsx) |
 | `/newsletter/unsubscribe` | Hủy đăng ký nhận ưu đãi | Không | Client | Newsletter | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/newsletter/unsubscribe/page.tsx) |
 | `/products` | Danh sách laptop | Không | Server | [Products](../04-features/products.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/products/page.tsx) |

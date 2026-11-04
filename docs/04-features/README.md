@@ -1,6 +1,6 @@
 # Danh sách module
 
-Ứng dụng chia thành 18 module nghiệp vụ trong [src/features](https://github.com/QuocDuy21-10/laptopshop-web/tree/main/src/features). Mười ba module đã có tài liệu đầy đủ theo [mẫu feature](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/docs/templates/feature.md); các module còn lại nằm trong [Lộ trình](../12-reference/roadmap.md).
+Ứng dụng chia thành 18 module nghiệp vụ trong [src/features](https://github.com/QuocDuy21-10/laptopshop-web/tree/main/src/features). Mười bốn module đã có tài liệu đầy đủ theo [mẫu feature](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/docs/templates/feature.md); các module còn lại nằm trong [Lộ trình](../12-reference/roadmap.md).
 
 ## Đã có tài liệu
 
@@ -18,6 +18,7 @@
 | [Promotions](promotions.md) | Mã giảm giá, giảm tự động, Flash Sale, giá đã giảm | `/promotions`, `/admin/promotions` | [promotions](../06-api-and-data/data-dictionary/promotions.md) |
 | [Home](home.md) | Các khối trang chủ, banner do admin điều khiển, cô lập lỗi từng khối | `/`, `/admin/home-banners` | [home](../06-api-and-data/data-dictionary/home.md) |
 | [Notifications](notifications.md) | Thông báo trong ứng dụng, tùy chọn kênh, Web Push, thử lại gửi thất bại | `/account/notifications`, `/admin/notifications` | [notifications](../06-api-and-data/data-dictionary/notifications.md) |
+| [Compare](compare.md) | So sánh thông số tối đa 4 laptop, danh sách lưu ở trình duyệt | `/compare` | [compare](../06-api-and-data/data-dictionary/compare.md) |
 | [Admin](admin.md) | Khung quản trị và các module vận hành | `/admin/*` | [admin](../06-api-and-data/data-dictionary/admin.md) |
 
 ## Chưa có tài liệu riêng
@@ -26,7 +27,6 @@
 | --- | --- | --- |
 | account | Hồ sơ người dùng, hook `useMe` | `/account` |
 | advisor | Tư vấn chọn laptop theo ngân sách và nhu cầu | `/advisor` |
-| compare | So sánh thông số nhiều laptop | `/compare` |
 | newsletter | Đăng ký, xác nhận, hủy nhận ưu đãi qua email | `/newsletter/confirm`, `/newsletter/unsubscribe` |
 | store-info | Thông tin cửa hàng hiển thị ở chân trang | chân trang |
 
