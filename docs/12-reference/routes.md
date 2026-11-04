@@ -36,7 +36,7 @@ Layout gốc đặt `dynamic = "force-dynamic"`, nên các trang render theo t�
 | `/products` | Danh sách laptop | Không | Server | [Products](../04-features/products.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/products/page.tsx) |
 | `/products/[id]` | Chi tiết sản phẩm | Không | Server | [Products](../04-features/products.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/products/%5Bid%5D/page.tsx) |
 | `/promotions` | Khuyến mãi | Không | Server | Promotions | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/promotions/page.tsx) |
-| `/wishlist` | Yêu thích | Có | Client | Wishlist | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/wishlist/page.tsx) |
+| `/wishlist` | Yêu thích | Có | Client | [Wishlist](../04-features/wishlist.md) | [page.tsx](https://github.com/QuocDuy21-10/laptopshop-web/blob/main/src/app/%28storefront%29/wishlist/page.tsx) |
 
 ## Xác thực (`(auth)`)
 
