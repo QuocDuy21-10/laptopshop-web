@@ -1,106 +1,196 @@
 <div align="center">
 
-<img src="public/brand/logo-horizontal.svg" alt="Logo LaptopShop" width="250" />
+<img src="public/brand/logo-horizontal.svg" alt="Logo LaptopShop" width="260" />
 
-# LaptopShop
+# LaptopShop Web
 
-**Chọn đúng laptop. So sánh tự tin. Mua sắm liền mạch.**
+**Chọn đúng laptop · So sánh tự tin · Mua sắm liền mạch**
 
-Giao diện thương mại điện tử laptop xây dựng bằng **Next.js 16**, **React 19** và **TypeScript**: từ khám phá sản phẩm, tư vấn chọn máy đến đặt hàng, thanh toán và hậu mãi.
+Nền tảng thương mại điện tử chuyên biệt cho laptop và linh phụ kiện công nghệ.  
+Xây dựng trên nền tảng **Next.js 16 (App Router)**, **React 19** và **TypeScript**.
 
-[![Next.js](https://img.shields.io/badge/Next.js-16.4.2-000000?logo=nextdotjs)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-16.4.2-black?logo=nextdotjs)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19.3.1-149ECA?logo=react&logoColor=white)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![pnpm](https://img.shields.io/badge/pnpm-11.24.0-orange?logo=pnpm&logoColor=white)](https://pnpm.io/)
 [![CI](https://github.com/QuocDuy21-10/laptopshop-web/actions/workflows/ci.yml/badge.svg)](https://github.com/QuocDuy21-10/laptopshop-web/actions/workflows/ci.yml)
 [![Tài liệu](https://img.shields.io/badge/Tài_liệu-GitHub_Pages-0A7EA4?logo=readthedocs&logoColor=white)](https://quocduy21-10.github.io/laptopshop-web/)
 
-<img src="public/banners/hero-gaming.webp" alt="Banner laptop gaming của LaptopShop" width="100%" />
-
 </div>
 
-> **Phạm vi:** repo này chứa storefront cho khách hàng và giao diện quản trị. Backend nằm ở repo riêng [laptopshop-api](https://github.com/QuocDuy21-10/laptopshop-api).
+---
 
-## Tài liệu
+> **Phạm vi repo:** Repo này chỉ chứa storefront cho khách hàng và giao diện quản trị (Frontend). Dữ liệu thực tế, API xác thực, cơ sở dữ liệu và thanh toán được cung cấp bởi repo riêng: [laptopshop-api](https://github.com/QuocDuy21-10/laptopshop-api).
 
-Toàn bộ tài liệu kỹ thuật và nghiệp vụ (kiến trúc, tính năng, API, data dictionary, sơ đồ, vận hành, bảo mật) được đăng tại **[quocduy21-10.github.io/laptopshop-web](https://quocduy21-10.github.io/laptopshop-web/)**. Nguồn Markdown nằm trong thư mục `docs/` (đọc trực tiếp trên GitHub tại [docs/README.md](docs/README.md)) và được workflow `docs.yml` triển khai lên GitHub Pages.
+---
 
-| Bạn muốn | Đọc |
-| --- | --- |
-| Hiểu LaptopShop là gì | [LaptopShop là gì](docs/01-product/overview.md) |
-| Chạy và đóng góp | [Cài đặt và chạy](docs/00-getting-started/setup.md) |
-| Hiểu kiến trúc | [Tổng quan kiến trúc](docs/02-architecture/overview.md) |
-| Tra cứu tính năng | [Danh sách module](docs/04-features/README.md) |
-| Triển khai | [Triển khai](docs/10-operations/deployment.md) |
-| Hệ thống thiết kế | [DESIGN.md](DESIGN.md) |
+## Tổng quan dự án
 
-## Giới thiệu
+**LaptopShop** giúp khách hàng tìm kiếm sản phẩm, đối chiếu thông số kỹ thuật chuẩn xác, nhận tư vấn cấu hình phù hợp và quản lý đơn hàng cùng yêu cầu sau bán trong một nền tảng đồng nhất. Trang quản trị riêng biệt phục vụ công tác vận hành bán lẻ hàng ngày.
 
-**LaptopShop** giúp khách hàng tìm sản phẩm, đánh giá thông số kỹ thuật, quyết định mua và quản lý đơn hàng cùng yêu cầu sau bán trong một nơi. Trang quản trị riêng phục vụ vận hành cửa hàng hằng ngày.
+---
 
-## Tính năng
+## Tính năng chính
 
-### Storefront
+### Storefront (Khách hàng)
 
-| Nhóm | Khả năng |
-| --- | --- |
-| Khám phá sản phẩm | Duyệt, xem chi tiết, tìm kiếm và lọc theo thông số |
-| So sánh | So sánh thông số nhiều laptop |
-| Tư vấn chọn máy | Gợi ý laptop theo ngân sách và nhu cầu |
-| Yêu thích | Lưu sản phẩm, cảnh báo giá |
-| Mua hàng | Giỏ hàng, đặt hàng, thanh toán khi nhận hàng hoặc chuyển khoản QR |
-| Khuyến mãi | Mã giảm giá, chương trình khuyến mãi, flash sale |
-| Đánh giá | Đọc và viết đánh giá sản phẩm |
-| Tài khoản | Đăng nhập, hồ sơ, đơn hàng, thông báo |
-| Hậu mãi | Xem quyền lợi bảo hành, gửi yêu cầu bảo hành hoặc hỗ trợ |
-| Bản tin | Đăng ký nhận ưu đãi qua email |
+| Nhóm tính năng            | Chi tiết khả năng                                                                                                 |
+| :------------------------ | :---------------------------------------------------------------------------------------------------------------- |
+| **Khám phá & Bộ lọc**     | Duyệt danh mục, tìm kiếm thông minh, lọc chi tiết theo CPU, RAM, GPU, kích thước màn hình, tầm giá và thương hiệu |
+| **So sánh trực quan**     | Đối chiếu thông số kỹ thuật song song giữa nhiều dòng máy                                                         |
+| **Tư vấn chọn máy**       | Hệ thống định hướng thông minh gợi ý cấu hình theo nhu cầu và ngân sách                                           |
+| **Giỏ hàng & Đặt hàng**   | Checkout tinh gọn, hỗ trợ thanh toán khi nhận hàng (COD) và chuyển khoản qua mã VietQR                            |
+| **Khuyến mãi**            | Mã giảm giá (voucher), chương trình ưu đãi và flash sale theo thời gian thực                                      |
+| **Đánh giá & Bình luận**  | Đánh giá sao, nhận xét kèm ảnh từ người mua thực tế đã xác thực đơn                                               |
+| **Yêu thích & Thông báo** | Lưu sản phẩm quan tâm, bật cảnh báo khi có biến động giá hoặc có hàng trở lại                                     |
+| **Hậu mãi & Bảo hành**    | Tra cứu lịch sử bảo hành thiết bị, gửi yêu cầu bảo hành hoặc hỗ trợ kỹ thuật trực tuyến                           |
 
-### Quản trị
+### Admin Portal (Quản trị viên)
 
-| Module | Trọng tâm |
-| --- | --- |
-| Tổng quan | Số liệu vận hành cửa hàng |
-| Danh mục và khuyến mãi | Sản phẩm, chương trình khuyến mãi, banner trang chủ |
-| Bán hàng và thanh toán | Đơn hàng, đối soát thanh toán |
-| Kho | Nhật ký kho, phiếu nhập, điều chỉnh tồn kho |
-| Khách hàng | Người dùng, đánh giá |
-| Chăm sóc khách hàng | Hậu mãi, thông báo |
-| Truyền thông | Quản lý bản tin |
+| Phân hệ                   | Trọng tâm vận hành                                                                |
+| :------------------------ | :-------------------------------------------------------------------------------- |
+| **Tổng quan**             | Dashboard theo dõi doanh thu, số lượng đơn hàng và chỉ số vận hành thời gian thực |
+| **Danh mục & Sản phẩm**   | Quản lý sản phẩm, thông số kỹ thuật đa cấp, biến thể, hình ảnh và danh mục        |
+| **Khuyến mãi & Banner**   | Quản lý chương trình ưu đãi, flash sale và banner quảng bá trên trang chủ         |
+| **Bán hàng & Thanh toán** | Quản lý vòng đời đơn hàng, cập nhật trạng thái giao nhận và đối soát thanh toán   |
+| **Quản lý kho**           | Phiếu nhập kho, kiểm kê tồn kho và theo dõi nhật ký biến động kho                 |
+| **Khách hàng & Chăm sóc** | Danh sách người dùng, kiểm duyệt đánh giá và xử lý phiếu hỗ trợ sau bán hàng      |
+| **Truyền thông**          | Quản lý danh sách đăng ký nhận bản tin khuyến mãi (Newsletter)                    |
 
-> Các nhóm trên phản ánh route và module hiện có. Khả năng vận hành thực tế còn phụ thuộc cấu hình backend và tích hợp bên ngoài; bảng này không bảo đảm sẵn sàng cho production.
+---
+
+## Công nghệ sử dụng
+
+| Lớp                      | Công nghệ                                                                       | Mục đích sử dụng                                                             |
+| :----------------------- | :------------------------------------------------------------------------------ | :--------------------------------------------------------------------------- |
+| **Framework**            | [Next.js 16](https://nextjs.org/) (App Router)                                  | Server Components, Streaming SSR, Image Optimization                         |
+| **Thư viện UI**          | [React 19](https://react.dev/)                                                  | Xây dựng giao diện với kiến trúc React hiện đại                              |
+| **Ngôn ngữ**             | [TypeScript 5.9](https://www.typescriptlang.org/)                               | Type-safety từ hợp đồng OpenAPI đến giao diện người dùng                     |
+| **Giao diện Storefront** | SCSS Modules + Design Tokens                                                    | Tùy biến linh hoạt qua CSS variables (`var(--color-*)`), chuẩn hóa giao diện |
+| **Giao diện Admin**      | [Ant Design 6](https://ant.design/)                                             | Bộ component quản trị đồng nhất, tối ưu năng suất vận hành                   |
+| **Data Fetching**        | [TanStack Query v5](https://tanstack.com/query)                                 | Quản lý server state phía client, auto-caching, invalidate & refetch         |
+| **Form & Validation**    | [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/)       | Xử lý form mượt mà và validate dữ liệu đồng bộ                               |
+| **Icons & Motion**       | [Lucide React](https://lucide.dev/) + [Motion](https://motion.dev/)             | Bộ icon tối giản và hiệu ứng chuyển động mượt mà                             |
+| **Testing**              | [Vitest](https://vitest.dev/) + [Testing Library](https://testing-library.com/) | Unit testing toàn diện, mock network/Prisma độc lập                          |
+| **Tài liệu**             | [VitePress](https://vitepress.dev/) + Mermaid                                   | Hệ thống tài liệu kỹ thuật tĩnh triển khai GitHub Pages                      |
+
+---
+
+## Cấu trúc thư mục
+
+```text
+laptopshop-web/
+├── docs/                   # Nguồn tài liệu VitePress (tiếng Việt)
+├── public/                 # Static assets (logo, icons, illustrations)
+├── scripts/                # Script tự động hóa và kiểm tra docs
+├── src/
+│   ├── app/                # Next.js App Router (pages, layouts, route handlers)
+│   │   ├── (admin)/        # Phân hệ Admin portal
+│   │   └── (storefront)/   # Phân hệ Storefront mua sắm
+│   ├── components/         # Common UI components dùng chung (Buttons, Inputs, Modals)
+│   ├── features/           # Module nghiệp vụ chuyên biệt (auth, cart, products, admin, ...)
+│   ├── lib/                # API client, server fetching, query-keys, utilities
+│   ├── providers/          # React context providers (QueryClient, AntD Registry, Theme)
+│   ├── styles/             # Design tokens (_tokens.scss), mixins và styles toàn cục
+│   └── proxy.ts            # Xử lý route bảo vệ và chuyển hướng xác thực
+├── package.json
+└── tsconfig.json
+```
+
+---
 
 ## Bắt đầu nhanh
 
-Cần **Node.js 22**, **pnpm 11.24.0** và [backend](https://github.com/QuocDuy21-10/laptopshop-api) đang chạy.
+### Yêu cầu tiên quyết
+
+- **Node.js**: Phiên bản `22`
+- **pnpm**: Phiên bản `11.24.0`
+- **Backend API**: Repo [laptopshop-api](https://github.com/QuocDuy21-10/laptopshop-api) đang khởi chạy ở máy local (mặc định cổng `8080`).
+
+### Cài đặt và khởi chạy
 
 ```bash
+# 1. Clone repository
 git clone https://github.com/QuocDuy21-10/laptopshop-web.git
 cd laptopshop-web
+
+# 2. Cài đặt dependencies
 corepack enable
 pnpm install --frozen-lockfile
-cp .env.example .env.local   # điền API_ORIGIN, ví dụ http://localhost:8080
-pnpm dev                     # http://localhost:3000
+
+# 3. Chuẩn bị biến môi trường
+cp .env.example .env.local
+
+# 4. Khởi chạy máy chủ phát triển
+pnpm dev
 ```
 
-Chi tiết và các lỗi thường gặp ở [Cài đặt và chạy](docs/00-getting-started/setup.md). Không commit `.env.local` hay thông tin bí mật.
+Mở `.env.local` và kiểm tra giá trị của `API_ORIGIN`:
+
+```dotenv
+API_ORIGIN=http://localhost:8080
+```
+
+> [!WARNING]
+> `.env.example` để `API_ORIGIN=` trống. Zod validation sẽ báo lỗi `Invalid URL` nếu biến này mang giá trị chuỗi rỗng. Hãy điền giá trị `http://localhost:8080` hoặc xóa dòng đó để nhận giá trị mặc định.
+
+Sau khi khởi chạy:
+
+- Truy cập storefront tại: [http://localhost:3000](http://localhost:3000)
+- Truy cập trang quản trị tại: [http://localhost:3000/admin](http://localhost:3000/admin)
+
+---
 
 ## Lệnh thường dùng
 
-| Lệnh | Tác dụng |
-| --- | --- |
-| `pnpm dev` | Chạy môi trường phát triển |
-| `pnpm build` / `pnpm start` | Build và chạy production |
-| `pnpm lint` / `pnpm lint:css` | Kiểm tra ESLint và Stylelint |
-| `pnpm typecheck` | Sinh type của Next và chạy TypeScript |
-| `pnpm test` / `pnpm test:watch` | Chạy Vitest |
-| `pnpm gen:api` | Sinh lại `schema.d.ts` từ OpenAPI ([hướng dẫn](docs/08-development/regenerate-api-types.md)) |
-| `pnpm docs:dev` / `pnpm docs:build` | Chạy hoặc dựng site tài liệu |
-| `pnpm format` | Định dạng bằng Prettier |
+| Nhóm                  | Lệnh              | Tác dụng                                                           |
+| :-------------------- | :---------------- | :----------------------------------------------------------------- |
+| **Phát triển**        | `pnpm dev`        | Khởi chạy Next.js dev server trên cổng 3000                        |
+| **Build & Run**       | `pnpm build`      | Build ứng dụng cho môi trường production                           |
+|                       | `pnpm start`      | Khởi chạy bản build production                                     |
+| **Kiểm tra mã nguồn** | `pnpm lint`       | Kiểm tra cú pháp và quy tắc bằng ESLint                            |
+|                       | `pnpm lint:css`   | Kiểm tra style SCSS bằng Stylelint                                 |
+|                       | `pnpm typecheck`  | Sinh type của Next.js và kiểm tra kiểu TypeScript (`tsc --noEmit`) |
+|                       | `pnpm format`     | Tự động định dạng toàn bộ mã nguồn với Prettier                    |
+| **Kiểm thử**          | `pnpm test`       | Chạy toàn bộ unit test với Vitest                                  |
+|                       | `pnpm test:watch` | Chạy unit test ở chế độ theo dõi file (watch mode)                 |
+| **Tài liệu & API**    | `pnpm gen:api`    | Tự động sinh `src/lib/api/schema.d.ts` từ OpenAPI specification    |
+|                       | `pnpm docs:dev`   | Chạy máy chủ tài liệu cục bộ (VitePress)                           |
+|                       | `pnpm docs:build` | Dựng bản phát hành tĩnh cho tài liệu                               |
+|                       | `pnpm docs:check` | Kiểm tra tính toàn vẹn liên kết, sơ đồ Mermaid và bảo mật docs     |
 
-CI chạy lint, kiểm tra kiểu, test và build cho mọi pull request ([CI](docs/09-quality/ci.md)).
+---
 
-## Liên kết
+## Kiến trúc & Quy ước cốt lõi
 
-- Site tài liệu: [quocduy21-10.github.io/laptopshop-web](https://quocduy21-10.github.io/laptopshop-web/)
-- Backend: [laptopshop-api](https://github.com/QuocDuy21-10/laptopshop-api)
-- Hướng dẫn cho AI agent: [AGENTS.md](AGENTS.md), [CLAUDE.md](CLAUDE.md)
-- Quy trình làm việc: [Quy trình làm việc](docs/08-development/workflow.md)
+- **Server Components vs. Client State:**
+  - Danh mục sản phẩm công khai (`/`, `/products`, `/products/[id]`) được render dưới dạng **Server Components** kết hợp cache API qua `src/lib/api/server.ts` để tối ưu SEO và thời gian phản hồi.
+  - Dữ liệu định danh người dùng (giỏ hàng, đơn hàng, tài khoản, thanh toán) chạy hoàn toàn phía client với **TanStack Query** qua `src/lib/api/client.ts`.
+- **Cơ chế Token Refresh tập trung:**
+  - Token refresh được điều phối độc quyền thông qua hàm `refreshSession()`. Tuyệt đối không tạo cơ chế refresh thứ hai để tránh race-condition khiến session bị thu hồi phía backend.
+- **Hệ thống Styling & Tokens:**
+  - Giao diện Storefront tuân thủ nghiêm ngặt quy định: chỉ sử dụng màu sắc thông qua CSS Variables `var(--color-*)` được định nghĩa trong `src/styles/_tokens.scss`. Không sử dụng CSS-in-JS, Tailwind hay mã màu hex tự do.
+  - Thư viện **Ant Design** chỉ được sử dụng trong phạm vi phân hệ `/admin`.
+- **Chính sách kiểm thử (Unit Testing Only):**
+  - Dự án chỉ duy trì unit test với mock data độc lập. Không tích hợp kiểm thử tích hợp (integration) hay kiểm thử đầu cuối (E2E) truy cập DB/Redis thật.
+
+---
+
+## Tài liệu & Liên kết
+
+| Mục đích                                 | Tài liệu tham khảo                                                                      |
+| :--------------------------------------- | :-------------------------------------------------------------------------------------- |
+| 🌐 **Tài liệu trực tuyến**               | [quocduy21-10.github.io/laptopshop-web](https://quocduy21-10.github.io/laptopshop-web/) |
+| 📐 **Hệ thống thiết kế (Design System)** | [DESIGN.md](DESIGN.md)                                                                  |
+| 🤖 **Quy chuẩn dành cho AI Agent**       | [AGENTS.md](AGENTS.md) · [CLAUDE.md](CLAUDE.md)                                         |
+| 🚀 **Hướng dẫn cài đặt chi tiết**        | [docs/00-getting-started/setup.md](docs/00-getting-started/setup.md)                    |
+| 🏗️ **Tổng quan kiến trúc**               | [docs/02-architecture/overview.md](docs/02-architecture/overview.md)                    |
+| 📦 **Danh sách module tính năng**        | [docs/04-features/README.md](docs/04-features/README.md)                                |
+| 🚢 **Quy trình triển khai (Deployment)** | [docs/10-operations/deployment.md](docs/10-operations/deployment.md)                    |
+| 💻 **Backend Repository**                | [laptopshop-api](https://github.com/QuocDuy21-10/laptopshop-api)                        |
+
+---
+
+<div align="center">
+  <sub>© LaptopShop Team. Xây dựng vì trải nghiệm mua sắm laptop minh bạch và chuẩn xác.</sub>
+</div>
