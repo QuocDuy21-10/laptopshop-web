@@ -4,6 +4,9 @@ hero:
   name: LaptopShop Web
   text: Tài liệu kỹ thuật và nghiệp vụ
   tagline: Storefront và trang quản trị Next.js của LaptopShop
+  image:
+    src: /hero.webp
+    alt: LaptopShop
   actions:
     - theme: brand
       text: Bắt đầu

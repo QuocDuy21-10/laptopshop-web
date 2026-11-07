@@ -26,9 +26,15 @@ export default withMermaid(
     description: "Tài liệu kỹ thuật và nghiệp vụ của storefront và trang quản trị LaptopShop",
     base: "/laptopshop-web/",
     cleanUrls: true,
-    head: [["link", { rel: "icon", href: "/laptopshop-web/favicon.svg" }]],
+    head: [
+      ["link", { rel: "icon", href: "/laptopshop-web/favicon.svg" }],
+      ["link", { rel: "preconnect", href: "https://fonts.googleapis.com" }],
+      ["link", { rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: "" }],
+      ["link", { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" }],
+    ],
     srcExclude: ["superpowers/**", "templates/**", "README.md"],
     themeConfig: {
+      logo: "/logo.svg",
       nav: [
         { text: "Bắt đầu", link: "/00-getting-started/setup" },
         { text: "Kiến trúc", link: "/02-architecture/overview" },
