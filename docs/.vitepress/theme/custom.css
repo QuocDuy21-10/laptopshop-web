@@ -1,0 +1,43 @@
+/* Brand tokens, mirrored from src/styles/_tokens.scss. Keep hex only in this block. */
+:root {
+  --brand-600: #166534;
+  --brand-700: #14532d;
+  --brand-800: #052e16;
+  --brand-100: #dcfce7;
+  --brand-400: #4ade80;
+  --brand-300: #86efac;
+
+  --vp-font-family-base: "Inter", "Be Vietnam Pro", system-ui, sans-serif;
+
+  --vp-c-brand-1: var(--brand-600);
+  --vp-c-brand-2: var(--brand-700);
+  --vp-c-brand-3: var(--brand-600);
+  --vp-c-brand-soft: color-mix(in srgb, var(--brand-600) 14%, transparent);
+
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(120deg, var(--brand-700), var(--brand-400));
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, var(--brand-400) 30%, var(--brand-100) 70%);
+  --vp-home-hero-image-filter: blur(56px);
+}
+
+.dark {
+  --vp-c-brand-1: var(--brand-400);
+  --vp-c-brand-2: var(--brand-300);
+  --vp-c-brand-3: var(--brand-600);
+  --vp-c-brand-soft: color-mix(in srgb, var(--brand-400) 16%, transparent);
+  --vp-home-hero-name-background: linear-gradient(120deg, var(--brand-300), var(--brand-400));
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, var(--brand-600) 30%, var(--brand-800) 70%);
+}
+
+.VPHero .image-src {
+  max-width: 420px;
+  border-radius: 16px;
+}
+
+.VPFeature {
+  border-radius: 12px;
+  transition: border-color 0.2s;
+}
+.VPFeature:hover {
+  border-color: var(--vp-c-brand-1);
+}
