@@ -29,6 +29,9 @@ importers:
       '@tanstack/react-query':
         specifier: 5.104.4
         version: 5.104.4(@types/react@19.3.0)(react@19.3.1)
+      '@vercel/speed-insights':
+        specifier: 2.1.0
+        version: 2.1.0(next@16.4.2(@babel/core@7.29.7(supports-color@10.2.2))(@playwright/test@1.64.1)(@types/node@22.20.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(sass@1.105.2))(react@19.3.1)(vue@3.5.44(typescript@5.9.3))
       antd:
         specifier: 6.6.6
         version: 6.6.6(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -2423,6 +2426,32 @@ packages:
 
   '@upsetjs/venn.js@2.0.0':
     resolution: {integrity: sha512-WbBhLrooyePuQ1VZxrJjtLvTc4NVfpOyKx0sKqioq9bX1C1m7Jgykkn8gLrtwumBioXIqam8DLxp88Adbue6Hw==}
+
+  '@vercel/speed-insights@2.1.0':
+    resolution: {integrity: sha512-tkDiIEjjmlwPpTFnOK14hBhsRLMo5yoCeK2Er3AHWlL7WTzHgFSyItps3TOW0HukErUlYlaUeHiVLCyfiE4WAA==}
+    peerDependencies:
+      '@sveltejs/kit': ^1 || ^2 || ^3 || ^3.0.0-next.0
+      next: '>= 13'
+      nuxt: '>= 3'
+      react: ^18 || ^19 || ^19.0.0-rc
+      svelte: '>= 4'
+      vue: ^3
+      vue-router: ^4
+    peerDependenciesMeta:
+      '@sveltejs/kit':
+        optional: true
+      next:
+        optional: true
+      nuxt:
+        optional: true
+      react:
+        optional: true
+      svelte:
+        optional: true
+      vue:
+        optional: true
+      vue-router:
+        optional: true
 
   '@vitejs/plugin-react@6.1.2':
     resolution: {integrity: sha512-fhJNGUdscQa4HkI0xFxwonWyhnVReCPDbXI7FH7jmzpnVCrFQI7PRrhWecO263610vOrs9tr2Y4xcf8uAdFxbw==}
@@ -7206,6 +7235,12 @@ snapshots:
     optionalDependencies:
       d3-selection: 3.0.0
       d3-transition: 3.0.1(d3-selection@3.0.0)
+
+  '@vercel/speed-insights@2.1.0(next@16.4.2(@babel/core@7.29.7(supports-color@10.2.2))(@playwright/test@1.64.1)(@types/node@22.20.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(sass@1.105.2))(react@19.3.1)(vue@3.5.44(typescript@5.9.3))':
+    optionalDependencies:
+      next: 16.4.2(@babel/core@7.29.7(supports-color@10.2.2))(@playwright/test@1.64.1)(@types/node@22.20.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(sass@1.105.2)
+      react: 19.3.1
+      vue: 3.5.44(typescript@5.9.3)
 
   '@vitejs/plugin-react@6.1.2(vite@8.3.4(@types/node@22.20.5)(sass@1.105.2))':
     dependencies:
