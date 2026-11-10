@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import { Be_Vietnam_Pro } from "next/font/google";
 import type { ReactNode } from "react";
+import { Be_Vietnam_Pro } from "next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+
 import { Providers } from "@/providers/Providers";
 import "@/styles/globals.scss";
 
@@ -27,6 +29,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           Bỏ qua tới nội dung chính
         </a>
         <Providers>{children}</Providers>
+        <SpeedInsights />
       </body>
     </html>
   );
