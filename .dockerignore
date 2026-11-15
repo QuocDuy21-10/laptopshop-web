@@ -1,6 +1,20 @@
+# keep the build context small and secret-free
 node_modules
 .next
 .git
+.github
+.agents
+.claude
 .superpowers
+.vscode
 docs
+docs-local
+screenshots
+laptopshop-brand-kit
+tests
+coverage
+deploy
+*.md
+*.tsbuildinfo
 .env*
+**/.DS_Store
