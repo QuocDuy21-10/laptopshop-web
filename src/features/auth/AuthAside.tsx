@@ -1,4 +1,6 @@
+import Image from "next/image";
 import { ClipboardList, Heart, ShieldCheck } from "lucide-react";
+
 import styles from "./AuthAside.module.scss";
 
 const BENEFITS = [
@@ -10,15 +12,18 @@ const BENEFITS = [
 export function AuthAside() {
   return (
     <aside className={styles.aside}>
-      <p className={styles.heading}>Chào mừng đến LaptopShop</p>
-      <ul className={styles.list}>
-        {BENEFITS.map(({ icon: Icon, text }) => (
-          <li key={text} className={styles.item}>
-            <Icon size={20} aria-hidden="true" />
-            {text}
-          </li>
-        ))}
-      </ul>
+      <Image src="/banners/auth.webp" alt="" fill priority sizes="50vw" className={styles.image} />
+      <div className={styles.content}>
+        <p className={styles.heading}>Chào mừng đến LaptopShop</p>
+        <ul className={styles.list}>
+          {BENEFITS.map(({ icon: Icon, text }) => (
+            <li key={text} className={styles.item}>
+              <Icon size={20} aria-hidden="true" />
+              {text}
+            </li>
+          ))}
+        </ul>
+      </div>
     </aside>
   );
 }
