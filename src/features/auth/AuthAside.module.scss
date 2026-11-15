@@ -5,13 +5,35 @@
 
   @include up(md) {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: var(--space-six);
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    align-items: flex-end;
     padding: var(--space-sixteen) var(--space-gutter-desktop);
     background: var(--color-primary);
     color: var(--color-on-primary);
+
+    // scrim keeps the white copy readable over the photo
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(to top, var(--color-primary-pressed), var(--color-overlay) 45%, transparent 75%);
+    }
   }
+}
+
+.image {
+  z-index: -2;
+  object-fit: cover;
+  object-position: right center;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-six);
 }
 
 .heading {
